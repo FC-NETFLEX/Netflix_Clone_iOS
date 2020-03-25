@@ -9,7 +9,9 @@
 import UIKit
 
 class HomeTitleContentTableViewCell: UITableViewCell {
-
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -20,5 +22,33 @@ class HomeTitleContentTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
+    
+    //MARK: - UI
+    private func setUI() {
+        
+    }
+    
+    private func setConstraints() {
+        
+    }
+    
+    
+    // MARK: - configure
+    func configure(poster: UIImage, title: String, category: [String], dibs: Bool) {
+        
+    }
+    
+    //MARK: - action
+    @objc private func didTabdibsButton(sender: UIButton) {
+        
+    }
+    
+    @objc private func didTabPlayButton(sender: UIButton) {
+        
+    }
+    
+    @objc private func didTabInformation(sender: UIButton) {
+        
+    }
 }
