@@ -149,6 +149,9 @@ class LoginViewController: UIViewController {
         
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
+        LoginStatus.shared.login(token: email)
+        let tabBarController = TabBarController()
+        tabBarController.changeRootViewController()
         
         APIManager().requestOfPost(
             url: .createUser,
@@ -167,9 +170,9 @@ class LoginViewController: UIViewController {
                         UIAlertController(title: "로그인", message: "아이디 또는 비밀번호를 확인해주세요.", preferredStyle: .alert).noticePresent(viewController: self)
                         return
                     }
-                    LoginStatus.shared.login(token: token)
-                    let tabBarController = TabBarController()
-                    tabBarController.changeRootViewController()
+//                    LoginStatus.shared.login(token: token)
+//                    let tabBarController = TabBarController()
+//                    tabBarController.changeRootViewController()
                 }
         })
     }
