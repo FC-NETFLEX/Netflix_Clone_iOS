@@ -9,7 +9,13 @@
 import UIKit
 
 class PreviewTableViewCell: UITableViewCell {
-
+    
+    
+    private let previewConllectionView = UICollectionView()
+    
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
