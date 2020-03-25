@@ -10,6 +10,10 @@ import UIKit
 
 class MoreViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     private let tempLogoutbutton = UIButton(type: .system)
 
     override func viewDidLoad() {
@@ -35,7 +39,8 @@ class MoreViewController: UIViewController {
         LoginStatus.shared.logout()
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let window = appDelegate.window
-        window?.rootViewController = LaunchScreenViewController()
+        let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
+        window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
         
     }
