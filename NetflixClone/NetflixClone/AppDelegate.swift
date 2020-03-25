@@ -18,8 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        let navigationController = UINavigationController(rootViewController: LaunchScreenViewController())
-        window?.rootViewController = navigationController
+        let rootViewController: UIViewController
+
+        if LoginStatus.shared.checkLoginStatus() {
+            rootViewController = TabBarController()
+        }else {
+            rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
+        }
+        
+        window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
         
         return true
