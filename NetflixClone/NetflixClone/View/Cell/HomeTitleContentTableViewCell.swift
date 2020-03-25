@@ -10,18 +10,27 @@ import UIKit
 
 class HomeTitleContentTableViewCell: UITableViewCell {
     
+    let identifier = "HomeTitleContentCell"
+    
+    private let titleImage = UIImageView()
+//    private let titleLabel = UILabel()
+    private let categoryLabel = UILabel()
+    private let dibsButton = UIButton()
+    private let playButton = UIButton()
+    private let inforButton = UIButton()
+    
+//    private var title: String
     
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+    
+    
     
     
     //MARK: - UI
@@ -36,7 +45,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
     
     // MARK: - configure
     func configure(poster: UIImage, title: String, category: [String], dibs: Bool) {
-        
+        self.title = title
     }
     
     //MARK: - action
