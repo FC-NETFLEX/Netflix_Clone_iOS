@@ -9,22 +9,36 @@
 import UIKit
 
 class MoreViewController: UIViewController {
+    
+    private let tempLogoutbutton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setUI()
+        setConstraints()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func setUI() {
+        view.addSubview(tempLogoutbutton)
+        tempLogoutbutton.setTitle("로그아웃", for: .normal)
+        tempLogoutbutton.tintColor = .white
+        tempLogoutbutton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        
     }
-    */
+    
+    private func setConstraints() {
+        tempLogoutbutton.frame.size = CGSize(width: 80, height: 40)
+        tempLogoutbutton.center = view.center
+    }
+    
+    @objc func didTapLogoutButton() {
+        LoginStatus.shared.logout()
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let window = appDelegate.window
+        window?.rootViewController = LaunchScreenViewController()
+        window?.makeKeyAndVisible()
+        
+    }
+    
 
 }
