@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -48,6 +48,8 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
+		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
+		965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +97,8 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
+		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
+		965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleContentTableViewCell.swift; sourceTree = "<group>"; };
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -132,11 +136,11 @@
 			isa = PBXGroup;
 			children = (
 				31601D14242A345C00382B94 /* Extension */,
+				31601D03242A345B00382B94 /* Model */,
+				31601CED242A345B00382B94 /* View */,
+				31601CD9242A345B00382B94 /* Controller */,
 				31601CD7242A345B00382B94 /* Util */,
 				31601CD4242A344500382B94 /* API */,
-				31601CD9242A345B00382B94 /* Controller */,
-				31601CED242A345B00382B94 /* View */,
-				31601D03242A345B00382B94 /* Model */,
 				31601CC0242A33B700382B94 /* AppDelegate.swift */,
 				31601CC9242A33B900382B94 /* Assets.xcassets */,
 				31601CCB242A33B900382B94 /* LaunchScreen.storyboard */,
@@ -253,6 +257,7 @@
 		31601CED242A345B00382B94 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				965FBA48242B250A00A96257 /* Cell */,
 				31601CEE242A345B00382B94 /* Home */,
 				31601CF0242A345B00382B94 /* Video */,
 				31601CF2242A345B00382B94 /* SavedContentsList */,
@@ -440,13 +445,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		965FBA48242B250A00A96257 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				965FBA49242B262300A96257 /* PreviewTableViewCell.swift */,
+				965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		E2BA24B88A4328852FFF412B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */,
 				15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -570,6 +583,8 @@
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
 				31601D39242A345C00382B94 /* UIButtonExtension.swift in Sources */,
 				31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */,
+				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
+				965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */,
 				31601D36242A345C00382B94 /* SearchModel.swift in Sources */,
 				31601D3A242A345C00382B94 /* UIAlertControllerExtension.swift in Sources */,
 				31601D26242A345C00382B94 /* VideoView.swift in Sources */,
