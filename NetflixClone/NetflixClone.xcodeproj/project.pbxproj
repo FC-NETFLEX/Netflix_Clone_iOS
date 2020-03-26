@@ -3,11 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		16874AE8F9F9FA10E6844613 /* Pods_NetflixClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */; };
+		310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D6242B1AE100C5858D /* LoginStatus.swift */; };
+		310B01DA242B223B00C5858D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D9242B223B00C5858D /* TabBarController.swift */; };
+		310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01DE242CB33D00C5858D /* DateExtension.swift */; };
 		31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CC0242A33B700382B94 /* AppDelegate.swift */; };
 		31601CCA242A33B900382B94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31601CC9242A33B900382B94 /* Assets.xcassets */; };
 		31601CCD242A33B900382B94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31601CCB242A33B900382B94 /* LaunchScreen.storyboard */; };
@@ -53,6 +56,9 @@
 /* Begin PBXFileReference section */
 		15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetflixClone.release.xcconfig"; path = "Target Support Files/Pods-NetflixClone/Pods-NetflixClone.release.xcconfig"; sourceTree = "<group>"; };
 		25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetflixClone.debug.xcconfig"; path = "Target Support Files/Pods-NetflixClone/Pods-NetflixClone.debug.xcconfig"; sourceTree = "<group>"; };
+		310B01D6242B1AE100C5858D /* LoginStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStatus.swift; sourceTree = "<group>"; };
+		310B01D9242B223B00C5858D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		310B01DE242CB33D00C5858D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		31601CBD242A33B700382B94 /* NetflixClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetflixClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31601CC0242A33B700382B94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31601CC9242A33B900382B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -110,6 +116,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		310B01D5242B1AC900C5858D /* SingleTon */ = {
+			isa = PBXGroup;
+			children = (
+				310B01D6242B1AE100C5858D /* LoginStatus.swift */,
+			);
+			path = SingleTon;
+			sourceTree = "<group>";
+		};
+		310B01D8242B220600C5858D /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				310B01D9242B223B00C5858D /* TabBarController.swift */,
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
 		31601CB4242A33B700382B94 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +153,7 @@
 		31601CBF242A33B700382B94 /* NetflixClone */ = {
 			isa = PBXGroup;
 			children = (
+				310B01D5242B1AC900C5858D /* SingleTon */,
 				31601D14242A345C00382B94 /* Extension */,
 				31601CD7242A345B00382B94 /* Util */,
 				31601CD4242A344500382B94 /* API */,
@@ -164,6 +187,7 @@
 		31601CD9242A345B00382B94 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				310B01D8242B220600C5858D /* Global */,
 				31601CDA242A345B00382B94 /* Home */,
 				31601CDC242A345B00382B94 /* Video */,
 				31601CDE242A345B00382B94 /* SavedContentsList */,
@@ -235,8 +259,8 @@
 		31601CE8242A345B00382B94 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				31601CE9242A345B00382B94 /* SignUpViewController.swift */,
 				31601CEA242A345B00382B94 /* LaunchScreen */,
+				31601CE9242A345B00382B94 /* SignUpViewController.swift */,
 				31601CEC242A345B00382B94 /* LoginViewController.swift */,
 			);
 			path = Login;
@@ -428,6 +452,7 @@
 				31601D17242A345C00382B94 /* UIColorExtension.swift */,
 				31601D18242A345C00382B94 /* CGFloatExtension.swift */,
 				31601D19242A345C00382B94 /* UIFontExtension.swift */,
+				310B01DE242CB33D00C5858D /* DateExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -446,7 +471,6 @@
 				25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */,
 				15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -581,11 +605,13 @@
 				31601D2E242A345C00382B94 /* ForthView.swift in Sources */,
 				31601D32242A345C00382B94 /* VideoModel.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
+				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
 				31601D2A242A345C00382B94 /* SearchView.swift in Sources */,
 				31601D35242A345C00382B94 /* MoreModel.swift in Sources */,
 				31601D23242A345C00382B94 /* LaunchScreenViewController.swift in Sources */,
 				31601D21242A345C00382B94 /* ProfileViewController.swift in Sources */,
+				310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */,
 				31601D2F242A345C00382B94 /* ThirdView.swift in Sources */,
 				31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */,
 				31601D34242A345C00382B94 /* ContentModel.swift in Sources */,
@@ -596,6 +622,7 @@
 				31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */,
 				31601D25242A345C00382B94 /* HomeView.swift in Sources */,
 				31601D30242A345C00382B94 /* LoginView.swift in Sources */,
+				310B01DA242B223B00C5858D /* TabBarController.swift in Sources */,
 				31601D22242A345C00382B94 /* SignUpViewController.swift in Sources */,
 				31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */,
 				31601D31242A345C00382B94 /* HomeModel.swift in Sources */,
