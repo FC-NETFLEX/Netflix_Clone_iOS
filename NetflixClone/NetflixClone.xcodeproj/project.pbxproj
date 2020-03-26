@@ -10,6 +10,7 @@
 		16874AE8F9F9FA10E6844613 /* Pods_NetflixClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */; };
 		310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D6242B1AE100C5858D /* LoginStatus.swift */; };
 		310B01DA242B223B00C5858D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D9242B223B00C5858D /* TabBarController.swift */; };
+		310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01DE242CB33D00C5858D /* DateExtension.swift */; };
 		31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CC0242A33B700382B94 /* AppDelegate.swift */; };
 		31601CCA242A33B900382B94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31601CC9242A33B900382B94 /* Assets.xcassets */; };
 		31601CCD242A33B900382B94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31601CCB242A33B900382B94 /* LaunchScreen.storyboard */; };
@@ -57,6 +58,7 @@
 		25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetflixClone.debug.xcconfig"; path = "Target Support Files/Pods-NetflixClone/Pods-NetflixClone.debug.xcconfig"; sourceTree = "<group>"; };
 		310B01D6242B1AE100C5858D /* LoginStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStatus.swift; sourceTree = "<group>"; };
 		310B01D9242B223B00C5858D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		310B01DE242CB33D00C5858D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		31601CBD242A33B700382B94 /* NetflixClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetflixClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31601CC0242A33B700382B94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31601CC9242A33B900382B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 				31601D17242A345C00382B94 /* UIColorExtension.swift */,
 				31601D18242A345C00382B94 /* CGFloatExtension.swift */,
 				31601D19242A345C00382B94 /* UIFontExtension.swift */,
+				310B01DE242CB33D00C5858D /* DateExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -602,6 +605,7 @@
 				31601D2E242A345C00382B94 /* ForthView.swift in Sources */,
 				31601D32242A345C00382B94 /* VideoModel.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
+				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
 				31601D2A242A345C00382B94 /* SearchView.swift in Sources */,
 				31601D35242A345C00382B94 /* MoreModel.swift in Sources */,
