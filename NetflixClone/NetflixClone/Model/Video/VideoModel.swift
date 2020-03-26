@@ -15,7 +15,30 @@ struct VideoModel {
     
     func getRestRangeWithString() -> String {
         let rest = range - currentTime
-        let restDate = Date(timeIntervalSinceReferenceDate: Double(rest))
-        return restDate.replaceDateWithString(format: "HH:mm:ss")
+        return timeCalculater(second: rest)
+    }
+    
+    private func timeCalculater(second: Int64) -> String {
+        let hour = second / 3600
+        let minute = (second % 3600) / 60
+        let second = (second % 3600) % 60
+        
+        let hourString: String
+        let minuteString = minute < 10 ? "0" + String(minute) + ":": String(minute) + ":"
+        let secondString = second < 10 ? "0" + String(second): String(second)
+        
+        switch hour {
+        case (let hour) where hour < 1:
+            hourString = ""
+        case (let hour) where hour < 10:
+            hourString = "0" + String(hour) + ":"
+        default:
+            hourString = String(hour) + ":"
+        }
+        
+        return hourString + minuteString + secondString
     }
 }
+
+
+
