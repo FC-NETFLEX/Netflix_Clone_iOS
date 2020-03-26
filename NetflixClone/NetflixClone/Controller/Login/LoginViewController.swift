@@ -152,11 +152,12 @@ class LoginViewController: UIViewController {
         LoginStatus.shared.login(token: email)
         let tabBarController = TabBarController()
         tabBarController.changeRootViewController()
+        let param = ["email": email, "password": password]
+        guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
         
         APIManager().requestOfPost(
             url: .createUser,
-            data: ["email": email, "password": password],
-            token: nil,
+            data: data,
             completion: {
             (result) in
                 switch result {
