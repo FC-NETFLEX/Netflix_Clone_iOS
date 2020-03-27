@@ -10,6 +10,10 @@ import UIKit
 
 class TabBarController: UITabBarController {
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.portrait]
+    }
+    
     init() {
         super.init(nibName: nil, bundle: nil)
         addViewControllers()
