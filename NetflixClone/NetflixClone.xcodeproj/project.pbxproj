@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -446,7 +446,6 @@
 				25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */,
 				15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
