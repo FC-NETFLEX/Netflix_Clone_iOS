@@ -95,7 +95,7 @@ class SignUpViewController: UIViewController {
     
     private func setConstraint() {
         let widthMultiplier: CGFloat = 0.85
-        let yMargin = CGFloat.dinamicYMargin(margin: 100)
+        let yMargin = CGFloat.dynamicYMargin(margin: 100)
         let guide = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
