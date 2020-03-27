@@ -10,41 +10,56 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
-
     let searchView = SearchView()
     let searchController = UISearchController(searchResultsController: nil)
-    
-    var collectionView: UICollectionView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.definesPresentationContext = true
-        self.navigationItem.titleView = searchController.searchBar
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.setValue("취소", forKey: "cancelButtonText")
-        searchController.searchBar.searchBarStyle = .minimal
-        searchView.frame = view.frame
-        view.addSubview(searchView)
-        setCollectionView()
-    }
+    lazy var searchBar = self.searchController.searchBar
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    private func setCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 50 // 위아래줄
-        layout.minimumInteritemSpacing = 20 // 아이템 간 간격
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        layout.itemSize = CGSize(width: 60, height: 60)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(searchView)
         
-        collectionView = UICollectionView(frame: view.frame, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
-        collectionView.dataSource = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "basic")
-        view.addSubview(collectionView)
+        self.definesPresentationContext = true
+        
+        
+        setSearchBarInNavigation()
     }
+    
+    private func setSearchBarInNavigation() {
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        self.navigationItem.titleView = searchController.searchBar
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchBar.setValue("취소", forKey: "cancelButtonText")
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([.foregroundColor : UIColor.white], for: .normal)
+
+        
+        // searchBar 커서 색 변경
+        searchBar.tintColor = UIColor.setNetfilxColor(name: .white)
+        
+        // searchBar 주변 색 변경
+        searchBar.barTintColor = UIColor.setNetfilxColor(name: .black)
+        
+        // searchTextField 내부 세팅
+        searchBar.placeholder = "검색"
+        
+        searchBar.searchTextField.backgroundColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
+        searchBar.searchTextField.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
+        searchBar.searchTextField.clearButtonMode = .always
+        
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.setNetfilxColor(name: .white)]
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+    
+    
+    
     
     
 }
