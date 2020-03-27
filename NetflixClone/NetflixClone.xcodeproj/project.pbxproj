@@ -3,18 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		16874AE8F9F9FA10E6844613 /* Pods_NetflixClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */; };
+		310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D6242B1AE100C5858D /* LoginStatus.swift */; };
+		310B01DA242B223B00C5858D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D9242B223B00C5858D /* TabBarController.swift */; };
+		310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01DE242CB33D00C5858D /* DateExtension.swift */; };
 		31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CC0242A33B700382B94 /* AppDelegate.swift */; };
 		31601CCA242A33B900382B94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31601CC9242A33B900382B94 /* Assets.xcassets */; };
 		31601CCD242A33B900382B94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31601CCB242A33B900382B94 /* LaunchScreen.storyboard */; };
 		31601CD6242A344500382B94 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CD5242A344500382B94 /* API.swift */; };
 		31601D1A242A345C00382B94 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CD8242A345B00382B94 /* Util.swift */; };
 		31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDB242A345B00382B94 /* HomeViewController.swift */; };
-		31601D1C242A345C00382B94 /* VideoControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDD242A345B00382B94 /* VideoControllerViewController.swift */; };
+		31601D1C242A345C00382B94 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDD242A345B00382B94 /* VideoController.swift */; };
 		31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDF242A345B00382B94 /* SaveContentsListViewController.swift */; };
 		31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CE1242A345B00382B94 /* ContentViewController.swift */; };
 		31601D1F242A345C00382B94 /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CE3242A345B00382B94 /* MoreViewController.swift */; };
@@ -48,11 +51,20 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
+
+		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
+		965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */; };
+
+		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetflixClone.release.xcconfig"; path = "Target Support Files/Pods-NetflixClone/Pods-NetflixClone.release.xcconfig"; sourceTree = "<group>"; };
 		25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetflixClone.debug.xcconfig"; path = "Target Support Files/Pods-NetflixClone/Pods-NetflixClone.debug.xcconfig"; sourceTree = "<group>"; };
+		310B01D6242B1AE100C5858D /* LoginStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStatus.swift; sourceTree = "<group>"; };
+		310B01D9242B223B00C5858D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		310B01DE242CB33D00C5858D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		31601CBD242A33B700382B94 /* NetflixClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetflixClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31601CC0242A33B700382B94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31601CC9242A33B900382B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,7 +73,7 @@
 		31601CD5242A344500382B94 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		31601CD8242A345B00382B94 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		31601CDB242A345B00382B94 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		31601CDD242A345B00382B94 /* VideoControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoControllerViewController.swift; sourceTree = "<group>"; };
+		31601CDD242A345B00382B94 /* VideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
 		31601CDF242A345B00382B94 /* SaveContentsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveContentsListViewController.swift; sourceTree = "<group>"; };
 		31601CE1242A345B00382B94 /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		31601CE3242A345B00382B94 /* MoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +107,12 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
+
+		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
+		965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleContentTableViewCell.swift; sourceTree = "<group>"; };
+
+		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
+
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -110,6 +128,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		310B01D5242B1AC900C5858D /* SingleTon */ = {
+			isa = PBXGroup;
+			children = (
+				310B01D6242B1AE100C5858D /* LoginStatus.swift */,
+			);
+			path = SingleTon;
+			sourceTree = "<group>";
+		};
+		310B01D8242B220600C5858D /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				310B01D9242B223B00C5858D /* TabBarController.swift */,
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
 		31601CB4242A33B700382B94 = {
 			isa = PBXGroup;
 			children = (
@@ -131,12 +165,13 @@
 		31601CBF242A33B700382B94 /* NetflixClone */ = {
 			isa = PBXGroup;
 			children = (
+				310B01D5242B1AC900C5858D /* SingleTon */,
 				31601D14242A345C00382B94 /* Extension */,
+				31601D03242A345B00382B94 /* Model */,
+				31601CED242A345B00382B94 /* View */,
+				31601CD9242A345B00382B94 /* Controller */,
 				31601CD7242A345B00382B94 /* Util */,
 				31601CD4242A344500382B94 /* API */,
-				31601CD9242A345B00382B94 /* Controller */,
-				31601CED242A345B00382B94 /* View */,
-				31601D03242A345B00382B94 /* Model */,
 				31601CC0242A33B700382B94 /* AppDelegate.swift */,
 				31601CC9242A33B900382B94 /* Assets.xcassets */,
 				31601CCB242A33B900382B94 /* LaunchScreen.storyboard */,
@@ -164,6 +199,7 @@
 		31601CD9242A345B00382B94 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				310B01D8242B220600C5858D /* Global */,
 				31601CDA242A345B00382B94 /* Home */,
 				31601CDC242A345B00382B94 /* Video */,
 				31601CDE242A345B00382B94 /* SavedContentsList */,
@@ -187,7 +223,7 @@
 		31601CDC242A345B00382B94 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				31601CDD242A345B00382B94 /* VideoControllerViewController.swift */,
+				31601CDD242A345B00382B94 /* VideoController.swift */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -235,8 +271,8 @@
 		31601CE8242A345B00382B94 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				31601CE9242A345B00382B94 /* SignUpViewController.swift */,
 				31601CEA242A345B00382B94 /* LaunchScreen */,
+				31601CE9242A345B00382B94 /* SignUpViewController.swift */,
 				31601CEC242A345B00382B94 /* LoginViewController.swift */,
 			);
 			path = Login;
@@ -253,6 +289,7 @@
 		31601CED242A345B00382B94 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				965FBA48242B250A00A96257 /* Cell */,
 				31601CEE242A345B00382B94 /* Home */,
 				31601CF0242A345B00382B94 /* Video */,
 				31601CF2242A345B00382B94 /* SavedContentsList */,
@@ -428,6 +465,8 @@
 				31601D17242A345C00382B94 /* UIColorExtension.swift */,
 				31601D18242A345C00382B94 /* CGFloatExtension.swift */,
 				31601D19242A345C00382B94 /* UIFontExtension.swift */,
+				310B01DE242CB33D00C5858D /* DateExtension.swift */,
+				31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -440,13 +479,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		965FBA48242B250A00A96257 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				965FBA49242B262300A96257 /* PreviewTableViewCell.swift */,
+				965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		E2BA24B88A4328852FFF412B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				25E907D2ED8BC5E0DE08D481 /* Pods-NetflixClone.debug.xcconfig */,
 				15779ABA256F1159ADD56787 /* Pods-NetflixClone.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -564,12 +611,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31601D1C242A345C00382B94 /* VideoControllerViewController.swift in Sources */,
+				31601D1C242A345C00382B94 /* VideoController.swift in Sources */,
 				31601D20242A345C00382B94 /* SearchViewController.swift in Sources */,
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
 				31601D39242A345C00382B94 /* UIButtonExtension.swift in Sources */,
 				31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */,
+				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
+				965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */,
 				31601D36242A345C00382B94 /* SearchModel.swift in Sources */,
 				31601D3A242A345C00382B94 /* UIAlertControllerExtension.swift in Sources */,
 				31601D26242A345C00382B94 /* VideoView.swift in Sources */,
@@ -581,13 +630,16 @@
 				31601D2E242A345C00382B94 /* ForthView.swift in Sources */,
 				31601D32242A345C00382B94 /* VideoModel.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
+				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
 				31601D2A242A345C00382B94 /* SearchView.swift in Sources */,
 				31601D35242A345C00382B94 /* MoreModel.swift in Sources */,
 				31601D23242A345C00382B94 /* LaunchScreenViewController.swift in Sources */,
 				31601D21242A345C00382B94 /* ProfileViewController.swift in Sources */,
+				310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */,
 				31601D2F242A345C00382B94 /* ThirdView.swift in Sources */,
 				31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */,
+				31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */,
 				31601D34242A345C00382B94 /* ContentModel.swift in Sources */,
 				31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */,
 				31601D2D242A345C00382B94 /* FirstView.swift in Sources */,
@@ -596,6 +648,7 @@
 				31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */,
 				31601D25242A345C00382B94 /* HomeView.swift in Sources */,
 				31601D30242A345C00382B94 /* LoginView.swift in Sources */,
+				310B01DA242B223B00C5858D /* TabBarController.swift in Sources */,
 				31601D22242A345C00382B94 /* SignUpViewController.swift in Sources */,
 				31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */,
 				31601D31242A345C00382B94 /* HomeModel.swift in Sources */,
