@@ -54,8 +54,8 @@ class LaunchScreenViewController: UIViewController {
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         
-        let xMargin = CGFloat.dinamicXMargin(margin: 10)
-        let yValue = CGFloat.dinamicYMargin(margin: 50)
+        let xMargin = CGFloat.dynamicXMargin(margin: 10)
+        let yValue = CGFloat.dynamicYMargin(margin: 50)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: guide.topAnchor),
