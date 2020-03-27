@@ -71,10 +71,11 @@ class VideoController: UIViewController {
     }
     
     private func setConstraint() {
+        let guide = view.safeAreaLayoutGuide
         videoView.snp.makeConstraints({
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(guide)
+            $0.trailing.equalTo(guide)
             $0.bottom.equalToSuperview()
         })
     }
@@ -292,6 +293,7 @@ extension VideoController {
 
 extension VideoController: VideoViewDelegate {
     func exitAction() {
+//        print(#function)
         exitThisViewController()
     }
     
@@ -301,8 +303,5 @@ extension VideoController: VideoViewDelegate {
 
 //MARK: Test
 extension VideoController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        exitThisViewController()
-    }
+    
 }

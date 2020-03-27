@@ -26,7 +26,7 @@ extension UIViewController {
             let videoController = VideoController(url: url, title: title, savePoint: savePoint)
             videoController.modalPresentationStyle = .fullScreen
             
-            self?.present(videoController, animated: true, completion: {
+            self?.present(videoController, animated: false, completion: {
                 self?.view.transform = .identity
                 self?.view.alpha = 1
             })
