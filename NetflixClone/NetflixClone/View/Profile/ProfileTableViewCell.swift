@@ -8,17 +8,39 @@
 
 import UIKit
 
-class ProfileTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+class ProfileTableVIewCell: UITableViewCell {
+    
+    static let identifier = "CustomTableViewCell"
+    
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setUI()
+        setConstraints()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
+    private func setUI() {
+        self.addSubview(collectionView)
+        
+    }
+    
+    private func setConstraints() {
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        collectionView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        collectionView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        
+    }
 }
