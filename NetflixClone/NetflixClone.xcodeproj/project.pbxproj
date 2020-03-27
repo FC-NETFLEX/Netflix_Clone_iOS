@@ -17,7 +17,7 @@
 		31601CD6242A344500382B94 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CD5242A344500382B94 /* API.swift */; };
 		31601D1A242A345C00382B94 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CD8242A345B00382B94 /* Util.swift */; };
 		31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDB242A345B00382B94 /* HomeViewController.swift */; };
-		31601D1C242A345C00382B94 /* VideoControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDD242A345B00382B94 /* VideoControllerViewController.swift */; };
+		31601D1C242A345C00382B94 /* VideoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDD242A345B00382B94 /* VideoController.swift */; };
 		31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CDF242A345B00382B94 /* SaveContentsListViewController.swift */; };
 		31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CE1242A345B00382B94 /* ContentViewController.swift */; };
 		31601D1F242A345C00382B94 /* MoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CE3242A345B00382B94 /* MoreViewController.swift */; };
@@ -51,6 +51,7 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
+		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,7 +68,7 @@
 		31601CD5242A344500382B94 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		31601CD8242A345B00382B94 /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		31601CDB242A345B00382B94 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		31601CDD242A345B00382B94 /* VideoControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoControllerViewController.swift; sourceTree = "<group>"; };
+		31601CDD242A345B00382B94 /* VideoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoController.swift; sourceTree = "<group>"; };
 		31601CDF242A345B00382B94 /* SaveContentsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveContentsListViewController.swift; sourceTree = "<group>"; };
 		31601CE1242A345B00382B94 /* ContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		31601CE3242A345B00382B94 /* MoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoreViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
+		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -211,7 +213,7 @@
 		31601CDC242A345B00382B94 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				31601CDD242A345B00382B94 /* VideoControllerViewController.swift */,
+				31601CDD242A345B00382B94 /* VideoController.swift */,
 			);
 			path = Video;
 			sourceTree = "<group>";
@@ -453,6 +455,7 @@
 				31601D18242A345C00382B94 /* CGFloatExtension.swift */,
 				31601D19242A345C00382B94 /* UIFontExtension.swift */,
 				310B01DE242CB33D00C5858D /* DateExtension.swift */,
+				31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -588,7 +591,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31601D1C242A345C00382B94 /* VideoControllerViewController.swift in Sources */,
+				31601D1C242A345C00382B94 /* VideoController.swift in Sources */,
 				31601D20242A345C00382B94 /* SearchViewController.swift in Sources */,
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
@@ -614,6 +617,7 @@
 				310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */,
 				31601D2F242A345C00382B94 /* ThirdView.swift in Sources */,
 				31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */,
+				31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */,
 				31601D34242A345C00382B94 /* ContentModel.swift in Sources */,
 				31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */,
 				31601D2D242A345C00382B94 /* FirstView.swift in Sources */,

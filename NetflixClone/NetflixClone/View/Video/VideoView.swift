@@ -60,8 +60,8 @@ class VideoView: UIView {
     
     private func setConstraints() {
         
-        let topMargin: CGFloat = .dinamicYMargin(margin: 16)
-        let trailingMargin: CGFloat = .dinamicYMargin(margin: 40)
+        let topMargin: CGFloat = .dynamicYMargin(margin: 16)
+        let trailingMargin: CGFloat = .dynamicYMargin(margin: 40)
         
         
         backgroundView.snp.makeConstraints({
