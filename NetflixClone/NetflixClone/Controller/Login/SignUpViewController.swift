@@ -95,7 +95,7 @@ class SignUpViewController: UIViewController {
     
     private func setConstraint() {
         let widthMultiplier: CGFloat = 0.85
-        let yMargin = CGFloat.dinamicYMargin(margin: 100)
+        let yMargin = CGFloat.dynamicYMargin(margin: 100)
         let guide = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
@@ -129,7 +129,11 @@ class SignUpViewController: UIViewController {
         guard let email = emailTextField.text, let pw = confirmPWTextField.text else {
             return
         }
-        APIManager().requestOfPost(url: APIURL.createUser, data: ["email": email, "password": pw], token: nil, completion: {
+        let param = ["email": email, "password": pw]
+        
+        guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
+        
+        APIManager().requestOfPost(url: APIURL.createUser, data: data, completion: {
             [weak self] result in
             guard let self = self else { return }
             switch result {

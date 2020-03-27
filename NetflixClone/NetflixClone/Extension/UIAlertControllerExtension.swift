@@ -10,8 +10,11 @@ import UIKit
 
 extension UIAlertController {
     
-    func noticePresent(viewController: UIViewController) {
-        let action = UIAlertAction(title: "확인", style: .default, handler: nil)
+    func noticePresent(viewController: UIViewController, completion: (() -> Void)? = nil) {
+        let action = UIAlertAction(title: "확인", style: .default, handler: {
+            _ in
+            completion?()
+        })
         self.addAction(action)
         viewController.present(self, animated: true)
     }

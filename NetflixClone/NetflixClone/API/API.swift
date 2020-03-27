@@ -25,8 +25,8 @@ struct APIManager {
     
     func requestOfPost(
         url: APIURL,
-        data: [String: Any],
-        token: String?,
+        data: Data? = nil,
+        token: String? = nil,
         completion: @escaping (Result<Data, Error>) -> Void) {
         
         guard let url = URL(string: url.rawValue) else {
@@ -34,17 +34,13 @@ struct APIManager {
             return
         }
         
-        guard let data = try? JSONSerialization.data(withJSONObject: data, options: []) else {
-            completion(.failure(APIError.failedDecoding))
-            return
-        }
         
 //        print(data)
         
         var request = URLRequest(url: url, timeoutInterval: .infinity)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = data
+        if let data = data { request.httpBody = data }
         
         let task = URLSession.shared.dataTask(with: request) {
             (data, response, error) in
