@@ -34,7 +34,7 @@ class TabBarController: UITabBarController {
         homeVC.tabBarItem.title = "홈"
         homeVC.tabBarItem.image = UIImage(systemName: "house")
         
-        let searchVC = SearchViewController()
+        let searchVC = UINavigationController(rootViewController: SearchViewController()) 
         searchVC.tabBarItem.title = "검색"
         searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass")
         

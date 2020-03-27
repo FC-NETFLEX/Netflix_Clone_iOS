@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 import SnapKit
 
 class HomeTitleContentTableViewCell: UITableViewCell {
@@ -86,11 +87,13 @@ class HomeTitleContentTableViewCell: UITableViewCell {
             titleImage.addSubview($0)
         }
     
+
         
     }
     
     private func setConstraints() {
         
+
         titleImage.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview()
@@ -106,6 +109,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
     
     
     // MARK: - configure
+
     func configure(poster: UIImage, category: [String], dibs: Bool) {
         var categoryText: String = ""
         
@@ -123,6 +127,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         }
 
         print("configure categoryText = \(categoryText)")
+
         
     }
     
@@ -135,7 +140,9 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         
     }
     
+
     @objc private func didTabInfoButton(sender: UIButton) {
+
         
     }
 }
