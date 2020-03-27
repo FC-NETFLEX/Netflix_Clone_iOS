@@ -51,12 +51,14 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
-
+		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
+		705319A8242DDA8C004D46A6 /* AddProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319A7242DDA8C004D46A6 /* AddProfileView.swift */; };
+		705319AA242DDAA2004D46A6 /* AddProfileButtonVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319A9242DDAA2004D46A6 /* AddProfileButtonVIew.swift */; };
+		705319AC242DDABC004D46A6 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319AB242DDABC004D46A6 /* ProfileTableViewCell.swift */; };
+		705319AE242DDAE9004D46A6 /* ChangeProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319AD242DDAE9004D46A6 /* ChangeProfileViewController.swift */; };
+		705319B0242DDB02004D46A6 /* ProfileImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319AF242DDB02004D46A6 /* ProfileImageViewController.swift */; };
 		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
 		965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */; };
-
-		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -107,12 +109,14 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
-
+		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
+		705319A7242DDA8C004D46A6 /* AddProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileView.swift; sourceTree = "<group>"; };
+		705319A9242DDAA2004D46A6 /* AddProfileButtonVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileButtonVIew.swift; sourceTree = "<group>"; };
+		705319AB242DDABC004D46A6 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
+		705319AD242DDAE9004D46A6 /* ChangeProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeProfileViewController.swift; sourceTree = "<group>"; };
+		705319AF242DDB02004D46A6 /* ProfileImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageViewController.swift; sourceTree = "<group>"; };
 		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
 		965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleContentTableViewCell.swift; sourceTree = "<group>"; };
-
-		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
-
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -264,6 +268,8 @@
 			isa = PBXGroup;
 			children = (
 				31601CE7242A345B00382B94 /* ProfileViewController.swift */,
+				705319AD242DDAE9004D46A6 /* ChangeProfileViewController.swift */,
+				705319AF242DDB02004D46A6 /* ProfileImageViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -354,6 +360,9 @@
 			isa = PBXGroup;
 			children = (
 				31601CFB242A345B00382B94 /* ProfileView.swift */,
+				705319A7242DDA8C004D46A6 /* AddProfileView.swift */,
+				705319A9242DDAA2004D46A6 /* AddProfileButtonVIew.swift */,
+				705319AB242DDABC004D46A6 /* ProfileTableViewCell.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -638,6 +647,7 @@
 				31601D21242A345C00382B94 /* ProfileViewController.swift in Sources */,
 				310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */,
 				31601D2F242A345C00382B94 /* ThirdView.swift in Sources */,
+				705319B0242DDB02004D46A6 /* ProfileImageViewController.swift in Sources */,
 				31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */,
 				31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */,
 				31601D34242A345C00382B94 /* ContentModel.swift in Sources */,
@@ -645,16 +655,20 @@
 				31601D2D242A345C00382B94 /* FirstView.swift in Sources */,
 				31601D1F242A345C00382B94 /* MoreViewController.swift in Sources */,
 				31601CD6242A344500382B94 /* API.swift in Sources */,
+				705319AA242DDAA2004D46A6 /* AddProfileButtonVIew.swift in Sources */,
 				31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */,
 				31601D25242A345C00382B94 /* HomeView.swift in Sources */,
 				31601D30242A345C00382B94 /* LoginView.swift in Sources */,
+				705319AE242DDAE9004D46A6 /* ChangeProfileViewController.swift in Sources */,
 				310B01DA242B223B00C5858D /* TabBarController.swift in Sources */,
 				31601D22242A345C00382B94 /* SignUpViewController.swift in Sources */,
 				31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */,
 				31601D31242A345C00382B94 /* HomeModel.swift in Sources */,
+				705319AC242DDABC004D46A6 /* ProfileTableViewCell.swift in Sources */,
 				31601D2C242A345C00382B94 /* SecondView.swift in Sources */,
 				31601D2B242A345C00382B94 /* ProfileView.swift in Sources */,
 				31601D29242A345C00382B94 /* MoreView.swift in Sources */,
+				705319A8242DDA8C004D46A6 /* AddProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
