@@ -8,16 +8,27 @@
 
 import AVKit
 import CoreMedia
+import SnapKit
 
-class VideoController: AVPlayerViewController {
+class VideoController: UIViewController {
     
     private var isAddPlayerItemObserver = false
     private var playerItem: AVPlayerItem?
+    private var player: AVPlayer?
     private var playerItemContext = 0
     private var timeObserverToken: Any?
-    private var videoModel = VideoModel()
+    private var videoModel: VideoModel
     
-    init(url: URL) {
+    private let videoView: VideoView
+    
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.landscapeRight]
+    }
+    
+    init(url: URL, title: String, savePoint: Int64) {
+        self.videoModel = VideoModel(title: title, currentTime: savePoint)
+        self.videoView = VideoView(title: title)
         super.init(nibName: nil, bundle: nil)
         setAsset(url: url)
     }
@@ -30,6 +41,11 @@ class VideoController: AVPlayerViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
@@ -41,7 +57,61 @@ class VideoController: AVPlayerViewController {
     
     //MARK: UI
     
+    private func setUI(player: AVPlayer) {
+        
+        videoView.delegate = self
+        
+        let playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = view.frame
+        view.layer.addSublayer(playerLayer)
+        
+        view.addSubview(videoView)
+        
+        setConstraint()
+    }
     
+    private func setConstraint() {
+        videoView.snp.makeConstraints({
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        })
+    }
+    
+    //MARK: Action
+    
+    // 매개변수로 받은 Double(재생 시간) 부터 재생 시켜주는 함수
+    private func seekPlayPont(seekTime: Double) {
+        let timeScale = CMTimeScale(NSEC_PER_SEC)
+        let seekTime = CMTime(seconds: seekTime, preferredTimescale: timeScale)
+        player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+    
+    
+    // 비정상적 종료 할때 알림창 띄운 후 dismiss
+    private func unNaturalDismiss() {
+        UIAlertController(
+            title: "영상", message: "다시 시도해 주세요", preferredStyle: .alert)
+            .noticePresent(viewController: self, completion: {
+                [weak self]  in
+                self?.isAddPlayerItemObserver = false
+                self?.exitThisViewController()
+            })
+    }
+    
+    private func exitThisViewController() {
+        UIView.animate(withDuration: 0.3, animations: { [weak self]  in
+            
+            self?.view.transform = .init(rotationAngle: -(CGFloat.pi / 2))
+            
+            self?.view.alpha = 0.1
+            
+            }, completion: { [weak self] _ in
+                
+                self?.dismiss(animated: false)
+        })
+    }
     
     
     //MARK: Asset
@@ -81,20 +151,26 @@ class VideoController: AVPlayerViewController {
                 fallthrough
             @unknown default:
                 print("default")
+                print(#function)
                 self?.unNaturalDismiss()
             }
         })
     }
     
     
+    
+    
     //MARK: Player
     
     //player 객체 세팅
     private func setPlayer() {
-        print(#function)
+//        print(#function)
         guard let playerItem = self.playerItem else { return }
+        let player = AVPlayer(playerItem: playerItem)
         
-        player = AVPlayer(playerItem: playerItem)
+        setUI(player: player)
+        
+        self.player = player
         addPeriodicTimeObserver()
     }
     
@@ -112,28 +188,6 @@ class VideoController: AVPlayerViewController {
         setPlayer()
     }
     
-    
-    
-    //MARK: Action
-    
-    // 매개변수로 받은 Double(재생 시간) 부터 재생 시켜주는 함수
-    private func seekPlayPont(seekTime: Double) {
-        let timeScale = CMTimeScale(NSEC_PER_SEC)
-        let seekTime = CMTime(seconds: seekTime, preferredTimescale: timeScale)
-        player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
-    }
-    
-    
-    // 비정상적 종료 할때 알림창 띄운 후 dismiss
-    private func unNaturalDismiss() {
-        UIAlertController(
-            title: "영상", message: "다시 시도해 주세요", preferredStyle: .alert)
-            .noticePresent(viewController: self, completion: {
-                [weak self]  in
-                self?.isAddPlayerItemObserver = false
-                self?.dismiss(animated: true)
-            })
-    }
     
 }
 
@@ -183,7 +237,13 @@ extension VideoController {
             switch status {
             case .readyToPlay:
                 //                print("readyToPlay")
+                
+//                let seekTime = CMTime(seconds: Double(videoModel.currentTime), preferredTimescale: Int32(NSEC_PER_SEC))
+//                player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+                let seekTime = CMTime(value: videoModel.currentTime, timescale: 1)
+                player?.seek(to: seekTime)
                 player?.play()
+                
             case .failed:
                 print("failed")
                 fallthrough
@@ -192,7 +252,8 @@ extension VideoController {
                 fallthrough
             @unknown default:
                 print("default")
-                //                 unNaturalDismiss()
+                print(#function)
+                unNaturalDismiss()
             }
             isAddPlayerItemObserver = true
         }
@@ -227,11 +288,21 @@ extension VideoController {
     
 }
 
+//MARK: VideoViewDelegate
 
+extension VideoController: VideoViewDelegate {
+    func exitAction() {
+        exitThisViewController()
+    }
+    
+    
+}
 
 
 //MARK: Test
 extension VideoController {
-    
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        exitThisViewController()
+    }
 }
