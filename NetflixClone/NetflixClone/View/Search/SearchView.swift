@@ -11,10 +11,29 @@ import SnapKit
 
 class SearchView: UIView {
     private let backGroundOfCollectionView = UIView()
+    let noSearchResultsLabel = UILabel()
+    var searchResultCollectionView: UICollectionView = {
+        let searchResultFlowLayout = UICollectionViewFlowLayout()
+        searchResultFlowLayout.headerReferenceSize = CGSize(width: 60, height: CGFloat.dynamicYMargin(margin: 20))
+        searchResultFlowLayout.sectionHeadersPinToVisibleBounds = true
+        return UICollectionView(frame: .zero, collectionViewLayout: searchResultFlowLayout)
+    }()
+    
+    private let flowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
+    
+    private enum UI {
+        static let itemsInLine: CGFloat = 3
+        static let linesOnScreen: CGFloat = 3.5
+        static let itemSpacing: CGFloat = CGFloat.dynamicXMargin(margin: 10)
+        static let lineSpacing: CGFloat = CGFloat.dynamicYMargin(margin: 10)
+        static let edgeInsets = UIEdgeInsets(top: CGFloat.dynamicYMargin(margin: 10), left: CGFloat.dynamicXMargin(margin: 10), bottom: CGFloat.dynamicYMargin(margin: 10), right: CGFloat.dynamicXMargin(margin: 10))
+    }
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
-        self.backgroundColor = UIColor.setNetfilxColor(name: .black)
+        setUI()
+        setConstraints()
+        setCollectionView()
     }
     
     required init?(coder: NSCoder) {
@@ -23,31 +42,57 @@ class SearchView: UIView {
     
     // MARK: UI 세팅
     private func setUI() {
-        [backGroundOfCollectionView].forEach {
+        [backGroundOfCollectionView, searchResultCollectionView, noSearchResultsLabel].forEach {
             backGroundOfCollectionView.backgroundColor = UIColor.setNetfilxColor(name: .backgroundGray)
             self.addSubview($0)
         }
-        
-        // 포커싱 안되어있을 때는 placeHolder 센터에 있다가. 포커싱 되는 순간 왼쪽이동
-        // 돋보기 모양, 컬러 바꿔줄것
-        
-        // MARK: - SearchBar 세팅
-        // searchBar 취소 버튼 세팅
-        
-        
-        // MARK: - Collection View 세팅
-        backGroundOfCollectionView.backgroundColor = UIColor.setNetfilxColor(name: .backgroundGray)
+        noSearchResultsLabel.text = "검색어와 일치하는 결과가 없습니다."
+        noSearchResultsLabel.textColor = UIColor.setNetfilxColor(name: .white)
+        noSearchResultsLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .regular)
+        noSearchResultsLabel.isHidden = true
     }
     
-   
+    private func setCollectionView() {
+        searchResultCollectionView.register(SearchResultItem.self, forCellWithReuseIdentifier: SearchResultItem.identifier)
+        searchResultCollectionView.register(
+            SearchResultCollectionViewHeader.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: SearchResultCollectionViewHeader.identifier)
+        
+        searchResultCollectionView.backgroundColor = UIColor.setNetfilxColor(name: .backgroundGray)
+    }
     
     // MARK: Constraints 세팅
     private func setConstraints() {
-        backGroundOfCollectionView .snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(self.safeAreaLayoutGuide.snp.top).offset(5)
-            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom).offset(5)
-            make.leading.equalTo(self.snp.leading).offset(5)
-            make.trailing.equalTo(self.snp.trailing).offset(5)
+        searchResultCollectionView.snp.makeConstraints { (make) -> Void in
+            make.top.equalTo(self.snp.top)
+            make.bottom.equalTo(self.snp.bottom)
+            make.leading.equalTo(self.snp.leading)
+            make.trailing.equalTo(self.snp.trailing)
+        }
+        
+        noSearchResultsLabel.snp.makeConstraints {
+            $0.centerX.equalTo(self.snp.centerX)
+            $0.top.equalTo(self.snp.top).offset(CGFloat.dynamicYMargin(margin: 40))
         }
     }
+    
+    func setFlowLayout() -> CGSize {
+        let itemSpacing = flowLayout.itemSpacing * (flowLayout.itemsInLine - 1) //
+        let lineSpacing = flowLayout.lineSpacing * (flowLayout.linesOnScreen - 1) // 5 * 2.5
+        let horizontalInset = flowLayout.edgeInsets.left + flowLayout.edgeInsets.right
+        let verticalInset = flowLayout.edgeInsets.top + flowLayout.edgeInsets.bottom
+        
+        let horizontalSpacing = itemSpacing + horizontalInset
+        let verticalSpacing = lineSpacing + verticalInset
+        
+        let contentWidth = searchResultCollectionView.frame.width - horizontalSpacing
+        let contentHeight = searchResultCollectionView.frame.height - verticalSpacing
+        let width = contentWidth / flowLayout.itemsInLine
+        let height = contentHeight / flowLayout.linesOnScreen
+        
+        return CGSize(width: width.rounded(.down), height: height.rounded(.down) - 1)
+    }
 }
+
+
