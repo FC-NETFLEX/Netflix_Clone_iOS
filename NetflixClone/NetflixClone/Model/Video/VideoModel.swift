@@ -6,35 +6,22 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 
 struct VideoModel {
     let title: String
     var range: Int64 = 0
     var currentTime: Int64
+    var images: [Int64: UIImage] = [:]
     
-    func getRestRangeWithString() -> String {
+    func getRestTime(currentTime: Int64) -> Int64 {
         let rest = range - currentTime
-        return replaceIntWithTimeString(second: rest)
+        return rest
     }
     
-    func getCurrentTimeWithString() -> String {
-        replaceIntWithTimeString(second: currentTime)
-    }
     
-    private func replaceIntWithTimeString(second: Int64) -> String {
-        let hour = second / 3600
-        let minute = (second % 3600) / 60
-        let second = (second % 3600) % 60
-        
-        let hourString = hour < 1 ? "": String(hour) + ":"
-        let minuteString = minute < 10 ? "0" + String(minute) + ":": String(minute) + ":"
-        let secondString = second < 10 ? "0" + String(second): String(second)
-        
-        
-        return hourString + minuteString + secondString
-    }
+    
 }
 
 

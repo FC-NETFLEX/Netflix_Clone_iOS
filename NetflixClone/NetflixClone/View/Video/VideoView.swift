@@ -10,28 +10,73 @@ import UIKit
 
 protocol VideoViewDelegate: class {
     func exitAction()
+    
+    func biganTracking(time: Int64)
+    
+    func changeTracking(time: Int64) -> UIImage?
+    
+    func endTracking(time: Int64)
 }
+
 
 class VideoView: UIView {
     
     weak var delegate: VideoViewDelegate?
     
+    private var isControlAppear = true {
+        didSet {
+            if self.isControlAppear {
+                appearControlView()
+            } else {
+                disAppearControlView()
+            }
+        }
+    }
+    
+    private let animationDuration = 0.2
+    
+    private var isLoading = true {
+        didSet {
+            if self.isLoading {
+                startLoading()
+            } else {
+                finishedLoading()
+            }
+        }
+    }
+    
+    private let loadingIndicator = UIActivityIndicatorView(style: .large)
+    
     private let backgroundView = UIView()
     
+    private let topView = UIView()
     private let exitButton = UIButton()
     private let titleLabel = UILabel()
     
+    private let centerView = UIView()
     private let rewindButton = UIButton()
-    private let statusButton = UIButton()
     private let slipButton = UIButton()
+    private let playButton = UIButton()
+    private let playButtonBackgroundViewSegmentLeft = UIView()
+    private let playButtonBackgroundViewSegmentRight = UIView()
+    private let playButtonBackgroundView = UIView()
     
+    private let bottomView = UIView()
+    private let playSlider = UISlider()
+    private let restTimeLabel = UILabel()
     
-
+    private let seekPointImageView = UIImageView()
+    private let seekPointTimeLabel = UILabel()
+    private let seekPointView = UIView()
+    
     
     init(title: String) {
         super.init(frame: .zero)
         setUI(title: title)
         setConstraints()
+        setGestureRecognizer()
+        
+        test()
     }
     
     
@@ -42,12 +87,38 @@ class VideoView: UIView {
     //MARK: UI
     
     private func setUI(title: String) {
-        [backgroundView, titleLabel, exitButton].forEach({
+        [backgroundView, topView, centerView, bottomView, seekPointView, loadingIndicator].forEach({
             self.addSubview($0)
         })
         
-        exitButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        exitButton.tintColor = .setNetfilxColor(name: .white)
+        [titleLabel, exitButton].forEach({
+            topView.addSubview($0)
+        })
+        
+        [rewindButton, slipButton, playButtonBackgroundView].forEach({
+            centerView.addSubview($0)
+        })
+        
+        [playButtonBackgroundViewSegmentLeft, playButtonBackgroundViewSegmentRight, playButton].forEach({
+            playButtonBackgroundView.addSubview($0)
+        })
+        
+        [playSlider, restTimeLabel].forEach({
+            bottomView.addSubview($0)
+        })
+        
+        [seekPointTimeLabel, seekPointImageView].forEach({
+            seekPointView.addSubview($0)
+        })
+        
+        loadingIndicator.hidesWhenStopped = true
+//        loadingIndicator.startAnimating()
+        seekPointView.isHidden = true
+        
+        seekPointTimeLabel.textAlignment = .center
+        seekPointTimeLabel.textColor = .setNetfilxColor(name: .white)
+        
+        seekPointImageView.backgroundColor = .setNetfilxColor(name: .black)
         
         backgroundView.backgroundColor = .setNetfilxColor(name: .black)
         backgroundView.alpha = 0.5
@@ -55,14 +126,41 @@ class VideoView: UIView {
         titleLabel.text = title
         titleLabel.textColor = .setNetfilxColor(name: .white)
         
+        exitButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        exitButton.tintColor = .setNetfilxColor(name: .white)
+        exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchUpInside)
+        
+        playSlider.minimumValue = 0
+        playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
+        playSlider.minimumTrackTintColor = .setNetfilxColor(name: .netflixRed)
+        playSlider.maximumTrackTintColor = .setNetfilxColor(name: .netflixLightGray)
+        playSlider.addTarget(self, action: #selector(valueChangedPlaySlider(_:)), for: .valueChanged)
+        playSlider.addTarget(self, action: #selector(beginTrackingPlaySlider(_:)), for: .touchDown)
+        playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpInside)
+        playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpOutside)
+        playSlider.setThumbImage(UIImage(), for: .normal)
+        playSlider.setThumbImage(UIImage(), for: .highlighted)
+        
+        
+        restTimeLabel.textColor = .setNetfilxColor(name: .white)
+        restTimeLabel.font = .dynamicFont(fontSize: 14, weight: .bold)
+        restTimeLabel.text = "00:00"
+        
+        centerView.backgroundColor = .red
+        
+        playButtonBackgroundView.backgroundColor = .black
         
     }
     
     private func setConstraints() {
         
-        let topMargin: CGFloat = .dynamicYMargin(margin: 16)
-        let trailingMargin: CGFloat = .dynamicYMargin(margin: 40)
+        let yMargin: CGFloat = .dynamicXMargin(margin: 16)
+        let xMargin: CGFloat = .dynamicYMargin(margin: 32)
+        let restTimeLabelLeadingMargin: CGFloat = .dynamicYMargin(margin: 16)
         
+        loadingIndicator.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
         
         backgroundView.snp.makeConstraints({
             $0.top.equalToSuperview()
@@ -71,35 +169,304 @@ class VideoView: UIView {
             $0.bottom.equalToSuperview()
         })
         
+        topView.snp.makeConstraints({
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.1)
+        })
+        
         titleLabel.snp.makeConstraints({
             $0.centerX.equalToSuperview()
-            $0.top.equalToSuperview().offset(topMargin)
+            $0.top.equalTo(exitButton)
         })
         
         exitButton.snp.makeConstraints({
-            $0.top.equalToSuperview().offset(topMargin)
-            $0.trailing.equalToSuperview().offset(-trailingMargin)
-            
+            $0.trailing.equalToSuperview().offset(-xMargin)
+            $0.bottom.equalToSuperview()
+        })
+        
+        centerView.snp.makeConstraints({
+            $0.centerY.leading.trailing.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.2)
+        })
+        
+        playButtonBackgroundView.snp.makeConstraints({
+            $0.centerX.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.width.equalTo(playButtonBackgroundView.snp.height)
         })
         
         
+        bottomView.snp.makeConstraints({
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.2)
+        })
+        
+        playSlider.snp.makeConstraints({
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().offset(xMargin)
+        })
+        restTimeLabel.snp.makeConstraints({
+            $0.centerY.equalTo(playSlider.snp.centerY)
+            $0.leading.equalTo(playSlider.snp.trailing).offset(restTimeLabelLeadingMargin)
+            $0.trailing.equalToSuperview().offset(-xMargin)
+        })
+        
+        seekPointTimeLabel.snp.makeConstraints({
+            $0.leading.trailing.bottom.equalToSuperview()
+        })
+        
+        seekPointImageView.snp.makeConstraints({
+            $0.leading.trailing.top.equalToSuperview()
+            $0.bottom.equalTo(seekPointTimeLabel.snp.top).offset(-yMargin)
+        })
+        
+        seekPointView.snp.makeConstraints({
+            $0.width.equalToSuperview().multipliedBy(0.35)
+            $0.height.equalTo(seekPointView.snp.width).multipliedBy(0.6)
+            $0.centerY.equalToSuperview()
+        })
+        
+        //        seekPointTimeLabel.centerXAnchor.constraint(equalTo: playSlider)
+        
+    }
+    
+    //MARK: Recognize
+    
+    // 제스처 등록
+    private func setGestureRecognizer() {
+        
+        let tapGeture = UITapGestureRecognizer(target: self, action: #selector(didTapView(_:)))
+        tapGeture.numberOfTapsRequired = 1
+        addGestureRecognizer(tapGeture)
+        
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didDoubleTapView(_:)))
+        doubleTapGesture.numberOfTapsRequired = 2
+        addGestureRecognizer(doubleTapGesture)
+        
+        tapGeture.require(toFail: doubleTapGesture)
+    }
+    
+    // 더블탭 제스처의 처리
+    @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
+        print(#function)
+    }
+    
+    // 탭 제스처의 처리
+    @objc private func didTapView(_ gesture: UITapGestureRecognizer) {
+        isControlAppear.toggle()
     }
     
     
     //MARK: Action
     
-    private func appearView() {
-        let alpha: CGFloat = 0.7
-        self.alpha = alpha
+    // 최초 playSlider의 maximum 값과 현재 재생 구간을 설정
+    func setDefaultSlider(timeRange: Int64, currentTime: Int64) {
+        playSlider.maximumValue = Float(timeRange)
+        playSlider.value = Float(currentTime)
+        restTimeLabel.text = replaceIntWithTimeString(second: timeRange)
+        playSlider.setThumbImage(nil, for: .normal)
+        playSlider.setThumbImage(nil, for: .highlighted)
+        playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
     }
     
-    private func disAppearView() {
-        let alpha: CGFloat = 0
-        self.alpha = alpha
+    // 재생되면서 바뀌는 시간값을 뷰에 업데이트
+    func updateTimeSet(currentTime: Int64, restTime: Int64) {
+        playSlider.value = Float(currentTime)
+        restTimeLabel.text = replaceIntWithTimeString(second: restTime)
     }
     
+    // playSlider의 thumb의 center를 반환
+    private func getThumbCenterX(sender: UISlider) -> CGFloat {
+        let rect = sender.thumbRect(forBounds: sender.frame, trackRect: sender.trackRect(forBounds: sender.frame), value: sender.value)
+        let gap = (rect.maxX - rect.minX) / 2
+        let center = rect.minX + gap
+        return center
+    }
+    
+    // playSlider의 움직임에 맞춰서 seekPointView의 위치를 지정
+    private func setSeekPointViewFrame(center: CGFloat) {
+        
+        let minX = center - (seekPointImageView.frame.width / 2)
+        let maxX = center + (seekPointImageView.frame.width / 2)
+        let xMargin = CGFloat.dynamicYMargin(margin: 16)
+        let guideLineLeft = safeAreaInsets.left + xMargin
+        let guideLineRight = frame.width - safeAreaInsets.right - xMargin
+        
+        if minX <=  guideLineLeft {
+            seekPointView.center.x = guideLineLeft + (seekPointView.bounds.width / 2)
+        } else if maxX >= guideLineRight{
+            seekPointView.center.x = guideLineRight - (seekPointView.bounds.width / 2)
+        } else {
+            seekPointView.center.x = center
+        }
+        
+        
+        seekPointView.isHidden = false
+    }
+    
+    // playSlider의 움직에 맞춰 시간레이블 세팅
+    private func configureSeekPontView(value: Int64) {
+        seekPointTimeLabel.text = replaceIntWithTimeString(second: value)
+        let image = delegate?.changeTracking(time: value)
+        seekPointImageView.image = image
+    }
+    
+    // 썸네일 이미지 세팅
+    func configureSeekPointImageView(image: UIImage) {
+        DispatchQueue.main.async {
+            self.seekPointImageView.image = image
+        }
+    }
+    
+    private func beginTrackingAnimation() {
+        UIView.animate(withDuration: animationDuration, animations: {
+            [weak self] in
+            self?.topView.alpha = 0
+            self?.centerView.alpha = 0
+        }, completion: { [weak self] _ in
+            self?.topView.isHidden = true
+            self?.centerView.isHidden = true
+        })
+    }
+    
+    private func endTrackingAnimation() {
+        topView.isHidden = false
+        centerView.isHidden = false
+        UIView.animate(withDuration: animationDuration, animations: {
+            [weak self] in
+            self?.topView.alpha = 1
+            self?.centerView.alpha = 1
+        })
+    }
+    
+    // playSlider의 tracking 시작
+    @objc private func beginTrackingPlaySlider(_ sender: UISlider) {
+        let value = Int64(sender.value)
+        beginTrackingAnimation()
+        configureSeekPontView(value: value)
+        delegate?.biganTracking(time: value)
+        setSeekPointViewFrame(center: getThumbCenterX(sender: sender))
+    }
+    
+    // playSlider의 tracking에 따라 바뀌는 값에대한 처리
+    @objc private func valueChangedPlaySlider(_ sender: UISlider) {
+        let value = Int64(sender.value)
+        configureSeekPontView(value: value)
+        setSeekPointViewFrame(center: getThumbCenterX(sender: sender))
+        
+    }
+    
+    // playSlider의 tracking 끝
+    @objc private func endTrackingPlaySlider(_ sender: UISlider) {
+        let value = Int64(sender.value)
+        endTrackingAnimation()
+        seekPointView.isHidden = true
+        delegate?.endTracking(time: value)
+    }
+    
+    // 컨트롤하는 뷰들이 나타나는 처리
+    private func appearControlView() {
+        topView.isHidden = false
+        centerView.isHidden = false
+        bottomView.isHidden = false
+        backgroundView.isHidden = false
+        UIView.animate(withDuration: animationDuration, animations: {
+            [weak self] in
+            self?.topView.alpha = 1
+            self?.centerView.alpha = 1
+            self?.bottomView.alpha = 1
+            self?.backgroundView.alpha = 0.5
+        })
+    }
+    
+    // 컨트롤 하는 뷰들이 사라지는 처리
+    private func disAppearControlView() {
+        UIView.animate(withDuration: animationDuration, animations: {
+            [weak self] in
+            self?.topView.alpha = 0.1
+            self?.centerView.alpha = 0.1
+            self?.bottomView.alpha = 0.1
+            self?.backgroundView.alpha = 0.1
+            }, completion: {
+                [weak self] _ in
+                self?.topView.isHidden = true
+                self?.centerView.isHidden = true
+                self?.bottomView.isHidden = true
+                self?.backgroundView.isHidden = true
+        })
+    }
+    
+    // 로딩 상황에 뷰 세팅
+    private func startLoading() {
+        loadingIndicator.startAnimating()
+        playButton.isHidden = true
+    }
+    
+    // 로딩이 끝난 상황에 뷰 세팅
+    private func finishedLoading() {
+        loadingIndicator.stopAnimating()
+        playButton.isHidden = false
+    }
+    
+    
+    
+    // x버튼 클릭 이벤트
     @objc private func didTapExitButton() {
         delegate?.exitAction()
     }
     
+    
+    
+    // Int64로 되어있는 시간 값을 시간 형태의 문자열로 반환
+    private func replaceIntWithTimeString(second: Int64) -> String {
+        let hour = second / 3600
+        let minute = (second % 3600) / 60
+        let second = (second % 3600) % 60
+        
+        let hourString = hour < 1 ? "": String(hour) + ":"
+        let minuteString = minute < 10 ? "0" + String(minute) + ":": String(minute) + ":"
+        let secondString = second < 10 ? "0" + String(second): String(second)
+        
+        
+        return hourString + minuteString + secondString
+    }
+    
+}
+
+
+extension VideoView {
+    func test() {
+//       UIGraphicsBeginImageContext(playButtonBackgroundView.frame.size)
+//            let context = UIGraphicsGetCurrentContext()!
+//
+//            // 삼각형 그리기
+//            context.setLineWidth(1.0)
+//            context.setStrokeColor(UIColor.green.cgColor)
+//            context.setFillColor(UIColor.green.cgColor)
+//
+//            context.move(to: CGPoint(x: 140, y: 200))
+//            context.addLine(to: CGPoint(x: 170, y: 450))
+//            context.addLine(to: CGPoint(x: 110, y: 450))
+//            context.addLine(to: CGPoint(x: 140, y: 200))
+//            context.fillPath() // 선 채우기
+//            context.strokePath() // 선으로 그려진 삼각형의 내부 채우기
+//
+//            // 원 그리기
+//            context.setLineWidth(1.0)
+//            context.setStrokeColor(UIColor.red.cgColor)
+//
+//            context.addEllipse(in: CGRect(x: 90, y: 150, width: 100, height: 100))
+//            context.addEllipse(in: CGRect(x: 90+50, y: 150, width: 100, height: 100))
+//            context.addEllipse(in: CGRect(x: 90-50, y: 150, width: 100, height: 100))
+//            context.addEllipse(in: CGRect(x: 90, y: 150-50, width: 100, height: 100))
+//            context.addEllipse(in: CGRect(x: 90, y: 150+50, width: 100, height: 100))
+//            context.strokePath()
+//
+//            playButtonBackgroundView = UIGraphicsRendererContext()
+//            UIGraphicsEndImageContext()
+//        }
+        
+    }
 }
