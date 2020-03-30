@@ -10,15 +10,19 @@ import AVKit
 import CoreMedia
 import SnapKit
 
+
+//func step(byCount: Int)
+//플레이어 항목의 현재 시간을 지정된 단계 수만큼 앞뒤로 이동합니다.
+
+
+
 class VideoController: UIViewController {
     
-    private var isAddPlayerItemObserver = false
     private var playerItem: AVPlayerItem?
     private var player: AVPlayer?
-    private var playerItemContext = 0
+    private var playerItemContext = UnsafeMutableRawPointer(bitPattern: 0)
     private var timeObserverToken: Any?
     private var videoModel: VideoModel
-    
     private let videoView: VideoView
     
     
@@ -27,10 +31,12 @@ class VideoController: UIViewController {
     }
     
     init(url: URL, title: String, savePoint: Int64) {
+        let asset = AVAsset(url: url)
         self.videoModel = VideoModel(title: title, currentTime: savePoint)
         self.videoView = VideoView(title: title)
         super.init(nibName: nil, bundle: nil)
-        setAsset(url: url)
+        
+        setAsset(asset: asset)
     }
     
     required init?(coder: NSCoder) {
@@ -41,33 +47,33 @@ class VideoController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setUI()
+        setConstraint()
+        test()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
     
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
+    deinit {
         removePlayerItemObserver()
         removePeriodicTimeObserver()
-        
     }
     
     //MARK: UI
     
-    private func setUI(player: AVPlayer) {
+    private func setUI() {
         
         videoView.delegate = self
         
-        let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = view.frame
-        view.layer.addSublayer(playerLayer)
         
+        
+        
+//        videoView.playSlider.dele
         view.addSubview(videoView)
         
-        setConstraint()
+        
     }
     
     private func setConstraint() {
@@ -83,20 +89,19 @@ class VideoController: UIViewController {
     //MARK: Action
     
     // 매개변수로 받은 Double(재생 시간) 부터 재생 시켜주는 함수
-    private func seekPlayPont(seekTime: Double) {
-        let timeScale = CMTimeScale(NSEC_PER_SEC)
-        let seekTime = CMTime(seconds: seekTime, preferredTimescale: timeScale)
-        player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+    private func seekPlayPont(seekTime: Int64) {
+        let seekTime = CMTime(value: seekTime, timescale: 1)
+        player?.seek(to: seekTime)
+        player?.play()
     }
     
     
     // 비정상적 종료 할때 알림창 띄운 후 dismiss
     private func unNaturalDismiss() {
         UIAlertController(
-            title: "영상", message: "다시 시도해 주세요", preferredStyle: .alert)
+            title: "영상", message: "재생 실패", preferredStyle: .alert)
             .noticePresent(viewController: self, completion: {
                 [weak self]  in
-                self?.isAddPlayerItemObserver = false
                 self?.exitThisViewController()
             })
     }
@@ -114,14 +119,35 @@ class VideoController: UIViewController {
         })
     }
     
+    private func getAssetImage(time: Int64) -> UIImage? {
+           let key = time / 10
+        return videoModel.images[key]
+       }
+       
+    
+       private func setAssetImages(imageGenerator: AVAssetImageGenerator, range: Int64) {
+           
+           
+           for i in 0...(range / 10) {
+               
+               let time = CMTime(value: i, timescale: 1)
+               let value = NSValue(time: time)
+               imageGenerator.generateCGImagesAsynchronously(forTimes: [value], completionHandler: {
+                  [weak self] (_, image, _, _, _) in
+                   guard let image = image else { return }
+                self?.videoModel.images[i] = UIImage(cgImage: image)
+               })
+           }
+           
+       }
+    
     
     //MARK: Asset
     
     
-    private func setAsset(url: URL) {
+    private func setAsset(asset: AVAsset) {
         
         let playableKey = "playable"
-        let asset = AVURLAsset(url: url)
         
         asset.loadValuesAsynchronously(forKeys: [playableKey], completionHandler: {
             
@@ -134,7 +160,6 @@ class VideoController: UIViewController {
             switch status {
             case .loaded:
                 
-                //                    print("loaded")
                 DispatchQueue.main.async {
                     self?.setPlayerItem(asset: asset)
                 }
@@ -143,17 +168,16 @@ class VideoController: UIViewController {
                 print("loding")
             case .failed:
                 print("failed")
-                fallthrough
+                print(#function)
             case .cancelled:
                 print("cancelled")
-                fallthrough
+                print(#function)
             case .unknown:
                 print("unknow")
-                fallthrough
+                print(#function)
             @unknown default:
                 print("default")
                 print(#function)
-                self?.unNaturalDismiss()
             }
         })
     }
@@ -169,8 +193,10 @@ class VideoController: UIViewController {
         guard let playerItem = self.playerItem else { return }
         let player = AVPlayer(playerItem: playerItem)
         
-        setUI(player: player)
-        
+        let playerLayer = AVPlayerLayer(player: player)
+        playerLayer.frame = view.frame
+        view.layer.addSublayer(playerLayer)
+        view.bringSubviewToFront(videoView)
         self.player = player
         addPeriodicTimeObserver()
     }
@@ -178,12 +204,19 @@ class VideoController: UIViewController {
     private func setPlayerItem(asset: AVAsset) {
         //         print(#function)
         //         playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["playable", "hasProtectedContent"] )
-        guard let video = asset.tracks.first(where: { $0.mediaType == .video }) else {
+        
+        guard let video = asset.tracks.first(where: { $0.mediaType == .video })  else {
             unNaturalDismiss()
             return
         }
         
-        videoModel.range = video.timeRange.duration.value / Int64(video.timeRange.duration.timescale)
+        let range = video.timeRange.duration.value / Int64(video.timeRange.duration.timescale)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        
+        setAssetImages(imageGenerator: imageGenerator, range: range)
+        
+        videoModel.range = range
+        videoView.setDefaultSlider(timeRange: range, currentTime: videoModel.currentTime)
         playerItem = AVPlayerItem(asset: asset)
         addPlayerItemObserver()
         setPlayer()
@@ -200,19 +233,16 @@ extension VideoController {
     // playerItem의 옵저버 등록
     private func addPlayerItemObserver() {
         //        print(#function)
-        
         playerItem?.addObserver(self,
                                 forKeyPath: #keyPath(AVPlayerItem.status),
-                                options: [.new, .old],
-                                context: &playerItemContext)
+                                options: [.initial, .new, .old],
+                                context: playerItemContext)
         
     }
     
     // 등록해 두었던 playerItem의 옵저버 삭제
     private func removePlayerItemObserver() {
-        if isAddPlayerItemObserver {
             playerItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
-        }
     }
     
     
@@ -221,7 +251,7 @@ extension VideoController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         //        print(#function)
-        guard context == &playerItemContext else {
+        guard context == playerItemContext else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
         }
@@ -241,22 +271,22 @@ extension VideoController {
                 
 //                let seekTime = CMTime(seconds: Double(videoModel.currentTime), preferredTimescale: Int32(NSEC_PER_SEC))
 //                player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
-                let seekTime = CMTime(value: videoModel.currentTime, timescale: 1)
-                player?.seek(to: seekTime)
-                player?.play()
+//                let seekTime = CMTime(value: videoModel.currentTime, timescale: 1)
+//                player?.seek(to: seekTime)
+//                player?.play()
+                seekPlayPont(seekTime: videoModel.currentTime)
                 
             case .failed:
-                print("failed")
-                fallthrough
-            case .unknown:
-                print("unknown")
-                fallthrough
-            @unknown default:
-                print("default")
                 print(#function)
-                unNaturalDismiss()
+                print("failed")
+//                unNaturalDismiss()
+            case .unknown:
+                print(#function)
+                print("unknown")
+            @unknown default:
+                print(#function)
+                print("default")
             }
-            isAddPlayerItemObserver = true
         }
         
     }
@@ -270,9 +300,15 @@ extension VideoController {
         
         timeObserverToken = player?.addPeriodicTimeObserver(forInterval: time, queue: .main, using: {
             [weak self] time in
-            self?.videoModel.currentTime = time.value / Int64(NSEC_PER_SEC)
-//            print(self?.videoModel.getRestRangeWithString())
-//            print(self?.videoModel.range)
+            let currentTime = time.value / Int64(NSEC_PER_SEC)
+            
+            
+            guard
+                let restTime = self?.videoModel.getRestTime(currentTime: currentTime),
+                currentTime > 0
+                else { return }
+            self?.videoModel.currentTime = currentTime
+            self?.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
         })
         
     }
@@ -291,9 +327,25 @@ extension VideoController {
 
 //MARK: VideoViewDelegate
 
+private var lastImageRequestTime = Date()
+
 extension VideoController: VideoViewDelegate {
+    
+    func biganTracking(time: Int64) {
+        player?.pause()
+        
+    }
+    
+    func changeTracking(time: Int64) -> UIImage? {
+        return getAssetImage(time: time)
+    }
+    
+    
+    func endTracking(time: Int64) {
+        seekPlayPont(seekTime: time)
+    }
+    
     func exitAction() {
-//        print(#function)
         exitThisViewController()
     }
     
@@ -303,5 +355,45 @@ extension VideoController: VideoViewDelegate {
 
 //MARK: Test
 extension VideoController {
+    private func test() {
+        videoView.setDefaultSlider(timeRange: 1000, currentTime: videoModel.currentTime)
+        
+    }
     
+//    private func getAssetImage(time: Int64, completionHandler: @escaping (CGImage?) -> Void) {
+//        let currentTime = Date()
+//        let timeInterval = currentTime.timeIntervalSince(lastImageRequestTime)
+////        print(timeInterval)
+//        guard timeInterval > 0.1 else { return }
+//        print(#function)
+//        let time = CMTime(value: time, timescale: 1)
+//        let value = NSValue(time: time)
+//        imageGenerator.cancelAllCGImageGeneration()
+//        imageGenerator.generateCGImagesAsynchronously(forTimes: [value], completionHandler: {
+//            _, image, _, _, _ in
+//            completionHandler(image)
+//            lastImageRequestTime = currentTime
+//        })
+//    }
+    
+   
 }
+
+
+// func generateThumnailAsync(url: URL, startOffsets: [Double],
+//                               completion: @escaping (UIImage) -> Void) {
+//        let asset = AVAsset(url: url)
+//        let imageGenerator = self.imageGenerator(asset: asset)
+//
+//        let time: [NSValue] = startOffsets.compactMap {
+//            return NSValue(time: CMTimeMakeWithSeconds(Float64($0), asset.duration.timescale))
+//        }
+//
+//        imageGenerator.generateCGImagesAsynchronously(forTimes: time) { _, image, _, _, _ in
+//            // 4.
+//            if let image = image {
+//                completion(UIImage(cgImage: image))
+//            }
+//        }
+//    }
+//}
