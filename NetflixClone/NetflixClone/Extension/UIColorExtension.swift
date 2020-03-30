@@ -23,7 +23,7 @@ extension UIColor {
         switch name {
         case .white: return #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         case .black: return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        case .netflixRed: return #colorLiteral(red: 0.8980392157, green: 0.2117647059, blue: 0.1921568627, alpha: 1) //
+        case .netflixRed: return .red //
         case .netflixLightGray: return #colorLiteral(red: 0.5647058824, green: 0.5647058824, blue: 0.5647058824, alpha: 1) // 144, 144, 144
         case .netflixGray : return #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1) // 25, 25, 25
         case .netflixDarkGray: return #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1) // 50, 50, 50
