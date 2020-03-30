@@ -29,7 +29,7 @@ class AddProfileButtonView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     private func setUI() {
-        let cornerRadius: CGFloat = 8
+        let cornerRadius: CGFloat = 4
         backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
