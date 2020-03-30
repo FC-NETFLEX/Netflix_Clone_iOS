@@ -36,7 +36,7 @@ class ProfileView: UIView {
     
     private func setUI() {
         let cornerRadius: CGFloat = 8
-        backgroundColor =  #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        backgroundColor = .setNetfilxColor(name: .black)
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
         
@@ -62,7 +62,7 @@ class ProfileView: UIView {
         
     }
     
-    private func setHidden(state: Bool) {
+    func setHidden(state: Bool) {
         blurView.isHidden = state
         pencilButton.isHidden = state
     }
