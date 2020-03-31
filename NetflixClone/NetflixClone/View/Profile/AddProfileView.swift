@@ -20,7 +20,7 @@ class AddProfileView: UIView {
     private let changeLabel = UILabel()
     let nickNameTextfield = UITextField()
     private let kidsLabel = UILabel()
-    private let kidsSwitch = UISwitch()
+    let kidsSwitch = UISwitch()
     
     weak var delegate: AddProfileViewDelegate?
    
