@@ -18,8 +18,25 @@ protocol VideoViewDelegate: class {
     func endTracking(time: Int64)
 }
 
+//class TestBtn: UIButton {
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let hitView = super.hitTest(point, with: event)
+//        print("Test Button Hit View :", hitView)
+//        return hitView
+//    }
+//}
+
 
 class VideoView: UIView {
+    
+    
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let hitView = super.hitTest(point, with: event)
+//        print("Video View Hit View :", hitView)
+//        return hitView
+//    }
+    
+    
     
     weak var delegate: VideoViewDelegate?
     
@@ -33,8 +50,6 @@ class VideoView: UIView {
         }
     }
     
-    private let animationDuration = 0.2
-    
     private var isLoading = true {
         didSet {
             if self.isLoading {
@@ -44,6 +59,18 @@ class VideoView: UIView {
             }
         }
     }
+    
+    private var isPlaying = true {
+        didSet {
+            if self.isPlaying {
+                playAction()
+            } else {
+                pauseAction()
+            }
+        }
+    }
+//    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+    private let animationDuration = 0.2
     
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
     
@@ -76,7 +103,7 @@ class VideoView: UIView {
         setConstraints()
         setGestureRecognizer()
         
-        test()
+//        test()
     }
     
     
@@ -87,6 +114,8 @@ class VideoView: UIView {
     //MARK: UI
     
     private func setUI(title: String) {
+        
+        
         [backgroundView, topView, centerView, bottomView, seekPointView, loadingIndicator].forEach({
             self.addSubview($0)
         })
@@ -99,7 +128,7 @@ class VideoView: UIView {
             centerView.addSubview($0)
         })
         
-        [playButtonBackgroundViewSegmentLeft, playButtonBackgroundViewSegmentRight, playButton].forEach({
+        [playButton].forEach({
             playButtonBackgroundView.addSubview($0)
         })
         
@@ -128,7 +157,18 @@ class VideoView: UIView {
         
         exitButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         exitButton.tintColor = .setNetfilxColor(name: .white)
-        exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchUpInside)
+        exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
+        
+        playButton.tintColor = .white
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
+        playButton.imageView?.contentMode = .scaleAspectFill
+        
+        rewindButton.setTitle("rewind", for: .normal)
+        rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
+        
+        slipButton.setTitle("slip", for: .normal)
+        slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchUpInside)
         
         playSlider.minimumValue = 0
         playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
@@ -148,7 +188,8 @@ class VideoView: UIView {
         
         centerView.backgroundColor = .red
         
-        playButtonBackgroundView.backgroundColor = .black
+//        testButton.addTarget(self, action: #selector(test), for: .touchUpInside)
+//        playButtonBackgroundView.backgroundColor = .black
         
     }
     
@@ -197,6 +238,20 @@ class VideoView: UIView {
             $0.width.equalTo(playButtonBackgroundView.snp.height)
         })
         
+        playButton.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalToSuperview()
+        })
+        
+        rewindButton.snp.makeConstraints({
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview().multipliedBy(0.5)
+        })
+        
+        slipButton.snp.makeConstraints({
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalToSuperview().multipliedBy(1.5)
+        })
+        
         
         bottomView.snp.makeConstraints({
             $0.bottom.leading.trailing.equalToSuperview()
@@ -232,7 +287,7 @@ class VideoView: UIView {
         
     }
     
-    //MARK: Recognize
+    //MARK: Gesture Recognize
     
     // 제스처 등록
     private func setGestureRecognizer() {
@@ -410,6 +465,29 @@ class VideoView: UIView {
         playButton.isHidden = false
     }
     
+    @objc private func didTapPlayButton() {
+        print(#function)
+        isPlaying.toggle()
+    }
+    
+    @objc private func didTapSlipButton() {
+        print(#function)
+    }
+    
+    @objc private func didTapRewindButton() {
+        print(#function)
+    }
+    
+    private func playAction() {
+        let imageName = "play.fill"
+        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
+    
+    private func pauseAction() {
+        let imageName = "pause.fill"
+        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
+    
     
     
     // x버튼 클릭 이벤트
@@ -437,7 +515,7 @@ class VideoView: UIView {
 
 
 extension VideoView {
-    func test() {
+//    func test() {
 //       UIGraphicsBeginImageContext(playButtonBackgroundView.frame.size)
 //            let context = UIGraphicsGetCurrentContext()!
 //
@@ -467,6 +545,6 @@ extension VideoView {
 //            playButtonBackgroundView = UIGraphicsRendererContext()
 //            UIGraphicsEndImageContext()
 //        }
-        
-    }
+//        
+//    }
 }
