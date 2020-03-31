@@ -61,7 +61,7 @@ class AddProfileButtonView: UIView {
         
         profilePluButton.topAnchor.constraint(equalTo: self.topAnchor, constant: padding).isActive = true
         profilePluButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        profilePluButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.55).isActive = true
+        profilePluButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.6).isActive = true
         profilePluButton.heightAnchor.constraint(equalTo: profilePluButton.widthAnchor).isActive = true
 
         addProfileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
