@@ -15,23 +15,72 @@ enum APIError: String, Error {
     case noData
 }
 
-enum APIURL: String {
-    case createUser = "http://13.124.222.31/members/"
-    case login = "http://13.124.222.31/members/login/"
-}
-
 struct APIManager {
     
+    @discardableResult
+    func requestOfGet(
+        
+        url: APIURL,
+        data: [String: String] = [:],
+        token: String?,
+        completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask? {
+        
+        guard var urlComponents = URLComponents(string: url.rawValue) else {
+            completion(.failure(APIError.badURL))
+            return nil
+        }
+        var queryItems: [URLQueryItem] = []
+        for (key, value) in data {
+            let queryItem = URLQueryItem(name: key, value: value)
+            queryItems.append(queryItem)
+        }
+        
+        urlComponents.queryItems = queryItems
+        
+        guard let url = urlComponents.url else {
+            completion(.failure(APIError.badURL))
+            return nil
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = token {
+            request.addValue(token, forHTTPHeaderField: "Authorization")
+        }
+        print(request)
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else{
+                completion(.failure(APIError.noData))
+                return
+            }
+            
+            DispatchQueue.main.async {
+                completion(.success(data))
+            }
+            
+        }
+        
+        task.resume()
+        return task
+        
+    }
     
+    @discardableResult
     func requestOfPost(
         url: APIURL,
         data: Data? = nil,
         token: String? = nil,
-        completion: @escaping (Result<Data, Error>) -> Void) {
+        completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask? {
         
         guard let url = URL(string: url.rawValue) else {
             completion(.failure(APIError.badURL))
-            return
+            return nil
         }
         
         
@@ -40,6 +89,8 @@ struct APIManager {
         var request = URLRequest(url: url, timeoutInterval: .infinity)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = token { request.addValue(token, forHTTPHeaderField: "Authorization")}
+        
         if let data = data { request.httpBody = data }
         
         let task = URLSession.shared.dataTask(with: request) {
@@ -53,7 +104,7 @@ struct APIManager {
                 completion(.failure(APIError.noData))
                 return
             }
-            
+
             DispatchQueue.main.async {
                 completion(.success(data))
             }
@@ -61,7 +112,7 @@ struct APIManager {
         }
         
         task.resume()
-        
+        return task
         
     }
     
