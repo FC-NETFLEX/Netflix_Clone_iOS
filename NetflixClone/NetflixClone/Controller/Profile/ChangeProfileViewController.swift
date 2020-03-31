@@ -15,6 +15,7 @@ class ChangeProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setUI()
         setConstraints()
         setNavigationBar()
@@ -68,13 +69,21 @@ class ChangeProfileViewController: UIViewController {
     @objc private func didTapSaveButton(_ sender: Any) {
         
         guard let userName = addProfileView.nickNameTextfield.text else { return }
+        let kidsState = addProfileView.kidsSwitch.isOn
         
-        let profileVC = ProfileViewController()
-        profileVC.userNameArray.append(userName)
+        for vc in navigationController!.viewControllers.reversed() {
+            if let profileVC = vc as? ProfileViewController {
+                profileVC.userNameArray.append(userName)
+                profileVC.kidsState = kidsState
+                break
+            }
+        }
+//        guard let navi = presentingViewController as? ProfileViewController else { return }
+//        navi.userNameArray.append(userName)
         navigationController?.popViewController(animated: true)
         
-        print(userName,"저장")
-        print(profileVC.userNameArray)
+        print(userName,"키즈용:",kidsState)
+//          print(navi.userNameArray)
         
         
     }
