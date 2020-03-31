@@ -33,17 +33,19 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         
         posterImage.layer.borderColor = UIColor.setNetfilxColor(name: .netflixRed).cgColor
         posterImage.layer.borderWidth = 3
-         
         posterImage.layer.cornerRadius = posterImageRound
+        posterImage.layer.masksToBounds = true
         
         posterImage.contentMode = .scaleAspectFill
+//        posterImage.clipsToBounds = true
+        
         titleImage.contentMode = .scaleAspectFill
         
 //        contentView.addSubview(backView)
         contentView.addSubview(posterImage)
         
 //        backView.addSubview(posterImage)
-        posterImage.addSubview(titleImage)
+        contentView.addSubview(titleImage)
     }
     
     private func setConstraints() {
