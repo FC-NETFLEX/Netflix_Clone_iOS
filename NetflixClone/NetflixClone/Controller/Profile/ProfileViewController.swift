@@ -16,11 +16,15 @@ class ProfileViewController: UIViewController {
     private let userView3 = UIView()
     private let userView4 = UIView()
     private let titleLabel = UILabel()
-    
+    private let buttonView0 = UIView()
+    private let buttonView1 = UIView()
+    private let buttonView2 = UIView()
+    private let buttonView3 = UIView()
     
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
     var userNameArray = ["데이터"]
+    var kidsState = true
     
     private var isStateArray = [Bool]()
     
@@ -40,7 +44,7 @@ class ProfileViewController: UIViewController {
     private func setUI() {
         
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        [userView0,userView1,userView2,userView3,userView4].forEach {
+        [userView0,userView1,userView2,userView3,userView4,buttonView0,buttonView1,buttonView2,buttonView3].forEach {
             userViewArray.append($0)
             view.addSubview($0)
         }
@@ -71,15 +75,15 @@ class ProfileViewController: UIViewController {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let padding: CGFloat = 10
-        [userView0,userView1,userView2,userView3,userView4].forEach {
+        [userView0,userView1,userView2,userView3,userView4,buttonView0,buttonView1,buttonView2,buttonView3].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        userView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 10).isActive = true
+        userView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 12).isActive = true
         userView0.trailingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView0.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
-        userView1.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 10).isActive = true
+        userView1.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 12).isActive = true
         userView1.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView1.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
@@ -93,7 +97,23 @@ class ProfileViewController: UIViewController {
         
         userView4.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView4.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 5).isActive = true
+        userView4.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
+       //////////////////////////------------------------------------------------------------------------------------------------------------------//////////////////////////////////////////
+        buttonView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 15).isActive = true
+        buttonView0.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonView0.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
+        buttonView1.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
+        buttonView1.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonView1.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
+        
+        buttonView2.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
+        buttonView2.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonView2.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
+        
+        buttonView3.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+        buttonView3.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 5).isActive = true
+        buttonView3.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
         
     }
