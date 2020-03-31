@@ -15,8 +15,18 @@ enum APIError: String, Error {
     case noData
 }
 
+enum APIMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case patch = "PATCH"
+    case delete = "DELETE"
+}
+
 struct APIManager {
     
+    
+    
+    // GET Request
     @discardableResult
     func requestOfGet(
         
@@ -71,6 +81,8 @@ struct APIManager {
         
     }
     
+    
+    //Post Request
     @discardableResult
     func requestOfPost(
         url: APIURL,
@@ -115,5 +127,84 @@ struct APIManager {
         return task
         
     }
+    
+    @discardableResult
+    func requestOfPatch(
+    url: APIURL,
+    itemKey: String,
+    data: Data,
+    token: String,
+    completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask?  {
+        
+        let urlString = url.rawValue + itemKey + "/"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        request.httpBody = data
+        
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+        if let error = error {
+                       completion(.failure(error))
+                       return
+                   }
+                   
+                   guard let data = data else {
+                       completion(.failure(APIError.noData))
+                       return
+                   }
+
+                   DispatchQueue.main.async {
+                       completion(.success(data))
+                   }
+                   
+               }
+               
+               task.resume()
+               return task
+    }
+    
+    @discardableResult
+    func requestOfDelete(
+        url: APIURL,
+        itemKey: String,
+        token: String,
+        completion: @escaping ((Result<Data, Error>) -> Void)) -> URLSessionDataTask? {
+        
+        let urlString = url.rawValue + itemKey + "/"
+        guard let url = URL(string: urlString) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+        if let error = error {
+                       completion(.failure(error))
+                       return
+                   }
+                   
+                   guard let data = data else {
+                       completion(.failure(APIError.noData))
+                       return
+                   }
+
+                   DispatchQueue.main.async {
+                       completion(.success(data))
+                   }
+                   
+               }
+               
+               task.resume()
+               return task
+        
+    }
+    
+    
     
 }
