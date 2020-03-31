@@ -15,7 +15,9 @@ class HomeviewTitle: UIView {
     private let dibsButton = UIButton()
     private let playButton = UIButton()
     private let infoButton = UIButton()
-    private let gradationView = UIView()
+//    private let gradationView = UIView()
+    
+    private let gradationLayer = CAGradientLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -53,20 +55,20 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-//        gradationView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.3)
+        
         
         addSubview(titleImage)
-//        titleImage.addSubview(gradationView)
-        
         [categoryLabel, dibsButton, playButton, infoButton].forEach {
             titleImage.addSubview($0)
         }
         
         
     }
+   
     
     private func setConstraints() {
         print("HomeTitle: setConstraints")
+//        gradation()
         
         let xMargin: CGFloat = CGFloat.dynamicXMargin(margin: 16)
         let yMargin: CGFloat = CGFloat.dynamicYMargin(margin: 8)
@@ -83,12 +85,7 @@ class HomeviewTitle: UIView {
             $0.top.leading.bottom.trailing.equalToSuperview()
         }
         
-//        gradationView.snp.makeConstraints {
-//            $0.bottom.equalToSuperview()
-//            $0.width.equalToSuperview()
-//            $0.height.equalToSuperview().multipliedBy(0.3)
-//        }
-//        
+       
         dibsButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(yMargin)
             $0.leading.equalToSuperview().inset(xMargin)
@@ -120,6 +117,17 @@ class HomeviewTitle: UIView {
         
     }
     
+    //MARK: - 그라데이션
+//    private func gradation() {
+//        gradationLayer.frame = titleImage.bounds
+//        gradationLayer.startPoint = CGPoint(x: 0.5, y: 1)
+//        gradationLayer.endPoint = CGPoint(x: 0.5, y: 0.3)
+//        gradationLayer.locations = [0, 0.25, 0.5]
+//        gradationLayer.colors = [UIColor.black.cgColor, UIColor.black.cgColor, UIColor.black.cgColor]
+//
+//        titleImage.layer.addSublayer(gradationLayer)
+//
+//    }
     
     // MARK: - configure
     func configure(poster: UIImage, category: [String], dibs: Bool) {
