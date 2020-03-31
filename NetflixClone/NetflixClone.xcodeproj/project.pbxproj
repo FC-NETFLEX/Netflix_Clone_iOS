@@ -51,12 +51,12 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
-
-		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
-		965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */; };
-
 		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
-
+		9631610E24310A20003C468A /* HomeviewTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9631610D24310A20003C468A /* HomeviewTitle.swift */; };
+		963161102431BC10003C468A /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */; };
+		963161122431D271003C468A /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963161112431D271003C468A /* PreviewModel.swift */; };
+		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
+		965FBA4C242B33FE00A96257 /* HomeTitleContentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA4B242B33FE00A96257 /* HomeTitleContentCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -107,12 +107,12 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
-
-		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
-		965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleContentTableViewCell.swift; sourceTree = "<group>"; };
-
 		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
-
+		9631610D24310A20003C468A /* HomeviewTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeviewTitle.swift; sourceTree = "<group>"; };
+		9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
+		963161112431D271003C468A /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
+		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
+		965FBA4B242B33FE00A96257 /* HomeTitleContentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTitleContentCollectionViewCell.swift; sourceTree = "<group>"; };
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -306,6 +306,7 @@
 			isa = PBXGroup;
 			children = (
 				31601CEF242A345B00382B94 /* HomeView.swift */,
+				9631610D24310A20003C468A /* HomeviewTitle.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -397,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				31601D05242A345B00382B94 /* HomeModel.swift */,
+				963161112431D271003C468A /* PreviewModel.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -483,7 +485,8 @@
 			isa = PBXGroup;
 			children = (
 				965FBA49242B262300A96257 /* PreviewTableViewCell.swift */,
-				965FBA4B242B33FE00A96257 /* HomeTitleContentTableViewCell.swift */,
+				965FBA4B242B33FE00A96257 /* HomeTitleContentCollectionViewCell.swift */,
+				9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -616,9 +619,10 @@
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
 				31601D39242A345C00382B94 /* UIButtonExtension.swift in Sources */,
+				963161122431D271003C468A /* PreviewModel.swift in Sources */,
 				31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */,
 				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
-				965FBA4C242B33FE00A96257 /* HomeTitleContentTableViewCell.swift in Sources */,
+				965FBA4C242B33FE00A96257 /* HomeTitleContentCollectionViewCell.swift in Sources */,
 				31601D36242A345C00382B94 /* SearchModel.swift in Sources */,
 				31601D3A242A345C00382B94 /* UIAlertControllerExtension.swift in Sources */,
 				31601D26242A345C00382B94 /* VideoView.swift in Sources */,
@@ -626,9 +630,11 @@
 				31601D37242A345C00382B94 /* ProfileModel.swift in Sources */,
 				31601D28242A345C00382B94 /* ContentView.swift in Sources */,
 				31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */,
+				963161102431BC10003C468A /* PreviewCollectionViewCell.swift in Sources */,
 				31601D33242A345C00382B94 /* SavedContentsListModel.swift in Sources */,
 				31601D2E242A345C00382B94 /* ForthView.swift in Sources */,
 				31601D32242A345C00382B94 /* VideoModel.swift in Sources */,
+				9631610E24310A20003C468A /* HomeviewTitle.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
 				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
