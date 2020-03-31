@@ -8,15 +8,129 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
-
+final class HomeViewController: UIViewController {
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    //    private let homeView = HomeView()
+    private let homeTableView = UITableView(frame: .zero, style: .grouped)
+    
+    private let cellCount = 1
+    
+    //MARK: header content
+    private let firstCellItem = "titleDummy"
+    private let firstCategory = ["로맨스", "한국 드라마", "드라마"]
+    private let dibsFlag = false
+    
+    //MARK: preview content
+    private let idPreview = [123, 234, 345, 456, 567]
+    private let posterPreview = [UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy")]
+    private let titleImagePreview = [UIImage(named: "green"), UIImage(named: "green"), UIImage(named: "green"), UIImage(named: "green"), UIImage(named: "green")]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        
+        setUI()
+        setConstraints()
     }
     
 
-  
+    //MARK: - UI
+    private func setUI() {
+//        homeTableView.frame = view.frame
+        
+        homeTableView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
+        homeTableView.dataSource = self
+        homeTableView.delegate = self
+        
+        homeTableView.contentInsetAdjustmentBehavior = .never
+        
 
+        homeTableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
+        
+        view.addSubview(homeTableView)
+    
+    }
+    private func setConstraints() {
+        homeTableView.snp.makeConstraints {
+            $0.top.leading.trailing.bottom.equalToSuperview()
+            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
+//            $0.bottom.equalTo(additionalSafeAreaInsets)
+        }
+    }
+
+    
+}
+
+//MARK: - Delegate TableView
+extension HomeViewController: UITableViewDelegate {
+    
+    
+    
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        
+//        print("homeVC: -> heightForRowAt")
+//        
+//        switch indexPath.row {
+//        case 0:
+//            print("homeVC: -> HeightForRowAt: case1")
+//            print("homeVC: -> HeightForRowAt: -> case1: -> tableViewWidth \(homeTableView.frame.width), cellHeight \(view.frame.height / 3)")
+//            return view.frame.height / 3
+//        default:
+//            return 100
+//        }
+//        
+//        
+//    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return view.frame.height / 3 * 2
+    }
+    
+    
+    
+}
+
+//MARK: - Datasource TableView
+extension HomeViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        let header = HomeviewTitle()
+        header.configure(poster: UIImage(named: firstCellItem)!, category: firstCategory, dibs: dibsFlag)
+        return header
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return cellCount
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //        let cell: UITableViewCell
+        print("hoveVC:  Datasource cellForRowAt row = \(indexPath.row)")
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
+        
+        cell.delegate = self
+
+        cell.configure(id: idPreview, poster: posterPreview as! [UIImage], titleImage: titleImagePreview as! [UIImage])
+        
+        return cell
+    }
+    
+    
+}
+
+//MARK: - PreviewDelegate (미리보기 델리게이트)
+extension HomeViewController: PreviewTableViewCellDelegate {
+    func selectCell() {
+        let contentVC = ContentViewController()
+        
+        present(contentVC, animated: true)
+    }
+    
+    
 }
