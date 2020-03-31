@@ -35,7 +35,7 @@ class ProfileView: UIView {
     }
     
     private func setUI() {
-        let cornerRadius: CGFloat = 8
+        let cornerRadius: CGFloat = 4
         backgroundColor = .setNetfilxColor(name: .black)
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
