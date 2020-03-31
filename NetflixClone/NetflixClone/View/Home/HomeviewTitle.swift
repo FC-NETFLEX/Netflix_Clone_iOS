@@ -15,6 +15,7 @@ class HomeviewTitle: UIView {
     private let dibsButton = UIButton()
     private let playButton = UIButton()
     private let infoButton = UIButton()
+    private let gradationView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,8 +53,10 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
+//        gradationView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.3)
         
         addSubview(titleImage)
+//        titleImage.addSubview(gradationView)
         
         [categoryLabel, dibsButton, playButton, infoButton].forEach {
             titleImage.addSubview($0)
@@ -71,6 +74,7 @@ class HomeviewTitle: UIView {
         let miniButtonWith: CGFloat = xMargin
         let miniButtonHeight: CGFloat = xMargin + yMargin
         
+        
         //        let playButtonWith: CGFloat = miniButtonWith * 4
         
         print("xMargin = \(xMargin), yMargin = \(yMargin)")
@@ -79,6 +83,12 @@ class HomeviewTitle: UIView {
             $0.top.leading.bottom.trailing.equalToSuperview()
         }
         
+//        gradationView.snp.makeConstraints {
+//            $0.bottom.equalToSuperview()
+//            $0.width.equalToSuperview()
+//            $0.height.equalToSuperview().multipliedBy(0.3)
+//        }
+//        
         dibsButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(yMargin)
             $0.leading.equalToSuperview().inset(xMargin)
