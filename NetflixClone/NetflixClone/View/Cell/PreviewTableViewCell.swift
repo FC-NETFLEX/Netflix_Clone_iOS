@@ -59,7 +59,7 @@ class PreviewTableViewCell: UITableViewCell {
     }
     
     private func setConstraints() {
-        let height = round(UIScreen.main.bounds.height / 3)
+        let height = round(UIScreen.main.bounds.height / 3 )
        
         print("************************************\n")
         print("PreviewTableViewCell: setConstraints  -> height: \(height)")
@@ -68,7 +68,7 @@ class PreviewTableViewCell: UITableViewCell {
         
         previewConllectionView.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalToSuperview()
-            $0.height.equalTo(height)
+//            $0.height.equalTo(height)
         }
     }
         
