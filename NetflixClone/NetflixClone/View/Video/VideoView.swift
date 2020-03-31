@@ -50,7 +50,7 @@ class VideoView: UIView {
         }
     }
     
-    private var isLoading = true {
+    var isLoading = true {
         didSet {
             if self.isLoading {
                 startLoading()
@@ -84,9 +84,8 @@ class VideoView: UIView {
     private let rewindButton = UIButton()
     private let slipButton = UIButton()
     private let playButton = UIButton()
-    private let playButtonBackgroundViewSegmentLeft = UIView()
-    private let playButtonBackgroundViewSegmentRight = UIView()
     private let playButtonBackgroundView = UIView()
+    private let playButtonBackgroundImageView = UIImageView()
     
     private let bottomView = UIView()
     private let playSlider = UISlider()
@@ -128,7 +127,7 @@ class VideoView: UIView {
             centerView.addSubview($0)
         })
         
-        [playButton].forEach({
+        [playButtonBackgroundImageView, playButton].forEach({
             playButtonBackgroundView.addSubview($0)
         })
         
@@ -141,7 +140,8 @@ class VideoView: UIView {
         })
         
         loadingIndicator.hidesWhenStopped = true
-//        loadingIndicator.startAnimating()
+//        isLoading = true
+        
         seekPointView.isHidden = true
         
         seekPointTimeLabel.textAlignment = .center
@@ -159,10 +159,10 @@ class VideoView: UIView {
         exitButton.tintColor = .setNetfilxColor(name: .white)
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
         
-        playButton.tintColor = .white
-        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButtonBackgroundImageView.image = UIImage(systemName: "play.fill")
+        playButtonBackgroundImageView.tintColor = .white
+        
         playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
-        playButton.imageView?.contentMode = .scaleAspectFill
         
         rewindButton.setTitle("rewind", for: .normal)
         rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
@@ -229,13 +229,17 @@ class VideoView: UIView {
         
         centerView.snp.makeConstraints({
             $0.centerY.leading.trailing.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.2)
+            $0.height.equalToSuperview().multipliedBy(0.125)
         })
         
         playButtonBackgroundView.snp.makeConstraints({
             $0.centerX.equalToSuperview()
             $0.top.bottom.equalToSuperview()
             $0.width.equalTo(playButtonBackgroundView.snp.height)
+        })
+        
+        playButtonBackgroundImageView.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalToSuperview()
         })
         
         playButton.snp.makeConstraints({
@@ -480,12 +484,12 @@ class VideoView: UIView {
     
     private func playAction() {
         let imageName = "play.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        playButtonBackgroundImageView.image = UIImage(systemName: imageName)
     }
     
     private func pauseAction() {
         let imageName = "pause.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        playButtonBackgroundImageView.image = UIImage(systemName: imageName)
     }
     
     
