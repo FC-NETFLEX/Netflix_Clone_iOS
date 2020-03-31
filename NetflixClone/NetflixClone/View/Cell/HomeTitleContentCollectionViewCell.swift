@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 import SnapKit
 
 class HomeTitleContentTableViewCell: UITableViewCell {
@@ -69,6 +70,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
             titleImage.addSubview($0)
         }
     
+
         
     }
     
@@ -122,6 +124,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
     
     
     // MARK: - configure
+
     func configure(poster: UIImage, category: [String], dibs: Bool) {
         print("HomeTitle: configure")
 
@@ -142,6 +145,7 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         }
 
         print("configure categoryText = \(categoryText)")
+
         
     }
     
@@ -154,7 +158,9 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         
     }
     
+
     @objc private func didTabInfoButton(sender: UIButton) {
+
         
     }
 }
