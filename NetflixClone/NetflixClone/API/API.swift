@@ -45,7 +45,7 @@ struct APIManager {
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         if let token = token {
-            request.addValue(token, forHTTPHeaderField: "Authorization")
+            request.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
         }
         print(request)
         let task = URLSession.shared.dataTask(with: request) {
@@ -89,7 +89,7 @@ struct APIManager {
         var request = URLRequest(url: url, timeoutInterval: .infinity)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let token = token { request.addValue(token, forHTTPHeaderField: "Authorization")}
+        if let token = token { request.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")}
         
         if let data = data { request.httpBody = data }
         

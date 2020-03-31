@@ -355,13 +355,14 @@ extension VideoController {
         videoView.setDefaultSlider(timeRange: 1000, currentTime: videoModel.currentTime)
         
         guard let token = LoginStatus.shared.getToken() else { return }
-        APIManager().requestOfPost(url: .iconList, token: token, completion: {
+        print(token)
+        APIManager().requestOfGet(url: .iconList, token: token, completion: {
             result in
             switch result {
             case .failure(let error):
                 print(error)
             case .success(let data):
-                print(try? JSONSerialization.jsonObject(with: data, options: []))
+                print(String(data: data, encoding: .utf8))
             }
         })
     }
