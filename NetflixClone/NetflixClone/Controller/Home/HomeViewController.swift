@@ -53,8 +53,9 @@ final class HomeViewController: UIViewController {
     }
     private func setConstraints() {
         homeTableView.snp.makeConstraints {
-            $0.top.leading.trailing.bottom.equalToSuperview()
-            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+//            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
 //            $0.bottom.equalTo(additionalSafeAreaInsets)
         }
     }
@@ -67,24 +68,24 @@ extension HomeViewController: UITableViewDelegate {
     
     
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        
-//        print("homeVC: -> heightForRowAt")
-//        
-//        switch indexPath.row {
-//        case 0:
-//            print("homeVC: -> HeightForRowAt: case1")
-//            print("homeVC: -> HeightForRowAt: -> case1: -> tableViewWidth \(homeTableView.frame.width), cellHeight \(view.frame.height / 3)")
-//            return view.frame.height / 3
-//        default:
-//            return 100
-//        }
-//        
-//        
-//    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        print("homeVC: -> heightForRowAt")
+        
+        switch indexPath.row {
+        case 0:
+            print("homeVC: -> HeightForRowAt: case1")
+            print("homeVC: -> HeightForRowAt: -> case1: -> tableViewWidth \(homeTableView.frame.width), cellHeight \(view.frame.height / 3)")
+            return tableView.frame.height / 3
+        default:
+            return 100
+        }
+        
+        
+    }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return view.frame.height / 3 * 2
+        return tableView.frame.height / 3 * 2
     }
     
     
