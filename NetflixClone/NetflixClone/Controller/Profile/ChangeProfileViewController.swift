@@ -8,9 +8,14 @@
 // 1. 텍스트필드 눌렀을때 화면 움직이게
 // 2.
 import UIKit
-
+enum ChangeRoots {
+    case main
+    case add
+    case manager
+}
 class ChangeProfileViewController: UIViewController {
     
+    var root: ChangeRoots
     private let addProfileView = AddProfileView()
     
     override func viewDidLoad() {
@@ -21,6 +26,14 @@ class ChangeProfileViewController: UIViewController {
         setNavigationBar()
         
     }
+    init(root: ChangeRoots) {
+           self.root = root
+           super.init(nibName: nil, bundle: nil)
+       }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     private func setNavigationBar() {
         
         navigationItem.title = "프로필 만들기"
@@ -29,7 +42,7 @@ class ChangeProfileViewController: UIViewController {
         let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didTapCancelButton(_:)))
         cancelButton.tintColor = .white
         navigationItem.leftBarButtonItem = cancelButton
-        
+      
         let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(didTapSaveButton(_:)))
         saveButton.tintColor = .gray
         navigationItem.rightBarButtonItem = saveButton
@@ -63,24 +76,43 @@ class ChangeProfileViewController: UIViewController {
     
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
-        navigationController?.popViewController(animated: true)
+        for vc in navigationController!.viewControllers.reversed() {
+             if let profileVC = vc as? ProfileViewController {
+            switch root {
+            case .main,.manager:
+               profileVC.root = .main
+                navigationController?.popViewController(animated: true)
+            case .add:
+                profileVC.root = .main
+                navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+//        navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapSaveButton(_ sender: Any) {
         
-        guard let userName = addProfileView.nickNameTextfield.text else { return }
+        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         let kidsState = addProfileView.kidsSwitch.isOn
         
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
+            switch root {
+            case .main,.manager:
+                profileVC.root = .main
                 profileVC.userNameArray.append(userName)
                 profileVC.kidsState = kidsState
-                break
+                navigationController?.popViewController(animated: true)
+            case .add:
+                profileVC.root = .main
+                navigationController?.popViewController(animated: true)
+                }
             }
         }
-//        guard let navi = presentingViewController as? ProfileViewController else { return }
+        //        guard let navi = presentingViewController as? ProfileViewController else { return }
 //        navi.userNameArray.append(userName)
-        navigationController?.popViewController(animated: true)
+//        navigationController?.popViewController(animated: true)
         
         print(userName,"키즈용:",kidsState)
 //          print(navi.userNameArray)
