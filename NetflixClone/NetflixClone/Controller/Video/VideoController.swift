@@ -353,18 +353,7 @@ extension VideoController: VideoViewDelegate {
 extension VideoController {
     private func test() {
         videoView.setDefaultSlider(timeRange: 1000, currentTime: videoModel.currentTime)
-        
-        guard let token = LoginStatus.shared.getToken() else { return }
-        print(token)
-        APIManager().requestOfGet(url: .iconList, token: token, completion: {
-            result in
-            switch result {
-            case .failure(let error):
-                print(error)
-            case .success(let data):
-                print(String(data: data, encoding: .utf8))
-            }
-        })
+       
     }
     
 //    private func getAssetImage(time: Int64, completionHandler: @escaping (CGImage?) -> Void) {

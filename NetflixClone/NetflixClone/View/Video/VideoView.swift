@@ -26,6 +26,14 @@ protocol VideoViewDelegate: class {
 //    }
 //}
 
+class CircleLabel: UILabel {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        print(frame)
+        layer.cornerRadius = frame.width / 2
+    }
+    
+}
 
 class VideoView: UIView {
     
@@ -50,7 +58,7 @@ class VideoView: UIView {
         }
     }
     
-    private var isLoading = true {
+    var isLoading = true {
         didSet {
             if self.isLoading {
                 startLoading()
@@ -81,12 +89,20 @@ class VideoView: UIView {
     private let titleLabel = UILabel()
     
     private let centerView = UIView()
+    
+//    private let rewindButtonBackgroundView = UIView()
+    private let rewindButtonImageView = UIImageView()
     private let rewindButton = UIButton()
+    private let rewindButtonLabel = CircleLabel()
+    
+    private let slipButtonImageView = UIImageView()
+    private let slipButtonLabel = CircleLabel()
     private let slipButton = UIButton()
+    
+    
     private let playButton = UIButton()
-    private let playButtonBackgroundViewSegmentLeft = UIView()
-    private let playButtonBackgroundViewSegmentRight = UIView()
     private let playButtonBackgroundView = UIView()
+    private let playButtonImageView = UIImageView()
     
     private let bottomView = UIView()
     private let playSlider = UISlider()
@@ -113,6 +129,7 @@ class VideoView: UIView {
     
     //MARK: UI
     
+    
     private func setUI(title: String) {
         
         
@@ -128,7 +145,15 @@ class VideoView: UIView {
             centerView.addSubview($0)
         })
         
-        [playButton].forEach({
+        [slipButtonLabel, slipButtonImageView].forEach({
+            slipButton.addSubview($0)
+        })
+        
+        [rewindButtonLabel, rewindButtonImageView].forEach({
+            rewindButton.addSubview($0)
+        })
+        
+        [playButtonImageView, playButton].forEach({
             playButtonBackgroundView.addSubview($0)
         })
         
@@ -140,8 +165,11 @@ class VideoView: UIView {
             seekPointView.addSubview($0)
         })
         
+        let controlFont = UIFont.dynamicFont(fontSize: 16, weight: .regular)
+        
         loadingIndicator.hidesWhenStopped = true
-//        loadingIndicator.startAnimating()
+//        isLoading = true
+        
         seekPointView.isHidden = true
         
         seekPointTimeLabel.textAlignment = .center
@@ -159,16 +187,35 @@ class VideoView: UIView {
         exitButton.tintColor = .setNetfilxColor(name: .white)
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
         
-        playButton.tintColor = .white
-        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
-        playButton.imageView?.contentMode = .scaleAspectFill
+        playButtonImageView.image = UIImage(systemName: "play.fill")
+        playButtonImageView.tintColor = .setNetfilxColor(name: .white)
         
-        rewindButton.setTitle("rewind", for: .normal)
+        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
+        
+        rewindButtonImageView.image = UIImage(systemName: "arrow.counterclockwise")
+        rewindButtonImageView.contentMode = .scaleAspectFill
+        rewindButtonImageView.tintColor = .setNetfilxColor(name: .white)
+        
+        rewindButtonLabel.text = "10"
+        rewindButtonLabel.font = controlFont
+        rewindButtonLabel.textAlignment = .center
+        rewindButtonLabel.textColor = .setNetfilxColor(name: .white)
+        rewindButtonLabel.clipsToBounds = true
+        rewindButtonLabel.backgroundColor = .setNetfilxColor(name: .white)
         rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
         
-        slipButton.setTitle("slip", for: .normal)
         slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchUpInside)
+        
+        slipButtonImageView.image = UIImage(systemName: "arrow.clockwise")
+        slipButtonImageView.tintColor = .setNetfilxColor(name: .white)
+        slipButtonImageView.contentMode = .scaleToFill
+        
+        slipButtonLabel.text = "10"
+        slipButtonLabel.font = controlFont
+        slipButtonLabel.textAlignment = .center
+        slipButtonLabel.textColor = .setNetfilxColor(name: .white)
+        slipButtonLabel.clipsToBounds = true
+        slipButtonLabel.backgroundColor = .setNetfilxColor(name: .white)
         
         playSlider.minimumValue = 0
         playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
@@ -178,6 +225,7 @@ class VideoView: UIView {
         playSlider.addTarget(self, action: #selector(beginTrackingPlaySlider(_:)), for: .touchDown)
         playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpInside)
         playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpOutside)
+        playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchCancel)
         playSlider.setThumbImage(UIImage(), for: .normal)
         playSlider.setThumbImage(UIImage(), for: .highlighted)
         
@@ -229,7 +277,7 @@ class VideoView: UIView {
         
         centerView.snp.makeConstraints({
             $0.centerY.leading.trailing.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.2)
+            $0.height.equalToSuperview().multipliedBy(0.125)
         })
         
         playButtonBackgroundView.snp.makeConstraints({
@@ -238,13 +286,50 @@ class VideoView: UIView {
             $0.width.equalTo(playButtonBackgroundView.snp.height)
         })
         
+        playButtonImageView.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalToSuperview()
+        })
+        
         playButton.snp.makeConstraints({
             $0.top.bottom.leading.trailing.equalToSuperview()
         })
         
         rewindButton.snp.makeConstraints({
-            $0.centerY.equalToSuperview()
             $0.centerX.equalToSuperview().multipliedBy(0.5)
+            $0.width.equalTo(rewindButton.snp.height)
+            $0.top.bottom.equalToSuperview()
+        })
+        
+        rewindButtonLabel.snp.makeConstraints({
+            $0.centerX.equalTo(rewindButtonImageView)
+            $0.centerY.equalTo(rewindButtonImageView).multipliedBy(1.2)
+            $0.width.equalTo(rewindButtonImageView).multipliedBy(0.9)
+            $0.height.equalTo(rewindButtonLabel.snp.width)
+        })
+        
+        rewindButtonImageView.snp.makeConstraints({
+            $0.centerX.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.width.equalTo(rewindButtonImageView.snp.height).multipliedBy(0.8)
+        })
+        
+        slipButton.snp.makeConstraints({
+            $0.centerX.equalToSuperview().multipliedBy(1.5)
+            $0.width.equalTo(slipButton.snp.height)
+            $0.top.bottom.equalToSuperview()
+        })
+        
+        slipButtonLabel.snp.makeConstraints({
+            $0.centerX.equalTo(slipButtonImageView)
+            $0.centerY.equalTo(slipButtonImageView).multipliedBy(1.2)
+            $0.width.equalTo(slipButtonImageView).multipliedBy(0.9)
+            $0.height.equalTo(slipButtonLabel.snp.width)
+        })
+        
+        slipButtonImageView.snp.makeConstraints({
+            $0.centerX.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.width.equalTo(slipButtonImageView.snp.height).multipliedBy(0.8)
         })
         
         slipButton.snp.makeConstraints({
@@ -480,12 +565,12 @@ class VideoView: UIView {
     
     private func playAction() {
         let imageName = "play.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     private func pauseAction() {
         let imageName = "pause.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     
