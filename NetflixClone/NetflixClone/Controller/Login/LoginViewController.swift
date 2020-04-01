@@ -50,6 +50,7 @@ class LoginViewController: UIViewController {
         emailTextField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
         emailTextField.delegate = self
         emailTextField.textColor = .white
+        emailTextField.autocapitalizationType = .none
         
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "비밀번호",
         attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.7019607843, green: 0.7019607843, blue: 0.7019607843, alpha: 1)])
@@ -148,17 +149,23 @@ class LoginViewController: UIViewController {
         
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextField.text else { return }
+//        LoginStatus.shared.login(token: email)
+//        let tabBarController = TabBarController()
+//        tabBarController.changeRootViewController()
+        let param = ["email": email, "password": password]
+        guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
         
         APIManager().requestOfPost(
-            url: .createUser,
-            data: ["email": email, "password": password],
-            token: nil,
+            url: .logIn,
+            data: data,
             completion: {
-            (result) in
+            [weak self] (result) in
+                guard let self = self else { return }
                 switch result {
                 case .failure(let error):
                     print(error)
                 case .success(let data):
+                    dump(try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any?])
                     guard
                         let result = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                         let token = result["token"] as? String
@@ -166,7 +173,10 @@ class LoginViewController: UIViewController {
                         UIAlertController(title: "로그인", message: "아이디 또는 비밀번호를 확인해주세요.", preferredStyle: .alert).noticePresent(viewController: self)
                         return
                     }
-                    UIAlertController(title: "로그인", message: "로그인 성공\n토큰: \(token)", preferredStyle: .alert).noticePresent(viewController: self)
+                    
+                    LoginStatus.shared.login(token: token)
+                    let profileVC = ProfileViewController()
+                    self.navigationController?.pushViewController(profileVC, animated: true)
                 }
         })
     }
