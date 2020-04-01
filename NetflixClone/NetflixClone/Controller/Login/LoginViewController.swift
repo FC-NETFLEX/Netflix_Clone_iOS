@@ -175,7 +175,7 @@ class LoginViewController: UIViewController {
                     }
                     
                     LoginStatus.shared.login(token: token)
-                    let profileVC = ProfileViewController()
+                    let profileVC = ProfileViewController(root: .main)
                     self.navigationController?.pushViewController(profileVC, animated: true)
                 }
         })
