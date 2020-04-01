@@ -18,11 +18,12 @@ class AddProfileView: UIView {
     
     private let newProfileButton = UIButton()
     private let changeLabel = UILabel()
-    private let nickNameTextfield = UITextField()
+    let nickNameTextfield = UITextField()
     private let kidsLabel = UILabel()
-    private let kidsSwitch = UISwitch()
+    let kidsSwitch = UISwitch()
     
     weak var delegate: AddProfileViewDelegate?
+   
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -72,17 +73,19 @@ class AddProfileView: UIView {
         
         let margin: CGFloat = 10
         let padding: CGFloat = 40
+        let spacing: CGFloat = 50
+        
         
         [newProfileButton,changeLabel,nickNameTextfield,kidsLabel,kidsSwitch].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        newProfileButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -padding ).isActive = true
+        newProfileButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -spacing).isActive = true
         newProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.3).isActive = true
         newProfileButton.heightAnchor.constraint(equalTo: newProfileButton.widthAnchor).isActive = true
         
-        changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor).isActive = true
+        changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: margin).isActive = true
         changeLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         nickNameTextfield.topAnchor.constraint(equalTo: changeLabel.bottomAnchor, constant: margin * 2 ).isActive = true
@@ -103,7 +106,11 @@ class AddProfileView: UIView {
         
     }
     @objc private func kidsSwitchDidTap() {
-        delegate?.kidsSwitchDidTap()
+        if kidsSwitch.isOn == true {
+            return
+        } else {
+            delegate?.kidsSwitchDidTap()
+        }
     }
     
 }
@@ -121,6 +128,8 @@ extension UITextField {
     }
 }
 
-
+  
+  
+    
 
 

@@ -66,11 +66,7 @@ class VideoController: UIViewController {
     private func setUI() {
         
         videoView.delegate = self
-        
-        
-        
-        
-//        videoView.playSlider.dele
+        view.backgroundColor = .setNetfilxColor(name: .netflixGray)
         view.addSubview(videoView)
         
         
@@ -89,7 +85,7 @@ class VideoController: UIViewController {
     //MARK: Action
     
     // 매개변수로 받은 Double(재생 시간) 부터 재생 시켜주는 함수
-    private func seekPlayPont(seekTime: Int64) {
+    private func seekPlayPoint(seekTime: Int64) {
         let seekTime = CMTime(value: seekTime, timescale: 1)
         player?.seek(to: seekTime)
         player?.play()
@@ -113,8 +109,8 @@ class VideoController: UIViewController {
             
             self?.view.alpha = 0.1
             
-            }, completion: { [weak self] _ in
-                
+            }, completion: { [weak self] isSuccess in
+                print("Completion Status :", isSuccess)
                 self?.dismiss(animated: false)
         })
     }
@@ -274,7 +270,7 @@ extension VideoController {
 //                let seekTime = CMTime(value: videoModel.currentTime, timescale: 1)
 //                player?.seek(to: seekTime)
 //                player?.play()
-                seekPlayPont(seekTime: videoModel.currentTime)
+                seekPlayPoint(seekTime: videoModel.currentTime)
                 
             case .failed:
                 print(#function)
@@ -342,7 +338,7 @@ extension VideoController: VideoViewDelegate {
     
     
     func endTracking(time: Int64) {
-        seekPlayPont(seekTime: time)
+        seekPlayPoint(seekTime: time)
     }
     
     func exitAction() {
@@ -358,6 +354,17 @@ extension VideoController {
     private func test() {
         videoView.setDefaultSlider(timeRange: 1000, currentTime: videoModel.currentTime)
         
+        guard let token = LoginStatus.shared.getToken() else { return }
+        print(token)
+        APIManager().requestOfGet(url: .iconList, token: token, completion: {
+            result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let data):
+                print(String(data: data, encoding: .utf8))
+            }
+        })
     }
     
 //    private func getAssetImage(time: Int64, completionHandler: @escaping (CGImage?) -> Void) {

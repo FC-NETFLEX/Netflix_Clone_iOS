@@ -29,6 +29,8 @@ class ProfileTableVIewCell: UITableViewCell {
     }
     
     private func setUI() {
+        backgroundColor = .setNetfilxColor(name:.black)
+        collectionView.backgroundColor = .setNetfilxColor(name:.netflixGray)
         self.addSubview(collectionView)
         
     }
@@ -40,7 +42,7 @@ class ProfileTableVIewCell: UITableViewCell {
         collectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        collectionView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        collectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
     }
 }

@@ -29,7 +29,7 @@ class AddProfileButtonView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     private func setUI() {
-        let cornerRadius: CGFloat = 8
+        let cornerRadius: CGFloat = 4
         backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
@@ -61,7 +61,7 @@ class AddProfileButtonView: UIView {
         
         profilePluButton.topAnchor.constraint(equalTo: self.topAnchor, constant: padding).isActive = true
         profilePluButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        profilePluButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.55).isActive = true
+        profilePluButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.6).isActive = true
         profilePluButton.heightAnchor.constraint(equalTo: profilePluButton.widthAnchor).isActive = true
 
         addProfileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true

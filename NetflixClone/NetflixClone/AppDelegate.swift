@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if LoginStatus.shared.checkLoginStatus() {
             rootViewController = TabBarController()
-        }else {
+        } else {
             rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
         }
         
