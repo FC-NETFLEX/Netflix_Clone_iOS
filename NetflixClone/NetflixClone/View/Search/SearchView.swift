@@ -53,7 +53,7 @@ class SearchView: UIView {
     }
     
     private func setCollectionView() {
-        searchResultCollectionView.register(SearchResultItem.self, forCellWithReuseIdentifier: SearchResultItem.identifier)
+        searchResultCollectionView.register(ContentsBasicItem.self, forCellWithReuseIdentifier: ContentsBasicItem.identifier)
         searchResultCollectionView.register(
             SearchResultCollectionViewHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,

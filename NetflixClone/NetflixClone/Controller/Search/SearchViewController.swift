@@ -144,7 +144,7 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SearchResultItem.identifier, for: indexPath) as? SearchResultItem
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as? ContentsBasicItem
         // 임시 background
         cell?.backgroundColor = .white
         cell?.titleLabel.text = self.filteredData[indexPath.item]
