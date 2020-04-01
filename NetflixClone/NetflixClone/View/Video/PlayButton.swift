@@ -9,7 +9,7 @@
 import UIKit
 
 
-class PlayPauseButton: UIControl {
+class PlayPauseButton: UIView {
 
     // public function can be called from out interface
     func setPlaying(_ playing: Bool) {
@@ -26,7 +26,7 @@ class PlayPauseButton: UIControl {
         rightLayer = CAShapeLayer()
         super.init(frame: frame)
 
-        backgroundColor = UIColor.white
+        backgroundColor = .clear
         setupLayers()
     }
 
@@ -38,11 +38,8 @@ class PlayPauseButton: UIControl {
         layer.addSublayer(leftLayer)
         layer.addSublayer(rightLayer)
 
-        leftLayer.fillColor = UIColor.black.cgColor
-        rightLayer.fillColor = UIColor.black.cgColor
-        addTarget(self,
-                  action: #selector(pressed),
-                  for: .touchUpInside)
+        leftLayer.fillColor = UIColor.setNetfilxColor(name: .white).cgColor
+        rightLayer.fillColor = UIColor.setNetfilxColor(name: .white).cgColor
     }
 
     @objc private func pressed() {
@@ -136,10 +133,13 @@ class PlayPauseButton: UIControl {
 
         let path = UIBezierPath()
         path.move(to:CGPoint(x: 0, y: 0))
+        
         path.addLine(to: CGPoint(x: leftLayerFrame.width,
                                  y: y1))
+        
         path.addLine(to: CGPoint(x: leftLayerFrame.width,
                                  y: y2))
+        
         path.addLine(to: CGPoint(x: 0,
                                  y: leftLayerFrame.height))
         path.close()
@@ -160,6 +160,7 @@ class PlayPauseButton: UIControl {
         path.addLine(to: CGPoint(x: 0,
                                  y: y2))
         path.close()
+//        print(rightLayerFrame)
         return path.cgPath
     }
 }

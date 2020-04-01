@@ -26,7 +26,7 @@ protocol VideoViewDelegate: class {
 //    }
 //}
 
-class CircleLabel: UILabel {
+class CircleView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         print(frame)
@@ -70,6 +70,7 @@ class VideoView: UIView {
     
     private var isPlaying = true {
         didSet {
+//            playButtonBackgroundView.setPlaying(self.isPlaying)
             if self.isPlaying {
                 playAction()
             } else {
@@ -90,14 +91,18 @@ class VideoView: UIView {
     
     private let centerView = UIView()
     
-//    private let rewindButtonBackgroundView = UIView()
+//    private let rewindButtonBackgroundView = PlayPauseButton()
     private let rewindButtonImageView = UIImageView()
     private let rewindButton = UIButton()
-    private let rewindButtonLabel = CircleLabel()
+    private let rewindButtonLabel = UILabel()
+    private let rewindInsideView = CircleView()
+    private let rewindButtonActionLabel = UILabel()
     
     private let slipButtonImageView = UIImageView()
-    private let slipButtonLabel = CircleLabel()
+    private let slipButtonLabel = UILabel()
     private let slipButton = UIButton()
+    private let slipInsideView = CircleView()
+    private let slipButtonActionLabel = UILabel()
     
     
     private let playButton = UIButton()
@@ -145,11 +150,11 @@ class VideoView: UIView {
             centerView.addSubview($0)
         })
         
-        [slipButtonLabel, slipButtonImageView].forEach({
+        [slipButtonActionLabel, slipButtonLabel, slipButtonImageView, slipInsideView].forEach({
             slipButton.addSubview($0)
         })
         
-        [rewindButtonLabel, rewindButtonImageView].forEach({
+        [rewindButtonActionLabel, rewindButtonLabel, rewindButtonImageView, rewindInsideView].forEach({
             rewindButton.addSubview($0)
         })
         
@@ -192,7 +197,9 @@ class VideoView: UIView {
         
         playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
         
-        rewindButtonImageView.image = UIImage(systemName: "arrow.counterclockwise")
+        rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
+        
+        rewindButtonImageView.image = UIImage(named: "rewind.png")
         rewindButtonImageView.contentMode = .scaleAspectFill
         rewindButtonImageView.tintColor = .setNetfilxColor(name: .white)
         
@@ -200,22 +207,31 @@ class VideoView: UIView {
         rewindButtonLabel.font = controlFont
         rewindButtonLabel.textAlignment = .center
         rewindButtonLabel.textColor = .setNetfilxColor(name: .white)
-        rewindButtonLabel.clipsToBounds = true
-        rewindButtonLabel.backgroundColor = .setNetfilxColor(name: .white)
-        rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
+        
+        rewindInsideView.backgroundColor = .setNetfilxColor(name: .white)
+        rewindInsideView.alpha = 0
+        
+        rewindButtonActionLabel.textColor = .setNetfilxColor(name: .white)
+        rewindButtonActionLabel.text = "-"
+        rewindButtonActionLabel.alpha = 0
         
         slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchUpInside)
         
-        slipButtonImageView.image = UIImage(systemName: "arrow.clockwise")
+        slipButtonImageView.image = UIImage(named: "slip.png")
         slipButtonImageView.tintColor = .setNetfilxColor(name: .white)
         slipButtonImageView.contentMode = .scaleToFill
+        
+        slipInsideView.backgroundColor = .setNetfilxColor(name: .white)
+        slipInsideView.alpha = 0
         
         slipButtonLabel.text = "10"
         slipButtonLabel.font = controlFont
         slipButtonLabel.textAlignment = .center
         slipButtonLabel.textColor = .setNetfilxColor(name: .white)
-        slipButtonLabel.clipsToBounds = true
-        slipButtonLabel.backgroundColor = .setNetfilxColor(name: .white)
+        
+        slipButtonActionLabel.textColor = UIColor.setNetfilxColor(name: .white)
+        slipButtonActionLabel.text = "+"
+        slipButtonActionLabel.alpha = 0
         
         playSlider.minimumValue = 0
         playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
@@ -234,7 +250,6 @@ class VideoView: UIView {
         restTimeLabel.font = .dynamicFont(fontSize: 14, weight: .bold)
         restTimeLabel.text = "00:00"
         
-        centerView.backgroundColor = .red
         
 //        testButton.addTarget(self, action: #selector(test), for: .touchUpInside)
 //        playButtonBackgroundView.backgroundColor = .black
@@ -277,7 +292,7 @@ class VideoView: UIView {
         
         centerView.snp.makeConstraints({
             $0.centerY.leading.trailing.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.125)
+            $0.height.equalToSuperview().multipliedBy(0.1)
         })
         
         playButtonBackgroundView.snp.makeConstraints({
@@ -300,17 +315,23 @@ class VideoView: UIView {
             $0.top.bottom.equalToSuperview()
         })
         
+        rewindButtonActionLabel.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
         rewindButtonLabel.snp.makeConstraints({
             $0.centerX.equalTo(rewindButtonImageView)
-            $0.centerY.equalTo(rewindButtonImageView).multipliedBy(1.2)
+            $0.centerY.equalTo(rewindButtonImageView)
             $0.width.equalTo(rewindButtonImageView).multipliedBy(0.9)
             $0.height.equalTo(rewindButtonLabel.snp.width)
         })
         
         rewindButtonImageView.snp.makeConstraints({
-            $0.centerX.equalToSuperview()
-            $0.top.bottom.equalToSuperview()
-            $0.width.equalTo(rewindButtonImageView.snp.height).multipliedBy(0.8)
+            $0.top.leading.bottom.trailing.equalToSuperview()
+        })
+        
+        rewindInsideView.snp.makeConstraints({
+            $0.top.leading.bottom.trailing.equalToSuperview()
         })
         
         slipButton.snp.makeConstraints({
@@ -319,17 +340,19 @@ class VideoView: UIView {
             $0.top.bottom.equalToSuperview()
         })
         
+        slipButtonActionLabel.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
         slipButtonLabel.snp.makeConstraints({
             $0.centerX.equalTo(slipButtonImageView)
-            $0.centerY.equalTo(slipButtonImageView).multipliedBy(1.2)
+            $0.centerY.equalTo(slipButtonImageView)
             $0.width.equalTo(slipButtonImageView).multipliedBy(0.9)
             $0.height.equalTo(slipButtonLabel.snp.width)
         })
         
         slipButtonImageView.snp.makeConstraints({
-            $0.centerX.equalToSuperview()
-            $0.top.bottom.equalToSuperview()
-            $0.width.equalTo(slipButtonImageView.snp.height).multipliedBy(0.8)
+            $0.top.bottom.leading.trailing.equalToSuperview()
         })
         
         slipButton.snp.makeConstraints({
@@ -337,6 +360,9 @@ class VideoView: UIView {
             $0.centerX.equalToSuperview().multipliedBy(1.5)
         })
         
+        slipInsideView.snp.makeConstraints({
+            $0.leading.top.trailing.bottom.equalToSuperview()
+        })
         
         bottomView.snp.makeConstraints({
             $0.bottom.leading.trailing.equalToSuperview()
@@ -368,9 +394,10 @@ class VideoView: UIView {
             $0.centerY.equalToSuperview()
         })
         
-        //        seekPointTimeLabel.centerXAnchor.constraint(equalTo: playSlider)
+        
         
     }
+    
     
     //MARK: Gesture Recognize
     
@@ -556,11 +583,67 @@ class VideoView: UIView {
     }
     
     @objc private func didTapSlipButton() {
-        print(#function)
+//        print(#function)
+        let timeIntervalString = "10"
+        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
+        
     }
     
     @objc private func didTapRewindButton() {
-        print(#function)
+//        print(#function)
+        let timeInervalString = "10"
+        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
+    }
+    
+    // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
+    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String) {
+        let duration = 0.65
+        let turm: Double = 0.3
+        var currentDuration: Double = 0
+        
+        let insideView = isRewind ? rewindInsideView: slipInsideView
+        let imageView = isRewind ? rewindButtonImageView: slipButtonImageView
+        let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
+        let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
+        
+        let actionText = (isRewind ? "-": "+") + timeIntervalString
+        actionLabel.text = actionText
+        
+        let range: CGFloat = .dynamicYMargin(margin: 200)
+        let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
+        let moveRange = isRewind ? -(range): range
+        
+        
+//        layoutIfNeeded()
+//        imageView.backgroundColor = .green
+        
+        UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: 0.05, animations: {
+                actionLabel.transform = .init(translationX: moveRange, y: 0)
+                actionLabel.alpha = 1
+                imageView.transform = .init(rotationAngle: rotate)
+                insideView.alpha = 1
+                insideLabel.alpha = 0
+                currentDuration += 0.05
+            })
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+                imageView.transform = .identity
+                insideView.alpha = 0
+                currentDuration += turm
+            })
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+                insideLabel.backgroundColor = .clear
+                actionLabel.alpha = 0
+                insideLabel.alpha = 1
+            })
+        }, completion: { _ in
+            actionLabel.transform = .identity
+        })
+        
+        
     }
     
     private func playAction() {
