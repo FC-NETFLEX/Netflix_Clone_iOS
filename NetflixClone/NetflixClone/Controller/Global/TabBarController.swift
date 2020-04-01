@@ -31,6 +31,7 @@ class TabBarController: UITabBarController {
     
     private func addViewControllers() {
         let homeVC = HomeViewController()
+        
         homeVC.tabBarItem.title = "홈"
         homeVC.tabBarItem.image = UIImage(systemName: "house")
         

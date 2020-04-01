@@ -19,7 +19,9 @@ class PreviewTableViewCell: UITableViewCell {
     weak var delegate: PreviewTableViewCellDelegate?
     
     private let flowLayout = UICollectionViewFlowLayout()
-//    private let previewConllectionView = UICollectionView()
+    private let sectionHeight: CGFloat = 20
+    
+    private let headerLabel = UILabel()
     private lazy var previewConllectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
 //    private let previewConllectionView: UICollectionView = {
 //        let layout = UICollectionViewFlowLayout()
@@ -33,8 +35,9 @@ class PreviewTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
         setUI()
-        setConstraints()
+        setConstraints()                                                            
     }
     
     required init?(coder: NSCoder) {
@@ -43,32 +46,42 @@ class PreviewTableViewCell: UITableViewCell {
     
     //MARK: - UI
     private func setUI() {
+        let HeaderFont: UIFont = .boldSystemFont(ofSize: 16)
         
         flowLayout.scrollDirection = .horizontal
-
+        
+        headerLabel.text = "미리보기"
+        headerLabel.font = HeaderFont
+        headerLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.white)
+        headerLabel.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
             
         previewConllectionView.dataSource = self
         previewConllectionView.delegate = self
+        previewConllectionView.backgroundColor = .clear
         
         
         previewConllectionView.register(PreviewCollectionViewCell.self, forCellWithReuseIdentifier: PreviewCollectionViewCell.identifier)
         
+        contentView.addSubview(headerLabel)
         contentView.addSubview(previewConllectionView)
         
        
     }
     
     private func setConstraints() {
-        let height = round(UIScreen.main.bounds.height / 3 )
-       
-        print("************************************\n")
-        print("PreviewTableViewCell: setConstraints  -> height: \(height)")
-        print("************************************\n")
-
+        let headerYMargin: CGFloat = 10
+        let headerXMargin: CGFloat = 10
+        
+        headerLabel.snp.makeConstraints {
+            $0.top.equalTo(headerYMargin)
+            $0.leading.equalTo(headerXMargin)
+            $0.trailing.equalToSuperview()
+            $0.height.equalTo(sectionHeight - headerYMargin)
+        }
         
         previewConllectionView.snp.makeConstraints {
-            $0.top.bottom.leading.trailing.equalToSuperview()
-//            $0.height.equalTo(height)
+            $0.top.equalTo(headerLabel.snp.bottom)
+            $0.bottom.leading.trailing.equalToSuperview()
         }
     }
         
@@ -83,10 +96,14 @@ class PreviewTableViewCell: UITableViewCell {
 }
 
 extension PreviewTableViewCell: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        1
+    }
+    
+    
     
   
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("PreviewtableViewCell: idData.count \(idData.count)")
         return idData.count 
     }
     
@@ -102,9 +119,11 @@ extension PreviewTableViewCell: UICollectionViewDataSource {
 }
 
 extension PreviewTableViewCell: UICollectionViewDelegateFlowLayout {
+    
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let inset: CGFloat = 5
-        return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        return UIEdgeInsets(top: 0, left: inset, bottom: inset, right: inset)
     }
     
     
