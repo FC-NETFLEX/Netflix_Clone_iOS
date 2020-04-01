@@ -15,7 +15,13 @@ class HomeviewTitle: UIView {
     private let dibsButton = UIButton()
     private let playButton = UIButton()
     private let infoButton = UIButton()
-//    private let gradationView = UIView()
+    
+//    private let gradientLayer: CAGradientLayer = {
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.backgroundColor = UIColor.clear.cgColor
+//        gradientLayer.colors = [UIColor.black.cgColor, UIColor.gray.cgColor, UIColor.clear.cgColor]
+//        return gradientLayer
+//    }()
     
     private let gradationLayer = CAGradientLayer()
     
@@ -33,12 +39,11 @@ class HomeviewTitle: UIView {
     //MARK: - UI
     
     private func setUI() {
-        //        setPlayButtonView()
-        print("HomeTitle: setUI")
         
         let textTintColor: UIColor = .white
         let categoryFont: UIFont = .boldSystemFont(ofSize: 10)
         
+        titleImage.contentMode = .scaleAspectFill
         
         categoryLabel.textColor = textTintColor
         categoryLabel.font = categoryFont
@@ -46,7 +51,6 @@ class HomeviewTitle: UIView {
         
         dibsButton.tintColor = textTintColor
         
-        //        playButton.imageView =
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         playButton.tintColor = .black
         playButton.backgroundColor = textTintColor
@@ -58,6 +62,7 @@ class HomeviewTitle: UIView {
         
         
         addSubview(titleImage)
+//        titleImage.layer.addSublayer(gradientLayer)
         [categoryLabel, dibsButton, playButton, infoButton].forEach {
             titleImage.addSubview($0)
         }
@@ -67,19 +72,12 @@ class HomeviewTitle: UIView {
    
     
     private func setConstraints() {
-        print("HomeTitle: setConstraints")
-//        gradation()
         
         let xMargin: CGFloat = CGFloat.dynamicXMargin(margin: 16)
         let yMargin: CGFloat = CGFloat.dynamicYMargin(margin: 8)
         
         let miniButtonWith: CGFloat = xMargin
         let miniButtonHeight: CGFloat = xMargin + yMargin
-        
-        
-        //        let playButtonWith: CGFloat = miniButtonWith * 4
-        
-        print("xMargin = \(xMargin), yMargin = \(yMargin)")
         
         titleImage.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
@@ -117,17 +115,7 @@ class HomeviewTitle: UIView {
         
     }
     
-    //MARK: - 그라데이션
-//    private func gradation() {
-//        gradationLayer.frame = titleImage.bounds
-//        gradationLayer.startPoint = CGPoint(x: 0.5, y: 1)
-//        gradationLayer.endPoint = CGPoint(x: 0.5, y: 0.3)
-//        gradationLayer.locations = [0, 0.25, 0.5]
-//        gradationLayer.colors = [UIColor.black.cgColor, UIColor.black.cgColor, UIColor.black.cgColor]
-//
-//        titleImage.layer.addSublayer(gradationLayer)
-//
-//    }
+
     
     // MARK: - configure
     func configure(poster: UIImage, category: [String], dibs: Bool) {
