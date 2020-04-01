@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-final class SearchResultItem: UICollectionViewCell {
-    static let identifier = "searchResultItem"
+final class ContentsBasicItem: UICollectionViewCell {
+    static let identifier = "contentsBasic"
     
     let titleLabel = UILabel()
     
@@ -28,13 +28,11 @@ final class SearchResultItem: UICollectionViewCell {
         self.addSubview(titleLabel)
         titleLabel.textColor = UIColor.setNetfilxColor(name: .black)
         titleLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .bold)
-        titleLabel.text = "영화 및 TV 프로그램"
     }
     
     private func setConstraints() {
         titleLabel.snp.makeConstraints { (make) -> Void in
             make.center.equalTo(self.snp.center)
-            
         }
     }
 }

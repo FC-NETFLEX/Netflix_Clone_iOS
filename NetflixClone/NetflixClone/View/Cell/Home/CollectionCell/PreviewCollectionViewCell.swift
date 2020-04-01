@@ -11,13 +11,12 @@ import UIKit
 class PreviewCollectionViewCell: UICollectionViewCell {
     static let identifier = "PreviewCVCell"
     
-//    private let backView = UIView()
     private let posterImage = UIImageView()
     private let titleImage = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .purple
+        
         setUI()
         setConstraints()
     }
@@ -37,14 +36,11 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         posterImage.layer.masksToBounds = true
         
         posterImage.contentMode = .scaleAspectFill
-//        posterImage.clipsToBounds = true
         
-        titleImage.contentMode = .scaleAspectFill
+        titleImage.contentMode = .scaleAspectFit
         
-//        contentView.addSubview(backView)
         contentView.addSubview(posterImage)
         
-//        backView.addSubview(posterImage)
         contentView.addSubview(titleImage)
     }
     
@@ -54,29 +50,25 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         let padding: CGFloat = 2
         
         let imageLine: CGFloat = contentView.frame.width
-        let titleImageHeight: CGFloat = contentView.frame.height / 5 * 2
+        
+        let titleImageWidth: CGFloat = imageLine - padding
+        let titleImageHeight: CGFloat = contentView.frame.height / 6 * 2
         
         print("PreviewCollectionViewCell: cotnetView = \(contentView.frame) imageLine = \(imageLine), titleImageHeight = \(titleImageHeight)")
         
-//        backView.snp.makeConstraints {
-//            $0.top.equalToSuperview().inset(yMargin)
-//            $0.leading.equalToSuperview().inset(xMargin)
-//            $0.height.width.equalTo(imageLine)
-//        }
+
         
         posterImage.snp.makeConstraints {
-//            $0.top.leading.trailing.bottom.equalToSuperview().inset(padding)
-//            $0.height.width.equalTo(imageLine - padding)
-            $0.top.equalToSuperview().inset(yMargin)
+            $0.top.equalToSuperview()
             $0.leading.equalToSuperview().inset(xMargin)
             $0.height.width.equalTo(imageLine)
         }
         
         titleImage.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(yMargin)
-            $0.leading.equalToSuperview()
+            $0.centerY.equalTo(posterImage.snp.bottom)
+            $0.centerX.equalToSuperview()
             $0.height.equalTo(titleImageHeight)
-            $0.width.equalTo(imageLine)
+            $0.width.equalTo(titleImageWidth)
             
         }
         
@@ -84,7 +76,6 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Configure
     func configure(color: UIColor, poster: UIImage, title: UIImage) {
-//        self.backView.backgroundColor = color
         self.posterImage.image = poster
         self.titleImage.image = title
     }
