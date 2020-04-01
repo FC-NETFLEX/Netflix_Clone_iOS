@@ -1,77 +1,56 @@
 //
-//  HomeTitleContentTableViewCell.swift
+//  HomeviewTitle.swift
 //  NetflixClone
 //
-//  Created by YoujinMac on 2020/03/25.
+//  Created by YoujinMac on 2020/03/30.
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
 import UIKit
 
-import SnapKit
-
-class HomeTitleContentTableViewCell: UITableViewCell {
-    
-    let identifier = "HomeTitleContentCell"
+class HomeviewTitle: UIView {
     
     private let titleImage = UIImageView()
-//    private let titleLabel = UILabel()
     private let categoryLabel = UILabel()
     private let dibsButton = UIButton()
     private let playButton = UIButton()
     private let infoButton = UIButton()
     
-//    private let setupPlayButtonView = UIView()
+//    private let gradientLayer: CAGradientLayer = {
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.backgroundColor = UIColor.clear.cgColor
+//        gradientLayer.colors = [UIColor.black.cgColor, UIColor.gray.cgColor, UIColor.clear.cgColor]
+//        return gradientLayer
+//    }()
     
-//    private var title: String
+    private let gradationLayer = CAGradientLayer()
     
-    
-    init(style: UITableViewCell.CellStyle, reuseIdentifier: String) {
-//        self.title = title
-
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
+        setUI()
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    
     //MARK: - UI
     
-    // 재생버튼에 올라갈 뷰
-//    private func setPlayButtonView() {
-//        let playImage = UIImageView()
-//        let playText = UILabel()
-//
-//        playImage.image = UIImage(systemName: "play.fill")
-//        playImage.tintColor = .black
-//
-//        playText.text = "재생"
-//        playText.textColor = .black
-//
-//        setupPlayButtonView.addSubview(playImage)
-//        setupPlayButtonView.addSubview(playText)
-//
-//
-//    }
-    
     private func setUI() {
-//        setPlayButtonView()
         
         let textTintColor: UIColor = .white
-        let categoryFont: UIFont = .systemFont(ofSize: 8)
+        let categoryFont: UIFont = .boldSystemFont(ofSize: 10)
         
+        titleImage.contentMode = .scaleAspectFill
         
         categoryLabel.textColor = textTintColor
         categoryLabel.font = categoryFont
-
+        
         
         dibsButton.tintColor = textTintColor
         
-//        playButton.imageView =
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         playButton.tintColor = .black
         playButton.backgroundColor = textTintColor
@@ -80,37 +59,68 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-       
-        contentView.addSubview(titleImage)
         
+        
+        addSubview(titleImage)
+//        titleImage.layer.addSublayer(gradientLayer)
         [categoryLabel, dibsButton, playButton, infoButton].forEach {
             titleImage.addSubview($0)
         }
-    
-
+        
         
     }
+   
     
     private func setConstraints() {
         
-
+        let xMargin: CGFloat = CGFloat.dynamicXMargin(margin: 16)
+        let yMargin: CGFloat = CGFloat.dynamicYMargin(margin: 8)
+        
+        let miniButtonWith: CGFloat = xMargin
+        let miniButtonHeight: CGFloat = xMargin + yMargin
+        
         titleImage.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.top.leading.bottom.trailing.equalToSuperview()
+        }
+        
+       
+        dibsButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(yMargin)
+            $0.leading.equalToSuperview().inset(xMargin)
+            $0.height.equalTo(miniButtonHeight)
+            $0.width.equalTo(miniButtonWith)
+            
+        }
+        
+        playButton.snp.makeConstraints {
+            $0.centerY.equalTo(dibsButton.snp.centerY)
+            $0.centerX.equalTo(titleImage.snp.centerX)
+            $0.height.equalTo(miniButtonHeight)
+            $0.width.equalToSuperview().multipliedBy(0.3)
+            //            $0.width.equalTo(playButtonWith)
+        }
+        
+        infoButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(yMargin)
+            $0.trailing.equalToSuperview().inset(xMargin)
+            $0.height.equalTo(miniButtonHeight)
+            $0.width.equalTo(miniButtonWith)
         }
         
         categoryLabel.snp.makeConstraints {
-            $0.bottom
+            $0.bottom.equalTo(dibsButton.snp.top).inset(-yMargin)
+            $0.centerX.equalTo(titleImage.snp.centerX)
         }
+        
         
     }
     
+
     
     // MARK: - configure
-
     func configure(poster: UIImage, category: [String], dibs: Bool) {
+        print("HomeTitle: configure")
+        
         var categoryText: String = ""
         
         category.forEach {
@@ -125,9 +135,8 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         } else {
             dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
         }
-
+        
         print("configure categoryText = \(categoryText)")
-
         
     }
     
@@ -140,9 +149,8 @@ class HomeTitleContentTableViewCell: UITableViewCell {
         
     }
     
-
     @objc private func didTabInfoButton(sender: UIButton) {
-
         
     }
+    
 }
