@@ -5,10 +5,18 @@
 //  Created by 양중창 on 2020/03/24.
 //  Copyright © 2020 Netflex. All rights reserved.
 //
-// 데이터 들어와 뷰에 나타나지 않음.
+//싱글톤.쉐어드.겟토큰
 import UIKit
 
+enum ProfileRoots {
+    case main
+    case manager
+    case add
+}
+
 class ProfileViewController: UIViewController {
+    
+    var root: ProfileRoots
     
     private let userView0 = UIView()
     private let userView1 = UIView()
@@ -16,66 +24,93 @@ class ProfileViewController: UIViewController {
     private let userView3 = UIView()
     private let userView4 = UIView()
     private let titleLabel = UILabel()
-    private let buttonView0 = UIView()
-    private let buttonView1 = UIView()
-    private let buttonView2 = UIView()
-    private let buttonView3 = UIView()
-    
+   
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
-    var userNameArray = ["데이터"]
+    
+    var userNameArray = [String]()
     var kidsState = true
     
     private var isStateArray = [Bool]()
     
+    init(root: ProfileRoots) {
+        self.root = root
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setConstraints()
-        setNavigationBar()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewSetting()
+        setNavigationBar()
         
     }
     private func setUI() {
         
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        [userView0,userView1,userView2,userView3,userView4,buttonView0,buttonView1,buttonView2,buttonView3].forEach {
+        [userView0,userView1,userView2,userView3,userView4].forEach {
             userViewArray.append($0)
             view.addSubview($0)
         }
-        
-        
-        
     }
     func setNavigationBar() {
-        
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = UIColor.clear
         
-        navigationController?.navigationBar.topItem?.title = "Netflix를 시청할 프로필을 선택하세요."
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
         
-        let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
-        changeButton.tintColor = .setNetfilxColor(name: .white)
-        changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
-        navigationItem.rightBarButtonItem = changeButton
-        
-        
-        
+        switch root {
+        case .main:
+            profileViewArray.forEach {
+                $0.setHidden(state: true)
+            }
+            title = "Netflix를 시청할 프로필을 선택하세요."
+            
+            let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
+            changeButton.tintColor = .setNetfilxColor(name: .white)
+            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            navigationItem.rightBarButtonItem = changeButton
+        case .manager:
+            profileViewArray.forEach {
+                $0.setHidden(state: false)
+            }
+            title = "프로필 관리."
+            
+            let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(changeButtonDidTap))
+            completeButton.tintColor = .setNetfilxColor(name: .white)
+            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            navigationItem.leftBarButtonItem = completeButton
+        case .add:
+            title = "Netflix를 시청할 프로필을 선택하세요."
+            let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
+            changeButton.tintColor = .setNetfilxColor(name: .white)
+            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            navigationItem.rightBarButtonItem = changeButton
+            //왼쪽 완료버튼 만들기
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let changeVC = ChangeProfileViewController(root: .add)
+                self.navigationController?.pushViewController(changeVC, animated: true)
+            }
+        }
     }
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
-        let padding: CGFloat = 10
-        [userView0,userView1,userView2,userView3,userView4,buttonView0,buttonView1,buttonView2,buttonView3].forEach {
+        [userView0,userView1,userView2,userView3,userView4].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
@@ -98,23 +133,6 @@ class ProfileViewController: UIViewController {
         userView4.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView4.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 5).isActive = true
         userView4.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-       //////////////////////////------------------------------------------------------------------------------------------------------------------//////////////////////////////////////////
-        buttonView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 15).isActive = true
-        buttonView0.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        buttonView0.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        buttonView1.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
-        buttonView1.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        buttonView1.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        buttonView2.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
-        buttonView2.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        buttonView2.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        buttonView3.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        buttonView3.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 5).isActive = true
-        buttonView3.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
         
     }
     private func viewSetting() {
@@ -128,7 +146,6 @@ class ProfileViewController: UIViewController {
                 tempProfileView.profileLabel.text = userNameArray[index]
                 userView.addSubview(tempProfileView)
                 profileViewArray.append(tempProfileView)
-                print(tempProfileView)
                 tempProfileView.delegate = self
                 
                 
@@ -148,67 +165,78 @@ class ProfileViewController: UIViewController {
                 tempAddView.leadingAnchor.constraint(equalTo: userView.leadingAnchor).isActive = true
                 tempAddView.trailingAnchor.constraint(equalTo: userView.trailingAnchor).isActive = true
                 tempAddView.bottomAnchor.constraint(equalTo: userView.bottomAnchor).isActive = true
-                tempAddView.heightAnchor.constraint(equalTo: userViewArray[0].heightAnchor).isActive = true
+                tempAddView.heightAnchor.constraint(equalTo: userView0.widthAnchor).isActive = true
+                
             }
         }
     }
-    
-    
-    
-    // 변경 버튼 눌렀을 때 네비게이션 타이틀 변경, 완료버튼 생성, 펜슬블러뷰
-    private var viewsState = true
-    @objc private func changeButtonDidTap() {
-        viewsState.toggle()
-        profileViewArray.forEach {
-            $0.setHidden(state: viewsState)
-            navigationController?.navigationBar.topItem?.title = "프로필 관리"
-            navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white,NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .regular)]
-           
-            let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
-            completeButton.tintColor = .setNetfilxColor(name: .white)
-            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
-            navigationItem.leftBarButtonItem = completeButton
-            navigationItem.rightBarButtonItem = nil
-            
-        }
+    private func rightNavigateionMake() {
+        title = "프로필 관리"
+         navigationItem.rightBarButtonItem = nil
+        let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
+        completeButton.tintColor = .setNetfilxColor(name: .white)
+        completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+        navigationItem.leftBarButtonItem = completeButton
         
     }
-    //완료 버튼 누르면 다시 처음 상태로
-    @objc private func completeButtonDidTap() {
-        viewsState.toggle()
+    private func leftNavigationMake() {
+        title = "Netflix를 시청할 프로필을 선택하세요."
+        navigationItem.leftBarButtonItem = nil
+        let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
+        changeButton.tintColor = .setNetfilxColor(name: .white)
+        changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+        navigationItem.rightBarButtonItem = changeButton
+        
+    }
+    
+    // 변경 버튼 눌렀을 때 네비게이션 타이틀 변경, 완료버튼 생성, 펜슬블러뷰
+    @objc private func changeButtonDidTap() {
         profileViewArray.forEach {
-            $0.setHidden(state: viewsState)
-            setNavigationBar()
-            navigationItem.leftBarButtonItem = nil
+            $0.setHidden(state: false)
+        }
+        rightNavigateionMake()
+        
+    }
+    //메인 프로필에서 완료 버튼 누르면 다시 처음 상태로
+    @objc private func completeButtonDidTap() {
+         leftNavigationMake()
+
+        switch root {
+        case .main:
+            profileViewArray.forEach {
+                $0.setHidden(state: true)
+                setNavigationBar()
+                print("메인완료")
+            }
+        case .manager:
+            dismiss(animated: true)
+            print("프로필관리완료")
+        case .add:
+            break
         }
     }
 }
 extension ProfileViewController: ProfilViewDelegate {
     func profileChangeButtonDidTap(blurView: UIView, pencilButton: UIButton) {
-        let changeVC = ChangeProfileViewController()
+        let changeVC = ChangeProfileViewController(root: .main)
         changeVC.modalPresentationStyle = .pageSheet
         present(changeVC, animated: true)
         print("체인지")
     }
-    
+    //프로필 선택하면 홈화면으로
     func profileButtonDidTap() {
-      
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            let tabBarController = TabBarController()
-            tabBarController.modalTransitionStyle = .crossDissolve
-            tabBarController.changeRootViewController()
-        }
-        print("프로필")
+        let tabBarController = TabBarController()
+        tabBarController.modalTransitionStyle = .crossDissolve
+        tabBarController.changeRootViewController()
     }
-    
 }
 // 플러스 버튼을 눌렀을때!!
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
         
-        let changeVC = ChangeProfileViewController()
+        let changeVC = ChangeProfileViewController(root: .main)
         navigationController?.pushViewController(changeVC, animated: true)
-       
+        
     }
 }
 
