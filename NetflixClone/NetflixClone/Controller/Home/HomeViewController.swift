@@ -14,7 +14,7 @@ final class HomeViewController: UIViewController {
     //    private let homeView = HomeView()
     private let homeTableView = UITableView(frame: .zero, style: .grouped)
     
-    private let cellCount = 1
+    private let cellCount = 2
     
     //MARK: header content
     private let firstCellItem = "titleDummy"
@@ -72,11 +72,16 @@ extension HomeViewController: UITableViewDelegate {
         
         print("homeVC: -> heightForRowAt")
         
+        let previewCellHeight: CGFloat = tableView.frame.height / 4
+        let posterCellHeight: CGFloat = tableView.frame.height / 3
+        
         switch indexPath.row {
         case 0:
-            print("homeVC: -> HeightForRowAt: case1")
-            print("homeVC: -> HeightForRowAt: -> case1: -> tableViewWidth \(homeTableView.frame.width), cellHeight \(view.frame.height / 3)")
-            return tableView.frame.height / 3
+            print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
+            return previewCellHeight
+//        case 1:
+//            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+//            return posterCellHeight
         default:
             return 100
         }
@@ -85,7 +90,7 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return tableView.frame.height / 3 * 2
+        return tableView.frame.height / 4 * 3
     }
     
     
@@ -106,7 +111,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellCount
+        return 1 //cellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
