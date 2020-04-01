@@ -67,8 +67,8 @@ class SignUpViewController: UIViewController {
         signUpButton.layer.cornerRadius = 5
         signUpButton.addTarget(self, action: #selector(touchSignUpButton(_:)), for: .touchUpInside)
         
-//        print(UIFont.dynamicFont(fontSize: 15, weight: .semibold))
-//        print(UIFont.systemFont(ofSize: 15, weight: .semibold))
+        print(UIFont.dynamicFont(fontSize: 15, weight: .semibold))
+        print(UIFont.systemFont(ofSize: 15, weight: .semibold))
         
         setConstraint()
     }
@@ -95,7 +95,7 @@ class SignUpViewController: UIViewController {
     
     private func setConstraint() {
         let widthMultiplier: CGFloat = 0.85
-        let yMargin = CGFloat.dynamicYMargin(margin: 100)
+        let yMargin = CGFloat.dinamicYMargin(margin: 100)
         let guide = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
@@ -129,11 +129,7 @@ class SignUpViewController: UIViewController {
         guard let email = emailTextField.text, let pw = confirmPWTextField.text else {
             return
         }
-        let param = ["email": email, "password": pw]
-        
-        guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
-        
-        APIManager().requestOfPost(url: APIURL.createUser, data: data, completion: {
+        APIManager().requestOfPost(url: APIURL.createUser, data: ["email": email, "password": pw], token: nil, completion: {
             [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -144,23 +140,15 @@ class SignUpViewController: UIViewController {
             case .success(let data):
                 // 회원가입이 완료된것이 아니라 서버와의 통신이 성공한거
                 guard let data = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
-//                dump(data)
-                guard let _ = data["id"] as? Int else {
-                    
-                    if let notice = data["email"] as? [String] {
-//                        print(notice)
-                        UIAlertController(title: "회원가입", message: notice.first ?? "다시 시도해 주세요", preferredStyle: .alert).noticePresent(viewController: self)
+                guard let _ = data["token"] as? String else {
+                    if let notice  = try? data["email"] as? String {
+                        UIAlertController(title: "로그인", message: notice, preferredStyle: .alert).noticePresent(viewController: self)
                     }
                     return
                 }
-                
                 // 회원가입 성공
-                UIAlertController(title: "회원가입", message: "회원가입성공", preferredStyle: .alert).noticePresent(viewController: self, completion: {
-                    [weak self]  in
-                    let loginVC = LoginViewController()
-                    self?.navigationController?.pushViewController(loginVC, animated: true)
-                })
-                
+                let loginVC = LoginViewController()
+                self.navigationController?.pushViewController(loginVC, animated: true)
             }
         })
     }

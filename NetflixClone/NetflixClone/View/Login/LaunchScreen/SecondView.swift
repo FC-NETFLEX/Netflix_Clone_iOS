@@ -53,8 +53,8 @@ class SecondView: UIView {
     }
     
     private func setConstraints() {
-        let gapOfLabel = CGFloat.dynamicYMargin(margin: 25)
-        let imageBottom = CGFloat.dynamicYMargin(margin: 10)
+        let gapOfLabel = CGFloat.dinamicYMargin(margin: 25)
+        let imageBottom = CGFloat.dinamicYMargin(margin: 10)
         
         NSLayoutConstraint.activate([
             textLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),

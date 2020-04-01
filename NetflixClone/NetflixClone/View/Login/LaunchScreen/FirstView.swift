@@ -45,7 +45,7 @@ class FirstView: UIView {
     }
     
     private func setConstraints() {
-        let gapOfLabel = CGFloat.dynamicYMargin(margin: 25)
+        let gapOfLabel = CGFloat.dinamicYMargin(margin: 25)
                 
         NSLayoutConstraint.activate([
             textLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),

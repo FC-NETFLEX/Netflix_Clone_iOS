@@ -6,138 +6,25 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import AVKit
-//enum RootVC {
-//    case main
-//    case edite
-//    case normal
-//}
+import UIKit
 
 class MoreViewController: UIViewController {
-   
 
-    private let tempLogoutbutton = UIButton(type: .system)
-    private let tempVideoButton = UIButton(type: .system)
-    private let tempAddProfileButton = UIButton(type: .system)
-    private let tempProfileManagerButton = UIButton(type: .system)
-    private let tempChoiceProfileButton = UIButton(type: .system)
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        testUI()
-        testConstraint()
-    }
-
-}
-
-
-// MARK: Test
-extension MoreViewController {
-    
-    private func testUI() {
-        view.addSubview(tempLogoutbutton)
-        tempLogoutbutton.setTitle("로그아웃", for: .normal)
-        tempLogoutbutton.tintColor = .white
-        tempLogoutbutton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        
-        view.addSubview(tempVideoButton)
-        tempVideoButton.setTitle("비디오", for: .normal)
-        tempVideoButton.tintColor = .white
-        tempVideoButton.addTarget(self, action: #selector(didTapVideoButton), for: .touchUpInside)
-        
-        view.addSubview(tempAddProfileButton)
-        tempAddProfileButton.setTitle("프로필추가", for: .normal)
-        tempAddProfileButton.tintColor = .white
-        tempAddProfileButton.addTarget(self, action: #selector(didTapTempAddProfileButton), for: .touchUpInside)
-        
-        view.addSubview(tempProfileManagerButton)
-        tempProfileManagerButton.setTitle("프로필관리", for: .normal)
-        tempProfileManagerButton.tintColor = .white
-        tempProfileManagerButton.addTarget(self, action: #selector(didTapTempProfileManagerButton), for: .touchUpInside)
-        
-        view.addSubview(tempChoiceProfileButton)
-        tempChoiceProfileButton.setTitle("첫화면프로필선택", for: .normal)
-        tempChoiceProfileButton.tintColor = .white
-        tempChoiceProfileButton.addTarget(self, action: #selector(didTapTempChoiceProfileButton), for: .touchUpInside)
-        
-        
-        
+        // Do any additional setup after loading the view.
     }
     
-    private func testConstraint() {
-        tempLogoutbutton.frame.size = CGSize(width: 80, height: 40)
-        tempLogoutbutton.center.x = view.center.x
-        tempLogoutbutton.center.y = view.center.y + 200
-        
-        tempVideoButton.frame.size = CGSize(width: 80, height: 40)
-        tempVideoButton.center.x = view.center.x
-        tempVideoButton.center.y = tempLogoutbutton.center.y - 100
-        
-        tempAddProfileButton.frame.size = CGSize(width: 80, height: 40)
-        tempAddProfileButton.center.x = view.center.x
-        tempAddProfileButton.center.y = tempVideoButton.center.y - 100
-        
-        tempProfileManagerButton.frame.size = CGSize(width: 80, height: 40)
-        tempProfileManagerButton.center.x = view.center.x
-        tempProfileManagerButton.center.y = tempAddProfileButton.center.y - 100
-        
-        tempChoiceProfileButton.frame.size = CGSize(width: 120, height: 40)
-        tempChoiceProfileButton.center.x = view.center.x
-        tempChoiceProfileButton.center.y = tempProfileManagerButton.center.y - 100
-    }
-    
-    @objc private func didTapLogoutButton() {
-        LoginStatus.shared.logout()
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = appDelegate.window
-        let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        
-    }
-    
-    @objc private func didTapVideoButton() {
-        
-        let urlString = "ttps://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/%E1%84%89%E1%85%A6%E1%86%AB%E1%84%90%E1%85%A5%E1%84%85%E1%85%B3%E1%86%AF+%E1%84%91%E1%85%A9%E1%84%90%E1%85%A9+300%E1%84%80%E1%85%A2%E1%84%85%E1%85%A9+%E1%84%81%E1%85%AA%E1%86%A8%E1%84%81%E1%85%AA%E1%86%A8+%E1%84%8E%E1%85%A2%E1%84%8B%E1%85%AE%E1%84%86%E1%85%A7%E1%86%AB+%E1%84%89%E1%85%A2%E1%86%BC%E1%84%80%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB+%E1%84%8B%E1%85%B5%E1%86%AF.mp4"
-        presentVideoController(urlString: urlString, title: "Test")
-        
 
-    }
-    @objc private func didTapTempAddProfileButton() {
-        
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
-        
-    }
-    @objc private func didTapTempChoiceProfileButton() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = appDelegate.window
-        let rootViewController = UINavigationController(rootViewController: ProfileViewController())
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        let profileVC = ProfileViewController()
+    /*
+    // MARK: - Navigation
 
-        navigationController?.pushViewController(profileVC, animated: true)
-        
-        
-               
-//        let profileVC = ProfileViewController()
-//        modalPresentationStyle = .automatic
-//        present(profileVC, animated: true)
-        
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
     }
-    @objc private func didTapTempProfileManagerButton() {
-        
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
-        
-    }
-    
+    */
+
 }

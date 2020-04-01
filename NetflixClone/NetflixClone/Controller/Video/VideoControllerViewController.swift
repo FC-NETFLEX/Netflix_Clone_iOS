@@ -1,19 +1,18 @@
 //
-//  SearchViewController.swift
+//  VideoControllerViewController.swift
 //  NetlixClone
 //
 //  Created by 양중창 on 2020/03/24.
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import UIKit
+import AVKit
 
-class SearchViewController: UIViewController {
+class VideoController: AVPlayerViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
     }
     
 
