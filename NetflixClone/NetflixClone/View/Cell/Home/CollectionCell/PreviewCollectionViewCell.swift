@@ -9,7 +9,7 @@
 import UIKit
 
 class PreviewCollectionViewCell: UICollectionViewCell {
-    static let identifier = "PreviewCVCell"
+    static let identifier = "PreviewCVC"
     
     private let posterImage = UIImageView()
     private let titleImage = UIImageView()
@@ -33,9 +33,9 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         posterImage.layer.borderColor = UIColor.setNetfilxColor(name: .netflixRed).cgColor
         posterImage.layer.borderWidth = 3
         posterImage.layer.cornerRadius = posterImageRound
-        posterImage.layer.masksToBounds = true
-        
+
         posterImage.contentMode = .scaleAspectFill
+        posterImage.clipsToBounds = true
         
         titleImage.contentMode = .scaleAspectFit
         
@@ -54,9 +54,6 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         let titleImageWidth: CGFloat = imageLine - padding
         let titleImageHeight: CGFloat = contentView.frame.height / 6 * 2
         
-        print("PreviewCollectionViewCell: cotnetView = \(contentView.frame) imageLine = \(imageLine), titleImageHeight = \(titleImageHeight)")
-        
-
         
         posterImage.snp.makeConstraints {
             $0.top.equalToSuperview()

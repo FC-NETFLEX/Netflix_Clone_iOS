@@ -109,34 +109,27 @@ extension MoreViewController {
 
     }
     @objc private func didTapTempAddProfileButton() {
+        let profileVC = ProfileViewController(root: .add)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("추가")
+        present(navi, animated: true)
         
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
         
     }
     @objc private func didTapTempChoiceProfileButton() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = appDelegate.window
-        let rootViewController = UINavigationController(rootViewController: ProfileViewController())
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        let profileVC = ProfileViewController()
-
-        navigationController?.pushViewController(profileVC, animated: true)
+        let profileVC = ProfileViewController(root: .main)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("메인")
+        present(navi, animated: true)
         
-        
-               
-//        let profileVC = ProfileViewController()
-//        modalPresentationStyle = .automatic
-//        present(profileVC, animated: true)
         
     }
     @objc private func didTapTempProfileManagerButton() {
         
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
+        let profileVC = ProfileViewController(root: .manager)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("관리")
+        present(navi, animated: true)
         
     }
     
