@@ -22,7 +22,7 @@ class ProfileImageViewController: UIViewController {
         setUI()
         setConstraints()
 //        setNavigationBar()
-        
+        requestProfileImage()
         
     }
 //    private func setNavigationBar() {
@@ -63,6 +63,20 @@ class ProfileImageViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         
+    }
+    
+    private func requestProfileImage() {
+        guard let token = LoginStatus.shared.getToken() else { return }
+        
+        APIManager().requestOfGet(url: .iconList, token: token, completion: {
+            result in
+            switch result {
+            case .success(let data):
+                print(String(data: data, encoding: .utf8))
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
 
 }
