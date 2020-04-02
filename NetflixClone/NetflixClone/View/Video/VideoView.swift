@@ -16,35 +16,30 @@ protocol VideoViewDelegate: class {
     func changeTracking(time: Int64) -> UIImage?
     
     func endTracking(time: Int64)
+    
+    func play()
+    
+    func pause()
+    
+    func step(time: Int64)
+    
+
 }
 
-//class TestBtn: UIButton {
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Test Button Hit View :", hitView)
-//        return hitView
-//    }
-//}
 
 class CircleView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        print(frame)
         layer.cornerRadius = frame.width / 2
     }
     
 }
 
+
+
+
+
 class VideoView: UIView {
-    
-    
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Video View Hit View :", hitView)
-//        return hitView
-//    }
-    
-    
     
     weak var delegate: VideoViewDelegate?
     
@@ -80,6 +75,8 @@ class VideoView: UIView {
     }
 //    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
     private let animationDuration = 0.2
+    
+    private var lastActionTime = Date()
     
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
     
@@ -173,7 +170,8 @@ class VideoView: UIView {
         let controlFont = UIFont.dynamicFont(fontSize: 16, weight: .regular)
         
         loadingIndicator.hidesWhenStopped = true
-//        isLoading = true
+        isLoading = true
+        autoDisappeareControlView()
         
         seekPointView.isHidden = true
         
@@ -192,7 +190,7 @@ class VideoView: UIView {
         exitButton.tintColor = .setNetfilxColor(name: .white)
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
         
-        playButtonImageView.image = UIImage(systemName: "play.fill")
+        playButtonImageView.image = UIImage(systemName: "pause.fill")
         playButtonImageView.tintColor = .setNetfilxColor(name: .white)
         
         playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
@@ -417,7 +415,14 @@ class VideoView: UIView {
     
     // 더블탭 제스처의 처리
     @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
-        print(#function)
+        let location = gesture.location(in: self)
+        let point = location.x
+        let guide = bounds.width / 2
+        if point >= guide {
+            didTapSlipButton()
+        } else {
+            didTapRewindButton()
+        }
     }
     
     // 탭 제스처의 처리
@@ -425,8 +430,32 @@ class VideoView: UIView {
         isControlAppear.toggle()
     }
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        autoDisappeareControlView()
+        return hitView
+    }
+    
     
     //MARK: Action
+    
+    // 모든 터치 동작에 대해 일정 시간동안 아무것도 안하면 컨트롤화면이 사라지게하는 함수
+    private func autoDisappeareControlView() {
+        lastActionTime = Date()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: {
+                    [weak self] in
+                    
+                    guard let self = self else { return }
+                    let currentTime = Date()
+                    let dateInterval = DateInterval(start: self.lastActionTime, end: currentTime)
+                    let timeInterval = dateInterval.duration
+                    guard timeInterval >= 9 && self.playSlider.state.rawValue != 1 else {
+                        return
+                    }
+                    self.isControlAppear = false
+                })
+    }
+    
     
     // 최초 playSlider의 maximum 값과 현재 재생 구간을 설정
     func setDefaultSlider(timeRange: Int64, currentTime: Int64) {
@@ -522,14 +551,15 @@ class VideoView: UIView {
         let value = Int64(sender.value)
         configureSeekPontView(value: value)
         setSeekPointViewFrame(center: getThumbCenterX(sender: sender))
-        
     }
     
     // playSlider의 tracking 끝
     @objc private func endTrackingPlaySlider(_ sender: UISlider) {
+        autoDisappeareControlView()
         let value = Int64(sender.value)
         endTrackingAnimation()
         seekPointView.isHidden = true
+        isPlaying = true
         delegate?.endTracking(time: value)
     }
     
@@ -568,31 +598,55 @@ class VideoView: UIView {
     // 로딩 상황에 뷰 세팅
     private func startLoading() {
         loadingIndicator.startAnimating()
-        playButton.isHidden = true
+        playButtonBackgroundView.isHidden = true
     }
     
     // 로딩이 끝난 상황에 뷰 세팅
     private func finishedLoading() {
         loadingIndicator.stopAnimating()
-        playButton.isHidden = false
+        playButtonBackgroundView.isHidden = false
     }
     
     @objc private func didTapPlayButton() {
         print(#function)
         isPlaying.toggle()
+        if isPlaying {
+            delegate?.play()
+        } else {
+            delegate?.pause()
+        }
     }
     
     @objc private func didTapSlipButton() {
 //        print(#function)
-        let timeIntervalString = "10"
+        let timeIntervarForStep: Int64 = 10
+        let timeIntervalString = "+" + String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
         flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
         
     }
     
     @objc private func didTapRewindButton() {
 //        print(#function)
-        let timeInervalString = "10"
+        let timeIntervarForStep: Int64 = -10
+        let timeInervalString = String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
         flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
+    }
+    
+    private func stepSlider(timeInterval: Int64) -> Int64{
+        let value = playSlider.value + Float(timeInterval)
+//        playSlider.value = value
+//        return Int64(playSlider.value)
+        return Int64(value)
     }
     
     // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
@@ -606,8 +660,7 @@ class VideoView: UIView {
         let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
         let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
         
-        let actionText = (isRewind ? "-": "+") + timeIntervalString
-        actionLabel.text = actionText
+        actionLabel.text = timeIntervalString
         
         let range: CGFloat = .dynamicYMargin(margin: 200)
         let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
@@ -643,16 +696,16 @@ class VideoView: UIView {
             actionLabel.transform = .identity
         })
         
-        
+        isPlaying = true
     }
     
     private func playAction() {
-        let imageName = "play.fill"
+        let imageName = "pause.fill"
         playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     private func pauseAction() {
-        let imageName = "pause.fill"
+        let imageName = "play.fill"
         playButtonImageView.image = UIImage(systemName: imageName)
     }
     
