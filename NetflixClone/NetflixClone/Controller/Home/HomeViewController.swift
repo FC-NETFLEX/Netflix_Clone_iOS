@@ -34,10 +34,10 @@ final class HomeViewController: UIViewController {
         setConstraints()
     }
     
-
+    
     //MARK: - UI
     private func setUI() {
-//        homeTableView.frame = view.frame
+        //        homeTableView.frame = view.frame
         
         homeTableView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
         homeTableView.dataSource = self
@@ -45,21 +45,21 @@ final class HomeViewController: UIViewController {
         
         homeTableView.contentInsetAdjustmentBehavior = .never
         
-
+        
         homeTableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
         
         view.addSubview(homeTableView)
-    
+        
     }
     private func setConstraints() {
         homeTableView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
-//            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
-//            $0.bottom.equalTo(additionalSafeAreaInsets)
+            //            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
+            //            $0.bottom.equalTo(additionalSafeAreaInsets)
         }
     }
-
+    
     
 }
 
@@ -79,9 +79,9 @@ extension HomeViewController: UITableViewDelegate {
         case 0:
             print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
             return previewCellHeight
-//        case 1:
-//            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
-//            return posterCellHeight
+            //        case 1:
+            //            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+        //            return posterCellHeight
         default:
             return 100
         }
@@ -102,9 +102,9 @@ extension HomeViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
-
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
+        
         let header = HomeviewTitle()
         header.configure(poster: UIImage(named: firstCellItem)!, category: firstCategory, dibs: dibsFlag)
         return header
@@ -121,7 +121,7 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
         
         cell.delegate = self
-
+        
         cell.configure(id: idPreview, poster: posterPreview as! [UIImage], titleImage: titleImagePreview as! [UIImage])
         
         return cell
