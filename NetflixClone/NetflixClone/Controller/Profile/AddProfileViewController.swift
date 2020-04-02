@@ -1,17 +1,23 @@
 //
-//  AddProfileViewController.swift
+//  ChangeProfileViewController.swift
 //  NetflixClone
 //
-//  Created by 정유경 on 2020/04/01.
+//  Created by 정유경 on 2020/03/27.
 //  Copyright © 2020 Netflex. All rights reserved.
 //
-
+// 1. 텍스트필드 눌렀을때 화면 움직이게
+// 2.
 import UIKit
-
-class AddeProfileViewController: UIViewController {
+enum ChangeRoots {
+    case main
+    case add
+    case manager
+}
+class ChangeProfileViewController: UIViewController {
     
+    var root: ChangeRoots
     private let addProfileView = AddProfileView()
-    private let kidsView = KidsCustomView()
+    private let changeView = ChangeCustomView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +27,10 @@ class AddeProfileViewController: UIViewController {
         setNavigationBar()
         
     }
+    init(root: ChangeRoots) {
+           self.root = root
+           super.init(nibName: nil, bundle: nil)
+       }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -33,7 +43,7 @@ class AddeProfileViewController: UIViewController {
         let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didTapCancelButton(_:)))
         cancelButton.tintColor = .white
         navigationItem.leftBarButtonItem = cancelButton
-        
+      
         let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(didTapSaveButton(_:)))
         saveButton.tintColor = .gray
         navigationItem.rightBarButtonItem = saveButton
@@ -41,31 +51,24 @@ class AddeProfileViewController: UIViewController {
     }
     private func setUI() {
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        [addProfileView, kidsView].forEach {
+        [addProfileView,changeView].forEach {
             view.addSubview($0)
         }
         addProfileView.delegate = self
         addProfileView.nickNameTextfield.delegate = self
-        
         
     }
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let padding: CGFloat = 20
-        [addProfileView].forEach {
+        [addProfileView,changeView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         addProfileView.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -padding).isActive = true
-        addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor, constant: padding * 2).isActive = true
-        
-        addProfileView.topAnchor.constraint(equalTo: addProfileView.bottomAnchor).isActive = true
-        addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
-        addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -padding).isActive = true
-        addProfileView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
-        
+        addProfileView.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -padding * 2).isActive = true
         
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -75,30 +78,44 @@ class AddeProfileViewController: UIViewController {
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
         for vc in navigationController!.viewControllers.reversed() {
-            if let profileVC = vc as? ProfileViewController {
+             if let profileVC = vc as? ProfileViewController {
+            switch root {
+            case .main,.manager:
+               profileVC.root = .main
+                navigationController?.popViewController(animated: true)
+            case .add:
                 profileVC.root = .main
                 navigationController?.popViewController(animated: true)
+                }
             }
         }
+//        navigationController?.popViewController(animated: true)
     }
     
     @objc private func didTapSaveButton(_ sender: Any) {
         
         guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
-        let kidsState = kidsView.kidsSwitch.isOn
+        let kidsState = addProfileView.kidsSwitch.isOn
         
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
-                
+            switch root {
+            case .main,.manager:
                 profileVC.root = .main
                 profileVC.userNameArray.append(userName)
                 profileVC.kidsState = kidsState
                 navigationController?.popViewController(animated: true)
-                
+            case .add:
+                profileVC.root = .main
+                profileVC.userNameArray.append(userName)
+                profileVC.kidsState = kidsState
+                navigationController?.popViewController(animated: true)
+                }
             }
         }
-        
-        print(userName,"키즈용:",kidsState)
+        //        guard let navi = presentingViewController as? ProfileViewController else { return }
+//        navi.userNameArray.append(userName)
+//        navigationController?.popViewController(animated: true)
         
         
     }
@@ -112,24 +129,17 @@ class AddeProfileViewController: UIViewController {
     }
     
 }
-extension AddeProfileViewController: KidsCustomViewDelegate {
-    func kidsSwitchDidTap() {
-        alertAction()
-    }
+extension ChangeProfileViewController: AddProfileViewDelegate {
     
-}
-extension AddeProfileViewController: AddProfileViewDelegate {
     func newProfileButtonDidTap() {
         print("이미지선택")
         let imageVC = ProfileImageViewController()
         imageVC.modalPresentationStyle = .overCurrentContext
         present(imageVC,animated: true)
     }
-    
-    
 }
 
-extension AddeProfileViewController: UITextFieldDelegate {
+extension ChangeProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         print("선택")
     }
