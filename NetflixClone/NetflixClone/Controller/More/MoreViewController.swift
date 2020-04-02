@@ -103,40 +103,33 @@ extension MoreViewController {
     
     @objc private func didTapVideoButton() {
         
-        let urlString = "ttps://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/%E1%84%89%E1%85%A6%E1%86%AB%E1%84%90%E1%85%A5%E1%84%85%E1%85%B3%E1%86%AF+%E1%84%91%E1%85%A9%E1%84%90%E1%85%A9+300%E1%84%80%E1%85%A2%E1%84%85%E1%85%A9+%E1%84%81%E1%85%AA%E1%86%A8%E1%84%81%E1%85%AA%E1%86%A8+%E1%84%8E%E1%85%A2%E1%84%8B%E1%85%AE%E1%84%86%E1%85%A7%E1%86%AB+%E1%84%89%E1%85%A2%E1%86%BC%E1%84%80%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB+%E1%84%8B%E1%85%B5%E1%86%AF.mp4"
+        let urlString = "ttps://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4"
         presentVideoController(urlString: urlString, title: "Test")
         
 
     }
     @objc private func didTapTempAddProfileButton() {
+        let profileVC = ProfileViewController(root: .add)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("추가")
+        present(navi, animated: true)
         
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
         
     }
     @objc private func didTapTempChoiceProfileButton() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = appDelegate.window
-        let rootViewController = UINavigationController(rootViewController: ProfileViewController())
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        let profileVC = ProfileViewController()
-
-        navigationController?.pushViewController(profileVC, animated: true)
+        let profileVC = ProfileViewController(root: .main)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("메인")
+        present(navi, animated: true)
         
-        
-               
-//        let profileVC = ProfileViewController()
-//        modalPresentationStyle = .automatic
-//        present(profileVC, animated: true)
         
     }
     @objc private func didTapTempProfileManagerButton() {
         
-        let profileVC = ProfileViewController()
-        modalPresentationStyle = .fullScreen
-        present(profileVC, animated: true)
+        let profileVC = ProfileViewController(root: .manager)
+        let navi = UINavigationController(rootViewController: profileVC)
+        print("관리")
+        present(navi, animated: true)
         
     }
     
