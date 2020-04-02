@@ -31,7 +31,7 @@ struct APIManager {
     func requestOfGet(
         
         url: APIURL,
-        data: [String: String] = [:],
+        data: [String: String]? = nil,
         token: String?,
         completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask? {
         
@@ -40,12 +40,15 @@ struct APIManager {
             return nil
         }
         var queryItems: [URLQueryItem] = []
-        for (key, value) in data {
-            let queryItem = URLQueryItem(name: key, value: value)
-            queryItems.append(queryItem)
+        if let data = data {
+            for (key, value) in data {
+                let queryItem = URLQueryItem(name: key, value: value)
+                queryItems.append(queryItem)
+            }
+            urlComponents.queryItems = queryItems
         }
+       
         
-        urlComponents.queryItems = queryItems
         
         guard let url = urlComponents.url else {
             completion(.failure(APIError.badURL))
