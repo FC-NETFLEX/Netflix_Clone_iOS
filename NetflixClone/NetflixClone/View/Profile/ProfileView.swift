@@ -81,6 +81,7 @@ class ProfileView: UIView {
             profileButton.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.8).isActive = true
             profileButton.widthAnchor.constraint(equalTo: profileButton.heightAnchor).isActive = true
             
+//            profileLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
             profileLabel.topAnchor.constraint(equalTo: profileButton.bottomAnchor, constant: padding / 2).isActive = true
             profileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
             
