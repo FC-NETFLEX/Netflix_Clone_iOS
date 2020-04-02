@@ -271,7 +271,7 @@ extension VideoController {
 //                player?.seek(to: seekTime)
 //                player?.play()
                 seekPlayPoint(seekTime: videoModel.currentTime)
-                
+                videoView.isLoading = false
             case .failed:
                 print(#function)
                 print("failed")
@@ -296,15 +296,15 @@ extension VideoController {
         
         timeObserverToken = player?.addPeriodicTimeObserver(forInterval: time, queue: .main, using: {
             [weak self] time in
+            guard let self = self else { return }
+            
             let currentTime = time.value / Int64(NSEC_PER_SEC)
             
+            guard currentTime > 0 else { return }
             
-            guard
-                let restTime = self?.videoModel.getRestTime(currentTime: currentTime),
-                currentTime > 0
-                else { return }
-            self?.videoModel.currentTime = currentTime
-            self?.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
+            self.videoModel.currentTime = currentTime
+            let restTime = self.videoModel.getRestTime(currentTime: currentTime)
+            self.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
         })
         
     }
@@ -326,6 +326,18 @@ extension VideoController {
 private var lastImageRequestTime = Date()
 
 extension VideoController: VideoViewDelegate {
+    
+    func play() {
+        player?.play()
+    }
+    
+    func pause() {
+        player?.pause()
+    }
+    
+    func step(time: Int64) {
+        seekPlayPoint(seekTime: time)
+    }
     
     func biganTracking(time: Int64) {
         player?.pause()
@@ -353,18 +365,7 @@ extension VideoController: VideoViewDelegate {
 extension VideoController {
     private func test() {
         videoView.setDefaultSlider(timeRange: 1000, currentTime: videoModel.currentTime)
-        
-        guard let token = LoginStatus.shared.getToken() else { return }
-        print(token)
-        APIManager().requestOfGet(url: .iconList, token: token, completion: {
-            result in
-            switch result {
-            case .failure(let error):
-                print(error)
-            case .success(let data):
-                print(String(data: data, encoding: .utf8))
-            }
-        })
+       
     }
     
 //    private func getAssetImage(time: Int64, completionHandler: @escaping (CGImage?) -> Void) {

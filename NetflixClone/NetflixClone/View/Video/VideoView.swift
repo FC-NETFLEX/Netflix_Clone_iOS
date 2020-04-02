@@ -16,27 +16,30 @@ protocol VideoViewDelegate: class {
     func changeTracking(time: Int64) -> UIImage?
     
     func endTracking(time: Int64)
+    
+    func play()
+    
+    func pause()
+    
+    func step(time: Int64)
+    
+
 }
 
-//class TestBtn: UIButton {
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Test Button Hit View :", hitView)
-//        return hitView
-//    }
-//}
+
+class CircleView: UIView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = frame.width / 2
+    }
+    
+}
+
+
+
 
 
 class VideoView: UIView {
-    
-    
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Video View Hit View :", hitView)
-//        return hitView
-//    }
-    
-    
     
     weak var delegate: VideoViewDelegate?
     
@@ -50,7 +53,7 @@ class VideoView: UIView {
         }
     }
     
-    private var isLoading = true {
+    var isLoading = true {
         didSet {
             if self.isLoading {
                 startLoading()
@@ -62,6 +65,7 @@ class VideoView: UIView {
     
     private var isPlaying = true {
         didSet {
+//            playButtonBackgroundView.setPlaying(self.isPlaying)
             if self.isPlaying {
                 playAction()
             } else {
@@ -72,6 +76,8 @@ class VideoView: UIView {
 //    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
     private let animationDuration = 0.2
     
+    private var lastActionTime = Date()
+    
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
     
     private let backgroundView = UIView()
@@ -81,12 +87,24 @@ class VideoView: UIView {
     private let titleLabel = UILabel()
     
     private let centerView = UIView()
+    
+//    private let rewindButtonBackgroundView = PlayPauseButton()
+    private let rewindButtonImageView = UIImageView()
     private let rewindButton = UIButton()
+    private let rewindButtonLabel = UILabel()
+    private let rewindInsideView = CircleView()
+    private let rewindButtonActionLabel = UILabel()
+    
+    private let slipButtonImageView = UIImageView()
+    private let slipButtonLabel = UILabel()
     private let slipButton = UIButton()
+    private let slipInsideView = CircleView()
+    private let slipButtonActionLabel = UILabel()
+    
+    
     private let playButton = UIButton()
-    private let playButtonBackgroundViewSegmentLeft = UIView()
-    private let playButtonBackgroundViewSegmentRight = UIView()
     private let playButtonBackgroundView = UIView()
+    private let playButtonImageView = UIImageView()
     
     private let bottomView = UIView()
     private let playSlider = UISlider()
@@ -113,6 +131,7 @@ class VideoView: UIView {
     
     //MARK: UI
     
+    
     private func setUI(title: String) {
         
         
@@ -128,7 +147,15 @@ class VideoView: UIView {
             centerView.addSubview($0)
         })
         
-        [playButton].forEach({
+        [slipButtonActionLabel, slipButtonLabel, slipButtonImageView, slipInsideView].forEach({
+            slipButton.addSubview($0)
+        })
+        
+        [rewindButtonActionLabel, rewindButtonLabel, rewindButtonImageView, rewindInsideView].forEach({
+            rewindButton.addSubview($0)
+        })
+        
+        [playButtonImageView, playButton].forEach({
             playButtonBackgroundView.addSubview($0)
         })
         
@@ -140,8 +167,12 @@ class VideoView: UIView {
             seekPointView.addSubview($0)
         })
         
+        let controlFont = UIFont.dynamicFont(fontSize: 16, weight: .regular)
+        
         loadingIndicator.hidesWhenStopped = true
-//        loadingIndicator.startAnimating()
+        isLoading = true
+        autoDisappeareControlView()
+        
         seekPointView.isHidden = true
         
         seekPointTimeLabel.textAlignment = .center
@@ -159,16 +190,46 @@ class VideoView: UIView {
         exitButton.tintColor = .setNetfilxColor(name: .white)
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
         
-        playButton.tintColor = .white
-        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
-        playButton.imageView?.contentMode = .scaleAspectFill
+        playButtonImageView.image = UIImage(systemName: "pause.fill")
+        playButtonImageView.tintColor = .setNetfilxColor(name: .white)
         
-        rewindButton.setTitle("rewind", for: .normal)
+        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
+        
         rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
         
-        slipButton.setTitle("slip", for: .normal)
+        rewindButtonImageView.image = UIImage(named: "rewind.png")
+        rewindButtonImageView.contentMode = .scaleAspectFill
+        rewindButtonImageView.tintColor = .setNetfilxColor(name: .white)
+        
+        rewindButtonLabel.text = "10"
+        rewindButtonLabel.font = controlFont
+        rewindButtonLabel.textAlignment = .center
+        rewindButtonLabel.textColor = .setNetfilxColor(name: .white)
+        
+        rewindInsideView.backgroundColor = .setNetfilxColor(name: .white)
+        rewindInsideView.alpha = 0
+        
+        rewindButtonActionLabel.textColor = .setNetfilxColor(name: .white)
+        rewindButtonActionLabel.text = "-"
+        rewindButtonActionLabel.alpha = 0
+        
         slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchUpInside)
+        
+        slipButtonImageView.image = UIImage(named: "slip.png")
+        slipButtonImageView.tintColor = .setNetfilxColor(name: .white)
+        slipButtonImageView.contentMode = .scaleToFill
+        
+        slipInsideView.backgroundColor = .setNetfilxColor(name: .white)
+        slipInsideView.alpha = 0
+        
+        slipButtonLabel.text = "10"
+        slipButtonLabel.font = controlFont
+        slipButtonLabel.textAlignment = .center
+        slipButtonLabel.textColor = .setNetfilxColor(name: .white)
+        
+        slipButtonActionLabel.textColor = UIColor.setNetfilxColor(name: .white)
+        slipButtonActionLabel.text = "+"
+        slipButtonActionLabel.alpha = 0
         
         playSlider.minimumValue = 0
         playSlider.thumbTintColor = .setNetfilxColor(name: .netflixRed)
@@ -178,6 +239,7 @@ class VideoView: UIView {
         playSlider.addTarget(self, action: #selector(beginTrackingPlaySlider(_:)), for: .touchDown)
         playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpInside)
         playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchUpOutside)
+        playSlider.addTarget(self, action: #selector(endTrackingPlaySlider(_:)), for: .touchCancel)
         playSlider.setThumbImage(UIImage(), for: .normal)
         playSlider.setThumbImage(UIImage(), for: .highlighted)
         
@@ -186,7 +248,6 @@ class VideoView: UIView {
         restTimeLabel.font = .dynamicFont(fontSize: 14, weight: .bold)
         restTimeLabel.text = "00:00"
         
-        centerView.backgroundColor = .red
         
 //        testButton.addTarget(self, action: #selector(test), for: .touchUpInside)
 //        playButtonBackgroundView.backgroundColor = .black
@@ -229,7 +290,7 @@ class VideoView: UIView {
         
         centerView.snp.makeConstraints({
             $0.centerY.leading.trailing.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.2)
+            $0.height.equalToSuperview().multipliedBy(0.1)
         })
         
         playButtonBackgroundView.snp.makeConstraints({
@@ -238,13 +299,58 @@ class VideoView: UIView {
             $0.width.equalTo(playButtonBackgroundView.snp.height)
         })
         
+        playButtonImageView.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalToSuperview()
+        })
+        
         playButton.snp.makeConstraints({
             $0.top.bottom.leading.trailing.equalToSuperview()
         })
         
         rewindButton.snp.makeConstraints({
-            $0.centerY.equalToSuperview()
             $0.centerX.equalToSuperview().multipliedBy(0.5)
+            $0.width.equalTo(rewindButton.snp.height)
+            $0.top.bottom.equalToSuperview()
+        })
+        
+        rewindButtonActionLabel.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
+        rewindButtonLabel.snp.makeConstraints({
+            $0.centerX.equalTo(rewindButtonImageView)
+            $0.centerY.equalTo(rewindButtonImageView)
+            $0.width.equalTo(rewindButtonImageView).multipliedBy(0.9)
+            $0.height.equalTo(rewindButtonLabel.snp.width)
+        })
+        
+        rewindButtonImageView.snp.makeConstraints({
+            $0.top.leading.bottom.trailing.equalToSuperview()
+        })
+        
+        rewindInsideView.snp.makeConstraints({
+            $0.top.leading.bottom.trailing.equalToSuperview()
+        })
+        
+        slipButton.snp.makeConstraints({
+            $0.centerX.equalToSuperview().multipliedBy(1.5)
+            $0.width.equalTo(slipButton.snp.height)
+            $0.top.bottom.equalToSuperview()
+        })
+        
+        slipButtonActionLabel.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
+        slipButtonLabel.snp.makeConstraints({
+            $0.centerX.equalTo(slipButtonImageView)
+            $0.centerY.equalTo(slipButtonImageView)
+            $0.width.equalTo(slipButtonImageView).multipliedBy(0.9)
+            $0.height.equalTo(slipButtonLabel.snp.width)
+        })
+        
+        slipButtonImageView.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalToSuperview()
         })
         
         slipButton.snp.makeConstraints({
@@ -252,6 +358,9 @@ class VideoView: UIView {
             $0.centerX.equalToSuperview().multipliedBy(1.5)
         })
         
+        slipInsideView.snp.makeConstraints({
+            $0.leading.top.trailing.bottom.equalToSuperview()
+        })
         
         bottomView.snp.makeConstraints({
             $0.bottom.leading.trailing.equalToSuperview()
@@ -283,9 +392,10 @@ class VideoView: UIView {
             $0.centerY.equalToSuperview()
         })
         
-        //        seekPointTimeLabel.centerXAnchor.constraint(equalTo: playSlider)
+        
         
     }
+    
     
     //MARK: Gesture Recognize
     
@@ -305,7 +415,14 @@ class VideoView: UIView {
     
     // 더블탭 제스처의 처리
     @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
-        print(#function)
+        let location = gesture.location(in: self)
+        let point = location.x
+        let guide = bounds.width / 2
+        if point >= guide {
+            didTapSlipButton()
+        } else {
+            didTapRewindButton()
+        }
     }
     
     // 탭 제스처의 처리
@@ -313,8 +430,32 @@ class VideoView: UIView {
         isControlAppear.toggle()
     }
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        autoDisappeareControlView()
+        return hitView
+    }
+    
     
     //MARK: Action
+    
+    // 모든 터치 동작에 대해 일정 시간동안 아무것도 안하면 컨트롤화면이 사라지게하는 함수
+    private func autoDisappeareControlView() {
+        lastActionTime = Date()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: {
+                    [weak self] in
+                    
+                    guard let self = self else { return }
+                    let currentTime = Date()
+                    let dateInterval = DateInterval(start: self.lastActionTime, end: currentTime)
+                    let timeInterval = dateInterval.duration
+                    guard timeInterval >= 9 && self.playSlider.state.rawValue != 1 else {
+                        return
+                    }
+                    self.isControlAppear = false
+                })
+    }
+    
     
     // 최초 playSlider의 maximum 값과 현재 재생 구간을 설정
     func setDefaultSlider(timeRange: Int64, currentTime: Int64) {
@@ -410,14 +551,15 @@ class VideoView: UIView {
         let value = Int64(sender.value)
         configureSeekPontView(value: value)
         setSeekPointViewFrame(center: getThumbCenterX(sender: sender))
-        
     }
     
     // playSlider의 tracking 끝
     @objc private func endTrackingPlaySlider(_ sender: UISlider) {
+        autoDisappeareControlView()
         let value = Int64(sender.value)
         endTrackingAnimation()
         seekPointView.isHidden = true
+        isPlaying = true
         delegate?.endTracking(time: value)
     }
     
@@ -456,36 +598,115 @@ class VideoView: UIView {
     // 로딩 상황에 뷰 세팅
     private func startLoading() {
         loadingIndicator.startAnimating()
-        playButton.isHidden = true
+        playButtonBackgroundView.isHidden = true
     }
     
     // 로딩이 끝난 상황에 뷰 세팅
     private func finishedLoading() {
         loadingIndicator.stopAnimating()
-        playButton.isHidden = false
+        playButtonBackgroundView.isHidden = false
     }
     
     @objc private func didTapPlayButton() {
         print(#function)
         isPlaying.toggle()
+        if isPlaying {
+            delegate?.play()
+        } else {
+            delegate?.pause()
+        }
     }
     
     @objc private func didTapSlipButton() {
-        print(#function)
+//        print(#function)
+        let timeIntervarForStep: Int64 = 10
+        let timeIntervalString = "+" + String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
+        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
+        
     }
     
     @objc private func didTapRewindButton() {
-        print(#function)
+//        print(#function)
+        let timeIntervarForStep: Int64 = -10
+        let timeInervalString = String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
+        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
+    }
+    
+    private func stepSlider(timeInterval: Int64) -> Int64{
+        let value = playSlider.value + Float(timeInterval)
+//        playSlider.value = value
+//        return Int64(playSlider.value)
+        return Int64(value)
+    }
+    
+    // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
+    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String) {
+        let duration = 0.65
+        let turm: Double = 0.3
+        var currentDuration: Double = 0
+        
+        let insideView = isRewind ? rewindInsideView: slipInsideView
+        let imageView = isRewind ? rewindButtonImageView: slipButtonImageView
+        let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
+        let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
+        
+        actionLabel.text = timeIntervalString
+        
+        let range: CGFloat = .dynamicYMargin(margin: 200)
+        let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
+        let moveRange = isRewind ? -(range): range
+        
+        
+//        layoutIfNeeded()
+//        imageView.backgroundColor = .green
+        
+        UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: 0.05, animations: {
+                actionLabel.transform = .init(translationX: moveRange, y: 0)
+                actionLabel.alpha = 1
+                imageView.transform = .init(rotationAngle: rotate)
+                insideView.alpha = 1
+                insideLabel.alpha = 0
+                currentDuration += 0.05
+            })
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+                imageView.transform = .identity
+                insideView.alpha = 0
+                currentDuration += turm
+            })
+            
+            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+                insideLabel.backgroundColor = .clear
+                actionLabel.alpha = 0
+                insideLabel.alpha = 1
+            })
+        }, completion: { _ in
+            actionLabel.transform = .identity
+        })
+        
+        isPlaying = true
     }
     
     private func playAction() {
-        let imageName = "play.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        let imageName = "pause.fill"
+        playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     private func pauseAction() {
-        let imageName = "pause.fill"
-        playButton.setImage(UIImage(systemName: imageName), for: .normal)
+        let imageName = "play.fill"
+        playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     

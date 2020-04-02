@@ -14,12 +14,12 @@ protocol PreviewTableViewCellDelegate: class {
 
 class PreviewTableViewCell: UITableViewCell {
     
-    static let identifier = "PreviewTableViewCell"
+    static let identifier = "PreviewTC"
     
     weak var delegate: PreviewTableViewCellDelegate?
     
     private let flowLayout = UICollectionViewFlowLayout()
-    private let sectionHeight: CGFloat = 20
+    private let sectionHeight: CGFloat = 24
     
     private let headerLabel = UILabel()
     private lazy var previewConllectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -53,7 +53,7 @@ class PreviewTableViewCell: UITableViewCell {
         headerLabel.text = "미리보기"
         headerLabel.font = HeaderFont
         headerLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.white)
-        headerLabel.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
+        headerLabel.backgroundColor = .clear
             
         previewConllectionView.dataSource = self
         previewConllectionView.delegate = self
@@ -96,13 +96,7 @@ class PreviewTableViewCell: UITableViewCell {
 }
 
 extension PreviewTableViewCell: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        1
-    }
-    
-    
-    
-  
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return idData.count 
     }
@@ -143,9 +137,6 @@ extension PreviewTableViewCell: UICollectionViewDelegateFlowLayout {
         let cellWidth = round(collectionView.frame.width / 3.5)
         let cellHeight = round(collectionView.frame.height - (15 * 2))
         
-        print("------------------------------------------\n")
-        print("PreviewTableViewCell: cellWidth: \(cellWidth), cellHeight: \(cellHeight)")
-        print("------------------------------------------\n")
 
         return CGSize(width: cellWidth, height: cellHeight)
     }
