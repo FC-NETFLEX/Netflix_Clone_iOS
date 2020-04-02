@@ -14,6 +14,12 @@ enum ProfileRoots {
     case add
 }
 
+struct NetflixUser {
+    let name: String
+    let isKids: Bool
+    let icon: UIImage
+}
+
 class ProfileViewController: UIViewController {
     
     var root: ProfileRoots
@@ -24,6 +30,8 @@ class ProfileViewController: UIViewController {
     private let userView3 = UIView()
     private let userView4 = UIView()
     private let titleLabel = UILabel()
+    
+    var users = [NetflixUser]()
    
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
@@ -101,8 +109,10 @@ class ProfileViewController: UIViewController {
             //왼쪽 완료버튼 만들기
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let changeVC = ChangeProfileViewController(root: .add)
-                self.navigationController?.pushViewController(changeVC, animated: true)
+                let addVC = AddProfileViewController(root: .add)
+                let navi = UINavigationController(rootViewController: addVC)
+                navi.modalPresentationStyle = .fullScreen
+                self.present(navi, animated: true)
             }
         }
     }
@@ -136,6 +146,7 @@ class ProfileViewController: UIViewController {
         
     }
     private func viewSetting() {
+    
         let count = userNameArray.count
         
         for (index, userView) in userViewArray.enumerated() {
@@ -147,7 +158,6 @@ class ProfileViewController: UIViewController {
                 userView.addSubview(tempProfileView)
                 profileViewArray.append(tempProfileView)
                 tempProfileView.delegate = self
-                
                 
                 tempProfileView.translatesAutoresizingMaskIntoConstraints = false
                 tempProfileView.topAnchor.constraint(equalTo: userView.topAnchor).isActive = true
@@ -218,15 +228,21 @@ class ProfileViewController: UIViewController {
 }
 extension ProfileViewController: ProfilViewDelegate {
     func profileChangeButtonDidTap(blurView: UIView, pencilButton: UIButton) {
-        let changeVC = ChangeProfileViewController(root: .main)
-        changeVC.modalPresentationStyle = .pageSheet
-        present(changeVC, animated: true)
+    
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            animations: {
+    
+        })
+        let changeVC = ChangeProfileViewController()
+        navigationController?.pushViewController(changeVC, animated: true)
         print("체인지")
     }
     //프로필 선택하면 홈화면으로
     func profileButtonDidTap() {
         let tabBarController = TabBarController()
-        tabBarController.modalTransitionStyle = .crossDissolve
+        tabBarController.modalTransitionStyle = .coverVertical
         tabBarController.changeRootViewController()
     }
 }
@@ -234,8 +250,8 @@ extension ProfileViewController: ProfilViewDelegate {
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
         
-        let changeVC = ChangeProfileViewController(root: .main)
-        navigationController?.pushViewController(changeVC, animated: true)
+        let addVC = AddProfileViewController(root: .main)
+        navigationController?.pushViewController(addVC, animated: true)
         
     }
 }
