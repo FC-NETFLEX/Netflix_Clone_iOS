@@ -177,6 +177,7 @@ class VideoView: UIView {
         
         seekPointTimeLabel.textAlignment = .center
         seekPointTimeLabel.textColor = .setNetfilxColor(name: .white)
+        seekPointTimeLabel.text = "00:00"
         
         seekPointImageView.backgroundColor = .setNetfilxColor(name: .black)
         
@@ -502,7 +503,7 @@ class VideoView: UIView {
         seekPointView.isHidden = false
     }
     
-    // playSlider의 움직에 맞춰 시간레이블 세팅
+    // playSlider의 움직에 맞춰 시간레이블, 이미지 세팅
     private func configureSeekPontView(value: Int64) {
         seekPointTimeLabel.text = replaceIntWithTimeString(second: value)
         let image = delegate?.changeTracking(time: value)
@@ -565,16 +566,27 @@ class VideoView: UIView {
     
     // 컨트롤하는 뷰들이 나타나는 처리
     private func appearControlView() {
-        topView.isHidden = false
-        centerView.isHidden = false
-        bottomView.isHidden = false
-        backgroundView.isHidden = false
+        [
+            self.topView,
+            self.bottomView,
+            self.playButtonBackgroundView,
+            self.rewindButton,
+            self.slipButton,
+            self.backgroundView].forEach({
+                $0.isHidden = false
+            })
         UIView.animate(withDuration: animationDuration, animations: {
             [weak self] in
-            self?.topView.alpha = 1
-            self?.centerView.alpha = 1
-            self?.bottomView.alpha = 1
-            self?.backgroundView.alpha = 0.5
+            guard let self = self else { return }
+            [
+                self.topView,
+                self.bottomView,
+                self.playButtonBackgroundView,
+                self.rewindButton,
+                self.slipButton].forEach({
+                    $0.alpha = 1
+                })
+            self.backgroundView.alpha = 0.5
         })
     }
     
@@ -582,16 +594,28 @@ class VideoView: UIView {
     private func disAppearControlView() {
         UIView.animate(withDuration: animationDuration, animations: {
             [weak self] in
-            self?.topView.alpha = 0.1
-            self?.centerView.alpha = 0.1
-            self?.bottomView.alpha = 0.1
-            self?.backgroundView.alpha = 0.1
+            guard let self = self else { return }
+            [
+                self.topView,
+                self.bottomView,
+                self.playButtonBackgroundView,
+                self.rewindButton,
+                self.slipButton,
+                self.backgroundView].forEach({
+                    $0.alpha = 0.1
+                })
             }, completion: {
                 [weak self] _ in
-                self?.topView.isHidden = true
-                self?.centerView.isHidden = true
-                self?.bottomView.isHidden = true
-                self?.backgroundView.isHidden = true
+                guard let self = self else { return }
+                [
+                    self.topView,
+                    self.bottomView,
+                    self.playButtonBackgroundView,
+                    self.rewindButton,
+                    self.slipButton,
+                    self.backgroundView].forEach({
+                        $0.isHidden = true
+                    })
         })
     }
     
