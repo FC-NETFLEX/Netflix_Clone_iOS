@@ -145,9 +145,14 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as? ContentsBasicItem
+        
+        //유진 - 바뀐 셀에 관련된 부분 configure에 더미 image 넣어서 사용하세유~
         // 임시 background
-        cell?.backgroundColor = .white
-        cell?.titleLabel.text = self.filteredData[indexPath.item]
+//        cell?.backgroundColor = .white
+//        cell?.titleLabel.text = self.filteredData[indexPath.item
+        
+        cell?.configure(poster: UIImage(named: "posterCellDummy")!)
+        
         return cell!
     }
     

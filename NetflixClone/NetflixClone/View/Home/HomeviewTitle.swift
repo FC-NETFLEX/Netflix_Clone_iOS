@@ -10,11 +10,19 @@ import UIKit
 
 class HomeviewTitle: UIView {
     
-    private let titleImage = UIImageView()
+    private let titlePoster = UIImageView()
+    
+    private let contentView = UIView()
     private let categoryLabel = UILabel()
     private let dibsButton = UIButton()
     private let playButton = UIButton()
     private let infoButton = UIButton()
+    
+    private let dibsLabel = UILabel()
+    private let infoLabel = UILabel()
+    
+    private let titleImage = UIImageView()
+    
     
 //    private let gradientLayer: CAGradientLayer = {
 //        let gradientLayer = CAGradientLayer()
@@ -41,9 +49,11 @@ class HomeviewTitle: UIView {
     private func setUI() {
         
         let textTintColor: UIColor = .white
-        let categoryFont: UIFont = .boldSystemFont(ofSize: 10)
+        let categoryFont: UIFont = .boldSystemFont(ofSize: 12)
+        let fixedFont: UIFont = .systemFont(ofSize: 12)
         
-        titleImage.contentMode = .scaleAspectFill
+        titlePoster.contentMode = .scaleAspectFill
+        titlePoster.clipsToBounds = true
         
         categoryLabel.textColor = textTintColor
         categoryLabel.font = categoryFont
@@ -52,6 +62,11 @@ class HomeviewTitle: UIView {
         dibsButton.tintColor = textTintColor
         
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.contentHorizontalAlignment = .center
+        playButton.setTitle("   재생", for: .normal)
+        playButton.titleLabel?.font = fixedFont
+        playButton.setTitleColor(.black, for: .normal)
+        playButton.layer.cornerRadius = 2
         playButton.tintColor = .black
         playButton.backgroundColor = textTintColor
         
@@ -59,12 +74,27 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
+//        titleImage.contentMode = .scaleAspectFit
+        titleImage.contentMode = .scaleAspectFill
+        titleImage.clipsToBounds = true
         
+        contentView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
         
-        addSubview(titleImage)
+        dibsLabel.text = "내가 찜한..."
+        dibsLabel.font = fixedFont
+        dibsLabel.textColor = textTintColor
+        
+        infoLabel.text = "정보"
+        infoLabel.font = fixedFont
+        infoLabel.textColor = textTintColor
+        
+        addSubview(titlePoster)
 //        titleImage.layer.addSublayer(gradientLayer)
-        [categoryLabel, dibsButton, playButton, infoButton].forEach {
-            titleImage.addSubview($0)
+        titlePoster.addSubview(contentView)
+        titlePoster.addSubview(titleImage)
+        
+        [categoryLabel, dibsButton, playButton, infoButton, dibsLabel, infoLabel].forEach {
+            contentView.addSubview($0)
         }
         
         
@@ -73,52 +103,81 @@ class HomeviewTitle: UIView {
     
     private func setConstraints() {
         
-        let xMargin: CGFloat = CGFloat.dynamicXMargin(margin: 16)
+        let xMargin: CGFloat = CGFloat.dynamicXMargin(margin: 20)
         let yMargin: CGFloat = CGFloat.dynamicYMargin(margin: 8)
+        let padding: CGFloat = 8
         
-        let miniButtonWith: CGFloat = xMargin
-        let miniButtonHeight: CGFloat = xMargin + yMargin
+        let miniButtonWidth: CGFloat = xMargin * 2
+        let miniButtonHeight: CGFloat = yMargin * 4
         
-        titleImage.snp.makeConstraints {
+//        let titleImageWidth: CGFloat = CGFloat.dynamicXMargin(margin: 350)
+//        let titleImageHeight: CGFloat = CGFloat.dynamicYMargin(margin: 150)
+        
+        titlePoster.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
         }
         
-       
-        dibsButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(yMargin)
-            $0.leading.equalToSuperview().inset(xMargin)
-            $0.height.equalTo(miniButtonHeight)
-            $0.width.equalTo(miniButtonWith)
+        contentView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.16)
+        }
+        
+        titleImage.snp.makeConstraints {
+            $0.bottom.equalTo(contentView.snp.top)
+            $0.centerX.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.8)
+            $0.height.equalToSuperview().multipliedBy(0.2)
             
         }
         
-        playButton.snp.makeConstraints {
-            $0.centerY.equalTo(dibsButton.snp.centerY)
-            $0.centerX.equalTo(titleImage.snp.centerX)
+        dibsLabel.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(yMargin)
+            $0.leading.equalToSuperview().inset(xMargin + padding)
             $0.height.equalTo(miniButtonHeight)
-            $0.width.equalToSuperview().multipliedBy(0.3)
-            //            $0.width.equalTo(playButtonWith)
+        }
+        
+        infoLabel.snp.makeConstraints {
+            $0.bottom.equalToSuperview().inset(yMargin)
+            $0.trailing.equalToSuperview().inset(xMargin + padding * 2)
+            $0.height.equalTo(miniButtonHeight)
+        }
+       
+        dibsButton.snp.makeConstraints {
+            $0.bottom.equalTo(dibsLabel.snp.top).inset(yMargin)
+            $0.centerX.equalTo(dibsLabel.snp.centerX)
+            $0.height.equalTo(miniButtonHeight)
+            $0.width.equalTo(miniButtonWidth)
+            
         }
         
         infoButton.snp.makeConstraints {
-            $0.bottom.equalToSuperview().inset(yMargin)
-            $0.trailing.equalToSuperview().inset(xMargin)
+            $0.bottom.equalTo(infoLabel.snp.top).inset(yMargin)
+            $0.centerX.equalTo(infoLabel.snp.centerX)
             $0.height.equalTo(miniButtonHeight)
-            $0.width.equalTo(miniButtonWith)
+            $0.width.equalTo(miniButtonWidth)
+        }
+        
+        playButton.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.centerX.equalTo(titlePoster.snp.centerX)
+            $0.height.equalTo(miniButtonHeight)
+            $0.width.equalToSuperview().multipliedBy(0.35)
+            //            $0.width.equalTo(playButtonWith)
         }
         
         categoryLabel.snp.makeConstraints {
-            $0.bottom.equalTo(dibsButton.snp.top).inset(-yMargin)
-            $0.centerX.equalTo(titleImage.snp.centerX)
+            $0.bottom.equalTo(playButton.snp.top).inset(-yMargin)
+            $0.centerX.equalTo(titlePoster.snp.centerX)
         }
         
+      
         
     }
     
 
     
     // MARK: - configure
-    func configure(poster: UIImage, category: [String], dibs: Bool) {
+    func configure(poster: UIImage, category: [String], dibs: Bool, titleImage: UIImage) {
         print("HomeTitle: configure")
         
         var categoryText: String = ""
@@ -127,8 +186,10 @@ class HomeviewTitle: UIView {
             categoryText += $0 + ","
         }
         
-        titleImage.image = poster
+        titlePoster.image = poster
         categoryLabel.text = categoryText
+        
+        self.titleImage.image = titleImage
         
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)

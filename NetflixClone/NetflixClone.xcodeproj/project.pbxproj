@@ -64,6 +64,8 @@
 		7081BB862433654A00899FA2 /* ProfileManageTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7081BB852433654A00899FA2 /* ProfileManageTopView.swift */; };
 		9611E2E624347A8200393E84 /* LatestMovieTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9611E2E524347A8200393E84 /* LatestMovieTableViewCell.swift */; };
 		9611E2E824347F9C00393E84 /* ContentsBasicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9611E2E724347F9C00393E84 /* ContentsBasicItem.swift */; };
+		9611E2EA24352F9400393E84 /* Top10TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9611E2E924352F9400393E84 /* Top10TableViewCell.swift */; };
+		9611E2EC243534B400393E84 /* Top10CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9611E2EB243534B400393E84 /* Top10CollectionViewCell.swift */; };
 		9631610E24310A20003C468A /* HomeviewTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9631610D24310A20003C468A /* HomeviewTitle.swift */; };
 		963161102431BC10003C468A /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */; };
 		963161122431D271003C468A /* PreviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963161112431D271003C468A /* PreviewModel.swift */; };
@@ -135,6 +137,8 @@
 
 		9611E2E524347A8200393E84 /* LatestMovieTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestMovieTableViewCell.swift; sourceTree = "<group>"; };
 		9611E2E724347F9C00393E84 /* ContentsBasicItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentsBasicItem.swift; sourceTree = "<group>"; };
+		9611E2E924352F9400393E84 /* Top10TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10TableViewCell.swift; sourceTree = "<group>"; };
+		9611E2EB243534B400393E84 /* Top10CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10CollectionViewCell.swift; sourceTree = "<group>"; };
 		9631610D24310A20003C468A /* HomeviewTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeviewTitle.swift; sourceTree = "<group>"; };
 		9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
 		963161112431D271003C468A /* PreviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModel.swift; sourceTree = "<group>"; };
@@ -526,6 +530,7 @@
 				9611E2E4243473D300393E84 /* CollectionCell */,
 				965FBA49242B262300A96257 /* PreviewTableViewCell.swift */,
 				9611E2E524347A8200393E84 /* LatestMovieTableViewCell.swift */,
+				9611E2E924352F9400393E84 /* Top10TableViewCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -534,6 +539,7 @@
 			isa = PBXGroup;
 			children = (
 				9631610F2431BC10003C468A /* PreviewCollectionViewCell.swift */,
+				9611E2EB243534B400393E84 /* Top10CollectionViewCell.swift */,
 			);
 			path = CollectionCell;
 			sourceTree = "<group>";
@@ -684,6 +690,7 @@
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
 				31601D39242A345C00382B94 /* UIButtonExtension.swift in Sources */,
+				9611E2EA24352F9400393E84 /* Top10TableViewCell.swift in Sources */,
 				963161122431D271003C468A /* PreviewModel.swift in Sources */,
 				31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */,
 				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
@@ -734,6 +741,7 @@
 				31601D1D242A345C00382B94 /* SaveContentsListViewController.swift in Sources */,
 				31601D31242A345C00382B94 /* HomeModel.swift in Sources */,
 				705319AC242DDABC004D46A6 /* ProfileTableViewCell.swift in Sources */,
+				9611E2EC243534B400393E84 /* Top10CollectionViewCell.swift in Sources */,
 				31601D2C242A345C00382B94 /* SecondView.swift in Sources */,
 				31601D2B242A345C00382B94 /* ProfileView.swift in Sources */,
 				31601D29242A345C00382B94 /* MoreView.swift in Sources */,
