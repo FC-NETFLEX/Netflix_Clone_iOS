@@ -32,10 +32,17 @@ struct APIManager {
         
         url: APIURL,
         data: [String: String] = [:],
-        token: String?,
+        token: String? = nil,
+        itemKey: String? = nil,
         completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask? {
         
-        guard var urlComponents = URLComponents(string: url.rawValue) else {
+        var urlString = url.rawValue
+        
+        if let itemKey = itemKey {
+            urlString = urlString + itemKey + "/"
+        }
+        
+        guard var urlComponents = URLComponents(string: urlString) else {
             completion(.failure(APIError.badURL))
             return nil
         }
