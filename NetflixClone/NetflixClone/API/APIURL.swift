@@ -14,4 +14,5 @@ enum APIURL: String {
     case logIn = "http://13.124.222.31/members/auth_token/"
     case logOut = "http://13.124.222.31/members/logout/"
     case iconList = "http://13.124.222.31/members/profiles/icons/"
+    case makeProfile = "http://13.124.222.31/members/profiles/"
 }
