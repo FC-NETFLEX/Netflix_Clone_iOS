@@ -92,28 +92,13 @@ extension MoreViewController {
     }
     
     @objc private func didTapLogoutButton() {
-        let token = LoginStatus.shared.getToken()
-        APIManager().requestOfGet(url: .logOut, token: token, completion: {
-            result in
-            switch result {
-            case .success(let data):
-                if
-                    let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                    let detail = jsonObject["detail"] as? String {
-                    UIAlertController(title: "로그아웃", message: detail, preferredStyle: .alert)
-                    .noticePresent(viewController: self)
-                } else {
-                    LoginStatus.shared.logout()
-                    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-                    let window = appDelegate.window
-                    let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
-                    window?.rootViewController = rootViewController
-                    window?.makeKeyAndVisible()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        })
+        
+        LoginStatus.shared.logout()
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let window = appDelegate.window
+        let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
         
     }
     
