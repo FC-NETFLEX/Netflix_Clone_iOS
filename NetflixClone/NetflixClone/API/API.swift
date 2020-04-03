@@ -46,15 +46,12 @@ struct APIManager {
             return nil
         }
         var queryItems: [URLQueryItem] = []
-        if let data = data {
+        
             for (key, value) in data {
                 let queryItem = URLQueryItem(name: key, value: value)
                 queryItems.append(queryItem)
             }
             urlComponents.queryItems = queryItems
-        }
-       
-        
         
         guard let url = urlComponents.url else {
             completion(.failure(APIError.badURL))
