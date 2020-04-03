@@ -37,7 +37,7 @@ class Top10CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(topNumLabel)
     }
     private func setContraints() {
-        let posterImageXmargin: CGFloat = 50
+        let posterImageXmargin: CGFloat = 40
         let numberHeight: CGFloat = contentView.frame.height / 2
         
         topNumLabel.snp.makeConstraints {
