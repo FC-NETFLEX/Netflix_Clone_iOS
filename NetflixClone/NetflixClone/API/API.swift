@@ -58,7 +58,7 @@ struct APIManager {
             }
         }
         
-//        task.resume()
+        task.resume()
         return task
     }
     
