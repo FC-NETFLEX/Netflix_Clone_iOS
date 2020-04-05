@@ -49,10 +49,15 @@ class SignUpView: UIView {
         super.init(frame: frame)
         setUI()
         setConstraint()
+        addObservers()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        removeObservers()
     }
     
     
@@ -209,6 +214,76 @@ class SignUpView: UIView {
         return result
     }
     
+    // 키보드의 움직임에 따른 parentView Constraints update
+    private func updateParentViewConstraints(constant: CGFloat) {
+        let margin = CGFloat.dynamicYMargin(margin: 8)
+        parentView.snp.updateConstraints({
+            $0.top.equalTo(safeAreaLayoutGuide).offset(constant - margin)
+        })
+    }
+    
+    // 키보드 올라올 때
+    @objc private func keyboardWillAppear(notification: NSNotification) {
+        print(#function)
+        guard
+            let userInfo = notification.userInfo,
+            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
+            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+            else { return }
+        
+        let viewHeight = frame.height - safeAreaInsets.top - safeAreaInsets.bottom
+        let keyboardHeight = keyboardFrame.height
+        let constant = viewHeight - (parentView.frame.height + keyboardHeight)
+        UIView.animate(withDuration: duration, animations: {
+            [weak self] in
+            self?.updateParentViewConstraints(constant: constant)
+            self?.layoutIfNeeded()
+        })
+        
+    }
+    
+    // 키보드 내려갈 때
+    @objc private func keyboardWillDisappear(notification: NSNotification) {
+        print(#function)
+        guard
+            let userInfo = notification.userInfo,
+            let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval
+            else { return }
+        let yMargin = CGFloat.dynamicYMargin(margin: 100)
+        
+        UIView.animate(withDuration: duration, animations: {
+            [weak self] in
+            self?.updateParentViewConstraints(constant: yMargin)
+            self?.layoutIfNeeded()
+        })
+    }
+    
+    //MARK: Observer
+    private func addObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillAppear(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillDisappear(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
+    }
+    
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
+    }
+    
 }
 
 extension SignUpView: UITextFieldDelegate {
@@ -234,8 +309,9 @@ extension SignUpView: UITextFieldDelegate {
                 isConfirmPassWord = checkConfirm(password: passWordText, confirm: replaceText)
             }
         default:
-            print("default")
+            break
         }
+        
         if isEmailRegularExpressionSatisfied && isPassWordRegularExpressionStatisfied && isConfirmPassWord {
             signUpButton.isSelected = true
         } else {
