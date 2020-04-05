@@ -132,8 +132,9 @@ class SignUpViewController: UIViewController {
         let param = ["email": email, "password": pw]
         
         guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
+        guard let url = APIURL.signUp.makeURL() else { return }
         
-        APIManager().requestOfPost(url: APIURL.createUser, data: data, completion: {
+        APIManager().request(url: url, method: .post, body: data, completionHandler: {
             [weak self] result in
             guard let self = self else { return }
             switch result {

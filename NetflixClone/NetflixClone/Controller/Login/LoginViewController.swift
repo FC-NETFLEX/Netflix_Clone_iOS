@@ -154,11 +154,13 @@ class LoginViewController: UIViewController {
 //        tabBarController.changeRootViewController()
         let param = ["email": email, "password": password]
         guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
+        guard let url = APIURL.logIn.makeURL() else { return }
         
-        APIManager().requestOfPost(
-            url: .logIn,
-            data: data,
-            completion: {
+        APIManager().request(
+            url: url,
+            method: .post,
+            body: data,
+            completionHandler: {
             [weak self] (result) in
                 guard let self = self else { return }
                 switch result {

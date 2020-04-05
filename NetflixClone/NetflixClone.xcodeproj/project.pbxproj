@@ -11,6 +11,7 @@
 		310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D6242B1AE100C5858D /* LoginStatus.swift */; };
 		310B01DA242B223B00C5858D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01D9242B223B00C5858D /* TabBarController.swift */; };
 		310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310B01DE242CB33D00C5858D /* DateExtension.swift */; };
+		313670CC2437682800231AE0 /* LaunchScreanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313670CB2437682800231AE0 /* LaunchScreanView.swift */; };
 		31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601CC0242A33B700382B94 /* AppDelegate.swift */; };
 		31601CCA242A33B900382B94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31601CC9242A33B900382B94 /* Assets.xcassets */; };
 		31601CCD242A33B900382B94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 31601CCB242A33B900382B94 /* LaunchScreen.storyboard */; };
@@ -85,6 +86,7 @@
 		310B01D6242B1AE100C5858D /* LoginStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginStatus.swift; sourceTree = "<group>"; };
 		310B01D9242B223B00C5858D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		310B01DE242CB33D00C5858D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		313670CB2437682800231AE0 /* LaunchScreanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreanView.swift; sourceTree = "<group>"; };
 		31601CBD242A33B700382B94 /* NetflixClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetflixClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31601CC0242A33B700382B94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		31601CC9242A33B900382B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				31601CFF242A345B00382B94 /* FirstView.swift */,
 				31601D00242A345B00382B94 /* ForthView.swift */,
 				31601D01242A345B00382B94 /* ThirdView.swift */,
+				313670CB2437682800231AE0 /* LaunchScreanView.swift */,
 			);
 			path = LaunchScreen;
 			sourceTree = "<group>";
@@ -705,6 +708,7 @@
 				31601D39242A345C00382B94 /* UIButtonExtension.swift in Sources */,
 				9611E2EA24352F9400393E84 /* Top10TableViewCell.swift in Sources */,
 				963161122431D271003C468A /* PreviewModel.swift in Sources */,
+				313670CC2437682800231AE0 /* LaunchScreanView.swift in Sources */,
 				31601CC1242A33B700382B94 /* AppDelegate.swift in Sources */,
 				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
 				705319B42431C629004D46A6 /* TopCustomView.swift in Sources */,
