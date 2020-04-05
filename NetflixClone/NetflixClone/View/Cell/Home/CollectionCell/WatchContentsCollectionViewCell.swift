@@ -67,7 +67,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     private func setConstraints() {
         
         let posterHeight: CGFloat = round(contentView.frame.height / 4) * 3
-        let playViewSize: CGFloat = round(contentView.frame.width / 2)
+        let playViewSize: CGFloat = round(contentView.frame.width / 1.5)
         let margin: CGFloat = 5
         let infoImageSize: CGFloat = 20
         let progressHeight: CGFloat = 5
