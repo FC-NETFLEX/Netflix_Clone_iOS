@@ -16,7 +16,7 @@ extension CGFloat {
         let base: CGFloat = 375.0
         let multiflire = width / base
         let result = (margin * multiflire)
-        return result
+        return result.rounded()
     }
     
     static func dynamicYMargin(margin: CGFloat) -> CGFloat {
@@ -25,7 +25,7 @@ extension CGFloat {
         let base: CGFloat = 812.0 // 11Pro, iphone X, XS => 5.8 inch
         let multiflire = height / base
         let result = (margin * multiflire)
-        return result
+        return result.rounded()
     }
     
 }
