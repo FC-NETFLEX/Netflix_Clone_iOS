@@ -66,17 +66,17 @@ class ProfileImageViewController: UIViewController {
     }
     
     private func requestProfileImage() {
-        guard let token = LoginStatus.shared.getToken() else { return }
-        
-        APIManager().requestOfGet(url: .iconList, token: token, completion: {
-            result in
-            switch result {
-            case .success(let data):
-                print(String(data: data, encoding: .utf8))
-            case .failure(let error):
-                print(error)
-            }
-        })
+//        guard let token = LoginStatus.shared.getToken() else { return }
+//
+//        APIManager().requestOfGet(url: .iconList, token: token, completion: {
+//            result in
+//            switch result {
+//            case .success(let data):
+//                print(String(data: data, encoding: .utf8))
+//            case .failure(let error):
+//                print(error)
+//            }
+//        })
     }
 
 }
