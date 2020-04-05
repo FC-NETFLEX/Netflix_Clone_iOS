@@ -14,7 +14,7 @@ final class HomeViewController: UIViewController {
     //    private let homeView = HomeView()
     private let homeTableView = UITableView(frame: .zero, style: .grouped)
     
-    private let cellCount = 3
+    private let cellCount = 4
     
     //MARK: header content
     private let firstCellItem = "titleDummy"
@@ -34,6 +34,12 @@ final class HomeViewController: UIViewController {
     //MARK: Top10 content
     private let idTop10 = [123, 234, 345, 456, 567, 678, 789, 890,910, 111]
     private let posterTop10 = [UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy")]
+    
+    //MARK: WatchContents
+    //poster: <#T##[UIImage]#>, watchTime: T##[String], playMark: <#T##[Int64]#>, url: <#T##URL#>
+    private let posterWatch = [UIImage(named: "포스터"), UIImage(named: "top10Dummy"), UIImage(named: "posterCellDummy"), UIImage(named: "포스터")]
+    private let watchTimekWatch: [Int64] = [5400, 5000, 5700, 3600]
+    private let playMark: [Int64] = [2500, 700, 5000, 1000]
     
     
     override func viewDidLoad() {
@@ -59,6 +65,7 @@ final class HomeViewController: UIViewController {
         homeTableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
         homeTableView.register(LatestMovieTableViewCell.self, forCellReuseIdentifier: LatestMovieTableViewCell.indentifier)
         homeTableView.register(Top10TableViewCell.self, forCellReuseIdentifier: Top10TableViewCell.identifier)
+        homeTableView.register(WatchContentsTableViewCell.self, forCellReuseIdentifier: WatchContentsTableViewCell.identifier)
         
         view.addSubview(homeTableView)
         
@@ -67,8 +74,10 @@ final class HomeViewController: UIViewController {
         homeTableView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
+
             //            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
             //            $0.bottom.equalTo(additionalSafeAreaInsets)
+
         }
     }
     
@@ -86,7 +95,7 @@ extension HomeViewController: UITableViewDelegate {
         
         let previewCellHeight: CGFloat = tableView.frame.height / 4
         let posterCellHeight: CGFloat = tableView.frame.height / 4 + 30
-        
+        let watchCellHeight: CGFloat = tableView.frame.height / 3
         switch indexPath.row {
         case 0:
             print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
@@ -97,6 +106,9 @@ extension HomeViewController: UITableViewDelegate {
         case 1, 2:
             print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return posterCellHeight
+        case 3:
+            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+            return watchCellHeight
         default:
             return 100
         }
@@ -130,7 +142,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
+        
         print("hoveVC:  Datasource cellForRowAt row = \(indexPath.row)")
         
         // conflict난 부분인데 확인 요망
@@ -147,7 +159,7 @@ extension HomeViewController: UITableViewDataSource {
             let previewCell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
             
             previewCell.delegate = self
-
+            
             previewCell.configure(id: idPreview, poster: posterPreview as! [UIImage], titleImage: titleImagePreview as! [UIImage])
             
             cell = previewCell
@@ -168,12 +180,20 @@ extension HomeViewController: UITableViewDataSource {
             top10Cell.delegate = self
             top10Cell.configure(id: idTop10, poster: posterTop10 as! [UIImage])
             cell = top10Cell
+        case 3:
+            print("------------------------------------\n")
+            print("HomeVC: cell Row -> \(indexPath.row)")
+            let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
+            watchContentCell.delegate = self
+            watchContentCell.configure(poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark/*, url: <#T##URL#>*/)
+            
+            cell = watchContentCell
         default:
             print("------------------------------------\n")
             print("HomeVC: cell Row -> \(indexPath.row)")
             cell = UITableViewCell()
         }
-
+        
         
         return cell
     }
@@ -210,6 +230,15 @@ extension HomeViewController: Top10TableViewCellDelegate {
         let contentVC = ContentViewController()
         
         present(contentVC, animated: true)
+    }
+    
+    
+}
+
+//MARK: - WatchContentCell Delegate
+extension HomeViewController: WatchContentsTableViewDelegate {
+    func didTabWatchContentCell() {
+        print("WatchContentCell Click")
     }
     
     

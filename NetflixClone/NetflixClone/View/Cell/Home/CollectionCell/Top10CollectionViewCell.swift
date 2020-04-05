@@ -17,7 +17,7 @@ class Top10CollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
-        setContraints()
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -36,8 +36,8 @@ class Top10CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(posterImage)
         contentView.addSubview(topNumLabel)
     }
-    private func setContraints() {
-        let posterImageXmargin: CGFloat = 50
+    private func setConstraints() {
+        let posterImageXmargin: CGFloat = 40
         let numberHeight: CGFloat = contentView.frame.height / 2
         
         topNumLabel.snp.makeConstraints {
