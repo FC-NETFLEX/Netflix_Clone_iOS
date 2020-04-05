@@ -18,6 +18,7 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         setNavigationBar()
+        setUI()
     }
     
     private func setUI() {
@@ -48,6 +49,8 @@ class SignUpViewController: UIViewController {
 
 extension SignUpViewController: SignUpViewDelegate {
     func signUp(email: String, passWord: String) {
+        
+        
         let param = ["email": email, "password": passWord]
         
         guard let data = try? JSONSerialization.data(withJSONObject: param, options: []) else { return }
@@ -64,11 +67,11 @@ extension SignUpViewController: SignUpViewDelegate {
             case .success(let data):
                 // 회원가입이 완료된것이 아니라 서버와의 통신이 성공한거
                 guard let data = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
-                //                dump(data)
+                
+                // 회원가입 실패
                 guard let _ = data["id"] as? Int else {
                     
                     if let notice = data["email"] as? [String] {
-                        print(notice)
                         UIAlertController(title: "회원가입", message: notice.first ?? "다시 시도해 주세요", preferredStyle: .alert).noticePresent(viewController: self)
                     }
                     return

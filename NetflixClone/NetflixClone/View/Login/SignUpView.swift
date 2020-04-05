@@ -90,7 +90,7 @@ class SignUpView: UIView {
         emailTextField.keyboardType = .emailAddress
         emailTextField.layer.borderWidth = 1
         
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "비밀번호",
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "비밀번호(8~16자 영문, 숫자, 특수문자)",
                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.setNetfilxColor(name: .netflixLightGray)])
         passwordTextField.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
         passwordTextField.layer.cornerRadius = 5
@@ -166,6 +166,7 @@ class SignUpView: UIView {
     }
     
     @objc private func touchSignUpButton(_ sender: UIButton) {
+//        print(delegate)
         guard
             let email = emailTextField.text,
             let pw = passwordTextField.text,
@@ -185,18 +186,27 @@ class SignUpView: UIView {
     
     // 정규 표현식 또는 비밀번호 확인의 무결성 체크 후 텍스트필드의 borderColor를 적용
     private func integrityCheck(_ integrity: Bool, textField: UITextField) {
-        let borderColor: CGColor? = integrity ? UIColor.setNetfilxColor(name: .netflixRed).cgColor: nil
+        let borderColor: CGColor?
+            = integrity ?
+                UIColor.setNetfilxColor(name: .positive).cgColor:
+                UIColor.setNetfilxColor(name: .negative).cgColor
+        
         textField.layer.borderColor = borderColor
     }
     
+    // 정규 표현식 체크
     private func checkString(text: String, pattern: String) -> Bool {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return false}
-        let list = regex.matches(in: text, options: [], range: NSRange.init(location: 0, length: text.count))
-        if list.count == text.count {
-            return true
-        } else {
-            return false
-        }
+        let predicate = NSPredicate(format: "SELF MATCHES %@", pattern)
+        return predicate.evaluate(with: text)
+    }
+    
+    // 비밀번호 확인 검사 및 비밀번호 정규 표현 체크
+    private func checkConfirm(password: String, confirm: String) -> Bool {
+        let confirm = password == confirm
+        let passWordPattern = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$"
+//        let passWordPattern = "^(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9])(?=.*[a-z]).{8,16}$"
+        let result = checkString(text: password, pattern: passWordPattern) && confirm
+        return result
     }
     
 }
@@ -204,9 +214,28 @@ class SignUpView: UIView {
 extension SignUpView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let emailPattern = "/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;"
+        guard let text = textField.text else { return true }
         
+        let replaceText = (text as NSString).replacingCharacters(in: range, with: string)
         
+        switch textField {
+        case emailTextField:
+            let emailPattern = "^.+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2}[A-Za-z]*$"
+            isEmailRegularExpressionSatisfied = checkString(text: replaceText, pattern: emailPattern)
+        case passwordTextField:
+            let passWordPattern = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$"
+//            let passWordPattern = "^(?=.*[A-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9])(?=.*[a-z]).{8,16}$"
+            isPassWordRegularExpressionStatisfied = checkString(text: replaceText, pattern: passWordPattern)
+            if let confirmText = confirmPWTextField.text {
+                isConfirmPassWord = checkConfirm(password: replaceText, confirm: confirmText)
+            }
+        case confirmPWTextField:
+            if let passWordText = passwordTextField.text {
+                isConfirmPassWord = checkConfirm(password: passWordText, confirm: replaceText)
+            }
+        default:
+            print("default")
+        }
         if isEmailRegularExpressionSatisfied && isPassWordRegularExpressionStatisfied && isConfirmPassWord {
             signUpButton.isSelected = true
         } else {
