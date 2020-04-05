@@ -1,8 +1,8 @@
 {
   "images" : [
     {
-      "filename" : "프로필3.png",
       "idiom" : "universal",
+      "filename" : "프로필3.png",
       "scale" : "1x"
     },
     {
@@ -15,7 +15,7 @@
     }
   ],
   "info" : {
-    "author" : "xcode",
-    "version" : 1
+    "version" : 1,
+    "author" : "xcode"
   }
 }
