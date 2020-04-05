@@ -92,6 +92,7 @@ extension MoreViewController {
     }
     
     @objc private func didTapLogoutButton() {
+        
         LoginStatus.shared.logout()
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let window = appDelegate.window
@@ -103,7 +104,7 @@ extension MoreViewController {
     
     @objc private func didTapVideoButton() {
         
-        let urlString = "ttps://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4"
+        let urlString = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4"
         presentVideoController(urlString: urlString, title: "Test")
         
 

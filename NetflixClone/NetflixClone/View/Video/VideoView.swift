@@ -16,35 +16,30 @@ protocol VideoViewDelegate: class {
     func changeTracking(time: Int64) -> UIImage?
     
     func endTracking(time: Int64)
+    
+    func play()
+    
+    func pause()
+    
+    func step(time: Int64)
+    
+
 }
 
-//class TestBtn: UIButton {
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Test Button Hit View :", hitView)
-//        return hitView
-//    }
-//}
 
 class CircleView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        print(frame)
         layer.cornerRadius = frame.width / 2
     }
     
 }
 
+
+
+
+
 class VideoView: UIView {
-    
-    
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        let hitView = super.hitTest(point, with: event)
-//        print("Video View Hit View :", hitView)
-//        return hitView
-//    }
-    
-    
     
     weak var delegate: VideoViewDelegate?
     
@@ -80,6 +75,11 @@ class VideoView: UIView {
     }
 //    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
     private let animationDuration = 0.2
+    private var lastStepTimeInterval: Int64 = 0
+    
+    private var lastStep = 0
+    
+    private var lastAction = 0
     
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
     
@@ -173,12 +173,14 @@ class VideoView: UIView {
         let controlFont = UIFont.dynamicFont(fontSize: 16, weight: .regular)
         
         loadingIndicator.hidesWhenStopped = true
-//        isLoading = true
+        isLoading = true
+        autoDisappeareControlView(currentAction: lastAction)
         
         seekPointView.isHidden = true
         
         seekPointTimeLabel.textAlignment = .center
         seekPointTimeLabel.textColor = .setNetfilxColor(name: .white)
+        seekPointTimeLabel.text = "00:00"
         
         seekPointImageView.backgroundColor = .setNetfilxColor(name: .black)
         
@@ -192,7 +194,7 @@ class VideoView: UIView {
         exitButton.tintColor = .setNetfilxColor(name: .white)
         exitButton.addTarget(self, action: #selector(didTapExitButton), for: .touchDown)
         
-        playButtonImageView.image = UIImage(systemName: "play.fill")
+        playButtonImageView.image = UIImage(systemName: "pause.fill")
         playButtonImageView.tintColor = .setNetfilxColor(name: .white)
         
         playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
@@ -417,7 +419,14 @@ class VideoView: UIView {
     
     // 더블탭 제스처의 처리
     @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
-        print(#function)
+        let location = gesture.location(in: self)
+        let point = location.x
+        let guide = bounds.width / 2
+        if point >= guide {
+            didTapSlipButton()
+        } else {
+            didTapRewindButton()
+        }
     }
     
     // 탭 제스처의 처리
@@ -425,8 +434,36 @@ class VideoView: UIView {
         isControlAppear.toggle()
     }
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        lastAction += 1
+        autoDisappeareControlView(currentAction: lastAction)
+        return hitView
+    }
+    
     
     //MARK: Action
+    
+    // 모든 터치 동작에 대해 일정 시간동안 아무것도 안하면 컨트롤화면이 사라지게하는 함수
+    private func autoDisappeareControlView(currentAction: Int) {
+        
+        
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: {
+                    [weak self] in
+                    
+                    guard let self = self else { return }
+//                    let currentTime = Date()
+//                    let dateInterval = DateInterval(start: self.lastActionTime, end: currentTime)
+//                    let timeInterval = dateInterval.duration
+//                    guard timeInterval >= 9 && self.playSlider.state.rawValue != 1 else {
+//                        return
+//                    }
+                    guard currentAction == self.lastAction else { return }
+                    self.isControlAppear = false
+                    self.lastAction = 0
+                })
+    }
+    
     
     // 최초 playSlider의 maximum 값과 현재 재생 구간을 설정
     func setDefaultSlider(timeRange: Int64, currentTime: Int64) {
@@ -473,7 +510,7 @@ class VideoView: UIView {
         seekPointView.isHidden = false
     }
     
-    // playSlider의 움직에 맞춰 시간레이블 세팅
+    // playSlider의 움직에 맞춰 시간레이블, 이미지 세팅
     private func configureSeekPontView(value: Int64) {
         seekPointTimeLabel.text = replaceIntWithTimeString(second: value)
         let image = delegate?.changeTracking(time: value)
@@ -522,29 +559,42 @@ class VideoView: UIView {
         let value = Int64(sender.value)
         configureSeekPontView(value: value)
         setSeekPointViewFrame(center: getThumbCenterX(sender: sender))
-        
     }
     
     // playSlider의 tracking 끝
     @objc private func endTrackingPlaySlider(_ sender: UISlider) {
+        lastAction += 1
+        autoDisappeareControlView(currentAction: lastAction)
         let value = Int64(sender.value)
         endTrackingAnimation()
         seekPointView.isHidden = true
+        isPlaying = true
         delegate?.endTracking(time: value)
     }
     
     // 컨트롤하는 뷰들이 나타나는 처리
     private func appearControlView() {
-        topView.isHidden = false
-        centerView.isHidden = false
-        bottomView.isHidden = false
-        backgroundView.isHidden = false
+        [
+            self.topView,
+            self.bottomView,
+            self.playButtonBackgroundView,
+            self.rewindButton,
+            self.slipButton,
+            self.backgroundView].forEach({
+                $0.isHidden = false
+            })
         UIView.animate(withDuration: animationDuration, animations: {
             [weak self] in
-            self?.topView.alpha = 1
-            self?.centerView.alpha = 1
-            self?.bottomView.alpha = 1
-            self?.backgroundView.alpha = 0.5
+            guard let self = self else { return }
+            [
+                self.topView,
+                self.bottomView,
+                self.playButtonBackgroundView,
+                self.rewindButton,
+                self.slipButton].forEach({
+                    $0.alpha = 1
+                })
+            self.backgroundView.alpha = 0.5
         })
     }
     
@@ -552,107 +602,227 @@ class VideoView: UIView {
     private func disAppearControlView() {
         UIView.animate(withDuration: animationDuration, animations: {
             [weak self] in
-            self?.topView.alpha = 0.1
-            self?.centerView.alpha = 0.1
-            self?.bottomView.alpha = 0.1
-            self?.backgroundView.alpha = 0.1
+            guard let self = self else { return }
+            [
+                self.topView,
+                self.bottomView,
+                self.playButtonBackgroundView,
+                self.rewindButton,
+                self.slipButton,
+                self.backgroundView].forEach({
+                    $0.alpha = 0.1
+                })
             }, completion: {
                 [weak self] _ in
-                self?.topView.isHidden = true
-                self?.centerView.isHidden = true
-                self?.bottomView.isHidden = true
-                self?.backgroundView.isHidden = true
+                guard let self = self else { return }
+                [
+                    self.topView,
+                    self.bottomView,
+                    self.playButtonBackgroundView,
+                    self.rewindButton,
+                    self.slipButton,
+                    self.backgroundView].forEach({
+                        $0.isHidden = true
+                    })
         })
     }
     
     // 로딩 상황에 뷰 세팅
     private func startLoading() {
         loadingIndicator.startAnimating()
-        playButton.isHidden = true
+        playButtonBackgroundView.isHidden = true
     }
     
     // 로딩이 끝난 상황에 뷰 세팅
     private func finishedLoading() {
         loadingIndicator.stopAnimating()
-        playButton.isHidden = false
+        playButtonBackgroundView.isHidden = false
     }
     
     @objc private func didTapPlayButton() {
         print(#function)
         isPlaying.toggle()
+        if isPlaying {
+            delegate?.play()
+        } else {
+            delegate?.pause()
+        }
     }
     
+    // 빨리감기 버튼 클릭
     @objc private func didTapSlipButton() {
 //        print(#function)
-        let timeIntervalString = "10"
+        lastStep += 1
+        let timeIntervarForStep = stepTime(isRewind: false, currentStep: lastStep)
+        let timeIntervalString = "+" + String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
         flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
         
     }
     
+    // 되감기 버튼 클릭
     @objc private func didTapRewindButton() {
 //        print(#function)
-        let timeInervalString = "10"
+        lastStep += 1
+        let timeIntervarForStep = stepTime(isRewind: true, currentStep: lastStep)
+        let timeInervalString = String(timeIntervarForStep)
+        
+        let time = stepSlider(timeInterval: timeIntervarForStep)
+        
+        delegate?.step(time: time)
+        
         flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
+    }
+    
+    
+    
+    // step할 초 지정해주는 함수
+    private func stepTime(isRewind: Bool, currentStep: Int) -> Int64{
+        var result: Int64
+        let oper: Int64 = isRewind ? -1: 1
+        let defaultStepTime: Int64 = 10 * oper
+        
+        if (isRewind && lastStepTimeInterval < 0) || (!isRewind && lastStepTimeInterval > 0) {
+            result = lastStepTimeInterval + defaultStepTime
+        } else {
+            result = defaultStepTime
+        }
+        
+        lastStepTimeInterval = result
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            [weak self] in
+            self?.initializationLastStetpTime(currentStep: currentStep)
+        })
+        return result
+    }
+    
+    // lastStepTime 초기화 해주는 함수
+    private func initializationLastStetpTime(currentStep: Int) {
+        guard currentStep == lastStep else { return }
+        lastStep = 0
+        lastStepTimeInterval = 0
+    }
+    
+    // playerSlider를 매개변수에 들어온 값 만큼 이동
+    private func stepSlider(timeInterval: Int64) -> Int64{
+        let value = playSlider.value + Float(timeInterval)
+        return Int64(value)
     }
     
     // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
     private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String) {
-        let duration = 0.65
-        let turm: Double = 0.3
-        var currentDuration: Double = 0
+//        let duration = 0.65
+//        let turm: Double = 0.3
+//        var currentDuration: Double = 0
         
+        let controlButton = isRewind ? rewindButton: slipButton
         let insideView = isRewind ? rewindInsideView: slipInsideView
         let imageView = isRewind ? rewindButtonImageView: slipButtonImageView
         let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
         let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
         
-        let actionText = (isRewind ? "-": "+") + timeIntervalString
-        actionLabel.text = actionText
+        
+        actionLabel.text = timeIntervalString
         
         let range: CGFloat = .dynamicYMargin(margin: 200)
         let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
         let moveRange = isRewind ? -(range): range
         
+        if !isControlAppear {
+            controlButton.isHidden = false
+            controlButton.alpha = 1
+        }
+        
+        UIView.animate(withDuration: 0.05, animations: {
+            imageView.transform = .init(rotationAngle: rotate)
+            insideView.alpha = 1
+            insideLabel.alpha = 0
+            actionLabel.transform = .init(translationX: moveRange, y: 0)
+            actionLabel.alpha = 1
+        }, completion: { _ in
+            UIView.animate(withDuration: 0.2, animations: {
+                imageView.transform = .identity
+                insideView.alpha = 0
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                }, completion: {  _ in
+//                    guard controlButton.isSelected else {
+//                        controlButton.isSelected = false
+//                        return
+//                    }
+                    
+                    UIView.animate(withDuration: 0.5, animations: {
+                        insideLabel.backgroundColor = .clear
+                        actionLabel.alpha = 0
+                        insideLabel.alpha = 1
+                    }, completion: { [weak self] _ in
+                        guard let self = self else { return }
+                        
+                        actionLabel.transform = .identity
+                        controlButton.isSelected = false
+                        
+                        if !self.isControlAppear {
+                            controlButton.alpha = 0.1
+                            controlButton.isHidden = true
+                        }
+                        
+                    })
+                })
+            })
+        })
         
 //        layoutIfNeeded()
 //        imageView.backgroundColor = .green
         
-        UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
-            
-            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: 0.05, animations: {
-                actionLabel.transform = .init(translationX: moveRange, y: 0)
-                actionLabel.alpha = 1
-                imageView.transform = .init(rotationAngle: rotate)
-                insideView.alpha = 1
-                insideLabel.alpha = 0
-                currentDuration += 0.05
-            })
-            
-            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
-                imageView.transform = .identity
-                insideView.alpha = 0
-                currentDuration += turm
-            })
-            
-            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
-                insideLabel.backgroundColor = .clear
-                actionLabel.alpha = 0
-                insideLabel.alpha = 1
-            })
-        }, completion: { _ in
-            actionLabel.transform = .identity
-        })
+//        UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
+//
+//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: 0.05, animations: {
+//                imageView.transform = .init(rotationAngle: rotate)
+//                insideView.alpha = 1
+//                insideLabel.alpha = 0
+//                actionLabel.transform = .init(translationX: moveRange, y: 0)
+//                actionLabel.alpha = 1
+//                currentDuration += 0.05
+//            })
+//
+//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+//                imageView.transform = .identity
+//                insideView.alpha = 0
+//                currentDuration += turm
+//            })
+//
+//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
+//                insideLabel.backgroundColor = .clear
+//                actionLabel.alpha = 0
+//                insideLabel.alpha = 1
+//            })
+//        }, completion: { [weak self] _ in
+//            guard let self = self else { return }
+//
+//            actionLabel.transform = .identity
+//
+//            if !self.isControlAppear {
+//                controlButton.alpha = 0.1
+//                controlButton.isHidden = true
+//            }
+//        })
         
-        
+        isPlaying = true
     }
     
     private func playAction() {
-        let imageName = "play.fill"
+        let imageName = "pause.fill"
         playButtonImageView.image = UIImage(systemName: imageName)
     }
     
     private func pauseAction() {
-        let imageName = "pause.fill"
+        let imageName = "play.fill"
         playButtonImageView.image = UIImage(systemName: imageName)
     }
     
@@ -683,36 +853,7 @@ class VideoView: UIView {
 
 
 extension VideoView {
-//    func test() {
-//       UIGraphicsBeginImageContext(playButtonBackgroundView.frame.size)
-//            let context = UIGraphicsGetCurrentContext()!
-//
-//            // 삼각형 그리기
-//            context.setLineWidth(1.0)
-//            context.setStrokeColor(UIColor.green.cgColor)
-//            context.setFillColor(UIColor.green.cgColor)
-//
-//            context.move(to: CGPoint(x: 140, y: 200))
-//            context.addLine(to: CGPoint(x: 170, y: 450))
-//            context.addLine(to: CGPoint(x: 110, y: 450))
-//            context.addLine(to: CGPoint(x: 140, y: 200))
-//            context.fillPath() // 선 채우기
-//            context.strokePath() // 선으로 그려진 삼각형의 내부 채우기
-//
-//            // 원 그리기
-//            context.setLineWidth(1.0)
-//            context.setStrokeColor(UIColor.red.cgColor)
-//
-//            context.addEllipse(in: CGRect(x: 90, y: 150, width: 100, height: 100))
-//            context.addEllipse(in: CGRect(x: 90+50, y: 150, width: 100, height: 100))
-//            context.addEllipse(in: CGRect(x: 90-50, y: 150, width: 100, height: 100))
-//            context.addEllipse(in: CGRect(x: 90, y: 150-50, width: 100, height: 100))
-//            context.addEllipse(in: CGRect(x: 90, y: 150+50, width: 100, height: 100))
-//            context.strokePath()
-//
-//            playButtonBackgroundView = UIGraphicsRendererContext()
-//            UIGraphicsEndImageContext()
-//        }
-//        
-//    }
+    func test() {
+        
+    }
 }

@@ -74,6 +74,10 @@ final class HomeViewController: UIViewController {
         homeTableView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
+
+            //            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
+            //            $0.bottom.equalTo(additionalSafeAreaInsets)
+
         }
     }
     
@@ -96,6 +100,9 @@ extension HomeViewController: UITableViewDelegate {
         case 0:
             print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
             return previewCellHeight
+            //        case 1:
+            //            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+        //            return posterCellHeight
         case 1, 2:
             print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return posterCellHeight
@@ -138,7 +145,11 @@ extension HomeViewController: UITableViewDataSource {
         
         print("hoveVC:  Datasource cellForRowAt row = \(indexPath.row)")
         
-        
+        // conflict난 부분인데 확인 요망
+//        cell.delegate = self
+//        
+//        cell.configure(id: idPreview, poster: posterPreview as! [UIImage], titleImage: titleImagePreview as! [UIImage])
+
         let cell: UITableViewCell
         
         switch indexPath.row {
