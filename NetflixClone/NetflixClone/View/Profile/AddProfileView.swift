@@ -68,7 +68,8 @@ class AddProfileView: UIView {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        newProfileButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: padding).isActive = true
+        newProfileButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+//        newProfileButton.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: padding).isActive = true
         newProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.27).isActive = true
         newProfileButton.heightAnchor.constraint(equalTo: newProfileButton.widthAnchor).isActive = true
@@ -79,6 +80,7 @@ class AddProfileView: UIView {
         nickNameTextfield.topAnchor.constraint(equalTo: changeLabel.bottomAnchor, constant: margin * 2 ).isActive = true
         nickNameTextfield.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding * 2).isActive = true
         nickNameTextfield.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding * 2).isActive = true
+        nickNameTextfield.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         nickNameTextfield.heightAnchor.constraint(equalToConstant: padding * 1.1).isActive = true
 
         

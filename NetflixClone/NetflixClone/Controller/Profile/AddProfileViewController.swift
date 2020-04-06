@@ -17,6 +17,7 @@ enum ChangeRoots {
 class AddProfileViewController: UIViewController {
     
     var root: ChangeRoots
+    private var addProfileBottom: NSLayoutConstraint?
     private let addProfileView = AddProfileView()
     private let kidsView = KidsCustomView()
     
@@ -28,7 +29,7 @@ class AddProfileViewController: UIViewController {
         setConstraints()
         setNavigationBar()
         profileCreate()
-        
+        keyboad()
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -73,27 +74,41 @@ class AddProfileViewController: UIViewController {
         addProfileView.nickNameTextfield.delegate = self
         
         kidsView.delegate = self
+    }
+    private func keyboad() {
+        // 키보드가 보여질때 showKeyboardAction 실행
+        NotificationCenter.default.addObserver(self, selector: #selector(showKeyboardAction), name: NSNotification.Name(rawValue: UIResponder.keyboardWillShowNotification.rawValue), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hiddenKeyboardAction), name: NSNotification.Name(rawValue: UIResponder.keyboardWillHideNotification.rawValue), object: nil)
+    }
+    
+    @objc private func showKeyboardAction() {
+        addProfileBottom?.constant = 0
+        kidsView.alpha = 0
         
     }
+    @objc private func hiddenKeyboardAction() {
+        addProfileBottom?.constant = 70
+        kidsView.alpha = 1
+    }
+    
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let padding: CGFloat = 20
-        let spacing: CGFloat = 80
+        let spacing: CGFloat = 70
         [addProfileView,kidsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        addProfileView.topAnchor.constraint(equalTo: guide.topAnchor, constant: padding * 2).isActive = true
+//        addProfileView.topAnchor.constraint(equalTo: guide.topAnchor, constant: padding * 2).isActive = true
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
-        addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor, constant: spacing).isActive = true
+        addProfileBottom = addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor, constant: spacing)
+        addProfileBottom?.isActive = true
         
-        kidsView.topAnchor.constraint(equalTo: addProfileView.bottomAnchor).isActive = true
+        kidsView.topAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: padding).isActive = true
         kidsView.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
         kidsView.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -padding).isActive = true
         kidsView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
-        
-        
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
@@ -123,8 +138,6 @@ class AddProfileViewController: UIViewController {
             if let profileVC = vc as? ProfileViewController {
                 switch root {
                 case .main,.manager:
-                    //                    let tempUser = NetflixUser(token: "Asd", email: "aaaa", isKids: kidsState, image: <#T##UIImage#>)
-                    //                    profileVC.users.append(tempU ser)
                     profileVC.root = .main
                     profileVC.userNameArray.append(userName)
                     profileVC.kidsState = kidsState
@@ -191,9 +204,7 @@ extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegat
         imageVC.modalPresentationStyle = .overCurrentContext
         present(imageVC,animated: true)
     }
-    
 }
-
 
 extension AddProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {

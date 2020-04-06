@@ -86,14 +86,16 @@ extension LoginViewController: LoginViewDelegate {
                 guard let self = self else { return }
                 switch result {
                 case .failure(let error):
+                    self.rootView.isLoading = false
                     UIAlertController(
                         title: "로그인",
                         message: error.localizedDescription,
                         preferredStyle: .alert)
                         .noticePresent(viewController: self)
-                    self.rootView.isLoading = false
+                    
                     
                 case .success(let data):
+                    self.rootView.isLoading = false
                     guard
                         let result = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                         let token = result["token"] as? String
@@ -107,9 +109,11 @@ extension LoginViewController: LoginViewDelegate {
                     }
                     
                     LoginStatus.shared.login(token: token)
-                    let profileVC = ProfileViewController(root: .main)
-                    self.navigationController?.pushViewController(profileVC, animated: true)
-                    self.rootView.isLoading = false
+                    let profileVC = ProfileViewController(root: .login)
+                    let navi = UINavigationController(rootViewController: profileVC)
+                    navi.modalPresentationStyle = .fullScreen
+                    self.present(navi, animated: true)
+                    
                 }
         })
     }

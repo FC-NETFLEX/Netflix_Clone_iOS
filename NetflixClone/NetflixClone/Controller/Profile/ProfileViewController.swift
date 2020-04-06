@@ -9,6 +9,7 @@
 import UIKit
 
 enum ProfileRoots {
+    case login
     case main
     case manager
     case add
@@ -80,6 +81,18 @@ class ProfileViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
         
         switch root {
+    
+        case .login:
+            profileViewArray.forEach {
+                $0.setHidden(state: true)
+            }
+            title = "Netflix를 시청할 프로필을 만들어주세요."
+//            let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(changeButtonDidTap))
+//            completeButton.tintColor = .setNetfilxColor(name: .white)
+//            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+//            navigationItem.rightBarButtonItem = completeButton
+            navigationItem.leftBarButtonItem = nil
+            
         case .main:
             profileViewArray.forEach {
                 $0.setHidden(state: true)
@@ -212,7 +225,7 @@ class ProfileViewController: UIViewController {
          leftNavigationMake()
 
         switch root {
-        case .main:
+        case .main, .login:
             profileViewArray.forEach {
                 $0.setHidden(state: true)
                 setNavigationBar()
