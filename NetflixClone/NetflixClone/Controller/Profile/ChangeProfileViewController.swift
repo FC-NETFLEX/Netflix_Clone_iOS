@@ -35,7 +35,7 @@ class ChangeProfileViewController: UIViewController {
         cancelButton.tintColor = .white
         navigationItem.leftBarButtonItem = cancelButton
         
-        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(didTapSaveButton(_:)))
+        let saveButton = UIBarButtonItem(title: "저장", style: .plain, target: self, action: #selector(didTapSaveButton))
         saveButton.tintColor = .gray
         navigationItem.rightBarButtonItem = saveButton
         
@@ -102,15 +102,16 @@ class ChangeProfileViewController: UIViewController {
         }
     }
     
-    @objc private func didTapSaveButton(_ sender: Any) {
+    @objc private func didTapSaveButton() {
+        
         guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
-                
                 profileVC.root = .main
                 profileVC.userNameArray.append(userName)
                 navigationController?.popViewController(animated: true)
+                print("프로필만들기 오케")
             }
         }
     }
