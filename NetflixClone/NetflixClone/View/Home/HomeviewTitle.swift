@@ -11,6 +11,7 @@ import UIKit
 class HomeviewTitle: UIView {
     
     private let titlePoster = UIImageView()
+    private let gradient = CAGradientLayer()
     
     private let contentView = UIView()
     private let categoryLabel = UILabel()
@@ -24,12 +25,12 @@ class HomeviewTitle: UIView {
     private let titleImage = UIImageView()
     
     
-//    private let gradientLayer: CAGradientLayer = {
-//        let gradientLayer = CAGradientLayer()
-//        gradientLayer.backgroundColor = UIColor.clear.cgColor
-//        gradientLayer.colors = [UIColor.black.cgColor, UIColor.gray.cgColor, UIColor.clear.cgColor]
-//        return gradientLayer
-//    }()
+    //    private let gradientLayer: CAGradientLayer = {
+    //        let gradientLayer = CAGradientLayer()
+    //        gradientLayer.backgroundColor = UIColor.clear.cgColor
+    //        gradientLayer.colors = [UIColor.black.cgColor, UIColor.gray.cgColor, UIColor.clear.cgColor]
+    //        return gradientLayer
+    //    }()
     
     private let gradationLayer = CAGradientLayer()
     
@@ -74,11 +75,11 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-//        titleImage.contentMode = .scaleAspectFit
+        //        titleImage.contentMode = .scaleAspectFit
         titleImage.contentMode = .scaleAspectFill
         titleImage.clipsToBounds = true
         
-        contentView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
+//        contentView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         dibsLabel.text = "내가 찜한..."
         dibsLabel.font = fixedFont
@@ -88,10 +89,13 @@ class HomeviewTitle: UIView {
         infoLabel.font = fixedFont
         infoLabel.textColor = textTintColor
         
+        
         addSubview(titlePoster)
-//        titleImage.layer.addSublayer(gradientLayer)
-        titlePoster.addSubview(contentView)
-        titlePoster.addSubview(titleImage)
+        //        titleImage.layer.addSublayer(gradientLayer)
+//        titlePoster.addSubview(contentView)
+//        titlePoster.addSubview(titleImage)
+        addSubview(contentView)
+        addSubview(titleImage)
         
         [categoryLabel, dibsButton, playButton, infoButton, dibsLabel, infoLabel].forEach {
             contentView.addSubview($0)
@@ -99,7 +103,7 @@ class HomeviewTitle: UIView {
         
         
     }
-   
+    
     
     private func setConstraints() {
         
@@ -110,8 +114,8 @@ class HomeviewTitle: UIView {
         let miniButtonWidth: CGFloat = xMargin * 2
         let miniButtonHeight: CGFloat = yMargin * 4
         
-//        let titleImageWidth: CGFloat = CGFloat.dynamicXMargin(margin: 350)
-//        let titleImageHeight: CGFloat = CGFloat.dynamicYMargin(margin: 150)
+        //        let titleImageWidth: CGFloat = CGFloat.dynamicXMargin(margin: 350)
+        //        let titleImageHeight: CGFloat = CGFloat.dynamicYMargin(margin: 150)
         
         titlePoster.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
@@ -141,7 +145,7 @@ class HomeviewTitle: UIView {
             $0.trailing.equalToSuperview().inset(xMargin + padding * 2)
             $0.height.equalTo(miniButtonHeight)
         }
-       
+        
         dibsButton.snp.makeConstraints {
             $0.bottom.equalTo(dibsLabel.snp.top).inset(yMargin)
             $0.centerX.equalTo(dibsLabel.snp.centerX)
@@ -170,11 +174,28 @@ class HomeviewTitle: UIView {
             $0.centerX.equalTo(titlePoster.snp.centerX)
         }
         
-      
+        
         
     }
     
-
+    //MARK: - Gradient(그라데이션)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        gradient.startPoint = CGPoint(x: 1, y: 1)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        
+        gradient.colors = [
+            #colorLiteral(red: 0.07841768116, green: 0.07843924314, blue: 0.07841629535, alpha: 1).cgColor,
+            #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        ]
+        gradient.locations = [0, 1]
+        gradient.frame = CGRect(origin: .zero, size: frame.size)
+        
+        titlePoster.layer.addSublayer(gradient)
+    }
+    
+    
     
     // MARK: - configure
     func configure(poster: UIImage, category: [String], dibs: Bool, titleImage: UIImage) {
