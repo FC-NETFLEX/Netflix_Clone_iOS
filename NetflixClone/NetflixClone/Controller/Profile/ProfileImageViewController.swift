@@ -10,27 +10,29 @@ import UIKit
 
 class ProfileImageViewController: UIViewController {
     
+    //    private var collectionPoint = [Int: CGPoint]()
+    
     private let topView = TopCustomView()
-    private var category = ["temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8"]
+//    private var category = ["temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8"]
     private let tableView = UITableView(frame: .zero, style: .grouped)
     
     private let profileData = [UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3")]
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setConstraints()
-//        setNavigationBar()
+        //        setNavigationBar()
         requestProfileImage()
         
     }
-//    private func setNavigationBar() {
-//        
-//        navigationItem.title = "아이콘 선택"
-//        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
-//  
-//    }
+    //    private func setNavigationBar() {
+    //
+    //        navigationItem.title = "아이콘 선택"
+    //        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
+    //
+    //    }
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
         topView.delegate = self
@@ -67,41 +69,87 @@ class ProfileImageViewController: UIViewController {
     
     private func requestProfileImage() {
         guard let token = LoginStatus.shared.getToken() else { return }
+      
+        let iconList = "http://13.124.222.31/members/profiles/icons/"
+        guard
+            let iconURL = URL(string: iconList) else { return }
         
-        APIManager().requestOfGet(url: .iconList, token: token, completion: {
-            result in
-            switch result {
-            case .success(let data):
-                print(String(data: data, encoding: .utf8))
-            case .failure(let error):
-                print(error)
+        var urlRequest = URLRequest(url: iconURL)
+        urlRequest.httpMethod = "GET"
+        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) { [weak self] (data, response, error) in
+            guard
+                let data = data,
+                let categorys = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+                else { return }
+            
+            for category in categorys {
+                guard
+                    let name = category["category_name"] as? String,
+                    let profileIcons = category["profileIcons"] as? [[String: Any]]
+                    else { return }
+                
+                var icon = [Icon]()
+                
+                for i in profileIcons {
+                    guard
+                        let id = i["id"] as? Int,
+                        let iconURL = i["icon"] as? String
+                        else { return }
+                    
+                    let temp = Icon(id: id, iconURL: iconURL)
+                    icon.append(temp)
+                }
+                
+                self?.categoryList.append(CategoryList(name: name, icon: icon))
             }
-        })
+            
+//            dump(self?.icons)
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+            
+        }
+        task.resume()
     }
-
+    
+    
+    private var categoryList = [CategoryList]()
 }
+
+struct CategoryList {
+    let name: String
+    let icon: [Icon]
+}
+
+struct Icon {
+    let id: Int
+    let iconURL: String
+}
+
 extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? { nil }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 10 }
-  
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
         label.backgroundColor = .setNetfilxColor(name:.netflixGray)
-        label.text = category[section]
+        label.text = categoryList[section].name
         label.textColor = .white
         return label
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        category[section]
-//
-//    }
+    //    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    //        category[section]
+    //
+    //    }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return category.count
+        return categoryList.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -112,30 +160,80 @@ extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProfileTableVIewCell.identifier, for: indexPath) as? ProfileTableVIewCell else { fatalError() }
+    
+        
+        let cell = ProfileTableVIewCell()
+        cell.collectionView.tag = indexPath.section
         cell.collectionView.dataSource = self
         cell.collectionView.delegate = self
         cell.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         return cell
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let tempCell = cell as? ProfileTableVIewCell else { return }
+        //        tempCell.collectionView.contentOffset = collectionPoint[indexPath.section] ?? .zero
+        tempCell.collectionView.contentOffset = .zero
+    }
     
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        //        guard let tempCell = cell as? ProfileTableVIewCell else { return }
+        //        collectionPoint[indexPath.section] = tempCell.collectionView.contentOffset
+    }
 }
 
 extension ProfileImageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        dismiss(animated: true)
         print(indexPath)
     }
-   
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        profileData.count
+        categoryList[collectionView.tag].icon.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundView = UIImageView(image: profileData[indexPath.item])
+        
+        cell.backgroundView = nil
+        
+        let key = categoryList[collectionView.tag].icon[indexPath.row].iconURL
+        
+        if let image = ImageCaching.shared.data[key] {
+            cell.backgroundView = UIImageView(image: image)
+            
+        } else {
+            guard let url = URL(string: key) else { fatalError() }
+            
+            let task = URLSession.shared.dataTask(with: url) { [weak self] (data, _, _) in
+                guard
+                    let data = data,
+                    let image = UIImage(data: data),
+                    let self = self
+                    else { return }
+                
+                DispatchQueue.main.async {
+                    ImageCaching.shared.data[key] = image
+                    cell.backgroundView = UIImageView(image: image)
+                }
+            }
+            task.resume()
+        }
+        
+//        cell.backgroundView = UIImageView(image: profileData[indexPath.item])
         return cell
+    }
+}
+
+class ImageCaching {
+    static let shared = ImageCaching()
+    private init() {}
+    
+    var data = [String: UIImage]() {
+        didSet {
+            dump(data)
+        }
     }
 }
 
