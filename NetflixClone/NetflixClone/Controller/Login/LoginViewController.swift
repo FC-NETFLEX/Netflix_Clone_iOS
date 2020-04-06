@@ -175,8 +175,10 @@ class LoginViewController: UIViewController {
                     }
                     
                     LoginStatus.shared.login(token: token)
-                    let profileVC = ProfileViewController(root: .main)
-                    self.navigationController?.pushViewController(profileVC, animated: true)
+                    let profileVC = ProfileViewController(root: .login)
+                    let navi = UINavigationController(rootViewController: profileVC)
+                    navi.modalPresentationStyle = .fullScreen
+                    self.present(navi, animated: true)
                 }
         })
     }
