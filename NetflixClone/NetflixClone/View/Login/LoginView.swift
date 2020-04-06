@@ -16,6 +16,18 @@ class LoginView: UIView {
     
     weak var delegate: LoginViewDelegate?
     
+    var isLoading: Bool = false {
+        didSet {
+            if self.isLoading {
+                indicator.startAnimating()
+            } else {
+                indicator.stopAnimating()
+            }
+        }
+    }
+    
+    private let indicator = UIActivityIndicatorView()
+    
     private let parentView = UIView()
     private let emailTextField = UITextField()
     private let passwordTextField = UITextField()
@@ -40,15 +52,20 @@ class LoginView: UIView {
     //MARK: UI
     private func setUI() {
         
-        addSubview(parentView)
+        [parentView].forEach({
+            addSubview($0)
+        })
         
-        [emailTextField, passwordTextField, loginButton, passwordResetButton].forEach {
+        [emailTextField, passwordTextField, loginButton, passwordResetButton, indicator].forEach {
             parentView.addSubview($0)
         }
         
         let placeholderColor = UIColor.setNetfilxColor(name: .netflixLightGray).cgColor
         let textFieldColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
         let textColor = UIColor.setNetfilxColor(name: .white)
+        
+        indicator.hidesWhenStopped = true
+        indicator.tintColor = .setNetfilxColor(name: .white)
         
         emailTextField.tintColor = textColor
         emailTextField.backgroundColor = textFieldColor
@@ -105,6 +122,10 @@ class LoginView: UIView {
         let yMargin = CGFloat.dynamicYMargin(margin: 15)
         let heigh: CGFloat = 50
         
+        indicator.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
         parentView.snp.makeConstraints({
             $0.centerX.centerY.equalTo(guide)
             $0.width.equalTo(guide).multipliedBy(widthMultiplier)
@@ -148,12 +169,14 @@ class LoginView: UIView {
     }
     
     @objc private func didTapLoginButton() {
+        guard !isLoading else { return }
         guard
             loginButton.isSelected,
             let email = emailTextField.text,
             let password = passwordTextField.text
             else { return }
         delegate?.login(email: email, password: password)
+        isLoading = true
     }
     
     // 키보드의 움직임에 따른 parentView Constraints update
@@ -229,6 +252,10 @@ class LoginView: UIView {
 
 
 extension LoginView: UITextFieldDelegate {
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return !isLoading
+    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         //        print(#function)

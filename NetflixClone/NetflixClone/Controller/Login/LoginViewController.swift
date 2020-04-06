@@ -28,15 +28,16 @@ class LoginViewController: UIViewController {
     }
     
     private func setNavigationBar() {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
         
         
         let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: self, action: #selector(popAction))
-        backButton.tintColor = .white
+        backButton.tintColor = .setNetfilxColor(name: .white)
         navigationItem.leftBarButtonItem = backButton
+//        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
         let imageView = UIImageView()
         let image = UIImage(named: "Logo")
@@ -60,6 +61,8 @@ class LoginViewController: UIViewController {
     
     
     @objc private func popAction() {
+        print(#function)
+        guard !rootView.isLoading else { return }
         self.navigationController?.popToRootViewController(animated: true)
     }
     
@@ -88,6 +91,7 @@ extension LoginViewController: LoginViewDelegate {
                         message: error.localizedDescription,
                         preferredStyle: .alert)
                         .noticePresent(viewController: self)
+                    self.rootView.isLoading = false
                     
                 case .success(let data):
                     guard
@@ -105,6 +109,7 @@ extension LoginViewController: LoginViewDelegate {
                     LoginStatus.shared.login(token: token)
                     let profileVC = ProfileViewController(root: .main)
                     self.navigationController?.pushViewController(profileVC, animated: true)
+                    self.rootView.isLoading = false
                 }
         })
     }

@@ -16,6 +16,17 @@ class SignUpView: UIView {
     
     weak var delegate: SignUpViewDelegate?
     
+    var isLoading = false {
+        didSet {
+            if self.isLoading {
+                indicator.startAnimating()
+            } else {
+                indicator.stopAnimating()
+            }
+        }
+    }
+    
+    private let indicator = UIActivityIndicatorView()
     private let loginResultBool = false
     private let textLabel = UILabel()
     private let emailTextField = UITextField()
@@ -67,11 +78,17 @@ class SignUpView: UIView {
         
         backgroundColor = .setNetfilxColor(name: .black)
         
-        addSubview(parentView)
+        [parentView].forEach({
+            addSubview($0)
+        })
         
-        [textLabel, emailTextField, passwordTextField, confirmPWTextField, signUpButton].forEach {
+        [textLabel, emailTextField, passwordTextField, confirmPWTextField, signUpButton, indicator].forEach {
             parentView.addSubview($0)
         }
+        
+        indicator.hidesWhenStopped = true
+        indicator.tintColor = .setNetfilxColor(name: .white)
+        
         emailTextField.delegate = self
         passwordTextField.delegate = self
         confirmPWTextField.delegate = self
@@ -131,6 +148,10 @@ class SignUpView: UIView {
         let contentsHeight: CGFloat = 50 //CGFloat.dynamicYMargin(margin: 50)
         let guide = safeAreaLayoutGuide
         
+        indicator.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        
         textLabel.snp.makeConstraints({
             $0.top.equalToSuperview()
             $0.leading.trailing.equalToSuperview()
@@ -175,16 +196,19 @@ class SignUpView: UIView {
         guard
             let email = emailTextField.text,
             let pw = passwordTextField.text,
-            signUpButton.isSelected else {
+            signUpButton.isSelected,
+            !isLoading else {
             return
         }
         
         delegate?.signUp(email: email, passWord: pw)
+        isLoading = true
     }
     
     //MARK: Action
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard !isLoading else { return }
         super.touchesBegan(touches, with: event)
         self.endEditing(true)
     }
@@ -287,6 +311,10 @@ class SignUpView: UIView {
 }
 
 extension SignUpView: UITextFieldDelegate {
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return !isLoading
+    }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return true }
