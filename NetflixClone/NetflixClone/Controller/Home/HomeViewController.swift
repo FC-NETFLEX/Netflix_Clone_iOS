@@ -14,7 +14,7 @@ final class HomeViewController: UIViewController {
     //    private let homeView = HomeView()
     private let homeTableView = UITableView(frame: .zero, style: .grouped)
     
-    private let cellCount = 4
+    private let cellCount = 5
     
     //MARK: header content
     private let firstCellItem = "titleDummy"
@@ -66,6 +66,7 @@ final class HomeViewController: UIViewController {
         homeTableView.register(LatestMovieTableViewCell.self, forCellReuseIdentifier: LatestMovieTableViewCell.indentifier)
         homeTableView.register(Top10TableViewCell.self, forCellReuseIdentifier: Top10TableViewCell.identifier)
         homeTableView.register(WatchContentsTableViewCell.self, forCellReuseIdentifier: WatchContentsTableViewCell.identifier)
+        homeTableView.register(VideoAdvertisementTableViewCell.self, forCellReuseIdentifier: VideoAdvertisementTableViewCell.identifier)
         
         view.addSubview(homeTableView)
         
@@ -74,10 +75,6 @@ final class HomeViewController: UIViewController {
         homeTableView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
-
-            //            $0.bottom.equalTo(self.bottomLayoutGuide.snp.bottom)
-            //            $0.bottom.equalTo(additionalSafeAreaInsets)
-
         }
     }
     
@@ -96,6 +93,8 @@ extension HomeViewController: UITableViewDelegate {
         let previewCellHeight: CGFloat = tableView.frame.height / 4
         let posterCellHeight: CGFloat = tableView.frame.height / 4 + 30
         let watchCellHeight: CGFloat = tableView.frame.height / 3
+        let videoAdvertiseHeight: CGFloat = round(tableView.frame.height / 2.5)
+        
         switch indexPath.row {
         case 0:
             print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
@@ -109,6 +108,9 @@ extension HomeViewController: UITableViewDelegate {
         case 3:
             print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return watchCellHeight
+        case 4:
+            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+            return videoAdvertiseHeight
         default:
             return 100
         }
@@ -188,6 +190,14 @@ extension HomeViewController: UITableViewDataSource {
             watchContentCell.configure(poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark/*, url: <#T##URL#>*/)
             
             cell = watchContentCell
+            
+        case 4:
+            print("------------------------------------\n")
+            print("HomeVC: cell Row -> \(indexPath.row)")
+            let videoAdvertismentCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier, for: indexPath) as! VideoAdvertisementTableViewCell
+            videoAdvertismentCell.delegate = self
+//            videoAdvertismentCell.configure(advertisement: , contentID: 1234, contentName: "연애의 발견", dibs: true)
+            cell = videoAdvertismentCell
         default:
             print("------------------------------------\n")
             print("HomeVC: cell Row -> \(indexPath.row)")
@@ -239,6 +249,25 @@ extension HomeViewController: Top10TableViewCellDelegate {
 extension HomeViewController: WatchContentsTableViewDelegate {
     func didTabWatchContentCell() {
         print("WatchContentCell Click")
+    }
+    
+    
+}
+
+//MARK: - VideoAdvertisemntTableViewCellDelegate
+extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
+    func didTabVideoView() {
+        let contentVC = ContentViewController()
+        
+        present(contentVC, animated: true)
+    }
+    
+    func didTabPlayButton() {
+        print("영상재생화면 이동")
+    }
+    
+    func didTabDibsButton() {
+        print("찜한 목록 추가하기")
     }
     
     
