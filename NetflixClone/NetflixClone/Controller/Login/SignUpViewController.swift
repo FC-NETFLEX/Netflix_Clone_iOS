@@ -32,10 +32,12 @@ class SignUpViewController: UIViewController {
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
         
-        let backButton = UIBarButtonItem()
-        backButton.tintColor = .white
-        backButton.title = ""
-        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .done, target: self, action: #selector(popAction))
+        
+        backButton.tintColor = .setNetfilxColor(name: .white)
+//        backButton.title = ""
+//        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        self.navigationItem.leftBarButtonItem = backButton
         
         let imageView = UIImageView()
         let image = UIImage(named: "Logo")
@@ -43,6 +45,12 @@ class SignUpViewController: UIViewController {
         
         imageView.contentMode = .scaleAspectFit
         self.navigationItem.titleView = imageView
+    }
+    
+    @objc private func popAction() {
+        print(#function)
+        guard !rootView.isLoading else { return }
+        navigationController?.popViewController(animated: true)
     }
     
 }
@@ -62,10 +70,12 @@ extension SignUpViewController: SignUpViewDelegate {
             switch result {
             case .failure(let error) :
                 // 에러 처리
+                self.rootView.isLoading = false
                 print(error)
                 
             case .success(let data):
                 // 회원가입이 완료된것이 아니라 서버와의 통신이 성공한거
+                self.rootView.isLoading = false
                 guard let data = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
                 
                 // 회원가입 실패
@@ -82,6 +92,7 @@ extension SignUpViewController: SignUpViewDelegate {
                     [weak self]  in
                     let loginVC = LoginViewController()
                     self?.navigationController?.pushViewController(loginVC, animated: true)
+                    
                 })
                 
             }
