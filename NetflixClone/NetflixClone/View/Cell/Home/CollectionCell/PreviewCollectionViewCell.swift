@@ -14,6 +14,8 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     private let posterImage = UIImageView()
     private let titleImage = UIImageView()
     
+    private let gradient = CAGradientLayer()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -69,6 +71,25 @@ class PreviewCollectionViewCell: UICollectionViewCell {
             
         }
         
+    }
+    
+    //MARK: - Gradient (그라데이션)
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        gradient.startPoint = CGPoint(x: 1, y: 1)
+//        gradient.endPoint = CGPoint(x: 1, y: 0.6)
+        gradient.endPoint = CGPoint(x: 1, y: 0.3)
+        
+        gradient.colors = [
+            #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.7999785959).cgColor,
+            #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+
+        ]
+        gradient.locations = [0,1]
+        gradient.frame = CGRect(origin: .zero, size: frame.size)
+        
+        posterImage.layer.addSublayer(gradient)
     }
     
     //MARK: - Configure

@@ -112,6 +112,7 @@ class ProfileImageViewController: UIViewController {
             
         }
         task.resume()
+
     }
     
     

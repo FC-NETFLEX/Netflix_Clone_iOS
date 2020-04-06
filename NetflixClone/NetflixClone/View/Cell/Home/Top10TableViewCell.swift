@@ -48,7 +48,6 @@ class Top10TableViewCell: UITableViewCell {
     
     //MARK: - UI
     private func setUI() {
-        print("Top10TableViewCell: setUI")
 
         let HeaderFont: UIFont = .boldSystemFont(ofSize: 16)
                 
@@ -69,7 +68,6 @@ class Top10TableViewCell: UITableViewCell {
     }
     
     private func setConstraints() {
-        print("Top10TableViewCell: setConstraints")
 
         let headerYMargin: CGFloat = 10
         let headerXMargin: CGFloat = 10
@@ -93,7 +91,7 @@ class Top10TableViewCell: UITableViewCell {
         self.posterData = poster
         
         
-        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
+//        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
     }
 }
 
@@ -101,19 +99,18 @@ class Top10TableViewCell: UITableViewCell {
 //MARK: - CollectionView DataSource
 extension Top10TableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("Top10TableViewCell: numberOfItemInSection -> count  \(idData.count) ")
 
         return idData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("Top10TableViewCell: cellforItemAt")
+//        print("Top10TableViewCell: cellforItemAt")
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Top10CollectionViewCell.identifier, for: indexPath) as! Top10CollectionViewCell
         
         cell.configure(poster: posterData[indexPath.row], count: indexPath.row)
         
-        print("Top10TableViewCell: cell \(cell) ")
+//        print("Top10TableViewCell: cell \(cell) ")
 
         
         return cell
@@ -130,9 +127,6 @@ extension Top10TableViewCell: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
     }
     
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        0
-//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         // 가로모드일 때 item 1줄이면 lineSpacing이 가로로 들어간다.
