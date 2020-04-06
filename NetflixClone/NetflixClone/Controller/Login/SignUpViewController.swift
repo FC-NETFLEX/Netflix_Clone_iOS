@@ -88,7 +88,7 @@ extension SignUpViewController: SignUpViewDelegate {
                 }
                 
                 // 회원가입 성공
-                UIAlertController(title: "회원가입", message: "회원가입성공", preferredStyle: .alert).noticePresent(viewController: self, completion: {
+                UIAlertController(title: "회원가입", message: "회원가입 완료", preferredStyle: .alert).noticePresent(viewController: self, completion: {
                     [weak self]  in
                     let loginVC = LoginViewController()
                     self?.navigationController?.pushViewController(loginVC, animated: true)
