@@ -103,10 +103,14 @@ class SignUpView: UIView {
         emailTextField.attributedPlaceholder = NSAttributedString(string: "이메일 주소 또는 전화번호",
                                                                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.setNetfilxColor(name: .netflixLightGray)])
         
-        UITextField.appearance().tintColor = .white
+//        UITextField.appearance().tintColor = .white
         
+        let textFieldBackgroundColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
+        let textColor = UIColor.setNetfilxColor(name: .white)
         
-        emailTextField.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
+        emailTextField.backgroundColor = textFieldBackgroundColor
+        emailTextField.tintColor = textColor
+        emailTextField.textColor = textColor
         emailTextField.layer.cornerRadius = 5 //emailTextField.bounds.height
         emailTextField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
         emailTextField.keyboardType = .emailAddress
@@ -114,7 +118,9 @@ class SignUpView: UIView {
         
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "비밀번호(8~16자 영문, 숫자, 특수문자)",
                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.setNetfilxColor(name: .netflixLightGray)])
-        passwordTextField.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
+        passwordTextField.backgroundColor = textFieldBackgroundColor
+        passwordTextField.tintColor = textColor
+        passwordTextField.textColor = textColor
         passwordTextField.layer.cornerRadius = 5
         passwordTextField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
         passwordTextField.passwordRules = .none
@@ -123,7 +129,9 @@ class SignUpView: UIView {
         
         confirmPWTextField.attributedPlaceholder = NSAttributedString(string: "비밀번호 확인",
                                                                       attributes: [NSAttributedString.Key.foregroundColor: UIColor.setNetfilxColor(name: .netflixLightGray)])
-        confirmPWTextField.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
+        confirmPWTextField.backgroundColor = textFieldBackgroundColor
+        confirmPWTextField.tintColor = textColor
+        confirmPWTextField.textColor = textColor
         confirmPWTextField.layer.cornerRadius = 5
         confirmPWTextField.layer.sublayerTransform = CATransform3DMakeTranslation(10, 0, 0)
         confirmPWTextField.passwordRules = .none

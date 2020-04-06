@@ -13,7 +13,6 @@ protocol VideoAdvertisementTableViewCellDelegate: class {
     func didTabVideoView() -> ()
     func didTabPlayButton() -> ()
     func didTabDibsButton() -> ()
-    func didTabMuteButton() -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -194,9 +193,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
-        //        videoUrl = advertisement
-        //        url = advertisement
-        //        player = AVPlayer(url: advertisement)
+        
     }
     
     //MAKR: -Action
@@ -223,7 +220,5 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
             muteFlag = true
         }
 
-
-        delegate?.didTabMuteButton()
     }
 }

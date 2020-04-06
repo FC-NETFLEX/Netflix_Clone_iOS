@@ -209,10 +209,11 @@ extension HomeViewController: UITableViewDataSource {
             
             //            let videoAdvertismentCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier, for: indexPath) as! VideoAdvertisementTableViewCell
             
-            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
+            //되는 url
+//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
             // 안되는 url
-            //            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
+            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
@@ -311,9 +312,6 @@ extension HomeViewController: WatchContentsTableViewDelegate {
 
 //MARK: - VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
-    func didTabMuteButton() {
-        print("음소거 버튼!")
-    }
     
     func didTabVideoView() {
         let contentVC = ContentViewController()
