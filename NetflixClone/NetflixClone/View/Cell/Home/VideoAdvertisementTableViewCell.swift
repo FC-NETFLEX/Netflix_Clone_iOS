@@ -13,6 +13,7 @@ protocol VideoAdvertisementTableViewCellDelegate: class {
     func didTabVideoView() -> ()
     func didTabPlayButton() -> ()
     func didTabDibsButton() -> ()
+    func didTabMuteButton() -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -30,14 +31,30 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     private let videoView = UIView()
     private let muteButton = UIButton()
     
-    private let urlString = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4"
+    private var muteFlag = true
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    
+    //    private var url: URL?
+    var player: AVPlayer?
+    
+    func setPlayer(url: URL?) {
+        guard let url = url else { return }
+        player = AVPlayer(url: url)
+    }
+    
+    init(style: UITableViewCell.CellStyle, reuseIdentifier: String?, url: URL?) {
+        //        self.url = url
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
+        
+        
+        setPlayer(url: url)
         setUI()
         setConstrinats()
+        
+    
     }
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -52,46 +69,67 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         
         videoView.backgroundColor = .black
+//        videoView.backgroundColor = UIColor(patternImage: UIImage(named: "NETFLIX_Video")!)
         
         playButton.backgroundColor = .white
         playButton.layer.cornerRadius = 5
         playButton.setTitle("재생", for: .normal)
         playButton.setTitleColor(.black, for: .normal)
-//        playButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
+        //        playButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
         playButton.addTarget(self, action: #selector(didTabPlayButton(sender:)), for: .touchUpInside)
         
         dibsButton.backgroundColor = .gray
         dibsButton.layer.cornerRadius = 5
         dibsButton.setTitle("내가 찜한 콘텐츠", for: .normal)
         dibsButton.setTitleColor(.white, for: .normal)
-//        dibsButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
+        //        dibsButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
         dibsButton.addTarget(self, action: #selector(didTabDibsButton(sender:)), for: .touchUpInside)
+        
+        muteButton.backgroundColor = .clear
+        muteButton.setImage(UIImage(named: "Mute_icon"), for: .normal)
+        muteButton.addTarget(self, action: #selector(didTabMuteButton(sender:)), for: .touchUpInside)
         
         contentView.addSubview(headerLabel)
         contentView.addSubview(playButton)
         contentView.addSubview(dibsButton)
         contentView.addSubview(videoView)
         
-        videoView.addSubview(muteButton)
         
     }
     
     //MARK: -layoutSubviews
+    //layer 위에 음소거 버튼 넣어야 영상위에 셋팅
+
     override func layoutSubviews() {
         super.layoutSubviews()
         print("VideoAdvertisementTableViewCell: layoutSubviews videoView.frame = \(videoView.frame)")
         //MARK: -Video
-        guard let url = URL(string: urlString) else { return  print("url setVideo 강제종료")}
-        let player = AVPlayer(url: url)
+        //        let player = AVPlayer(url: url)
         let playerLayer = AVPlayerLayer(player: player)
         playerLayer.frame = CGRect(x: 0, y: 0, width: videoView.frame.width, height: videoView.frame.height)
-//        playerLayer.frame = videoView.frame
+        //        playerLayer.frame = videoView.frame
         
         videoView.layer.addSublayer(playerLayer)
-        player.play()
+        
+        
+//MARK: - 음소거버튼 셋팅
+        videoView.addSubview(muteButton)
+        
+        let muteButtonSize: CGFloat = 20
+        
+        muteButton.snp.makeConstraints {
+            $0.bottom.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(10)
+            $0.width.height.equalTo(muteButtonSize)
+        }
+        
+        
+        
+        player?.play()
+        player?.isMuted = true
     }
     
-
+    
     
     private func setConstrinats() {
         let headerYMargin: CGFloat = 10
@@ -99,12 +137,13 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         let margin: CGFloat = 10
         
-
+//        let muteButtonSize: CGFloat = 20
+        
         let buttonHeight: CGFloat = 25
         let buttonWidth: CGFloat = round(contentView.frame.width - (margin * 3) ) / 2
         
         let viewHeight: CGFloat = round(contentView.frame.height / 3 ) * 2
-
+        
         
         
         print("VideoAdvertisementTableViewCell: contentView \(contentView.frame), height \(contentView.frame.height), viewHeight: \(viewHeight), buttonWidth: \(buttonWidth)")
@@ -125,7 +164,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         playButton.snp.makeConstraints {
             $0.top.equalTo(videoView.snp.bottom).offset(margin)
             $0.leading.equalToSuperview().inset(margin)
-//            $0.trailing.equalTo(contentView.snp.centerX).offset(margin)
+            //            $0.trailing.equalTo(contentView.snp.centerX).offset(margin)
             $0.height.equalTo(buttonHeight)
             $0.width.equalTo(buttonWidth)
         }
@@ -133,23 +172,31 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         dibsButton.snp.makeConstraints {
             $0.top.equalTo(videoView.snp.bottom).offset(margin)
             $0.trailing.equalToSuperview().inset(margin)
-//            $0.leading.equalTo(contentView.snp.centerX).offset(margin)
+            //            $0.leading.equalTo(contentView.snp.centerX).offset(margin)
             $0.height.equalTo(buttonHeight)
             $0.width.equalTo(buttonWidth)
         }
         
         //muteButton
+//
+//        muteButton.snp.makeConstraints {
+//            $0.bottom.equalToSuperview()
+//            $0.trailing.equalToSuperview().inset(margin)
+//            $0.width.height.equalTo(muteButtonSize)
+//        }
         
         print("VideoAdvertisementTableViewCell: Constraints videoView.frame = \(videoView.frame)")
-
+        
     }
     
     //MARK: -Configure
-    func configure(advertisement: URL, contentID: Int, contentName: String, dibs: Bool) {
+    func configure(/*advertisement: URL, */contentID: Int, contentName: String, dibs: Bool) {
+        
         
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
-        
-        
+        //        videoUrl = advertisement
+        //        url = advertisement
+        //        player = AVPlayer(url: advertisement)
     }
     
     //MAKR: -Action
@@ -162,5 +209,21 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     @objc private func didTabDibsButton(sender: UIButton) {
         // toggle
         delegate?.didTabDibsButton()
+    }
+    @objc private func didTabMuteButton(sender: UIButton) {
+        
+        if muteFlag == true {
+            muteButton.setImage(UIImage(named: "Speaker_icon"), for: .normal)
+            player?.isMuted = false
+            
+            muteFlag = false
+        } else {
+            muteButton.setImage(UIImage(named: "Mute_icon"), for: .normal)
+            player?.isMuted = true
+            muteFlag = true
+        }
+
+
+        delegate?.didTabMuteButton()
     }
 }
