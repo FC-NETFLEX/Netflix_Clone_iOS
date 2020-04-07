@@ -419,6 +419,7 @@ class VideoView: UIView {
     
     // 더블탭 제스처의 처리
     @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
+//        print(#function)
         let location = gesture.location(in: self)
         let point = location.x
         let guide = bounds.width / 2
@@ -574,10 +575,13 @@ class VideoView: UIView {
     
     // 컨트롤하는 뷰들이 나타나는 처리
     private func appearControlView() {
+
+        if !isLoading {
+            playButtonBackgroundView.isHidden = false
+        }
         [
             self.topView,
             self.bottomView,
-            self.playButtonBackgroundView,
             self.rewindButton,
             self.slipButton,
             self.backgroundView].forEach({
@@ -726,6 +730,7 @@ class VideoView: UIView {
         let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
         let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
         
+        controlButton.isSelected = true
         
         actionLabel.text = timeIntervalString
         
@@ -739,6 +744,7 @@ class VideoView: UIView {
         }
         
         UIView.animate(withDuration: 0.05, animations: {
+            controlButton.isSelected = false
             imageView.transform = .init(rotationAngle: rotate)
             insideView.alpha = 1
             insideLabel.alpha = 0
@@ -752,68 +758,38 @@ class VideoView: UIView {
                 UIView.animate(withDuration: 0.2, animations: {
                     
                 }, completion: {  _ in
-//                    guard controlButton.isSelected else {
-//                        controlButton.isSelected = false
-//                        return
-//                    }
                     
-                    UIView.animate(withDuration: 0.5, animations: {
-                        insideLabel.backgroundColor = .clear
-                        actionLabel.alpha = 0
-                        insideLabel.alpha = 1
-                    }, completion: { [weak self] _ in
-                        guard let self = self else { return }
-                        
-                        actionLabel.transform = .identity
-                        controlButton.isSelected = false
-                        
-                        if !self.isControlAppear {
-                            controlButton.alpha = 0.1
-                            controlButton.isHidden = true
-                        }
-                        
-                    })
+                    if !controlButton.isSelected {
+                        UIView.animate(withDuration: 0.5, animations: {
+                            insideLabel.backgroundColor = .clear
+                            actionLabel.alpha = 0
+                            insideLabel.alpha = 1
+                        }, completion: { [weak self] _ in
+                            guard let self = self else { return }
+                            
+                            self.goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
+                        })
+                    } else {
+                        self.goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
+                    }
+                    
+                    
                 })
             })
         })
         
-//        layoutIfNeeded()
-//        imageView.backgroundColor = .green
-        
-//        UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
-//
-//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: 0.05, animations: {
-//                imageView.transform = .init(rotationAngle: rotate)
-//                insideView.alpha = 1
-//                insideLabel.alpha = 0
-//                actionLabel.transform = .init(translationX: moveRange, y: 0)
-//                actionLabel.alpha = 1
-//                currentDuration += 0.05
-//            })
-//
-//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
-//                imageView.transform = .identity
-//                insideView.alpha = 0
-//                currentDuration += turm
-//            })
-//
-//            UIView.addKeyframe(withRelativeStartTime: currentDuration, relativeDuration: turm, animations: {
-//                insideLabel.backgroundColor = .clear
-//                actionLabel.alpha = 0
-//                insideLabel.alpha = 1
-//            })
-//        }, completion: { [weak self] _ in
-//            guard let self = self else { return }
-//
-//            actionLabel.transform = .identity
-//
-//            if !self.isControlAppear {
-//                controlButton.alpha = 0.1
-//                controlButton.isHidden = true
-//            }
-//        })
-        
         isPlaying = true
+    }
+    
+    private func goBackControlButtonIdentity(actionLabel: UILabel, controlButton: UIButton) {
+        actionLabel.transform = .identity
+        controlButton.isSelected = false
+        
+        if !self.isControlAppear {
+            controlButton.alpha = 0.1
+            controlButton.isHidden = true
+        }
+        controlButton.isSelected = false
     }
     
     private func playAction() {
