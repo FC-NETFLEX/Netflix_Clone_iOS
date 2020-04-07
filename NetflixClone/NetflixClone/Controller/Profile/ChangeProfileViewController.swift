@@ -59,10 +59,12 @@ class ChangeProfileViewController: UIViewController {
         let margin: CGFloat = 10
         let padding: CGFloat = 20
         let spacing: CGFloat = 80
+        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 6)
         [addProfileView,changeView,kidsCV,universalCV,deleteView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        addProfileView.topAnchor.constraint(equalTo: guide.topAnchor).isActive = true
+        addProfileView.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true

@@ -8,9 +8,15 @@
 
 import UIKit
 
+protocol ProfileImageViewControllerDelegate: class {
+    func setImage(image: UIImage, imageID: Int)
+}
+
 class ProfileImageViewController: UIViewController {
     
     //    private var collectionPoint = [Int: CGPoint]()
+    
+    var delegate: ProfileImageViewControllerDelegate?
     
     private let topView = TopCustomView()
 //    private var category = ["temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8"]
@@ -185,6 +191,12 @@ extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource 
 
 extension ProfileImageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let id = categoryList[collectionView.tag].icon[indexPath.row].id
+        let url = categoryList[collectionView.tag].icon[indexPath.row].iconURL
+        guard let profileImage = ImageCaching.shared.data[url] else { return }
+        
+        delegate?.setImage(image: profileImage, imageID: id)
         dismiss(animated: true)
         print(indexPath)
     }
@@ -200,7 +212,7 @@ extension ProfileImageViewController: UICollectionViewDataSource {
         cell.backgroundView = nil
         
         let key = categoryList[collectionView.tag].icon[indexPath.row].iconURL
-        
+  
         if let image = ImageCaching.shared.data[key] {
             cell.backgroundView = UIImageView(image: image)
             
