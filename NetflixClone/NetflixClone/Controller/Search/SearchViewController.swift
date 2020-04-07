@@ -115,7 +115,7 @@ class SearchViewController: UIViewController {
         searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-//        definesPresentationContext = true // iOS 13 미만에서만 해줌, 13은 필요없음. 서치바에 커서 올라가면 주변 어두워지는 기능
+        //        definesPresentationContext = true // iOS 13 미만에서만 해줌, 13은 필요없음. 서치바에 커서 올라가면 주변 어두워지는 기능
         filteredData = data
     }
     
@@ -124,10 +124,10 @@ class SearchViewController: UIViewController {
 // MARK: Search Result Collection View DataSource, Delegate
 extension SearchViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if isFiltering {
-//            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
-//        }
-//        return self.filteredData.count
+        //        if isFiltering {
+        //            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
+        //        }
+        //        return self.filteredData.count
         return self.data.count
     }
     
@@ -145,8 +145,8 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
         
         //유진 - 바뀐 셀에 관련된 부분 configure에 더미 image 넣어서 사용하세유~
         // 임시 background
-//        cell?.backgroundColor = .white
-//        cell?.titleLabel.text = self.filteredData[indexPath.item
+        //        cell?.backgroundColor = .white
+        //        cell?.titleLabel.text = self.filteredData[indexPath.item
         
         cell?.configure(poster: UIImage(named: "posterCellDummy")!)
         
@@ -154,7 +154,7 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        print(filteredData[indexPath.item])
+        //        print(filteredData[indexPath.item])
         print(data[indexPath.item])
         // request
     }
@@ -207,12 +207,12 @@ extension SearchViewController: UISearchBarDelegate {
     }
     
     // 텍스트 바뀔 때마다 요청
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//
-//    }
+    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    //
+    //    }
     
     // 다 입력하고 검색 버튼 누르면 요청
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        <#code#>
-//    }
+    //    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    //        <#code#>
+    //    }
 }

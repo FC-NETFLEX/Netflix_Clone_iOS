@@ -19,6 +19,27 @@ class ContentViewController: UIViewController {
         setConstraints()
     }
     
+    private func request() {
+        guard let url = APIURL.defaultURL.makeURL(
+            pathItems: [PathItem(name: "profiles", value: "3"),
+                        PathItem(name: "contents", value: "3")]),
+            let token = LoginStatus.shared.getToken()
+            else { return }
+        APIManager().request(url: url, method: .get, token: token) { (result) in
+            switch result {
+            case .success(let data):
+                print(String(data: data, encoding: .utf8))
+                if let content = try? JSONDecoder().decode(Content.self, from: data) {
+                    
+                } else {
+                    print("decode 실패")
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     private func setUI() {
         view.addSubview(contentTableView)
         contentTableView.delegate = self

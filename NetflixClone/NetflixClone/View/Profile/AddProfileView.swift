@@ -57,12 +57,12 @@ class AddProfileView: UIView {
         nickNameTextfield.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         
     }
+    
     private func setConstraints() {
         
         let margin: CGFloat = 10
         let padding: CGFloat = 40
         let spacing: CGFloat = 50
-        
         
         [newProfileButton,changeLabel,nickNameTextfield].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
