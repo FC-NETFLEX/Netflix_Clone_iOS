@@ -27,5 +27,3 @@ enum APIURL: String {
         return URL(string: urlString + pathItem)
     }
 }
-
-

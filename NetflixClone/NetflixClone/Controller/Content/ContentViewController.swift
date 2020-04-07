@@ -92,7 +92,7 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
 //        print(scrollView.contentOffset.y)
-        print(bluredBackgroundView.blackView.alpha)
+//        print(bluredBackgroundView.blackView.alpha)
         let height = (scrollView.contentSize.height) * 0.1
         
         if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= height) {
@@ -108,7 +108,9 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
 extension ContentViewController: RecommendedCellDalegate {
     func didTapRecommendedContents() {
         // MARK: 서버로부터 컨텐츠 아이디 값 받아서 present 할 것
+        
         print("해당 컨텐츠 상세화면으로 이동 할 것")
+        
     }
 }
 

@@ -55,7 +55,7 @@ class PosterTableViewCell: UITableViewCell {
         //MARK: 서버에서 응답 받은 텍스트 및 이미지
         releaseYear.text = "2016"
         releaseYear.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        ageGroup.image = UIImage(named: "age-limit")
+        ageGroup.image = UIImage(named: "청소년 관람불가")
         ageGroup.contentMode = .scaleAspectFill
         runningTime.text = "1시간 46분"
         runningTime.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
