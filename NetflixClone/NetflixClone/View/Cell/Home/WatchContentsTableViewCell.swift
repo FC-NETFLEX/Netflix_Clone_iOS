@@ -37,7 +37,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        print("WatchContentTableViewCell: Init")
+        
         contentView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
         setUI()
         setContraints()
@@ -49,7 +49,6 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     //MARK: - UI
     private func setUI() {
-        print("WatchContentTableViewCell: setUI")
 
         let HeaderFont: UIFont = .boldSystemFont(ofSize: 16)
         
@@ -69,8 +68,6 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     private func setContraints() {
-        print("WatchContentTableViewCell: setContaints")
-
         //        contentsCollectionView.frame = contentView.frame
         let headerYMargin: CGFloat = 10
         let headerXMargin: CGFloat = 10
@@ -92,7 +89,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     //MARK: - configure
     func configure(poster: [UIImage], watchTime: [Int64], playMark: [Int64] /*url: URL*/) {
         // configure(poster: UIImage, watchTime: Int, playMark: Int)
-        print("WatchContentTableViewCell: configure -> poster \(poster), watchTime \(watchTime), playMark \(playMark)")
+//        print("WatchContentTableViewCell: configure -> poster \(poster), watchTime \(watchTime), playMark \(playMark)")
 
         self.postersData = poster
         self.watchTimesData = watchTime
