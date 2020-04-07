@@ -449,7 +449,7 @@ class VideoView: UIView {
     private func autoDisappeareControlView(currentAction: Int) {
         
         
-                DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1000, execute: {
                     [weak self] in
                     
                     guard let self = self else { return }
@@ -657,35 +657,36 @@ class VideoView: UIView {
     @objc private func didTapSlipButton() {
 //        print(#function)
         lastStep += 1
-        let timeIntervarForStep = stepTime(isRewind: false, currentStep: lastStep)
+        let timeStep = stepTime(isRewind: false, currentStep: lastStep)
+        let timeIntervarForStep = timeStep.result
         let timeIntervalString = "+" + String(timeIntervarForStep)
         
         let time = stepSlider(timeInterval: timeIntervarForStep)
         
         delegate?.step(time: time)
         
-        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
-        
+        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString, currentStep: timeStep.currentStep)
     }
     
     // 되감기 버튼 클릭
     @objc private func didTapRewindButton() {
 //        print(#function)
         lastStep += 1
-        let timeIntervarForStep = stepTime(isRewind: true, currentStep: lastStep)
+        let timeStep = stepTime(isRewind: true, currentStep: lastStep)
+        let timeIntervarForStep = timeStep.result
         let timeInervalString = String(timeIntervarForStep)
         
         let time = stepSlider(timeInterval: timeIntervarForStep)
         
         delegate?.step(time: time)
         
-        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
+        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString, currentStep: timeStep.currentStep)
     }
     
     
     
     // step할 초 지정해주는 함수
-    private func stepTime(isRewind: Bool, currentStep: Int) -> Int64{
+    private func stepTime(isRewind: Bool, currentStep: Int) -> (currentStep: Int, result: Int64) {
         var result: Int64
         let oper: Int64 = isRewind ? -1: 1
         let defaultStepTime: Int64 = 10 * oper
@@ -698,11 +699,14 @@ class VideoView: UIView {
         
         lastStepTimeInterval = result
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+        let controlButton = isRewind ? rewindButton: slipButton
+        controlButton.isSelected = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {
             [weak self] in
             self?.initializationLastStetpTime(currentStep: currentStep)
         })
-        return result
+        return (currentStep, result)
     }
     
     // lastStepTime 초기화 해주는 함수
@@ -719,7 +723,7 @@ class VideoView: UIView {
     }
     
     // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
-    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String) {
+    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String, currentStep: Int) {
 //        let duration = 0.65
 //        let turm: Double = 0.3
 //        var currentDuration: Double = 0
@@ -730,7 +734,7 @@ class VideoView: UIView {
         let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
         let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
         
-        controlButton.isSelected = true
+//        controlButton.isSelected = true
         
         actionLabel.text = timeIntervalString
         
@@ -742,36 +746,38 @@ class VideoView: UIView {
             controlButton.isHidden = false
             controlButton.alpha = 1
         }
-        
+//        layer.removeAllAnimations()
+        goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
+//        print("currentStep:", currentStep, "/nlastStep:", lastStep)
         UIView.animate(withDuration: 0.05, animations: {
-            controlButton.isSelected = false
             imageView.transform = .init(rotationAngle: rotate)
             insideView.alpha = 1
             insideLabel.alpha = 0
             actionLabel.transform = .init(translationX: moveRange, y: 0)
             actionLabel.alpha = 1
+            print(self.isControlAppear)
         }, completion: { _ in
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.3, animations: {
                 imageView.transform = .identity
                 insideView.alpha = 0
             }, completion: { _ in
-                UIView.animate(withDuration: 0.2, animations: {
+                UIView.animate(withDuration: 0.3, animations: {
                     
-                }, completion: {  _ in
+                }, completion: { [weak self]  _ in
+                    guard let self = self else { return }
+//                    print(self.lastStep)
                     
-                    if !controlButton.isSelected {
-                        UIView.animate(withDuration: 0.5, animations: {
-                            insideLabel.backgroundColor = .clear
-                            actionLabel.alpha = 0
-                            insideLabel.alpha = 1
-                        }, completion: { [weak self] _ in
-                            guard let self = self else { return }
-                            
-                            self.goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
-                        })
-                    } else {
+                    let duration = currentStep == self.lastStep ? 0.5: 0.5
+                    print("duration:", duration)
+                    UIView.animate(withDuration: duration, animations: {
+                        insideLabel.backgroundColor = .clear
+                        actionLabel.alpha = 0
+                        insideLabel.alpha = 1
+                    }, completion: { [weak self] _ in
+                        guard let self = self else { return }
+                        
                         self.goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
-                    }
+                    })
                     
                     
                 })

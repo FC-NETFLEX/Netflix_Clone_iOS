@@ -18,6 +18,9 @@ struct LoginStatus {
     mutating func login(token: String) {
         self.token = token
         UserDefaults.standard.set(token, forKey: tokenKey)
+        print("=============================================================")
+        print("Login:", token)
+        print("=============================================================")
     }
     
     // 싱글톤의 토큰, 프로필 아이디에 nil을 할당하고 유저 디폴츠에 값을 삭제
