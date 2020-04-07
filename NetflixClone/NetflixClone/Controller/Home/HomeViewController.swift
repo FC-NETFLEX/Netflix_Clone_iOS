@@ -205,15 +205,13 @@ extension HomeViewController: UITableViewDataSource {
         case 2:
             print("------------------------------------\n")
             print("HomeVC: cell Row -> \(indexPath.row)")
-            
-            
-            //            let videoAdvertismentCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier, for: indexPath) as! VideoAdvertisementTableViewCell
+
             
             //되는 url
-//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
+            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
             // 안되는 url
-            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
+//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
