@@ -21,11 +21,7 @@ class SearchViewController: UIViewController {
     
     // MARK: Search Result CollectionView Datas
     // 더미
-    let data = ["New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX",
-                "Philadelphia, PA", "Phoenix, AZ", "San Diego, CA", "San Antonio, TX",
-                "Dallas, TX", "Detroit, MI", "San Jose, CA", "Indianapolis, IN",
-                "Jacksonville, FL", "San Francisco, CA", "Columbus, OH", "Austin, TX",
-                "Memphis, TN", "Baltimore, MD", "Charlotte, ND", "Fort Worth, TX"]
+    let data = ["3"]
     var filteredData = [String]()
     
     private var isSearchBarEmpty: Bool {
@@ -75,7 +71,7 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(searchView)
         setSearchBarInNavigation()
-        setCollectionView()
+        setSearchController()
         setSearchView()
     }
     
@@ -112,14 +108,14 @@ class SearchViewController: UIViewController {
         
     }
     
-    // MARK: CollectionView 세팅
-    private func setCollectionView() {
+    // MARK: SearchView 세팅
+    private func setSearchController() {
         searchView.searchResultCollectionView.dataSource = self
         searchView.searchResultCollectionView.delegate = self
         searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        definesPresentationContext = true
+//        definesPresentationContext = true // iOS 13 미만에서만 해줌, 13은 필요없음. 서치바에 커서 올라가면 주변 어두워지는 기능
         filteredData = data
     }
     
@@ -128,10 +124,11 @@ class SearchViewController: UIViewController {
 // MARK: Search Result Collection View DataSource, Delegate
 extension SearchViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isFiltering {
-            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
-        }
-        return self.filteredData.count
+//        if isFiltering {
+//            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
+//        }
+//        return self.filteredData.count
+        return self.data.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -157,7 +154,9 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(filteredData[indexPath.item])
+//        print(filteredData[indexPath.item])
+        print(data[indexPath.item])
+        // request
     }
 }
 
@@ -206,4 +205,14 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.setShowsCancelButton(false, animated: true)
     }
+    
+    // 텍스트 바뀔 때마다 요청
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//
+//    }
+    
+    // 다 입력하고 검색 버튼 누르면 요청
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        <#code#>
+//    }
 }
