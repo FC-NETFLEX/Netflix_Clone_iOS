@@ -35,10 +35,7 @@ class SummaryTableViewCell: UITableViewCell {
         summaryTextView.textColor = UIColor.setNetfilxColor(name: .white)
         summaryTextView.font = UIFont.dynamicFont(fontSize: 13.8, weight: .regular)
         
-        // MARK: 서버로부터 응답 받은 텍스트
-        summaryTextView.text = """
-        도쿄의 잘생긴 남자로 살아볼 순 없을까? 따분한 시골 생활에 질려 도시를 동경하는 여고생. 어느날, 그 소원이 실제로 이루어진다. 도쿄의 남고생과 이따금 몸이 뒤바뀌는 것. 꿈결 같은 둘의 인연은 또 다른 운명을 부르기 시작한다.
-        """
+        // MARK: 서버로부터 응답 받은 텍스트 => Fixed
     }
     
     private func setConstraints() {
@@ -48,6 +45,10 @@ class SummaryTableViewCell: UITableViewCell {
             $0.top.bottom.equalTo(self).inset(constant5)
             $0.leading.trailing.equalTo(self).inset(constant10)
         }
+    }
+    
+    func configure(summary: String) {
+        self.summaryTextView.text = summary
     }
     
 }

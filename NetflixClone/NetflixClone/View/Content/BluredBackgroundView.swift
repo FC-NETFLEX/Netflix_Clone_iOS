@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import Kingfisher
 
 // MARK: 상세화면 포스터 뒷편 블러 되어있는 뷰
 class BluredBackgroundView: UIView {
     
     private let bluredBackgroundImageView = UIImageView()
     
-    private let bluredImageView = UIImageView()
     private let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
     lazy var blurEffectView = UIVisualEffectView(effect: blurEffect)
     
@@ -37,7 +37,7 @@ class BluredBackgroundView: UIView {
         }
         blackView.backgroundColor = .black
         blackView.alpha = 0
-        bluredBackgroundImageView.image = UIImage(named: "yourName") // 서버로부터 받은 이미지
+//        bluredBackgroundImageView.image = UIImage(named: "yourName") // 서버로부터 받은 이미지 => Fixed
         bluredBackgroundImageView.contentMode = .scaleToFill
         
         bluredBackgroundImageView.clipsToBounds = false
@@ -64,6 +64,10 @@ class BluredBackgroundView: UIView {
     // MARK: blackView의 alpha값 조정
     func updateBlurView(alpha: CGFloat) {
         blackView.alpha = alpha
+    }
+    
+    func configure(backgroundImage: String) {
+        self.bluredBackgroundImageView.kf.setImage(with: URL(string: backgroundImage))
     }
 }
 

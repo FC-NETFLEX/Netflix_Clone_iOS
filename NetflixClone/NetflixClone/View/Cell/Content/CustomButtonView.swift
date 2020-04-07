@@ -8,15 +8,20 @@
 
 import UIKit
 
+protocol CustomButtonViewDelegate {
+    func togleAction(sender: CustomButtonView, isClicked: Bool)
+}
+
 // MARK: 상세화면 버튼 셀에 들어가는 버튼 구현용 커스텀 뷰 (뷰 위에 이미지와 레이블 올리고, 뷰와 똑같은 사이즈의 투명한 버튼 올려서 구현함)
 class CustomButtonView: UIView {
+    
     
     let imageView = UIImageView()
     let label = UILabel()
     let button = UIButton()
     
     // MARK: 버튼 토글용 변수
-    var isClicked = true
+    var isClicked = false
     
     init(imageName: String, labelText: String) {
         super.init(frame: .zero)
@@ -38,7 +43,11 @@ class CustomButtonView: UIView {
         imageView.tintColor = UIColor.setNetfilxColor(name: .white)
         label.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
         label.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        
+        button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+    }
+    
+    @objc private func didTapButton() {
+        isClicked.toggle()
     }
     
     private func setConstraints() {
@@ -60,5 +69,6 @@ class CustomButtonView: UIView {
             $0.leading.trailing.top.bottom.equalTo(self)
         }
     }
+    
     
 }
