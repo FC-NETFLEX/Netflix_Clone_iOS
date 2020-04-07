@@ -8,6 +8,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 protocol DismissDelegate: class {
     func dismiss() -> ()
@@ -44,20 +45,16 @@ class PosterTableViewCell: UITableViewCell {
         dismissButton.setImage(UIImage(named: "close"), for: .normal)
         dismissButton.addTarget(self, action: #selector(didTapDismissButton(_:)), for: .touchUpInside)
         
-        //MARK: 요청 받아서 이미지 뿌릴 것
-        posterImage.image = UIImage(named: "yourName")
+        //MARK: 요청 받아서 이미지 뿌릴 것 => Fixed
         posterImage.contentMode = .scaleToFill
         
         playButton.setTitle("▶︎ 재생", for: .normal)
         playButton.backgroundColor = UIColor.setNetfilxColor(name: .netflixRed)
         playButton.layer.cornerRadius = 3
         
-        //MARK: 서버에서 응답 받은 텍스트 및 이미지
-        releaseYear.text = "2016"
+        //MARK: 서버에서 응답 받은 텍스트 및 이미지 => Fixed
         releaseYear.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        ageGroup.image = UIImage(named: "청소년 관람불가")
         ageGroup.contentMode = .scaleAspectFill
-        runningTime.text = "1시간 46분"
         runningTime.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
     }
     
@@ -101,6 +98,13 @@ class PosterTableViewCell: UITableViewCell {
             $0.trailing.equalTo(contentView.snp.trailing).offset(CGFloat.dynamicXMargin(margin: -10))
             $0.width.height.equalTo(CGFloat.dynamicXMargin(margin: 30))
         }
+    }
+    
+    func configure(posterImageName: String, releaseYear: String, ageGroup: String, runningTime: String) {
+        self.posterImage.kf.setImage(with: URL(string: posterImageName))
+        self.releaseYear.text = releaseYear
+        self.ageGroup.image = UIImage(named: ageGroup)
+        self.runningTime.text = runningTime
     }
     
     @objc private func didTapDismissButton(_ sender: UIButton) {

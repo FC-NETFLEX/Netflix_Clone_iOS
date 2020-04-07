@@ -35,10 +35,8 @@ final class ContentsBasicItem: UICollectionViewCell {
 
         contentView.addSubview(posterImage)
         
-        
         posterImage.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalToSuperview()
-
         }
         
     }

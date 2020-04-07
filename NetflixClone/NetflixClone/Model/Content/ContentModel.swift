@@ -21,7 +21,7 @@ struct Content: Decodable {
     let contentsRating: String
     let contentsLength: String
     let contentsPublishingYear: String
-    let previewVideo: String
+    let previewVideo: String?
     let actors: [String]
     let directors: [String]
     let isSelected: Bool
@@ -55,7 +55,7 @@ struct Content: Decodable {
         contentsRating = try container.decode(String.self, forKey: .contentsRating)
         contentsLength = try container.decode(String.self, forKey: .contentsLength)
         contentsPublishingYear = try container.decode(String.self, forKey: .contentsPublishingYear)
-        previewVideo = try container.decode(String.self, forKey: .previewVideo)
+        previewVideo = try container.decode(String?.self, forKey: .previewVideo)
         actors = try container.decode([String].self, forKey: .actors)
         directors = try container.decode([String].self, forKey: .directors)
         isSelected = try container.decode(Bool.self, forKey: .isSelected)
