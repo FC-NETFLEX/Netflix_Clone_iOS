@@ -208,10 +208,10 @@ extension HomeViewController: UITableViewDataSource {
 
             
             //되는 url
-            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
+//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
             // 안되는 url
-//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
+            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
@@ -270,7 +270,7 @@ extension HomeViewController: PreviewTableViewCellDelegate {
     func selectCell() {
         print("HomveViewController 미리보기 cell 클릭")
         let contentVC = ContentViewController()
-        
+        contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
     
@@ -281,7 +281,7 @@ extension HomeViewController: PreviewTableViewCellDelegate {
 extension HomeViewController: LatestMovieTableViewCellDelegate {
     func didTabLatestMovieCell() {
         let contentVC = ContentViewController()
-        
+        contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
     
@@ -292,7 +292,7 @@ extension HomeViewController: LatestMovieTableViewCellDelegate {
 extension HomeViewController: Top10TableViewCellDelegate {
     func didTabTop10Cell() {
         let contentVC = ContentViewController()
-        
+        contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
     
@@ -313,7 +313,7 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     
     func didTabVideoView() {
         let contentVC = ContentViewController()
-        
+        contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
     
