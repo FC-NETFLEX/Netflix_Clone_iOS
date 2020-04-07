@@ -14,7 +14,7 @@ protocol AddProfileViewDelegate: class {
 }
 class AddProfileView: UIView {
     
-    private let newProfileButton = UIButton()
+    let newProfileButton = UIButton()
     private let changeLabel = UILabel()
     let nickNameTextfield = UITextField()
 
@@ -63,6 +63,10 @@ class AddProfileView: UIView {
         let margin: CGFloat = 10
         let padding: CGFloat = 40
         let spacing: CGFloat = 50
+<<<<<<< HEAD
+=======
+      
+>>>>>>> 2ef160309b762b288f62ac18ba59b87a07e48fe4
         
         [newProfileButton,changeLabel,nickNameTextfield].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
@@ -76,6 +80,7 @@ class AddProfileView: UIView {
         
         changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: margin).isActive = true
         changeLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        changeLabel.heightAnchor.constraint(equalToConstant: margin * 2).isActive = true
         
         nickNameTextfield.topAnchor.constraint(equalTo: changeLabel.bottomAnchor, constant: margin * 2 ).isActive = true
         nickNameTextfield.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding * 2).isActive = true

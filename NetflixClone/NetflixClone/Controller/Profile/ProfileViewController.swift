@@ -33,7 +33,7 @@ class ProfileViewController: UIViewController {
     private let titleLabel = UILabel()
     
     var users = [NetflixUser]()
-   
+    
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
     
@@ -62,6 +62,7 @@ class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         viewSetting()
         setNavigationBar()
+        profileList()
         
     }
     private func setUI() {
@@ -81,16 +82,16 @@ class ProfileViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
         
         switch root {
-    
+            
         case .login:
             profileViewArray.forEach {
                 $0.setHidden(state: true)
             }
             title = "Netflix를 시청할 프로필을 만들어주세요."
-//            let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(changeButtonDidTap))
-//            completeButton.tintColor = .setNetfilxColor(name: .white)
-//            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
-//            navigationItem.rightBarButtonItem = completeButton
+            //            let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(changeButtonDidTap))
+            //            completeButton.tintColor = .setNetfilxColor(name: .white)
+            //            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            //            navigationItem.rightBarButtonItem = completeButton
             navigationItem.leftBarButtonItem = nil
             
         case .main:
@@ -133,33 +134,35 @@ class ProfileViewController: UIViewController {
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
+        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 8)
         [userView0,userView1,userView2,userView3,userView4].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        userView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 12).isActive = true
+        userView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
         userView0.trailingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView0.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
-        userView1.topAnchor.constraint(equalTo: guide.topAnchor, constant: margin * 12).isActive = true
+        userView1.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
         userView1.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView1.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
-        userView2.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
+        userView2.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 4).isActive = true
         userView2.trailingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView2.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
-        userView3.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 5).isActive = true
+        userView3.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 4).isActive = true
         userView3.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
         userView3.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
         userView4.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView4.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 5).isActive = true
+        userView4.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 4).isActive = true
         userView4.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
     }
     private func viewSetting() {
-    
+        
         let count = userNameArray.count
         
         for (index, userView) in userViewArray.enumerated() {
@@ -193,9 +196,40 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+    //MARK: API
+    func profileList() {
+
+        let bodys: [String: String] = ["profile_name": "profileName", "profile_icon": "profileIcon"]
+        guard let jsonList = try? JSONSerialization.data(withJSONObject: bodys) else { return }
+        
+        guard
+            let token = LoginStatus.shared.getToken(),
+            let url = URL(string: APIURL.makeProfile.rawValue)
+            else { return }
+        var urlRequest = URLRequest(url: url)
+        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = jsonList
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) {
+            (data, response, error) in
+            guard error == nil else { return print(error!.localizedDescription) }
+            guard let data = data else { return print("No Data") }
+            print("profileList")
+            
+            if let res = response as? HTTPURLResponse {
+                print(res.statusCode) // 400 -> 성공
+            }
+            if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                print("데이터:",data)
+                print("리스트제이슨:",jsonObject)
+            }
+        }
+        task.resume()
+    }
     private func rightNavigateionMake() {
         title = "프로필 관리"
-         navigationItem.rightBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
         let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
         completeButton.tintColor = .setNetfilxColor(name: .white)
         completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
@@ -222,8 +256,8 @@ class ProfileViewController: UIViewController {
     }
     //메인 프로필에서 완료 버튼 누르면 다시 처음 상태로
     @objc private func completeButtonDidTap() {
-         leftNavigationMake()
-
+        leftNavigationMake()
+        
         switch root {
         case .main, .login:
             profileViewArray.forEach {
@@ -241,12 +275,12 @@ class ProfileViewController: UIViewController {
 }
 extension ProfileViewController: ProfilViewDelegate {
     func profileChangeButtonDidTap(blurView: UIView, pencilButton: UIButton) {
-    
+        
         UIView.animate(
             withDuration: 0.5,
             delay: 0,
             animations: {
-    
+                
         })
         let changeVC = ChangeProfileViewController()
         navigationController?.pushViewController(changeVC, animated: true)

@@ -18,8 +18,9 @@ class AddProfileViewController: UIViewController {
     
     var root: ChangeRoots
     private var addProfileBottom: NSLayoutConstraint?
-    private let addProfileView = AddProfileView()
+    let addProfileView = AddProfileView()
     private let kidsView = KidsCustomView()
+    private var imageID: Int?
     
     
     override func viewDidLoad() {
@@ -28,7 +29,6 @@ class AddProfileViewController: UIViewController {
         setUI()
         setConstraints()
         setNavigationBar()
-        profileCreate()
         keyboad()
         
     }
@@ -114,6 +114,12 @@ class AddProfileViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    struct ProfileData {
+        let profileName: String
+        let profileIcon: Int
+        let isKids: Bool
+    }
+    
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
         switch root {
@@ -130,36 +136,42 @@ class AddProfileViewController: UIViewController {
     }
     
     @objc private func didTapSaveButton(_ sender: Any) {
-        
-        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
-        let kidsState = kidsView.kidsSwitch.isOn
-        
+      
+        guard let profileName = addProfileView.nickNameTextfield.text, !profileName.isEmpty else { return }
+        let isKids = kidsView.kidsSwitch.isOn
+
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 switch root {
                 case .main,.manager:
                     profileVC.root = .main
-                    profileVC.userNameArray.append(userName)
-                    profileVC.kidsState = kidsState
+                    profileVC.userNameArray.append(profileName)
+                    profileVC.kidsState = isKids
+                    profileCreate()
                     navigationController?.popViewController(animated: true)
                 case .add:
                     profileVC.root = .main
-                    profileVC.userNameArray.append(userName)
-                    profileVC.kidsState = kidsState
+                    profileVC.userNameArray.append(profileName)
+                    profileVC.kidsState = isKids
+                    profileCreate()
                     navigationController?.popViewController(animated: true)
                 }
             }
-            print(userName,"키즈용: ",kidsState)
         }
     }
     //MARK: API
     private func profileCreate() {
-        guard let userName = addProfileView.nickNameTextfield.text else { return }
+        print(#function)
+        guard let profileName = addProfileView.nickNameTextfield.text else { return }
+        guard let profileIcon = imageID else { return }
         let isKids = kidsView.kidsSwitch.isOn
         
-        let bodys: [String: Any] = ["profile_icon": 12, "profile_name": userName, "is_kids": isKids]
-        guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
         
+        let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIcon, "is_kids": isKids]
+        print(bodys)
+        guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
+        print("==================================================")
+        print(String(data: jsonToDO, encoding: .utf8))
         guard
             let token = LoginStatus.shared.getToken(),
             let url = URL(string: APIURL.makeProfile.rawValue)
@@ -168,7 +180,7 @@ class AddProfileViewController: UIViewController {
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.httpMethod = "POST"
         urlRequest.httpBody = jsonToDO
-        print(token)
+        print("토큰",token)
         let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
             guard error == nil else { return print(error!.localizedDescription) }
             guard let data = data else { return print("No Data") }
@@ -178,20 +190,25 @@ class AddProfileViewController: UIViewController {
                 print(res.statusCode) // 400 -> 성공
             }
             if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                print(data)
-                print(jsonObject)
+                print("데이터:",data)
+                print("제이슨:",jsonObject)
             }
         }
         task.resume()
     }
     // 키즈용 alert
-    func alertAction() {
+    private func alertAction() {
         let alert =  UIAlertController(title: nil, message: "본 프로필의 연령 제한이 풀려 이제 모든 등급의 영화와 TV 프로그램을 시청할 수 있게 됩니다.", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .default) { _ in
         }
         alert.addAction(ok)
         present(alert, animated: true)
     }
+    private func imageProfileChange() {
+       
+          
+      }
+
     
 }
 extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegate {
@@ -201,7 +218,8 @@ extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegat
     func newProfileButtonDidTap() {
         print("이미지선택")
         let imageVC = ProfileImageViewController()
-        imageVC.modalPresentationStyle = .overCurrentContext
+        imageVC.delegate = self
+        imageVC.modalPresentationStyle = .fullScreen
         present(imageVC,animated: true)
     }
 }
@@ -216,4 +234,13 @@ extension AddProfileViewController: UITextFieldDelegate {
     }
 }
 
+
+extension AddProfileViewController: ProfileImageViewControllerDelegate {
+    func setImage(image: UIImage, imageID: Int) {
+        addProfileView.newProfileButton.setImage(image, for: .normal)
+        self.imageID = imageID
+    }
+    
+    
+}
 
