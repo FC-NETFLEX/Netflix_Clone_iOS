@@ -9,36 +9,24 @@
 import UIKit
 
 protocol ProfileImageViewControllerDelegate: class {
-    func setImage(image: UIImage, imageID: Int)
+    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>)
 }
 
 class ProfileImageViewController: UIViewController {
     
-    //    private var collectionPoint = [Int: CGPoint]()
-    
     var delegate: ProfileImageViewControllerDelegate?
     
     private let topView = TopCustomView()
-//    private var category = ["temp1","temp2","temp3","temp4","temp5","temp6","temp7","temp8"]
     private let tableView = UITableView(frame: .zero, style: .grouped)
-    
-    private let profileData = [UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3"),UIImage(named: "프로필1"),UIImage(named: "프로필2"),UIImage(named: "프로필3")]
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setConstraints()
-        //        setNavigationBar()
         requestProfileImage()
         
     }
-    //    private func setNavigationBar() {
-    //
-    //        navigationItem.title = "아이콘 선택"
-    //        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
-    //
-    //    }
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
         topView.delegate = self
@@ -69,7 +57,6 @@ class ProfileImageViewController: UIViewController {
         tableView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
         
     }
     
@@ -128,11 +115,13 @@ class ProfileImageViewController: UIViewController {
 struct CategoryList {
     let name: String
     let icon: [Icon]
+    
 }
 
 struct Icon {
     let id: Int
     let iconURL: String
+    
 }
 
 extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource {
@@ -191,14 +180,15 @@ extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource 
 
 extension ProfileImageViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        var randomArray = [String]()
         let id = categoryList[collectionView.tag].icon[indexPath.row].id
         let url = categoryList[collectionView.tag].icon[indexPath.row].iconURL
+        randomArray.append(url)
         guard let profileImage = ImageCaching.shared.data[url] else { return }
         
-        delegate?.setImage(image: profileImage, imageID: id)
+        delegate?.setImage(image: profileImage, imageID: id, randomImage: randomArray )
         dismiss(animated: true)
-        print(indexPath)
+       
     }
     
     
