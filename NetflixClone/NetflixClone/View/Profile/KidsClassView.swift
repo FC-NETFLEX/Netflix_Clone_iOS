@@ -13,7 +13,7 @@ class KidsClassView: UIView {
     private let kidsClassLabel = UILabel()
     private let twelveClassLabel = UILabel()
     private let viewContentsLabel = UILabel()
-    
+   
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
@@ -75,8 +75,7 @@ class KidsClassView: UIView {
         viewContentsLabel.topAnchor.constraint(equalTo: twelveClassLabel.bottomAnchor, constant: margin * 2).isActive = true
         viewContentsLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
-    
-    
+  
     
 }
 
