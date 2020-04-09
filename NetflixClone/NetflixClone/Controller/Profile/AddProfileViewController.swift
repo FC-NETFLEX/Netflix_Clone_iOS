@@ -8,12 +8,14 @@
 // 1. 텍스트필드 눌렀을때 화면 움직이게
 // 2.
 import UIKit
+import Kingfisher
 
 enum ChangeRoots {
     case main
     case add
     case manager
 }
+
 class AddProfileViewController: UIViewController {
     
     var root: ChangeRoots
@@ -93,15 +95,15 @@ class AddProfileViewController: UIViewController {
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-        let margin: CGFloat = 10
         let padding: CGFloat = 20
         let spacing: CGFloat = 70
         [addProfileView,kidsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-//        addProfileView.topAnchor.constraint(equalTo: guide.topAnchor, constant: padding * 2).isActive = true
+
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
+        addProfileView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.3).isActive = true
         addProfileBottom = addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor, constant: spacing)
         addProfileBottom?.isActive = true
         
@@ -137,22 +139,19 @@ class AddProfileViewController: UIViewController {
     
     @objc private func didTapSaveButton(_ sender: Any) {
       
-        guard let profileName = addProfileView.nickNameTextfield.text, !profileName.isEmpty else { return }
-        let isKids = kidsView.kidsSwitch.isOn
-
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 switch root {
                 case .main,.manager:
                     profileVC.root = .main
-                    profileVC.userNameArray.append(profileName)
-                    profileVC.kidsState = isKids
+//                    profileVC.userNameArray.append(profileName)
+//                    profileVC.kidsState = isKids
                     profileCreate()
                     navigationController?.popViewController(animated: true)
                 case .add:
                     profileVC.root = .main
-                    profileVC.userNameArray.append(profileName)
-                    profileVC.kidsState = isKids
+//                    profileVC.userNameArray.append(profileName)
+//                    profileVC.kidsState = isKids
                     profileCreate()
                     navigationController?.popViewController(animated: true)
                 }
@@ -161,38 +160,29 @@ class AddProfileViewController: UIViewController {
     }
     //MARK: API
     private func profileCreate() {
-        print(#function)
         guard let profileName = addProfileView.nickNameTextfield.text else { return }
         guard let profileIcon = imageID else { return }
         let isKids = kidsView.kidsSwitch.isOn
         
-        
         let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIcon, "is_kids": isKids]
-        print(bodys)
         guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
-        print("==================================================")
-        print(String(data: jsonToDO, encoding: .utf8))
+  
         guard
             let token = LoginStatus.shared.getToken(),
             let url = URL(string: APIURL.makeProfile.rawValue)
             else { return }
+       
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "POST"
         urlRequest.httpBody = jsonToDO
-        print("토큰",token)
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             guard error == nil else { return print(error!.localizedDescription) }
             guard let data = data else { return print("No Data") }
-            print("create")
+            guard let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
             
-            if let res = response as? HTTPURLResponse {
-                print(res.statusCode) // 400 -> 성공
-            }
-            if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                print("데이터:",data)
-                print("제이슨:",jsonObject)
-            }
         }
         task.resume()
     }
@@ -204,12 +194,18 @@ class AddProfileViewController: UIViewController {
         alert.addAction(ok)
         present(alert, animated: true)
     }
-    private func imageProfileChange() {
-       
-          
-      }
-
-    
+    private func setImage(stringURL: String, button: UIButton) {
+        guard let url = URL(string: stringURL) else { return }
+        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
+            result in
+            switch result {
+            case .success(let imageResult):
+                button.setImage(imageResult.image, for: .normal)
+            case .failure(let error):
+                print(error)
+            }
+        })
+    }
 }
 extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegate {
     func kidsSwitchDidTap() {
@@ -229,18 +225,24 @@ extension AddProfileViewController: UITextFieldDelegate {
         print("선택")
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("프로필만들기텍스트필드")
         return view.endEditing(true)
     }
 }
 
 
 extension AddProfileViewController: ProfileImageViewControllerDelegate {
-    func setImage(image: UIImage, imageID: Int) {
-        addProfileView.newProfileButton.setImage(image, for: .normal)
+    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
+        print("얍",randomImage)
+        guard let random = randomImage.randomElement() else { return }
+    
+        switch root {
+        case .add:
+           let button = addProfileView.newProfileButton
+           setImage(stringURL: random, button: button)
+        case .main, .manager:
+            addProfileView.newProfileButton.setImage(image, for: .normal)
+        }
         self.imageID = imageID
-    }
-    
-    
-}
 
+    }
+}
