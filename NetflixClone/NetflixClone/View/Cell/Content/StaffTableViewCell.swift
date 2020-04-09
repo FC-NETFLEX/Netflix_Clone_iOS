@@ -37,9 +37,7 @@ class StaffTableViewCell: UITableViewCell {
         actor.text = "출연: "
         director.text = "감독: "
         
-        // MARK: 서버로부터 응답 받은 텍스트
-        actorLabel.text = "나리타 료, 가미시라이시 모네, 시마자키 노부나가"
-        directorLabel.text = "신카이 마코토"
+        // MARK: 서버로부터 응답 받은 텍스트 => Fixed
     }
     
     private func setConstraints() {
@@ -66,6 +64,11 @@ class StaffTableViewCell: UITableViewCell {
             $0.leading.equalTo(director.snp.trailing).offset(textSpacing)
             $0.bottom.equalTo(director.snp.bottom)
         }
+    }
+    
+    func configure(actor: [String], director: [String]) {
+        self.actorLabel.text = actor.joined(separator: ", ")
+        self.directorLabel.text = director.joined(separator: ", ")
     }
     
 }

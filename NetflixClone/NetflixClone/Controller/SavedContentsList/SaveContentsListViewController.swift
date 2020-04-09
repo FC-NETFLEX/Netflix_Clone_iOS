@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SaveContentListViewController: UIViewController {
+class SaveContentListViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

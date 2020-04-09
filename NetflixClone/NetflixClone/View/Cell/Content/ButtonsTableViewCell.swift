@@ -6,16 +6,25 @@
 //  Copyright © 2020 sandMan. All rights reserved.
 //
 
+protocol IsClickedProtocol: class {
+    func dibButtonIsCliked()
+    func likeButtonIsCliked()
+}
+
 import UIKit
 
 class ButtonsTableViewCell: UITableViewCell {
     
     static let identifier = "ButtonCell"
     
+    private var isLike = false
+    
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let likeView = CustomButtonView(imageName: "hand.thumbsup", labelText: "평가")
     private let saveView = CustomButtonView(imageName: "arrow.down.to.line", labelText: "저장")
     private let redView = UIView()
+    
+    weak var delegate: IsClickedProtocol?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,19 +52,23 @@ class ButtonsTableViewCell: UITableViewCell {
     
     // MARK: 상세화면에서 '내가찜한콘텐츠', '평가', '저장' 버튼 눌렀을 때 액션
     @objc private func didTapButton(_ sender: UIButton) {
+            var dibsButtonClicked = dibsView.isClicked
+            var likeButtonClicked = likeView.isClicked
+            var saveButtonClicked = saveView.isClicked
+
         switch sender.tag {
         case 0:
             // MARK: 찜하기 버튼 눌렀을 때 액션, 서버로 보내기
-            if dibsView.isClicked {
-                print("찜하기 버튼 클릭")
+            if dibsButtonClicked {
+                print("찜하기 버튼 클릭: ", dibsButtonClicked)
                 // MARK: 눌렀을 때 애니메이션 (숫자의 크기에 따라서 도는 방향이 결정 됨)
                 self.dibsView.imageView.transform = .init(rotationAngle: CGFloat.pi)
                 UIView.transition(with: self.dibsView, duration: 0.2, options: .transitionCrossDissolve, animations: {
                     self.dibsView.imageView.transform = .identity
                     self.dibsView.imageView.image = UIImage(systemName: "checkmark")})
-                
+
             } else {
-                print("찜하기 버튼 풀기")
+                print("찜하기 버튼 풀기: ", dibsButtonClicked)
                 // MARK: 찜하기 버튼 한번 더 눌러서 액션 풀기, 서버로 보내기
                 self.dibsView.imageView.transform = .init(rotationAngle: CGFloat.pi / 2)
                 UIView.transition(with: self.dibsView, duration: 0.2, options: .transitionCrossDissolve, animations: {
@@ -63,15 +76,16 @@ class ButtonsTableViewCell: UITableViewCell {
                     self.dibsView.imageView.image = UIImage(systemName: "plus")
                 })
             }
-            dibsView.isClicked.toggle()
-            
+            delegate?.dibButtonIsCliked()
+            dibsButtonClicked.toggle()
+
         case 1:
             let duration = 0.4
             let relativeDuration = 0.2
-            if likeView.isClicked {
-                print("평가버튼 클릭")
+            if likeButtonClicked {
+                print("평가버튼 클릭: ", likeButtonClicked)
                 UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
-                    
+
                     UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: relativeDuration, animations: {
                         self.likeView.imageView.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
                         self.likeView.imageView.image = UIImage(systemName: "hand.thumbsup.fill")
@@ -81,9 +95,9 @@ class ButtonsTableViewCell: UITableViewCell {
                     })
                 })
             } else {
-                print("평가버튼 풀기")
+                print("평가버튼 풀기: ", likeButtonClicked)
                 UIView.animateKeyframes(withDuration: duration, delay: 0, animations: {
-                    
+
                     UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: relativeDuration, animations: {
                         self.likeView.imageView.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
                         self.likeView.imageView.image = UIImage(systemName: "hand.thumbsup")
@@ -93,16 +107,17 @@ class ButtonsTableViewCell: UITableViewCell {
                     })
                 })
             }
-            likeView.isClicked.toggle()
-            
+            delegate?.likeButtonIsCliked()
+            likeButtonClicked.toggle()
+
         case 2:
             // MARK: 와이파이 상태와 설정 값에 따라서 다운받기, 안받기 설정해야함
-            if saveView.isClicked {
-                print("저장버튼 클릭")
+            if saveButtonClicked {
+                print("저장버튼 클릭: ", saveButtonClicked)
             } else {
-                print("저장버튼 풀기")
+                print("저장버튼 풀기: ", saveButtonClicked)
             }
-            saveView.isClicked.toggle()
+            saveButtonClicked.toggle()
         default:
             break
         }
@@ -142,4 +157,14 @@ class ButtonsTableViewCell: UITableViewCell {
             $0.height.equalTo(redViewHeight)
         }
     }
+    
+    func configure(dibsButtonClicked: Bool, likeButtonClicked: Bool) {
+        dibsView.isClicked = dibsButtonClicked
+        likeView.isClicked = likeButtonClicked
+        dibsView.imageView.image = dibsButtonClicked ? UIImage(systemName: "checkmark"): UIImage(systemName: "plus")
+        likeView.imageView.image = likeButtonClicked ? UIImage(systemName: "hand.thumbsup.fill"): UIImage(systemName: "hand.thumbsup")
+    }
+    
 }
+
+

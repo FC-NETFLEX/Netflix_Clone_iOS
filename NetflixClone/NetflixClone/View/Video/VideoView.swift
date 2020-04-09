@@ -23,7 +23,7 @@ protocol VideoViewDelegate: class {
     
     func step(time: Int64)
     
-
+    
 }
 
 
@@ -65,7 +65,7 @@ class VideoView: UIView {
     
     private var isPlaying = true {
         didSet {
-//            playButtonBackgroundView.setPlaying(self.isPlaying)
+            //            playButtonBackgroundView.setPlaying(self.isPlaying)
             if self.isPlaying {
                 playAction()
             } else {
@@ -73,7 +73,7 @@ class VideoView: UIView {
             }
         }
     }
-//    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+    //    private let testButton = PlayPauseButton(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
     private let animationDuration = 0.2
     private var lastStepTimeInterval: Int64 = 0
     
@@ -91,7 +91,7 @@ class VideoView: UIView {
     
     private let centerView = UIView()
     
-//    private let rewindButtonBackgroundView = PlayPauseButton()
+    //    private let rewindButtonBackgroundView = PlayPauseButton()
     private let rewindButtonImageView = UIImageView()
     private let rewindButton = UIButton()
     private let rewindButtonLabel = UILabel()
@@ -124,7 +124,7 @@ class VideoView: UIView {
         setConstraints()
         setGestureRecognizer()
         
-//        test()
+        //        test()
     }
     
     
@@ -199,7 +199,7 @@ class VideoView: UIView {
         
         playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
         
-        rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchUpInside)
+        rewindButton.addTarget(self, action: #selector(didTapRewindButton), for: .touchDown)
         
         rewindButtonImageView.image = UIImage(named: "rewind.png")
         rewindButtonImageView.contentMode = .scaleAspectFill
@@ -217,7 +217,7 @@ class VideoView: UIView {
         rewindButtonActionLabel.text = "-"
         rewindButtonActionLabel.alpha = 0
         
-        slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchUpInside)
+        slipButton.addTarget(self, action: #selector(didTapSlipButton), for: .touchDown)
         
         slipButtonImageView.image = UIImage(named: "slip.png")
         slipButtonImageView.tintColor = .setNetfilxColor(name: .white)
@@ -253,8 +253,8 @@ class VideoView: UIView {
         restTimeLabel.text = "00:00"
         
         
-//        testButton.addTarget(self, action: #selector(test), for: .touchUpInside)
-//        playButtonBackgroundView.backgroundColor = .black
+        //        testButton.addTarget(self, action: #selector(test), for: .touchUpInside)
+        //        playButtonBackgroundView.backgroundColor = .black
         
     }
     
@@ -419,14 +419,15 @@ class VideoView: UIView {
     
     // 더블탭 제스처의 처리
     @objc private func didDoubleTapView(_ gesture: UITapGestureRecognizer) {
-//        print(#function)
+        //        print(#function)
         let location = gesture.location(in: self)
         let point = location.x
         let guide = bounds.width / 2
+        
         if point >= guide {
-            didTapSlipButton()
+            didTapSlipButton(slipButton)
         } else {
-            didTapRewindButton()
+            didTapRewindButton(rewindButton)
         }
     }
     
@@ -449,20 +450,20 @@ class VideoView: UIView {
     private func autoDisappeareControlView(currentAction: Int) {
         
         
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1000, execute: {
-                    [weak self] in
-                    
-                    guard let self = self else { return }
-//                    let currentTime = Date()
-//                    let dateInterval = DateInterval(start: self.lastActionTime, end: currentTime)
-//                    let timeInterval = dateInterval.duration
-//                    guard timeInterval >= 9 && self.playSlider.state.rawValue != 1 else {
-//                        return
-//                    }
-                    guard currentAction == self.lastAction else { return }
-                    self.isControlAppear = false
-                    self.lastAction = 0
-                })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1000, execute: {
+            [weak self] in
+            
+            guard let self = self else { return }
+            //                    let currentTime = Date()
+            //                    let dateInterval = DateInterval(start: self.lastActionTime, end: currentTime)
+            //                    let timeInterval = dateInterval.duration
+            //                    guard timeInterval >= 9 && self.playSlider.state.rawValue != 1 else {
+            //                        return
+            //                    }
+            guard currentAction == self.lastAction else { return }
+            self.isControlAppear = false
+            self.lastAction = 0
+        })
     }
     
     
@@ -530,9 +531,9 @@ class VideoView: UIView {
             [weak self] in
             self?.topView.alpha = 0
             self?.centerView.alpha = 0
-        }, completion: { [weak self] _ in
-            self?.topView.isHidden = true
-            self?.centerView.isHidden = true
+            }, completion: { [weak self] _ in
+                self?.topView.isHidden = true
+                self?.centerView.isHidden = true
         })
     }
     
@@ -575,7 +576,7 @@ class VideoView: UIView {
     
     // 컨트롤하는 뷰들이 나타나는 처리
     private func appearControlView() {
-
+        
         if !isLoading {
             playButtonBackgroundView.isHidden = false
         }
@@ -654,45 +655,48 @@ class VideoView: UIView {
     }
     
     // 빨리감기 버튼 클릭
-    @objc private func didTapSlipButton() {
-//        print(#function)
+    @objc private func didTapSlipButton(_ sender: UIButton) {
+        print(#function)
         lastStep += 1
-        let timeStep = stepTime(isRewind: false, currentStep: lastStep)
-        let timeIntervarForStep = timeStep.result
+        
+        let timeIntervarForStep = stepTime(isRewind: false, currentStep: lastStep)
         let timeIntervalString = "+" + String(timeIntervarForStep)
         
         let time = stepSlider(timeInterval: timeIntervarForStep)
         
         delegate?.step(time: time)
         
-        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString, currentStep: timeStep.currentStep)
+        flowControlButtonAnimation(isRewind: false, timeIntervalString: timeIntervalString)
+        
+        
     }
     
     // 되감기 버튼 클릭
-    @objc private func didTapRewindButton() {
-//        print(#function)
+    @objc private func didTapRewindButton(_ sender: UIButton) {
+                print(#function)
         lastStep += 1
-        let timeStep = stepTime(isRewind: true, currentStep: lastStep)
-        let timeIntervarForStep = timeStep.result
-        let timeInervalString = String(timeIntervarForStep)
         
+        let timeIntervarForStep = stepTime(isRewind: true, currentStep: lastStep)
+        let timeInervalString = String(timeIntervarForStep)
+        print(timeIntervarForStep)
         let time = stepSlider(timeInterval: timeIntervarForStep)
         
         delegate?.step(time: time)
+        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString)
         
-        flowControlButtonAnimation(isRewind: true, timeIntervalString: timeInervalString, currentStep: timeStep.currentStep)
     }
     
     
     
     // step할 초 지정해주는 함수
-    private func stepTime(isRewind: Bool, currentStep: Int) -> (currentStep: Int, result: Int64) {
+    private func stepTime(isRewind: Bool, currentStep: Int) -> Int64 {
         var result: Int64
         let oper: Int64 = isRewind ? -1: 1
         let defaultStepTime: Int64 = 10 * oper
         
         if (isRewind && lastStepTimeInterval < 0) || (!isRewind && lastStepTimeInterval > 0) {
             result = lastStepTimeInterval + defaultStepTime
+            lastActionLabel?.removeFromSuperview()
         } else {
             result = defaultStepTime
         }
@@ -706,7 +710,7 @@ class VideoView: UIView {
             [weak self] in
             self?.initializationLastStetpTime(currentStep: currentStep)
         })
-        return (currentStep, result)
+        return result
     }
     
     // lastStepTime 초기화 해주는 함수
@@ -722,64 +726,84 @@ class VideoView: UIView {
         return Int64(value)
     }
     
+    // 튀어 나오는 레이블을 새로 만들어준다
+    private func setActionLabel(label: UILabel, superView: UIButton) {
+        superView.addSubview(label)
+        label.textColor = .setNetfilxColor(name: .white)
+        label.snp.makeConstraints({
+            $0.center.equalToSuperview()
+        })
+        lastActionLabel = label
+    }
+    
+//    private func updateActionLabel(actionLabel: UILabel, constant: CGFloat) {
+//
+//        let range: CGFloat = .dynamicYMargin(margin: constant)
+//        actionLabel.snp.updateConstraints({
+//            $0.centerX.equalToSuperview().offset(range)
+//        })
+//    }
+    
+    
+    private var lastActionLabel: UILabel?
+    
     // slipButton 또는 rewindButton 눌렀을 때의 애니메이션
-    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String, currentStep: Int) {
-//        let duration = 0.65
-//        let turm: Double = 0.3
-//        var currentDuration: Double = 0
+    private func flowControlButtonAnimation(isRewind: Bool, timeIntervalString: String) {
+        //        let duration = 0.65
+        //        let turm: Double = 0.3
+        //        var currentDuration: Double = 0
         
         let controlButton = isRewind ? rewindButton: slipButton
         let insideView = isRewind ? rewindInsideView: slipInsideView
         let imageView = isRewind ? rewindButtonImageView: slipButtonImageView
         let insideLabel = isRewind ? rewindButtonLabel: slipButtonLabel
-        let actionLabel = isRewind ? rewindButtonActionLabel: slipButtonActionLabel
-        
-//        controlButton.isSelected = true
+        let actionLabel = UILabel()
+        //        controlButton.isSelected = true
         
         actionLabel.text = timeIntervalString
         
         let range: CGFloat = .dynamicYMargin(margin: 200)
-        let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
         let moveRange = isRewind ? -(range): range
+//        let constant: CGFloat = isRewind ? -50: 50
+        let rotate = isRewind ? -(CGFloat.pi / 2): CGFloat.pi / 2
+        controlButton.isSelected = true
+        
+        goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
+        DispatchQueue.main.async {
+            self.setActionLabel(label: actionLabel, superView: controlButton)
+        }
         
         if !isControlAppear {
             controlButton.isHidden = false
             controlButton.alpha = 1
         }
-//        layer.removeAllAnimations()
-        goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
-//        print("currentStep:", currentStep, "/nlastStep:", lastStep)
+        
         UIView.animate(withDuration: 0.05, animations: {
+            [weak self] in
+            guard let self = self else { return }
+            
             imageView.transform = .init(rotationAngle: rotate)
             insideView.alpha = 1
             insideLabel.alpha = 0
             actionLabel.transform = .init(translationX: moveRange, y: 0)
             actionLabel.alpha = 1
-            print(self.isControlAppear)
+            self.layoutIfNeeded()
         }, completion: { _ in
             UIView.animate(withDuration: 0.3, animations: {
                 imageView.transform = .identity
                 insideView.alpha = 0
-            }, completion: { _ in
-                UIView.animate(withDuration: 0.3, animations: {
-                    
-                }, completion: { [weak self]  _ in
+            }, completion: { [weak self]  _ in
+                guard let self = self else { return }
+                let duration = 0.5
+                UIView.animate(withDuration: duration, animations: {
+                    insideLabel.backgroundColor = .clear
+                    actionLabel.alpha = 0
+                    insideLabel.alpha = 1
+                }, completion: { [weak self] _ in
                     guard let self = self else { return }
-//                    print(self.lastStep)
-                    
-                    let duration = currentStep == self.lastStep ? 0.5: 0.5
-                    print("duration:", duration)
-                    UIView.animate(withDuration: duration, animations: {
-                        insideLabel.backgroundColor = .clear
-                        actionLabel.alpha = 0
-                        insideLabel.alpha = 1
-                    }, completion: { [weak self] _ in
-                        guard let self = self else { return }
-                        
+                    DispatchQueue.main.async {
                         self.goBackControlButtonIdentity(actionLabel: actionLabel, controlButton: controlButton)
-                    })
-                    
-                    
+                    }
                 })
             })
         })
@@ -788,9 +812,9 @@ class VideoView: UIView {
     }
     
     private func goBackControlButtonIdentity(actionLabel: UILabel, controlButton: UIButton) {
-        actionLabel.transform = .identity
+//        print(#function)
+        actionLabel.removeFromSuperview()
         controlButton.isSelected = false
-        
         if !self.isControlAppear {
             controlButton.alpha = 0.1
             controlButton.isHidden = true
