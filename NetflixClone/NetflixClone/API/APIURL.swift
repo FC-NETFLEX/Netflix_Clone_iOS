@@ -19,6 +19,7 @@ enum APIURL: String {
     
     case iconList = "http://13.124.222.31/members/profiles/icons/"
     case makeProfile = "http://13.124.222.31/members/profiles/"
+    case delete = "http://13.124.222.31/members/profiles/<int:profile_id>/"
     
     func makeURL(pathItems: [PathItem] = []) -> URL? {
         let urlString = self.rawValue

@@ -15,7 +15,7 @@ protocol ProfilViewDelegate: class {
 
 class ProfileView: UIView {
     
-    private let profileButton = UIButton()
+    let profileButton = UIButton()
     let profileLabel = UILabel()
     private let pencilButton = UIButton()
     private let blurView = UIView()
