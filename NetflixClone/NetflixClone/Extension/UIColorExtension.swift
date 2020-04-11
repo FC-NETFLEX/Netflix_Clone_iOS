@@ -16,7 +16,7 @@ extension UIColor {
 //    class var netfilxLightgray: UIColor { get { #colorLiteral(red: 0.2705882353, green: 0.2705882353, blue: 0.2705882353, alpha: 1) } }
     
     enum ColorAsset {
-        case white, black, backgroundGray, netflixRed, netflixGray, netflixDarkGray, netflixLightGray, positive, negative
+        case white, black, backgroundGray, netflixRed, netflixGray, netflixDarkGray, netflixLightGray, positive, negative, downLoad
     }
     
     static func setNetfilxColor(name: ColorAsset) -> UIColor {
@@ -30,6 +30,7 @@ extension UIColor {
         case .backgroundGray: return #colorLiteral(red: 0.07843137255, green: 0.07843137255, blue: 0.07843137255, alpha: 1) // 20, 20, 20
         case .positive: return .white
         case .negative: return .red
+        case .downLoad: return #colorLiteral(red: 0.007843137255, green: 0.3960784314, blue: 0.9098039216, alpha: 1) // 2, 101, 232
         }
     }
 }
