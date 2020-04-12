@@ -159,7 +159,7 @@ class AddProfileViewController: UIViewController {
         }
     }
     //MARK: API
-    private func profileCreate() {
+    func profileCreate() {
         guard let profileName = addProfileView.nickNameTextfield.text else { return }
         guard let profileIcon = imageID else { return }
         let isKids = kidsView.kidsSwitch.isOn
@@ -188,14 +188,13 @@ class AddProfileViewController: UIViewController {
     }
     // 키즈용 alert
     private func alertAction() {
-        let alert =  UIAlertController(title: nil, message: "본 프로필의 연령 제한이 풀려 이제 모든 등급의 영화와 TV 프로그램을 시청할 수 있게 됩니다.", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: "본 프로필의 연령 제한이 풀려 이제 모든 등급의 영화와 TV 프로그램을 시청할 수 있게 됩니다.", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .default) { _ in
         }
         alert.addAction(ok)
         present(alert, animated: true)
     }
     private func setImage(stringURL: String, button: UIButton) {
-         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$success")
         guard let url = URL(string: stringURL) else { return }
         KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
             result in
