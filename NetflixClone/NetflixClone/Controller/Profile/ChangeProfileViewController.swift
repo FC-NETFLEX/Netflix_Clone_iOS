@@ -31,7 +31,8 @@ class ChangeProfileViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        print(isKids)
+        isKidsViewSetting()
     
     }
     private func setNavigationBar() {
@@ -55,6 +56,7 @@ class ChangeProfileViewController: UIViewController {
             view.addSubview($0)
         }
         addProfileView.newProfileButton.setImage(profileIcon, for: .normal)
+        addProfileView.delegate = self
         addProfileView.delegate = self
         addProfileView.nickNameTextfield.delegate = self
 
@@ -126,6 +128,15 @@ class ChangeProfileViewController: UIViewController {
         }
         task.resume()
     }
+    private func isKidsViewSetting() {
+        if isKids == true {
+            kidsCV.isHidden = false
+            universalCV.isHidden = true
+        } else {
+            kidsCV.isHidden = true
+            universalCV.isHidden = false
+        }
+    }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
@@ -141,6 +152,10 @@ class ChangeProfileViewController: UIViewController {
     }
     
     @objc private func didTapSaveButton() {
+      
+        let addVC = AddProfileViewController(root: .add)
+        addVC.profileCreate()
+        
         
         guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         
@@ -160,6 +175,7 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
     func newProfileButtonDidTap() {
         print("이미지선택")
         let imageVC = ProfileImageViewController()
+        imageVC.delegate = self
         imageVC.modalPresentationStyle = .overCurrentContext
         present(imageVC,animated: true)
     }
@@ -178,21 +194,17 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
     }
 }
 
-extension ChangeProfileViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        print("선택")
-    }
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("프로필만들기텍스트필드")
-        return view.endEditing(true)
-    }
-    
-}
 extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
     func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
         addProfileView.newProfileButton.setImage(image, for: .normal)
     }
-    
+}
+extension ChangeProfileViewController: UITextFieldDelegate {
+  
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return view.endEditing(true)
+    }
     
 }
+
 
