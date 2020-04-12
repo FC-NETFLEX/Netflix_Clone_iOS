@@ -16,9 +16,10 @@ class ChangeProfileViewController: UIViewController {
     private let universalCV = UniversalClassView()
     private let changeView = ChangeCustomView()
     private let deleteView = DeleteProfileButtonView()
+   
     var isKids = Bool()
     var profileName = String()
-    var profileIcon = String()
+    var profileIcon = UIImage()
     
     
     override func viewDidLoad() {
@@ -30,7 +31,7 @@ class ChangeProfileViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        classViewSetting()
+
     
     }
     private func setNavigationBar() {
@@ -53,6 +54,7 @@ class ChangeProfileViewController: UIViewController {
         [addProfileView, changeView,universalCV,kidsCV,deleteView].forEach {
             view.addSubview($0)
         }
+        addProfileView.newProfileButton.setImage(profileIcon, for: .normal)
         addProfileView.delegate = self
         addProfileView.nickNameTextfield.delegate = self
 
@@ -124,31 +126,6 @@ class ChangeProfileViewController: UIViewController {
         }
         task.resume()
     }
-    private func setImage(stringURL: String, button: UIButton) {
-        guard let url = URL(string: stringURL) else { return }
-        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
-            result in
-            switch result {
-            case .success(let imageResult):
-                button.setImage(imageResult.image, for: .normal)
-            case .failure(let error):
-                print(error)
-            }
-        })
-    }
-    func classViewSetting() {
-        print(isKids)
-        if isKids == true {
-            self.kidsCV.isHidden = false
-            self.universalCV.isHidden = true
-        } else {
-            self.kidsCV.isHidden = true
-            self.universalCV.isHidden = false
-        }
-        let button = addProfileView.newProfileButton
-        setImage(stringURL: profileIcon, button: button)
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
@@ -211,6 +188,11 @@ extension ChangeProfileViewController: UITextFieldDelegate {
     }
     
 }
+extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
+    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
+        addProfileView.newProfileButton.setImage(image, for: .normal)
+    }
+    
+    
+}
 
-
-   
