@@ -235,7 +235,7 @@ class ImageCaching {
     
     var data = [String: UIImage]() {
         didSet {
-            dump(data)
+//            dump(data)
         }
     }
 }
