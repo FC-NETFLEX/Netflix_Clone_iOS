@@ -53,7 +53,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         setConstraints()
-
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,7 +61,7 @@ class ProfileViewController: UIViewController {
         setNavigationBar()
         reqeustProfileList()
         
-
+        
     }
     
     private func setUI() {
@@ -202,6 +202,7 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+    
     private func rightNavigateionMake() {
         title = "프로필 관리"
         navigationItem.rightBarButtonItem = nil
@@ -224,15 +225,17 @@ class ProfileViewController: UIViewController {
     }
     //    MARK: API
     func reqeustProfileList() {
+
         guard
             let token = LoginStatus.shared.getToken(),
             let url = URL(string: APIURL.makeProfile.rawValue)
             else { return }
+           print(token)
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "GET"
-        
+      
         let task = URLSession.shared.dataTask(with: urlRequest) {
             (data, _, _) in
             guard
@@ -260,7 +263,7 @@ class ProfileViewController: UIViewController {
                 self.userImageArray.append(iconURL)
                 self.userImage = iconURL
             }
-           
+            
             DispatchQueue.main.async {
                 self.viewSetting()
                 if self.root == .manager {
@@ -301,6 +304,13 @@ class ProfileViewController: UIViewController {
     }
 }
 extension ProfileViewController: ProfilViewDelegate {
+    
+    func profileButtonDidTap(tag: Int) {
+        let tabBarController = TabBarController()
+        tabBarController.modalTransitionStyle = .coverVertical
+        tabBarController.changeRootViewController()
+    }
+    
     func profileChangeButtonDidTap(tag: Int, blurView: UIView, pencilButton: UIButton) {
         print("-----------------------------변경태그", tag)
         let selectView = profileViewArray[tag]
@@ -308,8 +318,8 @@ extension ProfileViewController: ProfilViewDelegate {
             let selectViewName = selectView.profileLabel.text,
             let selectViewImage = selectView.profileButton.imageView?.image
             else { return }
-        guard let selectViewIsKids = userIsKids[index] as? Bool else { return }
         print("셀렉",selectViewName, selectViewImage)
+        
         
         //        UIView.animateKeyframes(
         //            withDuration: 0.3,
@@ -337,22 +347,16 @@ extension ProfileViewController: ProfilViewDelegate {
         //        }
         let changeVC = ChangeProfileViewController()
         changeVC.profileIcon = selectViewImage
-        changeVC.isKids = userIsKids[IndexPath]
+        changeVC.isKids = userIsKids[tag]
         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
         navigationController?.pushViewController(changeVC, animated: true)
         
         print(selectViewImage)
         print(selectViewName)
-        
     }
-    //프로필 선택하면 홈화면으로
-    func profileButtonDidTap(tag: Int) {
-        
-        let tabBarController = TabBarController()
-        tabBarController.modalTransitionStyle = .coverVertical
-        tabBarController.changeRootViewController()
-    }
+    
 }
+
 
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
