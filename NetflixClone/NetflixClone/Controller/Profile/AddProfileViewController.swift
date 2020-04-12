@@ -195,6 +195,7 @@ class AddProfileViewController: UIViewController {
         present(alert, animated: true)
     }
     private func setImage(stringURL: String, button: UIButton) {
+         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$success")
         guard let url = URL(string: stringURL) else { return }
         KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
             result in
@@ -232,9 +233,10 @@ extension AddProfileViewController: UITextFieldDelegate {
 
 extension AddProfileViewController: ProfileImageViewControllerDelegate {
     func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
-        print("얍",randomImage)
+        print("얍얍얍얍얍",randomImage)
         guard let random = randomImage.randomElement() else { return }
-    
+        print("랜덤얍얍얍얍얍",random)
+        //프로필 추가시 랜덤으로 이미지 들어와야하나 안들어옴..
         switch root {
         case .add:
            let button = addProfileView.newProfileButton
