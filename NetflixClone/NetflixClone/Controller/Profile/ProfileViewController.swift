@@ -5,7 +5,9 @@
 //  Created by 양중창 on 2020/03/24.
 //  Copyright © 2020 Netflex. All rights reserved.
 //
-//싱글톤.쉐어드.겟토큰
+// 프로필 생성시 두개생김
+// iskids 상태 저장되지않음.
+
 import UIKit
 import Kingfisher
 
@@ -26,6 +28,7 @@ class ProfileViewController: UIViewController {
     private let userView4 = UIView()
     private let titleLabel = UILabel()
     
+    private var userIsKids = [Bool]()
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
     
@@ -33,10 +36,9 @@ class ProfileViewController: UIViewController {
     var userName = String()
     var userNameArray = [String]()
     var userImageArray = [String]()
-    var kidState = false
     
     private var isStateArray = [Bool]()
-
+    
     
     init(root: ProfileRoots) {
         self.root = root
@@ -51,14 +53,17 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setUI()
         setConstraints()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        reqeustProfileList()
         setNavigationBar()
+        reqeustProfileList()
         
+
     }
+    
     private func setUI() {
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         [userView0,userView1,userView2,userView3,userView4].forEach {
@@ -88,11 +93,11 @@ class ProfileViewController: UIViewController {
             changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
             navigationItem.rightBarButtonItem = changeButton
         case .manager:
-//            print("관리: \(profileViewArray.count)")
-//            profileViewArray.forEach {
-//                $0.setHidden(state: false)
-//            }
-//            title = "프로필 관리."
+            //            print("관리: \(profileViewArray.count)")
+            //            profileViewArray.forEach {
+            //                $0.setHidden(state: false)
+            //            }
+            //            title = "프로필 관리."
             
             let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
             completeButton.tintColor = .setNetfilxColor(name: .white)
@@ -167,6 +172,7 @@ class ProfileViewController: UIViewController {
             
             if index < count {
                 let tempProfileView = ProfileView()
+                tempProfileView.tag = index
                 tempProfileView.profileLabel.text = userNameArray[index]
                 let button = tempProfileView.profileButton
                 setImage(stringURL: userImageArray[index], button: button)
@@ -179,6 +185,7 @@ class ProfileViewController: UIViewController {
                 tempProfileView.leadingAnchor.constraint(equalTo: userView.leadingAnchor).isActive = true
                 tempProfileView.trailingAnchor.constraint(equalTo: userView.trailingAnchor).isActive = true
                 tempProfileView.bottomAnchor.constraint(equalTo: userView.bottomAnchor).isActive = true
+                
                 
             } else if index == count {
                 let tempAddView = AddProfileButtonView()
@@ -203,7 +210,7 @@ class ProfileViewController: UIViewController {
         completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
         navigationItem.leftBarButtonItem = completeButton
         
-       
+        
         
     }
     private func leftNavigationMake() {
@@ -217,44 +224,46 @@ class ProfileViewController: UIViewController {
     }
     //    MARK: API
     func reqeustProfileList() {
- 
         guard
             let token = LoginStatus.shared.getToken(),
             let url = URL(string: APIURL.makeProfile.rawValue)
             else { return }
-        print(token)
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "GET"
-       
+        
         let task = URLSession.shared.dataTask(with: urlRequest) {
             (data, _, _) in
             guard
                 let data = data,
                 let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                 else { return }
-       
+            
+            self.userNameArray.removeAll()
+            self.userImageArray.removeAll()
+            
             for profileList in profileLists {
                 guard
                     let name = profileList["profile_name"] as? String,
                     let iskids = profileList["is_kids"] as? Bool,
-                    let profileIcons = profileList["profile_icon"] as? [String: Any] else { return }
-                self.kidState = iskids
-                self.userName = name
+                    let profileIcons = profileList["profile_icon"] as? [String: Any]
+                    else { return}
                 self.userNameArray.append(name)
-            
+                self.userIsKids.append(iskids)
+                
                 guard
                     let id = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
-                    else { return }
+                    else { return print("icon")}
+                
                 self.userImageArray.append(iconURL)
                 self.userImage = iconURL
             }
+           
             DispatchQueue.main.async {
                 self.viewSetting()
                 if self.root == .manager {
-                    print("관리")
                     self.profileViewArray.forEach {
                         $0.setHidden(state: false)
                     }
@@ -263,10 +272,10 @@ class ProfileViewController: UIViewController {
             }
             
         }
-         task.resume()
+        task.resume()
     }
     
-
+    
     @objc func changeButtonDidTap() {
         profileViewArray.forEach {
             $0.setHidden(state: false)
@@ -274,7 +283,7 @@ class ProfileViewController: UIViewController {
         rightNavigateionMake()
         
     }
-
+    
     @objc private func completeButtonDidTap() {
         leftNavigationMake()
         
@@ -292,24 +301,53 @@ class ProfileViewController: UIViewController {
     }
 }
 extension ProfileViewController: ProfilViewDelegate {
-    func profileChangeButtonDidTap(blurView: UIView, pencilButton: UIButton) {
-        UIView.animate(
-            withDuration: 0.5,
-            delay: 0,
-            animations: {
-                
-        })
+    func profileChangeButtonDidTap(tag: Int, blurView: UIView, pencilButton: UIButton) {
+        print("-----------------------------변경태그", tag)
+        let selectView = profileViewArray[tag]
+        guard
+            let selectViewName = selectView.profileLabel.text,
+            let selectViewImage = selectView.profileButton.imageView?.image
+            else { return }
+        guard let selectViewIsKids = userIsKids[index] as? Bool else { return }
+        print("셀렉",selectViewName, selectViewImage)
         
+        //        UIView.animateKeyframes(
+        //            withDuration: 0.3,
+        //            delay: 0,
+        //            animations: {
+        //                UIView.addKeyframe(
+        //                withRelativeStartTime: 0.0, relativeDuration: 0.3) {
+        //                    let selectView = self.profileViewArray[tag]
+        //                    selectView.center.x = self.view.center.x
+        //                    selectView.center.y = self.view.center.y
+        //
+        //                    print("애니메이션", selectView)
+        //                }
+        //
+        //
+        //        }) { _ in
+        //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        //                let changeVC = ChangeProfileViewController()
+        //                changeVC.isKids = self.kidState
+        //                changeVC.profileIcon = self.userImage
+        //                changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
+        //                self.navigationController?.pushViewController(changeVC, animated: true)
+        //            }
+        //
+        //        }
         let changeVC = ChangeProfileViewController()
-        changeVC.isKids = kidState
-        changeVC.profileIcon = userImage
-        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: userName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-
+        changeVC.profileIcon = selectViewImage
+        changeVC.isKids = userIsKids[IndexPath]
+        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
         navigationController?.pushViewController(changeVC, animated: true)
-
+        
+        print(selectViewImage)
+        print(selectViewName)
+        
     }
     //프로필 선택하면 홈화면으로
-    func profileButtonDidTap() {
+    func profileButtonDidTap(tag: Int) {
+        
         let tabBarController = TabBarController()
         tabBarController.modalTransitionStyle = .coverVertical
         tabBarController.changeRootViewController()
