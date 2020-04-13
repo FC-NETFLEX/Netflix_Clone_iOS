@@ -104,7 +104,7 @@ extension MoreViewController {
     
     @objc private func didTapVideoButton() {
         
-        let urlString = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4"
+        let urlString = "https://d3iu419cfyyrfo.cloudfront.net/movie_hls/2000Leaque/20%2C000LeatuesUndertheSea_1916.m3u8"
         presentVideoController(urlString: urlString, title: "Test")
         
 
