@@ -47,6 +47,9 @@ struct LoginStatus {
     // 싱들톤의 프로필 아이디에 할당
     mutating func selectedProfile(profileID: Int) {
         self.profileID = profileID
+        print("profileID=============================================================")
+        print("Login:", profileID)
+        print("profileID=============================================================")
     }
     
     // 유저 디폴츠에 아이디가 저장 되어있는지 확인후 Bool 타입으로 반환

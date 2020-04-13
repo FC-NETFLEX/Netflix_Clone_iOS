@@ -188,7 +188,7 @@ class AddProfileViewController: UIViewController {
     }
     // 키즈용 alert
     private func alertAction() {
-        let alert =  UIAlertController(title: nil, message: "본 프로필의 연령 제한이 풀려 이제 모든 등급의 영화와 TV 프로그램을 시청할 수 있게 됩니다.", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: "본 프로필의 연령 제한이 풀려 이제 모든 등급의 영화와 TV 프로그램을 시청할 수 있게 됩니다.", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .default) { _ in
         }
         alert.addAction(ok)
@@ -232,9 +232,10 @@ extension AddProfileViewController: UITextFieldDelegate {
 
 extension AddProfileViewController: ProfileImageViewControllerDelegate {
     func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
-        print("얍",randomImage)
+        print("얍얍얍얍얍",randomImage)
         guard let random = randomImage.randomElement() else { return }
-    
+        print("랜덤얍얍얍얍얍",random)
+        //프로필 추가시 랜덤으로 이미지 들어와야하나 안들어옴..
         switch root {
         case .add:
            let button = addProfileView.newProfileButton

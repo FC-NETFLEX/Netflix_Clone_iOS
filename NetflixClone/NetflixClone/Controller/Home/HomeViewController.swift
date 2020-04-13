@@ -267,11 +267,13 @@ extension HomeViewController: UITableViewDataSource {
 
 //MARK: - PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
+    // 상민 수정부분(04.13일| 17:21분)
+    
     func selectCell() {
-        print("HomveViewController 미리보기 cell 클릭")
-        let contentVC = ContentViewController()
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+        print("PreViewController 미리보기 cell 클릭")
+        let previewVC = PreViewController()
+        previewVC.modalPresentationStyle = .fullScreen
+        present(previewVC, animated: true)
     }
     
     
