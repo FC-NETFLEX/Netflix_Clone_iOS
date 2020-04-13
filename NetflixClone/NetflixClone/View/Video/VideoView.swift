@@ -91,7 +91,6 @@ class VideoView: UIView {
     
     private let centerView = UIView()
     
-    //    private let rewindButtonBackgroundView = PlayPauseButton()
     private let rewindButtonImageView = UIImageView()
     private let rewindButton = UIButton()
     private let rewindButtonLabel = UILabel()
@@ -284,12 +283,14 @@ class VideoView: UIView {
         
         titleLabel.snp.makeConstraints({
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(exitButton)
+            let topAnchor = (exitButton.imageView) ?? exitButton
+            $0.top.equalTo(topAnchor.snp.top)
         })
         
         exitButton.snp.makeConstraints({
-            $0.trailing.equalToSuperview().offset(-xMargin)
-            $0.bottom.equalToSuperview()
+            $0.trailing.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.width.equalTo(exitButton.snp.height)
         })
         
         centerView.snp.makeConstraints({
