@@ -20,6 +20,7 @@ class ChangeProfileViewController: UIViewController {
     var isKids = Bool()
     var profileName = String()
     var profileIcon = UIImage()
+    var profileIconNum = Int()
     var userID = Int()
     
     
@@ -100,31 +101,7 @@ class ChangeProfileViewController: UIViewController {
         deleteView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
         
     }
-    private func requestDelete() {
-        let deleteURL = APIURL.delete.rawValue
-        guard
-            let token = LoginStatus.shared.getToken(),
-            let url = URL(string: deleteURL) else { return }
-        var urlRequest = URLRequest(url: url)
-        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpMethod = "DELETE"
-        
-        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            guard error == nil else { return print(error!.localizedDescription) }
-            guard let data = data else { return print("No Data") }
-            print("DELETE OK!!")
-            
-            if let res = response as? HTTPURLResponse {
-                print(res.statusCode)
-            }
-            if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                print(data)
-                print(jsonObject)
-            }
-        }
-        task.resume()
-    }
+    
     private func isKidsViewSetting() {
         if isKids == true {
             kidsCV.isHidden = false
@@ -148,26 +125,60 @@ class ChangeProfileViewController: UIViewController {
         }
     }
     //MARK: API
+    
+    
     private func profileUpdate() {
         let stringID = String(userID)
-        let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIcon, "is_kids": isKids]
+        let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIconNum, "is_kids": isKids]
         guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
-        
+        dump(bodys)
         guard
             let token = LoginStatus.shared.getToken(),
-            let url = URL(string: APIURL.makeProfile.rawValue + stringID)
+            let url = URL(string: APIURL.makeProfile.rawValue + stringID + "/")
             else { return }
+        print(url)
         
         var urlRequest = URLRequest(url: url)
-        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "PATCH"
         urlRequest.httpBody = jsonToDO
+
 
         let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             guard error == nil else { return print(error!.localizedDescription) }
             guard let data = data else { return print("No Data") }
             guard let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+            print(jsonObject)
+        }
+        task.resume()
+    }
+    
+    private func profileDelete() {
+        let stringID = String(userID)
+        print("삭제삭제ㅏㄱㅈ")
+        guard
+            let token = LoginStatus.shared.getToken(),
+            let url = URL(string: APIURL.makeProfile.rawValue + stringID + "/")
+            else { return }
+        print(url)
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpMethod = "DELETE"
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            guard error == nil else { return print(error!.localizedDescription) }
+            guard let data = data else { return print("No Data") }
+            print("DELETE OK!!")
+            
+            if let res = response as? HTTPURLResponse {
+                print(res.statusCode)
+            }
+            if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                print(jsonObject)
+            }
         }
         task.resume()
     }
@@ -175,12 +186,13 @@ class ChangeProfileViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         
-//        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
+        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
+        profileName = userName
         
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .main
-//                profileUpdae()
+                profileUpdate()
 //                profileVC.userNameArray.append(userName)
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
@@ -199,11 +211,10 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
         present(imageVC,animated: true)
     }
     func didTapDeleteButton() {
-        requestDelete()
-        
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .main
+                profileDelete()
                 profileVC.userNameArray.removeAll()
                 navigationController?.popViewController(animated: true)
                 
@@ -216,12 +227,12 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
 extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
     func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
         addProfileView.newProfileButton.setImage(image, for: .normal)
+        self.profileIconNum = imageID
     }
 }
 extension ChangeProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         addProfileView.nickNameTextfield.placeholder = ""
-        print("체인지 텍스트 필드 선택")
       }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
