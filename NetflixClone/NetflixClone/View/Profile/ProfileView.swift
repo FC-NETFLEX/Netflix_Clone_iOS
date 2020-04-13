@@ -9,14 +9,15 @@
 import UIKit
 
 protocol ProfilViewDelegate: class {
-    func profileButtonDidTap()
-    func profileChangeButtonDidTap(blurView: UIView, pencilButton: UIButton)
+    func profileButtonDidTap(tag: Int)
+    func profileChangeButtonDidTap(tag: Int, blurView: UIView, pencilButton: UIButton)
 }
 
 class ProfileView: UIView {
     
     let profileButton = UIButton()
     let profileLabel = UILabel()
+
     private let pencilButton = UIButton()
     private let blurView = UIView()
     
@@ -28,6 +29,7 @@ class ProfileView: UIView {
         setUI()
         setConstraint()
         setHidden(state: true)
+
     }
     
     required init?(coder: NSCoder) {
@@ -98,10 +100,10 @@ class ProfileView: UIView {
         }
     }
     @objc private func profileButtonDidTap() {
-        delegate?.profileButtonDidTap()
+        delegate?.profileButtonDidTap(tag: self.tag)
     }
     @objc private func profileChangeButtonDidTap() {
-        delegate?.profileChangeButtonDidTap(blurView: blurView, pencilButton: pencilButton)
+        delegate?.profileChangeButtonDidTap(tag: self.tag, blurView: blurView, pencilButton: pencilButton)
     }
 }
 

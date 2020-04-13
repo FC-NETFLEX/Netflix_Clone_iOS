@@ -223,7 +223,7 @@ struct APIManager {
 //        return task
 //    }
 //
-//    @discardableResult
+//    @discardableRe'sult
 //    func requestOfDelete(
 //        url: APIURL,
 //        token: String,
