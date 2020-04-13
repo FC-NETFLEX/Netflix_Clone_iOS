@@ -95,12 +95,6 @@ class ProfileViewController: UIViewController {
             changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
             navigationItem.rightBarButtonItem = changeButton
         case .manager:
-            //            print("관리: \(profileViewArray.count)")
-            //            profileViewArray.forEach {
-            //                $0.setHidden(state: false)
-            //            }
-            //            title = "프로필 관리."
-            
             let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
             completeButton.tintColor = .setNetfilxColor(name: .white)
             completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
@@ -111,10 +105,14 @@ class ProfileViewController: UIViewController {
             changeButton.tintColor = .setNetfilxColor(name: .white)
             changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
             navigationItem.rightBarButtonItem = changeButton
-            //왼쪽 완료버튼 만들기
+        
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                guard let imageIndex = (0..<self.userImageArray.count).randomElement() else { return }
+//                guard let randomImageStr = self.userImageArray.randomElement() else { return }
                 let addVC = AddProfileViewController(root: .add)
+                addVC.randomSetImage = self.userImageArray[imageIndex]
+                addVC.randomIndex = self.userIDNumArray[imageIndex]
                 let navi = UINavigationController(rootViewController: addVC)
                 navi.modalPresentationStyle = .fullScreen
                 self.present(navi, animated: true)
@@ -263,7 +261,7 @@ class ProfileViewController: UIViewController {
                 guard
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
-                    else { return print("icon")}
+                    else { return }
             
                 self.userIDNumArray.append(idNum)
                 self.userImageArray.append(iconURL)
@@ -367,8 +365,12 @@ extension ProfileViewController: ProfilViewDelegate {
 
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
+        guard let imageIndex = (0..<userImageArray.count).randomElement() else { return }
         
+//        guard let randomImageStr = self.userImageArray.randomElement() else { return }
         let addVC = AddProfileViewController(root: .main)
+        addVC.randomSetImage = userImageArray[imageIndex]
+        addVC.randomIndex = userIDNumArray[imageIndex]
         navigationController?.pushViewController(addVC, animated: true)
     }
 }
