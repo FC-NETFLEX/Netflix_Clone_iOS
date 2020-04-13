@@ -36,6 +36,7 @@ class ProfileViewController: UIViewController {
     var userName = String()
     var userNameArray = [String]()
     var userImageArray = [String]()
+    var userIDArray = [Int]()
     
     private var isStateArray = [Bool]()
     
@@ -248,18 +249,21 @@ class ProfileViewController: UIViewController {
             
             for profileList in profileLists {
                 guard
+                    let id = profileList["id"] as? Int,
                     let name = profileList["profile_name"] as? String,
                     let iskids = profileList["is_kids"] as? Bool,
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
                     else { return}
+                
+                self.userIDArray.append(id)
                 self.userNameArray.append(name)
                 self.userIsKids.append(iskids)
                 
                 guard
-                    let id = profileIcons["id"] as? Int,
+//                    let id = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
                     else { return print("icon")}
-                
+            
                 self.userImageArray.append(iconURL)
                 self.userImage = iconURL
             }
@@ -346,6 +350,7 @@ extension ProfileViewController: ProfilViewDelegate {
         //
         //        }
         let changeVC = ChangeProfileViewController()
+        changeVC.userID = userIDArray[tag]
         changeVC.profileIcon = selectViewImage
         changeVC.isKids = userIsKids[tag]
         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
