@@ -9,7 +9,7 @@
 import UIKit
 
 protocol ProfileImageViewControllerDelegate: class {
-    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>)
+    func setImage(image: UIImage, imageID: Int)
 }
 
 class ProfileImageViewController: UIViewController {
@@ -186,7 +186,7 @@ extension ProfileImageViewController: UICollectionViewDataSource {
         randomArray.append(url)
         guard let profileImage = ImageCaching.shared.data[url] else { return }
         
-        delegate?.setImage(image: profileImage, imageID: id, randomImage: randomArray )
+        delegate?.setImage(image: profileImage, imageID: id)
         dismiss(animated: true)
        
     }
