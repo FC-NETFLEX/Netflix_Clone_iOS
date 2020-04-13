@@ -23,6 +23,7 @@ class SavedContentsListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationController()
         setUI()
+        test()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -126,6 +127,11 @@ extension SavedContentsListViewController: UITableViewDelegate {
 
 extension SavedContentsListViewController {
     func test() {
-        
+        let url = FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask)
+        print(url)
     }
 }
+
+
+
+
