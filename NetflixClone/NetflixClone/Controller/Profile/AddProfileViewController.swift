@@ -159,7 +159,7 @@ class AddProfileViewController: UIViewController {
         }
     }
     //MARK: API
-    func profileCreate() {
+    private func profileCreate() {
         guard let profileName = addProfileView.nickNameTextfield.text else { return }
         guard let profileIcon = imageID else { return }
         let isKids = kidsView.kidsSwitch.isOn
