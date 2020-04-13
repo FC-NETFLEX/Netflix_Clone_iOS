@@ -18,9 +18,9 @@ struct LoginStatus {
     mutating func login(token: String) {
         self.token = token
         UserDefaults.standard.set(token, forKey: tokenKey)
-        print("=============================================================")
+        print("Login=============================================================")
         print("Login:", token)
-        print("=============================================================")
+        print("Login=============================================================")
     }
     
     // 싱글톤의 토큰, 프로필 아이디에 nil을 할당하고 유저 디폴츠에 값을 삭제
@@ -33,6 +33,9 @@ struct LoginStatus {
     // 싱들톤의 프로필 아이디에 할당
     mutating func selectedProfile(profileID: Int) {
         self.profileID = profileID
+        print("profileID=============================================================")
+        print("Login:", profileID)
+        print("profileID=============================================================")
     }
     
     // 유저 디폴츠에 아이디가 저장 되어있는지 확인후 Bool 타입으로 반환
