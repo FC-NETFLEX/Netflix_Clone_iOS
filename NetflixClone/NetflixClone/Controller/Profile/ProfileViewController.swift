@@ -37,6 +37,7 @@ class ProfileViewController: UIViewController {
     var userNameArray = [String]()
     var userImageArray = [String]()
     var userIDArray = [Int]()
+    var userIDNumArray = [Int]()
     
     private var isStateArray = [Bool]()
     
@@ -260,10 +261,11 @@ class ProfileViewController: UIViewController {
                 self.userIsKids.append(iskids)
                 
                 guard
-//                    let id = profileIcons["id"] as? Int,
+                    let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
                     else { return print("icon")}
             
+                self.userIDNumArray.append(idNum)
                 self.userImageArray.append(iconURL)
                 self.userImage = iconURL
             }
@@ -300,10 +302,8 @@ class ProfileViewController: UIViewController {
                 $0.setHidden(state: true)
                 setNavigationBar()
             }
-        case .manager:
+        case .manager, .add:
             dismiss(animated: true)
-        case .add:
-            break
         }
     }
 }
@@ -351,8 +351,10 @@ extension ProfileViewController: ProfilViewDelegate {
         //        }
         let changeVC = ChangeProfileViewController()
         changeVC.userID = userIDArray[tag]
+        changeVC.profileName = userNameArray[tag]
         changeVC.profileIcon = selectViewImage
         changeVC.isKids = userIsKids[tag]
+        changeVC.profileIconNum = userIDNumArray[tag]
         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
         navigationController?.pushViewController(changeVC, animated: true)
         
