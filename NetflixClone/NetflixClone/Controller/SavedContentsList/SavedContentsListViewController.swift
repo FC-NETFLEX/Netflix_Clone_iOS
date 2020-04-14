@@ -28,9 +28,9 @@ class SavedContentsListViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let status = model.saveContens.isEmpty
-        navigationController?.navigationBar.isHidden = status
-        rootView.isNoContents = status
+//        let status = model.saveContens.isEmpty
+//        navigationController?.navigationBar.isHidden = status
+//        rootView.isNoContents = status
     }
     
     //MARK: UI
@@ -82,20 +82,21 @@ extension SavedContentsListViewController: SavedContentsListViewDelegate {
 extension SavedContentsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.saveContens.count
+//        model.saveContens.count
+        0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier, for: indexPath) as! SavedContentCell
-        let content = model.saveContens[indexPath.row]
-        let description = content.rating + " | " + String(content.capacity) + " MB"
-        cell.configure(
-            title: content.title,
-            description: description,
-            stringImageURL: content.imageURL,
-            summary: content.isSelected ? content.summary: ""
-            )
+//        let content = model.saveContens[indexPath.row]
+//        let description = content.rating + " | " + String(content.capacity) + " MB"
+//        cell.configure(
+//            title: content.title,
+//            description: description,
+//            stringImageURL: content.imageURL,
+//            summary: content.isSelected ? content.summary: ""
+//            )
         
         return cell
     }
@@ -109,14 +110,14 @@ extension SavedContentsListViewController: UITableViewDataSource {
 extension SavedContentsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        for (index, content) in model.saveContens.enumerated() {
-            if indexPath.row != index && content.isSelected {
-                model.saveContens[index].isSelected = false
-                tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-            }
-        }
-        model.saveContens[indexPath.row].isSelected.toggle()
-        tableView.reloadRows(at: [indexPath], with: .automatic)
+//        for (index, content) in model.saveContens.enumerated() {
+//            if indexPath.row != index && content.isSelected {
+//                model.saveContens[index].isSelected = false
+//                tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+//            }
+//        }
+//        model.saveContens[indexPath.row].isSelected.toggle()
+//        tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
     

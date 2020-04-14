@@ -71,7 +71,7 @@ extension SignUpViewController: SignUpViewDelegate {
             case .failure(let error) :
                 // 에러 처리
                 self.rootView.isLoading = false
-                print(error)
+                print(error.localizedDescription)
                 
             case .success(let data):
                 // 회원가입이 완료된것이 아니라 서버와의 통신이 성공한거
