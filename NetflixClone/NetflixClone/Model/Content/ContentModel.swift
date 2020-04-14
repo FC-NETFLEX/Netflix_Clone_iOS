@@ -11,7 +11,7 @@ import Foundation
 //struct Contents: Decodable {
 //    let contents: [Content]
 //
-struct Content: Decodable {
+struct ContentModel: Decodable {
     let id: Int
     let contentsTitle: String
     let contentsTitleEnglish: String

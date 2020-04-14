@@ -62,7 +62,8 @@ class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         setNavigationBar()
         reqeustProfileList()
-        
+        print(userIDArray)
+        print(userIDNumArray)
         
     }
     
@@ -244,7 +245,9 @@ class ProfileViewController: UIViewController {
                 let data = data,
                 let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                 else { return }
-            
+            // 양중창이 수정함
+            self.userIDArray.removeAll()
+            // 양중창이 수정함
             self.userNameArray.removeAll()
             self.userImageArray.removeAll()
             
@@ -310,6 +313,10 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: ProfilViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
+        // 양중창이 수정함
+        LoginStatus.shared.selectedProfile(profileID: userIDArray[tag])
+        // 양중창이 수정함
+        
         let tabBarController = TabBarController()
         tabBarController.modalTransitionStyle = .coverVertical
         tabBarController.changeRootViewController()

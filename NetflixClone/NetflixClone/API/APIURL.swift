@@ -8,23 +8,35 @@
 
 import Foundation
 
-typealias PathItem = (name: String, value: String)
+typealias PathItem = (name: String, value: String?)
 
 enum APIURL: String {
-    case defaultURL = "http://13.124.222.31/"
+    case defaultURL = "https://www.netflexx.ga"
     
-    case signUp = "http://13.124.222.31/members/"
-    case logIn = "http://13.124.222.31/members/auth_token/"
-    case logOut = "http://13.124.222.31/members/logout/"
+    case signUp = "https://www.netflexx.ga/members/"
+    case logIn = "https://www.netflexx.ga/members/auth_token/"
+    case logOut = "https://www.netflexx.ga/members/logout/"
     
-    case iconList = "http://13.124.222.31/members/profiles/icons/"
-    case makeProfile = "http://13.124.222.31/members/profiles/"
+    case iconList = "https://www.netflexx.ga/members/profiles/icons/"
+    case makeProfile = "https://www.netflexx.ga/members/profiles/"
    
     
-    func makeURL(pathItems: [PathItem] = []) -> URL? {
+    func makeURL(pathItems: [PathItem] = [], queryItems: [URLQueryItem]? = nil) -> URL? {
         let urlString = self.rawValue
-        let pathItem = pathItems.reduce("", { $0 + $1.name + "/" + $1.value + "/" })
+        var pathItem = pathItems.reduce("", { (before, next) in
+            var value = ""
+            
+            if let unrappingValue = next.value {
+                value = "/" + unrappingValue
+            }
+            return before + "/" + next.name + value
+        })
         
-        return URL(string: urlString + pathItem)
+        pathItem += queryItems == nil ? "/": ""
+        guard var urlComponents = URLComponents(string: urlString + pathItem) else { return nil }
+        urlComponents.queryItems = queryItems
+        
+        
+        return urlComponents.url
     }
 }

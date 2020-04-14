@@ -124,8 +124,10 @@ struct RecommentContents: Codable {
         case id
         case title = "contents_title"
         case imageURL = "contents_image"
+
     }
 }
+
 
 
 struct PreviewContents: Codable {
