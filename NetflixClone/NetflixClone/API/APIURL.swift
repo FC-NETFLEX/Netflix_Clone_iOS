@@ -11,14 +11,14 @@ import Foundation
 typealias PathItem = (name: String, value: String)
 
 enum APIURL: String {
-    case defaultURL = "http://13.124.222.31/"
+    case defaultURL = "https://www.netflexx.ga"
     
-    case signUp = "http://13.124.222.31/members/"
-    case logIn = "http://13.124.222.31/members/auth_token/"
-    case logOut = "http://13.124.222.31/members/logout/"
+    case signUp = "https://www.netflexx.ga/members/"
+    case logIn = "https://www.netflexx.ga/members/auth_token/"
+    case logOut = "https://www.netflexx.ga/members/logout/"
     
-    case iconList = "http://13.124.222.31/members/profiles/icons/"
-    case makeProfile = "http://13.124.222.31/members/profiles/"
+    case iconList = "https://www.netflexx.ga/members/profiles/icons/"
+    case makeProfile = "https://www.netflexx.ga/members/profiles/"
    
     
     func makeURL(pathItems: [PathItem] = []) -> URL? {
