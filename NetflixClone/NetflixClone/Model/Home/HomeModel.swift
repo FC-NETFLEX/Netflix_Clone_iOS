@@ -16,8 +16,7 @@ struct HomeContent: Codable {
     let recommendContents: [RecommentContents]
     let previewContents: [PreviewContents]
     let watchingVideo: [WatchingVideo]
-//    let allContents: [AllContents]
-    
+        
     private enum CodingKeys: String, CodingKey {
         case topContent = "top_contents"
         case adContent = "ad_contents"
@@ -36,10 +35,13 @@ struct TopConent: Codable {
     let title: String
     let titleEnglish: String
     let imageURL: String
-    let logoImageURL: String
+    let logoImageURL: String?
     let rating: String          // 관람가
     let selectedFlag: Bool
-    let likeFlag: Bool
+    let categories: [String]
+    
+    
+//    let likeFlag: Bool
     //    let summary: String         // 줄거리
     //    let timeLength: String
     //    let pubYear: String         // 개봉일
@@ -54,10 +56,14 @@ struct TopConent: Codable {
         case title = "contents_title"
         case titleEnglish = "contents_title_english"
         case imageURL = "contents_image"
+        
         case logoImageURL = "contents_logo"
         case rating = "contents_rating"
         case selectedFlag = "is_select"
-        case likeFlag = "is_like"
+        case categories
+        
+        
+        //        case likeFlag = "is_like"
         //        case summary = "contents_summary"
         //        case timeLength = "contents_length"
         //        case pubYear = "contents_pub_year"
@@ -126,7 +132,7 @@ struct PreviewContents: Codable {
     let id: Int
     let title: String
     let previewVideoURL: String
-    let logoURL: String
+    let logoURL: String?
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -136,17 +142,6 @@ struct PreviewContents: Codable {
     }
 }
 
-struct AllContents: Codable {
-    let id: Int
-    let title: String
-    let imageURL: String
-    
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case title = "contents_title"
-        case imageURL = "contents_image"
-    }
-}
 
 struct WatchingVideo: Codable {
     let id: Int
@@ -168,7 +163,7 @@ struct WatchingVideo: Codable {
         
         private enum CodingKeys: String, CodingKey {
             case id
-            case vidoeeURL = "video"
+            case vidoeeURL = "video_url"
         }
     }
 }
