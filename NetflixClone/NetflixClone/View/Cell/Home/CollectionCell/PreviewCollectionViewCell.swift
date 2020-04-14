@@ -65,7 +65,8 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         
         titleImage.snp.makeConstraints {
             $0.centerY.equalTo(posterImage.snp.bottom)
-            $0.centerX.equalToSuperview()
+//            $0.centerX.equalToSuperview()
+            $0.centerX.equalTo(posterImage.snp.centerX)
             $0.height.equalTo(titleImageHeight)
             $0.width.equalTo(titleImageWidth)
             

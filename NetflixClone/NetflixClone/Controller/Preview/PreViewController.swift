@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 class PreViewController: UIViewController {
-    private var preview = [PreviewModel]()
+    private var preview = [PreviewContents]()
     private var previewSubviews = [PreviewView]()
     
     private let receivedPreviewIndex: Int
@@ -49,12 +49,18 @@ class PreViewController: UIViewController {
         APIManager().request(url: url, method: .get, token: token) { (result) in
             switch result {
             case .success(let data):
+
                 
-                if let home = try? JSONDecoder().decode(HomeModel.self, from: data) {
+                if let home = try? JSONDecoder().decode(HomeContent.self, from: data) {
                     self.preview = home.previewContents
                     self.createPreviewSubviews()
                 }
                 
+                print(String(data: data, encoding: .utf8)!)
+//                if let home = try? JSONDecoder().decode(HomeModel.self, from: data) {
+//                    self.preview = home.previewContents
+//                }
+
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -71,7 +77,7 @@ class PreViewController: UIViewController {
     
     private func createPreviewSubviews() {
         self.previewSubviews = preview.compactMap {
-            guard let url = URL(string: $0.previewVideo) else {
+            guard let url = URL(string: $0.previewVideoURL) else {
                 print("makeURL Fail")
                 return nil
             }
