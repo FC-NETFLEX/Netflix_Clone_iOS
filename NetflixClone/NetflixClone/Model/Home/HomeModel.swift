@@ -166,7 +166,7 @@ struct WatchingVideo: Codable {
         
         private enum CodingKeys: String, CodingKey {
             case id
-            case vidoeeURL = "video_url"
+            case videoURL = "video_url"
         }
     }
 }
