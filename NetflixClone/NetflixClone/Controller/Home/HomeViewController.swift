@@ -23,7 +23,7 @@ final class HomeViewController: UIViewController {
     //MARK: header content
     private var firstId = 1
     private var firstCellURL = ""
-    private var firstCellItem = ""//"titleDummy"
+    private var firstCellPoster = ""//"titleDummy"
     private var firstCategory = [String]() //["로맨스", "한국 드라마", "드라마"]
     private var dibsFlag = false
     private var firstTitleImage = "darkGray"
@@ -43,6 +43,7 @@ final class HomeViewController: UIViewController {
     
     //MARK: WatchContents
     //poster: <#T##[UIImage]#>, watchTime: T##[String], playMark: <#T##[Int64]#>, url: <#T##URL#>
+    private let posterId = [1,2,3,4]
     private let posterWatch = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
     private let watchTimekWatch: [Int] = [0, 0, 0, 0]
     private let playMark: [Int] = [0, 0, 0, 0]
@@ -59,29 +60,29 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         //MARK: JSONPassing
-//        DispatchQueue.global().sync {
-//            //            self.jsonPassing()
-//            print("--------jsonPassing----------------")
-//            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
-//                print("dataTask 입성")
-//                guard error == nil else { return print("jsonPassing error: ", error!)}
-//                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
-//                guard let data = data else { return print("jsonPassing data 오류") }
-//                
-//                do {
-//                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-//                    print("jsonData 파싱완료")
-//                    print("jsonData = \(jsonData)")
-//                    
-//                    
-//                    
-//                    
-//                } catch {
-//                    print(error.localizedDescription)
-//                }
-//            }
-//            dataTask.resume()
-//        }
+        DispatchQueue.global().sync {
+            //            self.jsonPassing()
+            print("--------jsonPassing----------------")
+            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
+                print("dataTask 입성")
+                guard error == nil else { return print("jsonPassing error: ", error!)}
+                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
+                guard let data = data else { return print("jsonPassing data 오류") }
+                
+                do {
+                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+                    print("jsonData 파싱완료")
+                    print("jsonData = \(jsonData)")
+                    
+                    
+                    
+                    
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            dataTask.resume()
+        }
     
         setUI()
         setConstraints()
@@ -201,7 +202,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let header = HomeviewTitle()
-        header.configure(id: firstId, poster: UIImage(named: firstCellItem), category: firstCategory, dibs: dibsFlag, titleImage: UIImage(named: "darkGray"), url: URL(string: firstCellURL))
+        header.configure(id: firstId, poster: UIImage(named: firstCellPoster), category: firstCategory, dibs: dibsFlag, titleImage: UIImage(named: "darkGray"), url: URL(string: firstCellURL))
         return header
     }
     
