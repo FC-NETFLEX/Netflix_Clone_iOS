@@ -87,10 +87,17 @@ class PreviewTableViewCell: UITableViewCell {
         
   
     //MARK: - configure
-    func configure(id: [Int], poster: [UIImage], titleImage: [UIImage]) {
+//    func configure(id: [Int], poster: [UIImage], titleImage: [UIImage]) {
+    func configure(id: [Int], poster: [String], titleImage: [String?]) {
+        var posters = [UIImage]()
+        var titleImages = [UIImage]()
+        
+        poster.forEach { posters.append(UIImage(named: $0)!) }
+        titleImage.forEach { titleImages.append(UIImage(named: $0 ?? "")!) }
+        
         self.idData = id
-        self.posterData = poster
-        self.titleData = titleImage
+        self.posterData = posters
+        self.titleData = titleImages
     }
 
 }
