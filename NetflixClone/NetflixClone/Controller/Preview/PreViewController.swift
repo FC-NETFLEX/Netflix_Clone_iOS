@@ -40,9 +40,9 @@ class PreViewController: UIViewController {
             switch result {
             case .success(let data):
                 print(String(data: data, encoding: .utf8)!)
-                if let home = try? JSONDecoder().decode(HomeModel.self, from: data) {
-                    self.preview = home.previewContents
-                }
+//                if let home = try? JSONDecoder().decode(HomeModel.self, from: data) {
+//                    self.preview = home.previewContents
+//                }
             case .failure(let error):
                 print(error.localizedDescription)
             }

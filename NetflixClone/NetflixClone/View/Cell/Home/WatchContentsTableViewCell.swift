@@ -24,8 +24,8 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     /*poster: [UIImage], watchTime: [Int64], playMark: [Int64] /*url: URL*/*/
     private var postersData = [UIImage]()
-    private var watchTimesData = [Int64]()
-    private var playMarksData = [Int64]()
+    private var watchTimesData = [Int]()
+    private var playMarksData = [Int]()
     private var url = [URL]()
     
     private let contentsCollectionView: UICollectionView = {
@@ -87,7 +87,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(poster: [UIImage], watchTime: [Int64], playMark: [Int64] /*url: URL*/) {
+    func configure(poster: [UIImage], watchTime: [Int], playMark: [Int] /*url: URL*/) {
         // configure(poster: UIImage, watchTime: Int, playMark: Int)
 //        print("WatchContentTableViewCell: configure -> poster \(poster), watchTime \(watchTime), playMark \(playMark)")
 

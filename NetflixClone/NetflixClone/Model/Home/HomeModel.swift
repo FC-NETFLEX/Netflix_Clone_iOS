@@ -8,18 +8,164 @@
 
 import Foundation
 
-struct HomeModel: Decodable {
-    
-    let previewContents: [PreviewModel]
-    
+
+struct HomeContent: Codable {
+    let topContent: TopConent
+    let adContent: ADContent
+    let top10Contents: [Top10Contents]
+    let recommendContents: [RecommentContents]
+    let previewContents: [PreviewContents]
+    let watchingVideo: [WatchingVideo]
+        
     private enum CodingKeys: String, CodingKey {
+        case topContent = "top_contents"
+        case adContent = "ad_contents"
+        case top10Contents = "top10_contents"
+        case recommendContents = "recommend_contents"
         case previewContents = "preview_contents"
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        previewContents = try container.decode([PreviewModel].self, forKey: .previewContents)
+        case watchingVideo = "watching_video"
     }
 }
 
 
+
+
+struct TopConent: Codable {
+    let id: Int
+    let title: String
+    let titleEnglish: String
+    let imageURL: String
+    let logoImageURL: String?
+    let rating: String          // 관람가
+    let selectedFlag: Bool
+    let categories: [String]
+    
+    
+//    let likeFlag: Bool
+    //    let summary: String         // 줄거리
+    //    let timeLength: String
+    //    let pubYear: String         // 개봉일
+    //    let previewVideo: String
+    //    let actors: [String]
+    //    let directors: [String]
+    //    let videos: [String]
+    
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case titleEnglish = "contents_title_english"
+        case imageURL = "contents_image"
+        
+        case logoImageURL = "contents_logo"
+        case rating = "contents_rating"
+        case selectedFlag = "is_select"
+        case categories
+        
+        
+        //        case likeFlag = "is_like"
+        //        case summary = "contents_summary"
+        //        case timeLength = "contents_length"
+        //        case pubYear = "contents_pub_year"
+        //    case previewVideo = "preview_video"
+        //    case actors
+        //        case directors
+        //    case videos
+    }
+}
+
+
+struct ADContent: Codable {
+    let id: Int
+    let title: String
+    let titleEnglish: String
+    let timeLength: String
+    let pubYear: String
+    let previewVideoURL: String
+    let selected: Bool
+    //    let summary: String
+    //    let imageString: String
+    //    let logoString: String
+    //    let rating: String      // 관람가
+    //    let actors: [String]
+    //    let directors: [String]
+    //    let videos: [String]
+    //    let likeFlag: Bool
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case titleEnglish = "contents_title_english"
+        case timeLength = "contents_length"
+        case pubYear = "contents_pub_year"
+        case previewVideoURL = "preview_video"
+        case selected = "is_select"
+    }
+}
+
+struct Top10Contents: Codable {
+    let id: Int
+    let title: String
+    let imageURL: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case imageURL = "contents_image"
+    }
+}
+
+struct RecommentContents: Codable {
+    let id: Int
+    let title: String
+    let imageURL: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case imageURL = "contents_image"
+
+    }
+}
+
+
+
+struct PreviewContents: Codable {
+    let id: Int
+    let title: String
+    let previewVideoURL: String
+    let logoURL: String?
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case previewVideoURL = "preview_video"
+        case logoURL = "contents_logo"
+    }
+}
+
+
+struct WatchingVideo: Codable {
+    let id: Int
+    let video: Video
+    let playTime: Int
+    let videoLength: Int
+    
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case video
+        case playTime = "playtime"
+        case videoLength = "video_length"
+    }
+    
+    struct Video: Codable {
+        let id: Int
+        let vidoeeURL: String
+        
+        private enum CodingKeys: String, CodingKey {
+            case id
+            case vidoeeURL = "video_url"
+        }
+    }
+}

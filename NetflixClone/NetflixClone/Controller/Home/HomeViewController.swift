@@ -16,30 +16,39 @@ final class HomeViewController: UIViewController {
     
     private let cellCount = 5
     
+    //MARK: JSON 관련
+    private var decoder = JSONDecoder()
+    private var homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
+    
     //MARK: header content
-    private let firstCellItem = "titleDummy"
-    private let firstCategory = ["로맨스", "한국 드라마", "드라마"]
-    private let dibsFlag = false
-    private let firstTitleImage = UIImage(named: "white")
+    private var firstId = 1
+    private var firstCellURL = ""
+    private var firstCellItem = ""//"titleDummy"
+    private var firstCategory = [String]() //["로맨스", "한국 드라마", "드라마"]
+    private var dibsFlag = false
+    private var firstTitleImage = "darkGray"
     
     //MARK: preview content
-    private let idPreview = [123, 234, 345, 456, 567]
-    private let posterPreview = [UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy")]
-    private let titleImagePreview = [UIImage(named: "white"), UIImage(named: "white"), UIImage(named: "white"), UIImage(named: "white"), UIImage(named: "white")]
+    private var idPreview = [1, 2, 3, 4, 5]
+    private var posterPreview = [UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray")] //[UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy")]
+    private var titleImagePreview = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
     
     //MARK: LatestMovie content
-    private let idLatestMovie = [123, 234, 345, 456, 567]
-    private let posterLatestMovie = [UIImage(named: "posterCellDummy"), UIImage(named: "posterCellDummy"), UIImage(named: "posterCellDummy"), UIImage(named: "posterCellDummy"), UIImage(named: "posterCellDummy")]
+    private var idLatestMovie = [1, 2, 3, 4]
+    private var posterLatestMovie = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
     
     //MARK: Top10 content
-    private let idTop10 = [123, 234, 345, 456, 567, 678, 789, 890,910, 111]
-    private let posterTop10 = [UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy"), UIImage(named: "top10Dummy")]
+    private let idTop10 = [1, 2, 3, 4, 5]
+    private let posterTop10 = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
     
     //MARK: WatchContents
     //poster: <#T##[UIImage]#>, watchTime: T##[String], playMark: <#T##[Int64]#>, url: <#T##URL#>
-    private let posterWatch = [UIImage(named: "포스터"), UIImage(named: "top10Dummy"), UIImage(named: "posterCellDummy"), UIImage(named: "포스터")]
-    private let watchTimekWatch: [Int64] = [5400, 5000, 5700, 3600]
-    private let playMark: [Int64] = [2500, 700, 5000, 1000]
+    private let posterWatch = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
+    private let watchTimekWatch: [Int] = [0, 0, 0, 0]
+    private let playMark: [Int] = [0, 0, 0, 0]
+    
+    //MARK: ADContents
+    private let adVideoURL = "" //"https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp4"
     
     //MARK: VideoAdvertisement ->
     private var videoAdvertismentCell: VideoAdvertisementTableViewCell?
@@ -49,7 +58,31 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        //MARK: JSONPassing
+//        DispatchQueue.global().sync {
+//            //            self.jsonPassing()
+//            print("--------jsonPassing----------------")
+//            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
+//                print("dataTask 입성")
+//                guard error == nil else { return print("jsonPassing error: ", error!)}
+//                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
+//                guard let data = data else { return print("jsonPassing data 오류") }
+//                
+//                do {
+//                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+//                    print("jsonData 파싱완료")
+//                    print("jsonData = \(jsonData)")
+//                    
+//                    
+//                    
+//                    
+//                } catch {
+//                    print(error.localizedDescription)
+//                }
+//            }
+//            dataTask.resume()
+//        }
+    
         setUI()
         setConstraints()
     }
@@ -59,6 +92,7 @@ final class HomeViewController: UIViewController {
         // VideoCell의 영상 재생 멈춤
         videoAdvertismentCell?.player?.pause()
     }
+  
     
     //MARK: - UI
     private func setUI() {
@@ -101,9 +135,9 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         guard let videoCell = cell as? VideoAdvertisementTableViewCell else { return }
-        print("=============================================================")
-        print("\n HomeViewController: TableViewCell willdisplay -> VideoCell!!!!!!!! \n")
-        
+//        print("=============================================================")
+//        print("\n HomeViewController: TableViewCell willdisplay -> VideoCell!!!!!!!! \n")
+//
         videoCell.player?.play()
         
     }
@@ -112,9 +146,9 @@ extension HomeViewController: UITableViewDelegate {
     // Video Cell 사용안할 때 영상 멈추게 하려고
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let videoCell = cell as? VideoAdvertisementTableViewCell else { return }
-        print("=============================================================")
-        print("\n HomeViewController: TableViewCell didEndDisplayin -> VideoCell!!!!!!!! \n")
-        
+//        print("=============================================================")
+//        print("\n HomeViewController: TableViewCell didEndDisplayin -> VideoCell!!!!!!!! \n")
+//
         videoCell.player?.pause()
     }
     
@@ -122,7 +156,7 @@ extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        print("homeVC: -> heightForRowAt")
+//        print("homeVC: -> heightForRowAt")
         
         let previewCellHeight: CGFloat = tableView.frame.height / 4
         let posterCellHeight: CGFloat = tableView.frame.height / 4 + 30
@@ -131,16 +165,16 @@ extension HomeViewController: UITableViewDelegate {
         
         switch indexPath.row {
         case 0:
-            print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
+//            print("cell.row \(indexPath.row), cellHeight: \(previewCellHeight)")
             return previewCellHeight
         case 1, 4:
-            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+//            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return posterCellHeight
         case 2:
-            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+//            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return videoAdvertiseHeight
         case 3:
-            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
+//            print("cell.row \(indexPath.row), cellHeight: \(posterCellHeight)")
             return watchCellHeight
             
         default:
@@ -167,7 +201,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let header = HomeviewTitle()
-        header.configure(poster: UIImage(named: firstCellItem)!, category: firstCategory, dibs: dibsFlag, titleImage: self.firstTitleImage!)
+        header.configure(id: firstId, poster: UIImage(named: firstCellItem), category: firstCategory, dibs: dibsFlag, titleImage: UIImage(named: "darkGray"), url: URL(string: firstCellURL))
         return header
     }
     
@@ -177,15 +211,15 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        print("hoveVC:  Datasource cellForRowAt row = \(indexPath.row)")
+//        print("hoveVC:  Datasource cellForRowAt row = \(indexPath.row)")
         
         
         let cell: UITableViewCell
         
         switch indexPath.row {
         case 0:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
             let previewCell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
             
             previewCell.delegate = self
@@ -194,8 +228,8 @@ extension HomeViewController: UITableViewDataSource {
             
             cell = previewCell
         case 1:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
             let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             
             latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie as! [UIImage])
@@ -203,15 +237,15 @@ extension HomeViewController: UITableViewDataSource {
             cell = latestMovieCell
             
         case 2:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
 
             
             //되는 url
 //            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
             // 안되는 url
-            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
+            let url = URL(string: adVideoURL)
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
@@ -234,8 +268,8 @@ extension HomeViewController: UITableViewDataSource {
             }
             
         case 3:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
             watchContentCell.configure(poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark/*, url: <#T##URL#>*/)
@@ -243,8 +277,8 @@ extension HomeViewController: UITableViewDataSource {
             cell = watchContentCell
             
         case 4:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             top10Cell.delegate = self
@@ -252,8 +286,8 @@ extension HomeViewController: UITableViewDataSource {
             cell = top10Cell
             
         default:
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
+//            print("------------------------------------\n")
+//            print("HomeVC: cell Row -> \(indexPath.row)")
             cell = UITableViewCell()
         }
         
@@ -270,7 +304,7 @@ extension HomeViewController: PreviewTableViewCellDelegate {
     // 상민 수정부분(04.13일| 17:21분)
     
     func selectCell() {
-        print("PreViewController 미리보기 cell 클릭")
+//        print("PreViewController 미리보기 cell 클릭")
         let previewVC = PreViewController()
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)

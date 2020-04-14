@@ -198,7 +198,7 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(poster: UIImage, category: [String], dibs: Bool, titleImage: UIImage) {
+    func configure(id: Int, poster: UIImage?, category: [String], dibs: Bool, titleImage: UIImage?, url: URL?) {
         print("HomeTitle: configure")
         
         var categoryText: String = ""
@@ -210,7 +210,7 @@ class HomeviewTitle: UIView {
         titlePoster.image = poster
         categoryLabel.text = categoryText
         
-        self.titleImage.image = titleImage
+        self.titleImage.image = titleImage ?? UIImage(named: "darkGray")
         
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
