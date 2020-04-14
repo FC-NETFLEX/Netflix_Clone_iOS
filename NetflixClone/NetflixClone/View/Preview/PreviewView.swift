@@ -14,12 +14,13 @@ class PreviewView: UIView {
     var player: AVPlayer
     var playerLayer: AVPlayerLayer
     
-    
     init(url: URL) {
+        print(url)
         self.player = AVPlayer(url: url)
         self.playerLayer = AVPlayerLayer(player: self.player)
         super.init(frame: .zero)
-        
+        playerLayer.videoGravity = .resizeAspectFill
+
         setUI()
         setContraints()
     }
@@ -34,10 +35,11 @@ class PreviewView: UIView {
     }
     
     private func setUI() {
+        
     }
     
     private func setVideo() {
-        playerLayer.frame = self.frame
+        playerLayer.frame = self.bounds
         self.layer.addSublayer(playerLayer)
     }
     

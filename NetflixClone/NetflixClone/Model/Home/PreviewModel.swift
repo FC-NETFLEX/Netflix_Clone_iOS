@@ -19,7 +19,7 @@ struct PreviewModel: Decodable {
         case id
         case contentsTitle = "contents_title"
         case previewVideo = "preview_video"
-        case contentsLogo = "contens_logo"
+        case contentsLogo = "contents_logo"
     }
     
     init(from decoder: Decoder) throws {
@@ -28,6 +28,7 @@ struct PreviewModel: Decodable {
         contentsTitle = try container.decode(String.self, forKey: .contentsTitle)
         previewVideo = try container.decode(String.self, forKey: .previewVideo)
         contentsLogo = try container.decode(String?.self, forKey: .contentsLogo)
+        
     }
 }
 

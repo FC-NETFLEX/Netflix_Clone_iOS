@@ -92,6 +92,7 @@ struct ADContent: Codable {
     //    let videos: [String]
     //    let likeFlag: Bool
     
+
     private enum CodingKeys: String, CodingKey {
         case id
         case title = "contents_title"
