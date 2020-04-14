@@ -198,7 +198,7 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(id: Int, poster: UIImage?, category: [String], dibs: Bool, titleImage: UIImage?, url: URL?) {
+    func configure(id: Int, poster: UIImage?, category: [String], dibs: Bool, titleImage: UIImage? /*, url: URL?*/) {
         print("HomeTitle: configure")
         
         var categoryText: String = ""
