@@ -162,7 +162,7 @@ struct WatchingVideo: Codable {
     
     struct Video: Codable {
         let id: Int
-        let vidoeeURL: String
+        let videoURL: String
         
         private enum CodingKeys: String, CodingKey {
             case id
