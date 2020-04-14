@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias PathItem = (name: String, value: String)
+typealias PathItem = (name: String, value: String?)
 
 enum APIURL: String {
     case defaultURL = "https://www.netflexx.ga"
@@ -21,10 +21,22 @@ enum APIURL: String {
     case makeProfile = "https://www.netflexx.ga/members/profiles/"
    
     
-    func makeURL(pathItems: [PathItem] = []) -> URL? {
+    func makeURL(pathItems: [PathItem] = [], queryItems: [URLQueryItem]? = nil) -> URL? {
         let urlString = self.rawValue
-        let pathItem = pathItems.reduce("", { $0 + $1.name + "/" + $1.value + "/" })
+        var pathItem = pathItems.reduce("", { (before, next) in
+            var value = ""
+            
+            if let unrappingValue = next.value {
+                value = "/" + unrappingValue
+            }
+            return before + "/" + next.name + value
+        })
         
-        return URL(string: urlString + pathItem)
+        pathItem += queryItems == nil ? "/": ""
+        guard var urlComponents = URLComponents(string: urlString + pathItem) else { return nil }
+        urlComponents.queryItems = queryItems
+        
+        
+        return urlComponents.url
     }
 }
