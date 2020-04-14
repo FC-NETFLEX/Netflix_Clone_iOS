@@ -14,7 +14,7 @@ class ContentViewController: UIViewController {
     private let contentTableView = UITableView()
     
     private var contentId = 3
-    private var content: Content?
+    private var content: ContentModel?
     
     // 수정 후 사용
     //    init(id: Int) {
@@ -44,7 +44,7 @@ class ContentViewController: UIViewController {
             switch result {
             case .success(let data):
                 print(String(data: data, encoding: .utf8)!)
-                if let content = try? JSONDecoder().decode(Content.self, from: data) {
+                if let content = try? JSONDecoder().decode(ContentModel.self, from: data) {
                     self.content = content
                     self.contentTableView.reloadData()
                     self.bluredBackgroundView.configure(backgroundImage: content.contentsImage)
@@ -176,7 +176,7 @@ extension ContentViewController: DismissDelegate {
 extension ContentViewController: IsClickedProtocol {
     
     func dibButtonIsCliked() {
-        guard let url = URL(string: "http://13.124.222.31/profiles/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/select/"),
+        guard let url = URL(string: "https://www.netflexx.ga/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/select/"),
             let token = LoginStatus.shared.getToken()
             else { return }
         APIManager().request(url: url, method: .get, token: token) { _ in }
@@ -184,7 +184,7 @@ extension ContentViewController: IsClickedProtocol {
     
     func likeButtonIsCliked() {
         // 애니메이션 설정하고, bool 상태 서버에서 받도록 수정
-        guard let url = URL(string: "http://13.124.222.31/profiles/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/like/"),
+        guard let url = URL(string: "https://www.netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/like/"),
             let token = LoginStatus.shared.getToken()
             else { return }
         APIManager().request(url: url, method: .get, token: token) { _ in }
