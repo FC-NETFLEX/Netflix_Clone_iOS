@@ -19,6 +19,7 @@ struct HomeModel: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         previewContents = try container.decode([PreviewModel].self, forKey: .previewContents)
+        
     }
 }
 

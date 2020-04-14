@@ -205,10 +205,10 @@ extension HomeViewController: UITableViewDataSource {
         case 2:
             print("------------------------------------\n")
             print("HomeVC: cell Row -> \(indexPath.row)")
-
+            
             
             //되는 url
-//            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
+            //            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
             // 안되는 url
             let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplaybac")
@@ -222,7 +222,7 @@ extension HomeViewController: UITableViewDataSource {
                 
                 cell = videoCell
             } else { // 최초 호출
-               videoAdvertismentCell = VideoAdvertisementTableViewCell(style: .default, reuseIdentifier: VideoAdvertisementTableViewCell.identifier, url: url)
+                videoAdvertismentCell = VideoAdvertisementTableViewCell(style: .default, reuseIdentifier: VideoAdvertisementTableViewCell.identifier, url: url)
                 
                 videoAdvertismentCell?.delegate = self
                 
@@ -268,15 +268,12 @@ extension HomeViewController: UITableViewDataSource {
 //MARK: - PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
     // 상민 수정부분(04.13일| 17:21분)
-    
     func selectCell() {
-        print("PreViewController 미리보기 cell 클릭")
+        //    print(“PreViewController 미리보기 cell 클릭“)
         let previewVC = PreViewController()
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
     }
-    
-    
 }
 
 //MARK: - LatestMoview Delegate
