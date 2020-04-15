@@ -11,8 +11,8 @@ import AVKit
 
 protocol VideoAdvertisementTableViewCellDelegate: class {
     func didTabVideoView() -> ()
-    func didTabPlayButton() -> ()
-    func didTabDibsButton() -> ()
+    func didTabVideoCellPlayButton() -> ()
+    func didTabvideoCellDibsButton() -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -202,11 +202,11 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         delegate?.didTabVideoView()
     }
     @objc private func didTabPlayButton(sender: UIButton) {
-        delegate?.didTabPlayButton()
+        delegate?.didTabVideoCellPlayButton()
     }
     @objc private func didTabDibsButton(sender: UIButton) {
         // toggle
-        delegate?.didTabDibsButton()
+        delegate?.didTabvideoCellDibsButton()
     }
     @objc private func didTabMuteButton(sender: UIButton) {
         
