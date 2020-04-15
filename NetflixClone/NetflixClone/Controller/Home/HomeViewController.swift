@@ -29,7 +29,7 @@ final class HomeViewController: UIViewController {
 
 
     //MARK: LatestMovie content
-    private var latestContents: [RecommendContent] = [RecommendContent(id: 1, title: "최신영화", imageURL: "darkGray"), RecommendContent(id: 2, title: "최신영화", imageURL: "darkGray"), RecommendContent(id: 3, title: "최신영화", imageURL: "darkGray"), RecommendContent(id: 4, title: "최신영화", imageURL: "darkGray"),]
+    private var latestContents: [RecommendContent] = [RecommendContent(id: 1, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 2, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 3, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 4, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"),]
 
     
     //MARK: Top10 content
@@ -65,10 +65,19 @@ final class HomeViewController: UIViewController {
 
                 do {
                     let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-                    print("jsonData 파싱완료")
+                    print("----------------jsonData 파싱완료--------------------")
                     print("jsonData = \(jsonData)")
-
-
+                    
+                    print("--------------------jsonData--------------------\n",jsonData.recommendContents)
+                    
+                    self.latestContents.removeAll()
+                    self.latestContents = jsonData.recommendContents
+                    print("=============latestContents==============\n",self.latestContents)
+                    DispatchQueue.main.sync {
+                        self.homeTableView.reloadData()
+                    }
+                    
+                    print("-----------------jsonData 파싱 종료-------------------")
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -237,9 +246,18 @@ extension HomeViewController: UITableViewDataSource {
             var posterLatestMovie = [UIImage]()
             
             latestContents.forEach {
+                do {
+                    let data = try Data(contentsOf: URL(string: $0.imageURL)!)
+                    posterLatestMovie.append(UIImage(data: data)!)
+                    print("do")
+                } catch {
+                    posterLatestMovie.append(UIImage(named: "darkGray")!)
+                    print("catch")
+                }
+                
                 idLatestMovie.append($0.id)
-                posterLatestMovie.append(UIImage(named: $0.imageURL)!)
             }
+            print("HomeViewController: latestContents contents \(idLatestMovie), \(posterLatestMovie)")
             
             latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie as! [UIImage])
             latestMovieCell.delegate = self
@@ -342,8 +360,9 @@ extension HomeViewController: PreviewTableViewCellDelegate {
 
 //MARK: - LatestMoview Delegate
 extension HomeViewController: LatestMovieTableViewCellDelegate {
-    func didTabLatestMovieCell() {
-        let contentVC = ContentViewController()
+    func didTabLatestMovieCell(id: Int) {
+//        let contentVC = ContentViewController()
+        let contentVC = ContentViewController(id: id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
