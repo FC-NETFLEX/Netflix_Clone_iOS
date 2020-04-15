@@ -83,6 +83,7 @@ class SaveContent: Codable {
     let summary: String // 줄거리
     let imageURL: String // 이미지
     let videoURL: String // 영상
+    let savedDate: Date // 저장 시점
     
     var status: SaveContentStatus
     var isSelected: Bool = false
