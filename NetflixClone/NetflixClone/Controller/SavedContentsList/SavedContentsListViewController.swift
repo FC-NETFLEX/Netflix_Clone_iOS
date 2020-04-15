@@ -92,18 +92,24 @@ extension SavedContentsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier, for: indexPath) as! SavedContentCell
-        
+        let resultCell: SavedContentCell
         let content = model.getContent(indexPath: indexPath)
+        if let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier) as? SavedContentCell {
+            resultCell = cell
+        } else {
+            resultCell = SavedContentCell(id: content.id, style: .default, reuseIdentifier: SavedContentCell.identifier)
+        }
+        
+        
         let description = content.rating + " | " + String(content.capacity) + " MB"
-        cell.configure(
+        resultCell.configure(
             title: content.title,
             description: description,
             stringImageURL: content.imageURL,
             summary: content.isSelected ? content.summary: ""
             )
         
-        return cell
+        return resultCell
     }
     
     
