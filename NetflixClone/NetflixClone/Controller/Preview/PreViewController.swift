@@ -47,7 +47,7 @@ class PreViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         playerScrollView.setContentOffset(CGPoint(x: CGFloat(receivedPreviewIndex) * playerScrollView.bounds.width, y: 0), animated: false)
-        //        previewSubviews[receivedPreviewIndex].player.play()
+//        previewSubviews[receivedPreviewIndex].player.play()
     }
     
     private func request(id: Int) {
