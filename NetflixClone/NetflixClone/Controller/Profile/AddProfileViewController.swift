@@ -79,8 +79,7 @@ class AddProfileViewController: UIViewController {
         }
         addProfileView.delegate = self
         
-        //        addProfileView.newProfileButton.setImage(UIImage(named: randomSetImage), for: .normal)
-        
+        addProfileView.newProfileButton.setImage(UIImage(named: randomSetImage), for: .normal)
         addProfileView.nickNameTextfield.delegate = self
         
         kidsView.delegate = self
@@ -185,7 +184,7 @@ class AddProfileViewController: UIViewController {
         
         guard
             let token = LoginStatus.shared.getToken(),
-            let url = URL(string: APIURL.makeProfile.rawValue)
+            let url = APIURL.makeProfile.makeURL()
             else { return }
         
         var urlRequest = URLRequest(url: url)
