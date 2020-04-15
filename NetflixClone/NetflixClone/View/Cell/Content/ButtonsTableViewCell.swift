@@ -9,7 +9,7 @@
 protocol IsClickedProtocol: class {
     func dibButtonIsCliked()
     func likeButtonIsCliked()
-    func saveAction(status: SaveContentStatus) -> SaveContentStatus
+    func saveAction(status: SaveContentStatus)
 }
 
 import UIKit
@@ -74,8 +74,7 @@ class ButtonsTableViewCell: UITableViewCell {
     
     @objc private func didTapSaveButton(sender: SaveContentStatusView) {
         print(#function)
-        let status = delegate?.saveAction(status: sender.downLoadStatus)
-        statusLabel.text = status?.rawValue
+        delegate?.saveAction(status: sender.downLoadStatus)
     }
     
     // MARK: 상세화면에서 '내가찜한콘텐츠', '평가', '저장' 버튼 눌렀을 때 액션
