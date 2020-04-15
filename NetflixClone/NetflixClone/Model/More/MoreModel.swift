@@ -7,3 +7,6 @@
 //
 
 import Foundation
+
+let moreViewData = ["내가 찜한 콘텐츠","앱 설정"]
+let moreViewImage = ["체크", "설정"]
