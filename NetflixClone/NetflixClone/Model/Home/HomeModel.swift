@@ -135,8 +135,9 @@ struct PreviewContent: Codable {
     let id: Int
     let title: String
     let previewVideoURL: String
-    let logoURL: String?
+    let logoURL: String
     let poster: String
+    let videos: [Video]
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -144,6 +145,7 @@ struct PreviewContent: Codable {
         case previewVideoURL = "preview_video"
         case logoURL = "contents_logo"
         case poster = "contents_image"
+        case videos
     }
 }
 

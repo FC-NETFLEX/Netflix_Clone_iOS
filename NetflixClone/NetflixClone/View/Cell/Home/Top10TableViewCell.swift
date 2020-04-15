@@ -90,7 +90,7 @@ class Top10TableViewCell: UITableViewCell {
         self.idData = id
         self.posterData = poster
         
-        
+        contentCollectionView.reloadData()
 //        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
     }
 }

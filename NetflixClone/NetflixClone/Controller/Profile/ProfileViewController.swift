@@ -109,17 +109,31 @@ class ProfileViewController: UIViewController {
         
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                guard let imageIndex = (0..<self.userImageArray.count).randomElement() else { return }
-//                guard let randomImageStr = self.userImageArray.randomElement() else { return }
-                let addVC = AddProfileViewController(root: .add)
-                addVC.randomSetImage = self.userImageArray[imageIndex]
-                addVC.randomIndex = self.userIDNumArray[imageIndex]
-                let navi = UINavigationController(rootViewController: addVC)
-                navi.modalPresentationStyle = .fullScreen
-                self.present(navi, animated: true)
+                self.imageSetting()
+             
             }
         }
     }
+    private func imageSetting() {
+        
+        let addVC = AddProfileViewController(root: .add)
+        
+        switch userImageArray.isEmpty {
+        case true:
+            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
+            addVC.randomIndex = 3
+            
+        case false:
+            guard let imageIndex = (0..<self.userImageArray.count).randomElement() else { return }
+            addVC.randomSetImage = self.userImageArray[imageIndex]
+            addVC.randomIndex = self.userIDNumArray[imageIndex]
+        }
+        
+        let navi = UINavigationController(rootViewController: addVC)
+        navi.modalPresentationStyle = .fullScreen
+        self.present(navi, animated: true)
+    }
+    
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
@@ -255,7 +269,7 @@ class ProfileViewController: UIViewController {
                     let name = profileList["profile_name"] as? String,
                     let iskids = profileList["is_kids"] as? Bool,
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
-                    else { return}
+                    else { return }
                 
                 self.userIDArray.append(id)
                 self.userNameArray.append(name)
@@ -372,13 +386,7 @@ extension ProfileViewController: ProfilViewDelegate {
 
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
-        guard let imageIndex = (0..<userImageArray.count).randomElement() else { return }
-        
-//        guard let randomImageStr = self.userImageArray.randomElement() else { return }
-        let addVC = AddProfileViewController(root: .main)
-        addVC.randomSetImage = userImageArray[imageIndex]
-        addVC.randomIndex = userIDNumArray[imageIndex]
-        navigationController?.pushViewController(addVC, animated: true)
+      imageSetting()
     }
 }
 

@@ -9,7 +9,8 @@
 import UIKit
 
 protocol WatchContentsTableViewDelegate: class {
-    func didTabWatchContentCell() -> ()
+    func didTabWatchContentPlay() -> ()
+    func didTabWatchContentInfo(contentId: Int) -> ()
 }
 
 class WatchContentsTableViewCell: UITableViewCell {
@@ -22,7 +23,8 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     private let headerLabel = UILabel()
     
-    /*poster: [UIImage], watchTime: [Int64], playMark: [Int64] /*url: URL*/*/
+    private var idData = [Int]()
+    private var contentIdData = [Int]()
     private var postersData = [UIImage]()
     private var watchTimesData = [Int]()
     private var playMarksData = [Int]()
@@ -87,14 +89,15 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(poster: [UIImage], watchTime: [Int], playMark: [Int] /*url: URL*/) {
-        // configure(poster: UIImage, watchTime: Int, playMark: Int)
-//        print("WatchContentTableViewCell: configure -> poster \(poster), watchTime \(watchTime), playMark \(playMark)")
+    func configure(id: [Int], poster: [UIImage], watchTime: [Int], playMark: [Int], contentID: [Int] /*url: URL*/) {
 
+        self.idData = id
+        self.contentIdData = contentID
         self.postersData = poster
         self.watchTimesData = watchTime
         self.playMarksData = playMark
-//        self.url = url
+        
+        contentsCollectionView.reloadData()
     }
     
 }
@@ -115,9 +118,7 @@ extension WatchContentsTableViewCell: UICollectionViewDelegateFlowLayout {
         return 10
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didTabWatchContentCell()
-    }
+
 }
 
 //MARK: -DataSource
@@ -129,6 +130,8 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = contentsCollectionView.dequeueReusableCell(withReuseIdentifier: WatchContentsCollectionViewCell.identifier, for: indexPath) as! WatchContentsCollectionViewCell
+        
+        cell.delegate = self
         
         // watchTime -> String
         let watchTime = watchTimesData[indexPath.row]
@@ -146,7 +149,7 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
         
         
         print("WatchTableViewCell: watchString \(watchString), ")
-        cell.configure(poster: postersData[indexPath.row], watchTime: watchString, playMark: 0.5)
+        cell.configure(id: idData[indexPath.row], contentId: contentIdData[indexPath.row],poster: postersData[indexPath.row], watchTime: watchString, playMark: 0.5)
         
         return cell
     }
@@ -154,4 +157,13 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
     
 }
 
-
+extension WatchContentsTableViewCell: WatchContentsCollectionViewCellDelegate {
+    func didTabWatchContentInfo(contentId: Int) {
+        delegate?.didTabWatchContentInfo(contentId: contentId)
+    }
+    
+    func didTabWatchPlay() {
+        delegate?.didTabWatchContentPlay()
+    }
+    
+}

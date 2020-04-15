@@ -7,18 +7,28 @@
 //
 
 import UIKit
-
+protocol WatchContentsCollectionViewCellDelegate: class {
+    func didTabWatchContentInfo(contentId: Int) -> ()
+    func didTabWatchPlay() -> ()
+}
 class WatchContentsCollectionViewCell: UICollectionViewCell {
     static let identifier = "WatchContentCVC"
     
-    private let posterImage = UIImageView()
+    weak var delegate: WatchContentsCollectionViewCellDelegate?
+    
+    private let posterButton = UIButton()//UIImageView()
+    //    private let posterImage = UIImageView()
+
     private let progressView = UIProgressView()
     
     private let infoView = UIView()
     private let watchTimeLabel = UILabel()
-    private let infoImage = UIImageView()
+    private let infoButton = UIButton()//UIImageView()
     
-    private let playView = UIImageView()
+    private let playButton = UIButton()//UIImageView()
+    
+    private var id: Int?
+    private var contentId: Int?
     
     
     //MARK: initializer
@@ -44,24 +54,30 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         
         infoView.backgroundColor = .black
         
-        infoImage.image = UIImage(systemName: "info.circle")
-        infoImage.tintColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)
+//        infoButton.image = UIImage(systemName: "info.circle")
+        infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        infoButton.tintColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)
+        infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         
-        playView.image = UIImage(named: "playIcon")//UIImage(systemName: "play.fill")
-        playView.contentMode = .scaleAspectFill
-        playView.backgroundColor = .clear
-        playView.layer.cornerRadius = 40// playView.frame.width / 2
-        playView.clipsToBounds = true
+//        playButton.image = UIImage(named: "playIcon")//UIImage(systemName: "play.fill")
+        playButton.setImage(UIImage(named: "playIcon"), for: .normal)
+        playButton.contentMode = .scaleAspectFill
+        playButton.backgroundColor = .clear
+        playButton.layer.cornerRadius = 40// playView.frame.width / 2
+        playButton.clipsToBounds = true
+        playButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
+        
+        posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
         
         watchTimeLabel.font = timeLabelFont
         watchTimeLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)//.lightGray
         
-        contentView.addSubview(posterImage)
+        contentView.addSubview(posterButton)
         contentView.addSubview(progressView)
         contentView.addSubview(infoView)
-        posterImage.addSubview(playView)
+        posterButton.addSubview(playButton)
         infoView.addSubview(watchTimeLabel)
-        infoView.addSubview(infoImage)
+        infoView.addSubview(infoButton)
     }
     
     private func setConstraints() {
@@ -73,7 +89,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         let progressHeight: CGFloat = 5
         
        
-        posterImage.snp.makeConstraints {
+        posterButton.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
@@ -81,7 +97,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         }
         
         progressView.snp.makeConstraints {
-            $0.top.equalTo(posterImage.snp.bottom)
+            $0.top.equalTo(posterButton.snp.bottom)
             $0.leading.equalToSuperview()
             $0.trailing.equalToSuperview()
             $0.height.equalTo(progressHeight)
@@ -92,13 +108,13 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
             $0.bottom.leading.trailing.equalToSuperview()
         }
         
-        playView.snp.makeConstraints {
-            $0.centerX.equalTo(posterImage.snp.centerX)
-            $0.centerY.equalTo(posterImage.snp.centerY)
+        playButton.snp.makeConstraints {
+            $0.centerX.equalTo(posterButton.snp.centerX)
+            $0.centerY.equalTo(posterButton.snp.centerY)
             $0.height.width.equalTo(playViewSize)
         }
         
-        infoImage.snp.makeConstraints {
+        infoButton.snp.makeConstraints {
             $0.centerY.equalTo(infoView.snp.centerY)
             $0.trailing.equalToSuperview().inset(margin)
             $0.width.height.equalTo(infoImageSize)
@@ -113,10 +129,22 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: configure
-    func configure(poster: UIImage, watchTime: String, playMark: Double) {
-        posterImage.image = poster
+    func configure(id: Int, contentId: Int, poster: UIImage, watchTime: String, playMark: Double) {
+        self.id = id
+        self.contentId = contentId
+//        posterButton.image = poster
+        posterButton.setImage(poster, for: .normal)
         watchTimeLabel.text = watchTime
 
         progressView.setProgress(Float(playMark), animated: true)   // 길이
+    }
+    
+    @objc private func didTabInfoButton(sender: UIButton) {
+        delegate?.didTabWatchContentInfo(contentId: contentId!)
+    }
+    
+    @objc private func didTabPlay(sender: UIButton) {
+        delegate?.didTabWatchPlay()
+        print("didTab WatchPlay")
     }
 }
