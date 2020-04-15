@@ -18,7 +18,7 @@ class DownLoadManager: UIResponder {
         self.id = id
     }
     
-    func downLoadTask(url: URL, delegate: URLSessionDownloadDelegate) -> URLSessionDownloadTask {
+    func downLoadTask(url: URL, delegate: URLSessionDownloadDelegate) {
         
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)

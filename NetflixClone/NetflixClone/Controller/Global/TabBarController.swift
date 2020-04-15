@@ -47,7 +47,10 @@ class TabBarController: UITabBarController {
         moreVC.tabBarItem.title = "더보기"
         moreVC.tabBarItem.image = UIImage(systemName: "line.horizontal.3")
         
-        setViewControllers([homeVC, searchVC, saveContentListVC, moreVC], animated: true)
+        let testVC = TestViewController()
+        testVC.tabBarItem.title = "Test"
+        
+        setViewControllers([homeVC, searchVC, saveContentListVC, moreVC, testVC], animated: true)
     }
     
     private func setUI() {
