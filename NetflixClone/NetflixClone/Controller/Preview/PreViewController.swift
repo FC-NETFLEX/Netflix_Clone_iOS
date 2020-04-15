@@ -9,15 +9,17 @@
 import UIKit
 import AVFoundation
 
-class PreViewController: UIViewController {    
+class PreViewController: UIViewController {
     let label = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let infoView = CustomButtonView(imageName: "info.circle", labelText: "정보")
     private let dismissButton = UIButton()
+    private let logoScrollView = UIScrollView()
+    private let playerScrollView = UIScrollView()
     
     // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
-    private var preview = [PreviewContents]()
+    private var preview = [PreviewContent]()
 
     private var previewSubviews = [PreviewView]()
     
@@ -26,7 +28,6 @@ class PreViewController: UIViewController {
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
     
-    private let scrollView = UIScrollView()
     
     init(index: Int = 0) {
         self.receivedPreviewIndex = index
@@ -45,7 +46,7 @@ class PreViewController: UIViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        scrollView.setContentOffset(CGPoint(x: CGFloat(receivedPreviewIndex) * scrollView.bounds.width, y: 0), animated: false)
+        playerScrollView.setContentOffset(CGPoint(x: CGFloat(receivedPreviewIndex) * playerScrollView.bounds.width, y: 0), animated: false)
         //        previewSubviews[receivedPreviewIndex].player.play()
     }
     
@@ -70,7 +71,7 @@ class PreViewController: UIViewController {
     }
     
     private func setUI() {
-        [scrollView, dibsView, infoView, playButton, dismissButton].forEach {
+        [playerScrollView, dibsView, infoView, playButton, dismissButton, logoScrollView].forEach {
             view.addSubview($0)
         }
         
@@ -96,10 +97,16 @@ class PreViewController: UIViewController {
         dismissButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         dismissButton.tintColor = UIColor.setNetfilxColor(name: .white)
         dismissButton.addTarget(self, action: #selector(didTapDismissButton(_:)), for: .touchUpInside)
+        view.bringSubviewToFront(dismissButton)
         
-        scrollView.isPagingEnabled = true
-        scrollView.delegate = self
+        playerScrollView.isPagingEnabled = true
+        playerScrollView.delegate = self
+        
+        logoScrollView.isPagingEnabled = true
+        logoScrollView.backgroundColor = .yellow
     }
+    
+    
     
     private func createPreviewSubviews() {
         self.previewSubviews = preview.compactMap {
@@ -112,20 +119,20 @@ class PreViewController: UIViewController {
         }
         
         for (index, view) in previewSubviews.enumerated() {
-            scrollView.addSubview(view)
-            let leading = index == 0 ? scrollView.snp.leading : previewSubviews[index-1].snp.trailing
+            playerScrollView.addSubview(view)
+            let leading = index == 0 ? playerScrollView.snp.leading : previewSubviews[index-1].snp.trailing
             view.backgroundColor = random
             
 //            view.blurredBackgroundView.configure(backgroundImage: preview[index].image)
             
             view.snp.makeConstraints {
                 $0.leading.equalTo(leading)
-                $0.top.bottom.width.height.equalTo(scrollView)
+                $0.top.bottom.width.height.equalTo(playerScrollView)
             }
             
             if index == previewSubviews.count - 1 {
                 view.snp.makeConstraints {
-                    $0.trailing.equalTo(scrollView.snp.trailing)
+                    $0.trailing.equalTo(playerScrollView.snp.trailing)
                 }
             }
             
@@ -175,8 +182,13 @@ class PreViewController: UIViewController {
     }
     
     private func setConstraints() {
-        scrollView.snp.makeConstraints {
+        playerScrollView.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalTo(view)
+        }
+        
+        logoScrollView.snp.makeConstraints {
+            $0.top.leading.trailing.equalTo(view)
+            $0.height.equalTo(CGFloat.dynamicYMargin(margin: 100))
         }
         
         let buttonHeight = CGFloat.dynamicYMargin(margin: 40)
