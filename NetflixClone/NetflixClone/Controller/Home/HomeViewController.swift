@@ -21,7 +21,7 @@ final class HomeViewController: UIViewController {
     private let homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
     
     //MARK: header content
-    private var topContent = TopConent(id: 1, title: "TopContent", imageURL: "", logoImageURL: "darkGray", categories: [String](), rating: "12세 관람가", selectedFlag: false)
+    private var topContent = TopConent(id: 1, title: "TopContent", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", logoImageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", categories: [String](), rating: "12세 관람가", selectedFlag: false)
     
     //MARK: preview content
 
@@ -72,9 +72,11 @@ final class HomeViewController: UIViewController {
                     
                     self.latestContents.removeAll()
                     
-                    self.latestContents = jsonData.recommendContents
+                    self.topContent = jsonData.topContent
                     self.previewContents = jsonData.previewContents
-
+                    self.latestContents = jsonData.recommendContents
+                    self.top10Contents = jsonData.top10Contents
+                    self.watchContents = jsonData.watchingVideo
                     
                     DispatchQueue.main.sync {
                         self.homeTableView.reloadData()
@@ -197,7 +199,22 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let header = HomeviewTitle()
-        header.configure(id: topContent.id, poster: UIImage(named: topContent.imageURL), category: topContent.categories, dibs: topContent.selectedFlag, titleImage: UIImage(named: topContent.logoImageURL) /*, url: URL(string: firstCellURL)*/)
+        header.delegate = self
+        var poster: UIImage
+        var logo: UIImage
+        
+        do {
+            let posterData = try Data(contentsOf: URL(string: topContent.imageURL)!)
+            let logoData = try Data(contentsOf: URL(string: topContent.logoImageURL)!)
+            poster = UIImage(data: posterData)!
+            logo = UIImage(data: logoData)!
+        } catch {
+            logo = UIImage(named: "darkGray")!
+            poster = UIImage(named: "")!
+        }
+        
+        
+        header.configure(id: topContent.id, poster: poster, category: topContent.categories, dibs: topContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
@@ -270,12 +287,7 @@ extension HomeViewController: UITableViewDataSource {
             //MARK: VideoCell
             print("------------------------------------\n")
             print("HomeVC: cell Row -> \(indexPath.row)")
-            
-
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
-
-            
+     
             
             let url = URL(string: adContent.previewVideoURL)
             
@@ -306,34 +318,52 @@ extension HomeViewController: UITableViewDataSource {
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
             
+            var id = [Int]()
+            
             var posterWatch = [UIImage]()
             var watchTimekWatch = [Int]()
             var playMark = [Int]()
+            var contentId = [Int]()
             
             watchContents.forEach {
-                posterWatch.append(UIImage(named: $0.poster)!)
-                watchTimekWatch.append($0.videoLength)
+                do {
+                    let data = try Data(contentsOf: URL(string: $0.poster)!)
+                    posterWatch.append(UIImage(data: data)!)
+                } catch {
+                    posterWatch.append(UIImage(named: "darkGray")!)
+                }
+                
+                
+                id.append($0.id)
+                contentId.append($0.contentId)
                 playMark.append($0.playTime)
+                watchTimekWatch.append($0.videoLength)
             }
             
-            watchContentCell.configure(poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark/*, url: <#T##URL#>*/)
+            watchContentCell.configure(id: id, poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark, contentID: contentId/*, url: <#T##URL#>*/)
             
             cell = watchContentCell
             
         case 4:
             //MARK: Top10Cell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+            //            print("------------------------------------\n")
+            //            print("HomeVC: cell Row -> \(indexPath.row)")
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             var idTop10 = [Int]()
             var posterTop10 = [UIImage]()
             
             top10Contents.forEach {
+                
+                do {
+                    let data = try Data(contentsOf: URL(string: $0.imageURL)!)
+                    posterTop10.append(UIImage(data: data)!)
+                } catch {
+                    posterTop10.append(UIImage(named: "darkGray")!)
+                }
+                
                 idTop10.append($0.id)
-                posterTop10.append(UIImage(named: $0.imageURL)!)
             }
-            
             
             top10Cell.delegate = self
             top10Cell.configure(id: idTop10, poster: posterTop10 as! [UIImage])
@@ -353,10 +383,31 @@ extension HomeViewController: UITableViewDataSource {
     
 }
 
+//MARK: - HomeViewTitleDelegate
+extension HomeViewController: HomeviewTitleDelegate {
+    func didTabHomeTitledibsButton() {
+       print("Hometitle dibsButton Click")
+    }
+    
+    func didTabHomeTitlePlayButton() {
+        print("HomeTitle playButtonClick")
+
+    }
+    
+    func didTabHomeTitleContentButton() {
+        let contentVC = ContentViewController(id: topContent.id)
+        contentVC.modalPresentationStyle = .fullScreen
+        present(contentVC, animated: true)
+    }
+    
+
+    
+}
+
 //MARK: - PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
     // 상민 수정부분(04.13일| 17:21분)
-    func selectCell(index: Int) {
+    func didTabPreviewCell(index: Int) {
         let previewVC = PreViewController(index: index)
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
@@ -366,7 +417,6 @@ extension HomeViewController: PreviewTableViewCellDelegate {
 //MARK: - LatestMoview Delegate
 extension HomeViewController: LatestMovieTableViewCellDelegate {
     func didTabLatestMovieCell(id: Int) {
-//        let contentVC = ContentViewController()
         let contentVC = ContentViewController(id: id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
@@ -388,7 +438,13 @@ extension HomeViewController: Top10TableViewCellDelegate {
 
 //MARK: - WatchContentCell Delegate
 extension HomeViewController: WatchContentsTableViewDelegate {
-    func didTabWatchContentCell() {
+    func didTabWatchContentInfo(contentId: Int) {
+        let contentVC = ContentViewController(id: contentId)
+        contentVC.modalPresentationStyle = .fullScreen
+        present(contentVC, animated: true)
+    }
+    
+    func didTabWatchContentPlay() {
         print("WatchContentCell Click")
     }
     
@@ -404,14 +460,16 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
         present(contentVC, animated: true)
     }
     
-    func didTabPlayButton() {
+    func didTabVideoCellPlayButton() {
         print("영상재생화면 이동")
     }
     
-    func didTabDibsButton() {
+    func didTabvideoCellDibsButton() {
         print("찜한 목록 추가하기")
     }
     
     
     
 }
+
+

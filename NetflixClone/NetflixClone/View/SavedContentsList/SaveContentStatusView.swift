@@ -7,11 +7,16 @@
 //
 
 import UIKit
-// #0265E8 이미지 색상
-class SaveContentStatusView: UIView {
+
+protocol SaveContentStatusViewDelegate: class {
+    func changeStatus(status: SaveContentStatus)
+}
+
+class SaveContentStatusView: UIButton {
     
+    var delegate: SaveContentStatusViewDelegate?
     
-    private var status = SaveContentStatus.waiting {
+    private var status: SaveContentStatus {
         didSet {
             switch self.status {
             case .downLoading:
@@ -20,18 +25,34 @@ class SaveContentStatusView: UIView {
                 setWating()
             case .saved:
                 setSaved()
+            case .doseNotSave:
+                setDoseNotSave()
             }
+            delegate?.changeStatus(status: self.status)
         }
     }
     
-    private let imageView = UIImageView()
+    var downLoadStatus: SaveContentStatus {
+        get {
+            return self.status
+        }
+        set {
+            self.status = newValue
+        }
+    }
+    
+    private let id: Int
+    
+    private let statusImageView = UIImageView()
     private let downLoadStatusView = UIView()
     
     private let foregroundLayer = CAShapeLayer()
     private let backgroundLayer = CAShapeLayer()
     private var finishedDrawLayers = false
     
-    override init(frame: CGRect) {
+    init(id: Int, status: SaveContentStatus) {
+        self.status = status
+        self.id = id
         super.init(frame: .zero)
         setUI()
         setConstraints()
@@ -41,19 +62,36 @@ class SaveContentStatusView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if status == .downLoading {
+            drawDownLoadingBackgroundLayer()
+            drawDownLoadingForegroundLayer()
+        }
+    }
+    
+    deinit {
+        let notificationName = String(id)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
+    }
+    
+    //MARK: UI
     private func setUI() {
-        [imageView, downLoadStatusView].forEach({
+        [statusImageView, downLoadStatusView].forEach({
             addSubview($0)
         })
         
-        imageView.image = UIImage(named: "saveContent")
-        imageView.contentMode = .scaleAspectFill
-        
+        //        statusImageView.image = UIImage(named: "saveContent")
+        statusImageView.contentMode = .scaleAspectFill
+        statusImageView.tintColor = .setNetfilxColor(name: .white)
         downLoadStatusView.backgroundColor = .setNetfilxColor(name: .downLoad)
+        
+        status = downLoadStatus
+        
     }
     
     private func setConstraints() {
-        imageView.snp.makeConstraints({
+        statusImageView.snp.makeConstraints({
             $0.top.leading.trailing.bottom.equalToSuperview()
         })
         
@@ -65,36 +103,44 @@ class SaveContentStatusView: UIView {
     
     // 저장 완료 상태로 UI세팅
     private func setSaved() {
-        print(#function)
-        imageView.isHidden = false
+        statusImageView.isHidden = false
         downLoadStatusView.isHidden = true
         foregroundLayer.isHidden = true
         backgroundLayer.isHidden = true
-        imageView.image = UIImage(named: "saveContent")
+        statusImageView.image = UIImage(named: "saveContent")
     }
     
     // 저장 대기 상태로 UI 세팅
     private func setWating() {
-        imageView.isHidden = false
+        statusImageView.isHidden = false
         downLoadStatusView.isHidden = false
         foregroundLayer.isHidden = true
         backgroundLayer.isHidden = true
-        imageView.image = UIImage(named: "waitingDownLoad")
+        statusImageView.image = UIImage(named: "waitingDownLoad")
     }
     
     // 다운로드중 상태로 UI 세팅
     private func setDownLoding() {
-        imageView.isHidden = true
+        statusImageView.isHidden = true
         downLoadStatusView.isHidden = false
         foregroundLayer.isHidden = false
         backgroundLayer.isHidden = false
-        drawDownLoadingBackgroundLayer()
-        drawDownLoadingForegroundLayer()
+        //        drawDownLoadingBackgroundLayer()
+        //        drawDownLoadingForegroundLayer()
+    }
+    
+    // 다운로드 하지않은 상태
+    private func setDoseNotSave() {
+        statusImageView.isHidden = false
+        downLoadStatusView.isHidden = true
+        foregroundLayer.isHidden = true
+        backgroundLayer.isHidden = true
+        statusImageView.image = UIImage(systemName: "arrow.down.to.line")
     }
     
     // 다운로드 원형 프로그레스바 그리기
     private func drawDownLoadingForegroundLayer() {
-        guard layer.sublayers?.firstIndex(of: foregroundLayer) == nil else { return }
+        //        guard layer.sublayers?.firstIndex(of: foregroundLayer) == nil else { return }
         let lineWidth = bounds.width * 0.2
         let radius = (bounds.width - lineWidth) / 2
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
@@ -111,7 +157,7 @@ class SaveContentStatusView: UIView {
     
     // 다운로드 원형 프로그레스바 그리기
     private func drawDownLoadingBackgroundLayer() {
-        guard layer.sublayers?.firstIndex(of: backgroundLayer) == nil else { return }
+        //        guard layer.sublayers?.firstIndex(of: backgroundLayer) == nil else { return }
         let lineWidth: CGFloat = bounds.width * 0.05
         let radius: CGFloat = (bounds.width - lineWidth) / 2
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
@@ -124,4 +170,29 @@ class SaveContentStatusView: UIView {
     }
     
     
+    //MARK: Observer
+    //노티피케이션 셋팅
+    private func addNotification() {
+        let notificationName = String(id)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(responseOfNotification),
+            name: NSNotification.Name(notificationName),
+            object: nil)
+    }
+    
+    // 노티 액션
+    @objc func responseOfNotification(_ notification: Notification) {
+        print(#function)
+        let notificationName = String(id)
+        guard let downLoadStatus = notification.userInfo?[notificationName] as? DownLoadStatus else { return }
+        self.status = downLoadStatus.status
+        self.foregroundLayer.strokeEnd = downLoadStatus.percent
+    }
+    
+    
+    
+    
 }
+
+
