@@ -13,18 +13,19 @@ class ContentViewController: UIViewController {
     private let bluredBackgroundView = BluredBackgroundView()
     private let contentTableView = UITableView()
     
-    private var contentId = 3
-    private var content: ContentModel?
+    private var contentId: Int
+    private var content: ContentDetail?
+    private var similarContets: [SimilarContent] = []
     
     // 수정 후 사용
-    //    init(id: Int) {
-    //        self.contentId = id
-    ////        super.init(nibName: nil, bundle: nil)
-    //    }
+        init(id: Int = 3) {
+            self.contentId = id
+            super.init(nibName: nil, bundle: nil)
+        }
     
-    //    required init?(coder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,11 +44,13 @@ class ContentViewController: UIViewController {
         APIManager().request(url: url, method: .get, token: token) { (result) in
             switch result {
             case .success(let data):
-                print(String(data: data, encoding: .utf8)!)
-                if let content = try? JSONDecoder().decode(ContentModel.self, from: data) {
-                    self.content = content
+//                print(String(data: data, encoding: .utf8)!)
+                if let contentModel = try? JSONDecoder().decode(ContentModel.self, from: data) {
+                    self.content = contentModel.content
+                    self.similarContets = contentModel.similarContents
                     self.contentTableView.reloadData()
-                    self.bluredBackgroundView.configure(backgroundImage: content.contentsImage)
+                    self.bluredBackgroundView.configure(backgroundImage: contentModel.content.contentsImage)
+                    print(contentModel.content.videoURL)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -115,9 +118,11 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             cell.delegate = self
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: RecommendedTableViewCell.identifier, for: indexPath) as! RecommendedTableViewCell
-            cell.delegate = self
-            return cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: RecommendedTableViewCell.identifier, for: indexPath) as! RecommendedTableViewCell 
+                cell.delegate = self
+                cell.configure(contents: similarContets)
+                return cell
+            
         }
     }
     
