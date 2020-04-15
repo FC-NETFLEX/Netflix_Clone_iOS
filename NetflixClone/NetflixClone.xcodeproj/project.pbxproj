@@ -59,6 +59,7 @@
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
 		31C5317E24459BB4000A8607 /* DownLoadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C5317D24459BB4000A8607 /* DownLoadManager.swift */; };
+		31C5318024476E11000A8607 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C5317F24476E11000A8607 /* TestViewController.swift */; };
 		31CABBE7242D07A300BA6B8A /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */; };
 		31F472B024321B3D00F8DCF5 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F472AF24321B3D00F8DCF5 /* PlayButton.swift */; };
 		31F472B2243349D900F8DCF5 /* APIURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F472B1243349D900F8DCF5 /* APIURL.swift */; };
@@ -156,6 +157,7 @@
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
 		31C5317D24459BB4000A8607 /* DownLoadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadManager.swift; sourceTree = "<group>"; };
+		31C5317F24476E11000A8607 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		31F472AF24321B3D00F8DCF5 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		31F472B1243349D900F8DCF5 /* APIURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURL.swift; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 			children = (
 				310B01D9242B223B00C5858D /* TabBarController.swift */,
 				31198C79243E7794002C30B0 /* BaseViewController.swift */,
+				31C5317F24476E11000A8607 /* TestViewController.swift */,
 			);
 			path = Global;
 			sourceTree = "<group>";
@@ -803,6 +806,7 @@
 			files = (
 				31198C7C243E808C002C30B0 /* DoseNotHaveSavedContentsView.swift in Sources */,
 				31601D1C242A345C00382B94 /* VideoController.swift in Sources */,
+				31C5318024476E11000A8607 /* TestViewController.swift in Sources */,
 				963716942438A08700AC14C7 /* WatchContentsCollectionViewCell.swift in Sources */,
 				31601D20242A345C00382B94 /* SearchViewController.swift in Sources */,
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,

@@ -12,17 +12,18 @@ import UIKit
 class DownLoadManager: UIResponder {
     
     private let id: Int
+    private var task: URLSessionDownloadTask?
     
     init(id: Int) {
         self.id = id
     }
     
-    func downLoadTask(url: URL, delegate: URLSessionDownloadDelegate) -> URLSessionDownloadTask {
+    func downLoadTask(url: URL, delegate: URLSessionDownloadDelegate) {
         
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
         let task = session.downloadTask(with: url)
-        return task
+        self.task = task
         
     }
     
