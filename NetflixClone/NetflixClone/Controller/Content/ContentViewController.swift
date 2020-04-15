@@ -187,12 +187,11 @@ extension ContentViewController: DismissDelegate {
 
 extension ContentViewController: IsClickedProtocol {
     
-    func saveAction(status: SaveContentStatus) -> SaveContentStatus {
-        var statusResult = status
+    func saveAction(status: SaveContentStatus) {
         
         switch status {
         case .doseNotSave:
-            statusResult = .waiting
+            break
         case .saved:
             break
         case .waiting:
@@ -200,8 +199,6 @@ extension ContentViewController: IsClickedProtocol {
         case .downLoading:
             break
         }
-        
-        return statusResult
     }
     
     
