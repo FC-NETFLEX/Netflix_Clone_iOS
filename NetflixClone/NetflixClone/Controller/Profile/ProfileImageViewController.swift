@@ -61,13 +61,13 @@ class ProfileImageViewController: UIViewController {
     }
     
     private func requestProfileImage() {
-        guard let token = LoginStatus.shared.getToken() else { return }
-      
-        let iconList = "https://www.netflexx.ga/members/profiles/icons/"
         guard
-            let iconURL = URL(string: iconList) else { return }
+            let token = LoginStatus.shared.getToken(),
+            let url = APIURL.iconList.makeURL()
+            else { return }
+
         
-        var urlRequest = URLRequest(url: iconURL)
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
         

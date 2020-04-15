@@ -94,7 +94,8 @@ class WatchContentsTableViewCell: UITableViewCell {
         self.postersData = poster
         self.watchTimesData = watchTime
         self.playMarksData = playMark
-//        self.url = url
+        
+        contentsCollectionView.reloadData()
     }
     
 }
