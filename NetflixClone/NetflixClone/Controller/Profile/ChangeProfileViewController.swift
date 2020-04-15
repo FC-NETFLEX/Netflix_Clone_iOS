@@ -32,7 +32,7 @@ class ChangeProfileViewController: UIViewController {
         isKidsViewSetting()
         
     }
-
+    
     private func setNavigationBar() {
         
         navigationItem.title = "프로필 변경"
@@ -143,8 +143,8 @@ class ChangeProfileViewController: UIViewController {
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.httpMethod = "PATCH"
         urlRequest.httpBody = jsonToDO
-
-
+        
+        
         let task = URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             guard error == nil else { return print(error!.localizedDescription) }
             guard let data = data else { return print("No Data") }
@@ -193,7 +193,6 @@ class ChangeProfileViewController: UIViewController {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .main
                 profileUpdate()
-//                profileVC.userNameArray.append(userName)
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
             }
@@ -225,7 +224,7 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
 }
 
 extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
-    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
+    func setImage(image: UIImage, imageID: Int) {
         addProfileView.newProfileButton.setImage(image, for: .normal)
         self.profileIconNum = imageID
     }
@@ -233,7 +232,7 @@ extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
 extension ChangeProfileViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         addProfileView.nickNameTextfield.placeholder = ""
-      }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return view.endEditing(true)
