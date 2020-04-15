@@ -41,7 +41,7 @@ class RecommendedCollectionViewItem: UICollectionViewCell {
     }
     
     //MARK: - configure
-    func configure(poster: UIImage) {
-        posterImage.image = poster
+    func configure(poster: String) {
+        posterImage.kf.setImage(with: URL(string: poster))
     }
 }

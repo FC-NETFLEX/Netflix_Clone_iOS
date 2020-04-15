@@ -15,6 +15,7 @@ protocol RecommendedCellDalegate: class {
 class RecommendedTableViewCell: UITableViewCell {
     
     static let identifier = "RecommendedTableViewCell"
+    private var contents: [SimilarContent] = []
     
     weak var delegate: RecommendedCellDalegate?
     
@@ -81,11 +82,14 @@ class RecommendedTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(id: [Int], poster: [UIImage]) {
-        self.idData = id
-        self.posterData = poster
-        
-        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
+    func configure(contents: [SimilarContent]) {
+        self.contents = contents
+        contentCollectionView.reloadData()
+        print(contents)
+//        self.idData = id
+//        self.posterData = poster
+//
+//        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
     }
     
     func setFlowLayout() -> CGSize {
@@ -133,14 +137,14 @@ extension RecommendedTableViewCell: UICollectionViewDelegateFlowLayout {
 
 extension RecommendedTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        6
+        contents.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedCollectionViewItem.identifier, for: indexPath) as! RecommendedCollectionViewItem
         
         // MARK: 서버로부터 응답 받은 상세 이미지
-        cell.configure(poster: UIImage(named: "yourName")!) // 더미
+        cell.configure(poster: contents[indexPath.row].imageURL) // 더미
         return cell
     }
     
