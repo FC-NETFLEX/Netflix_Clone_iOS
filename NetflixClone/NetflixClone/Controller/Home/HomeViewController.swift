@@ -77,6 +77,7 @@ final class HomeViewController: UIViewController {
                     self.latestContents = jsonData.recommendContents
                     self.top10Contents = jsonData.top10Contents
                     self.watchContents = jsonData.watchingVideo
+//                    self.adContent = jsonData.adContent
                     
                     DispatchQueue.main.sync {
                         self.homeTableView.reloadData()
@@ -427,8 +428,8 @@ extension HomeViewController: LatestMovieTableViewCellDelegate {
 
 //MARK: - Top10 Delegate
 extension HomeViewController: Top10TableViewCellDelegate {
-    func didTabTop10Cell() {
-        let contentVC = ContentViewController()
+    func didTabTop10Cell(id: Int) {
+        let contentVC = ContentViewController(id: id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
