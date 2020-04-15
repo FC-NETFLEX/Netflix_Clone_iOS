@@ -14,16 +14,18 @@ enum SaveContentStatus: String, Codable {
     case saved = "저장 완료"
 }
 
+
 class SavedContentsListModel {
     
     static var shared = SavedContentsListModel()
     
     private let userDefaults = UserDefaults.standard
 
-    var savedContentsList: [Int: HaveSaveContentsProfile] = [:]
+    var profiles: [HaveSaveContentsProfile] = []
     
     init() {
         getSavedContentsList()
+        sortedSavedContensList()
     }
     
     deinit {
@@ -32,37 +34,43 @@ class SavedContentsListModel {
     
     func sortedSavedContensList() {
         guard let profileID = LoginStatus.shared.getProfileID() else { return }
-        
+        guard let index = profiles.firstIndex(where: { $0.id == profileID }) else { return }
+        profiles.swapAt(index, 0)
     }
     
     func getSavedContentsList() {
         guard
             let email = LoginStatus.shared.getEmail(),
             let data = userDefaults.data(forKey: email),
-            let savedContentsList = try? JSONDecoder().decode([Int: HaveSaveContentsProfile].self, from: data)
+            let savedContentsList = try? JSONDecoder().decode([HaveSaveContentsProfile].self, from: data)
             else { return }
-        self.savedContentsList = savedContentsList
+        self.profiles = savedContentsList
     }
     
     func putSavedContentsList() {
         guard
             let email = LoginStatus.shared.getEmail(),
-            let data = try? JSONEncoder().encode(self.savedContentsList)
+            let data = try? JSONEncoder().encode(self.profiles)
             else { return }
         userDefaults.set(data, forKey: email)
+    }
+    
+    func getContent(indexPath: IndexPath) -> SaveContent {
+        profiles[indexPath.section].savedConetnts[indexPath.row]
     }
     
 }
 
 
-struct HaveSaveContentsProfile: Codable {
+class HaveSaveContentsProfile: Codable {
+    let id: Int
     var pfofileName: String
     var profileImageURL: String
-    var savedConetnts: [SavedContent] = []
+    var savedConetnts: [SaveContent] = []
 }
 
 
-struct SavedContent: Codable {
+class SaveContent: Codable {
     var savePoint: Int64? // 영상 재생 포인트
     var contentRange: Int64? // 영상 길이
     

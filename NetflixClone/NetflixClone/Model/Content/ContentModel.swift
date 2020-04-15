@@ -11,7 +11,20 @@ import Foundation
 //struct Contents: Decodable {
 //    let contents: [Content]
 //
+
 struct ContentModel: Decodable {
+    
+    let content: ContentDetail
+    let similarContents: [SimilarContent]
+    
+    private enum CodingKeys: String, CodingKey {
+        case content = "contents"
+        case similarContents = "similar_contents"
+    }
+}
+
+
+struct ContentDetail: Decodable {
     let id: Int
     let contentsTitle: String
     let contentsTitleEnglish: String
@@ -26,6 +39,8 @@ struct ContentModel: Decodable {
     let directors: [String]
     let isSelected: Bool
     let isLike: Bool
+    let videoURL: String
+    let videoID: Int
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -40,8 +55,14 @@ struct ContentModel: Decodable {
         case previewVideo = "preview_video"
         case actors
         case directors
-        case isSelected = "is_selected"
+        case isSelected = "is_select"
         case isLike = "is_like"
+        case video = "videos"
+    }
+    
+    private enum NestedKeys: String, CodingKey {
+        case videoURL = "video_url"
+        case videoID = "id"
     }
     
     init(from decoder: Decoder) throws {
@@ -60,6 +81,26 @@ struct ContentModel: Decodable {
         directors = try container.decode([String].self, forKey: .directors)
         isSelected = try container.decode(Bool.self, forKey: .isSelected)
         isLike = try container.decode(Bool.self, forKey: .isLike)
+        
+        var videoArray = try container.nestedUnkeyedContainer(forKey: .video)
+        let nestedContaner = try videoArray.nestedContainer(keyedBy: NestedKeys.self)
+        
+        videoID = try nestedContaner.decode(Int.self, forKey: .videoID)
+        videoURL = try nestedContaner.decode(String.self, forKey: .videoURL)
+    }
+}
+
+
+struct SimilarContent: Decodable {
+    
+    let id: Int
+    let title: String
+    let imageURL: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case imageURL = "contents_image"
     }
 }
 
