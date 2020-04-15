@@ -23,15 +23,20 @@ class AddProfileViewController: UIViewController {
     let addProfileView = AddProfileView()
     private let kidsView = KidsCustomView()
     private var imageID: Int?
+    var randomSetImage = String()
+    var randomIndex = 0
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imageID = randomIndex
+        
         setUI()
         setConstraints()
         setNavigationBar()
         keyboad()
+        settingImage()
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -73,6 +78,9 @@ class AddProfileViewController: UIViewController {
             view.addSubview($0)
         }
         addProfileView.delegate = self
+        
+        //        addProfileView.newProfileButton.setImage(UIImage(named: randomSetImage), for: .normal)
+        
         addProfileView.nickNameTextfield.delegate = self
         
         kidsView.delegate = self
@@ -100,7 +108,7 @@ class AddProfileViewController: UIViewController {
         [addProfileView,kidsView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-
+        
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         addProfileView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.3).isActive = true
@@ -112,14 +120,27 @@ class AddProfileViewController: UIViewController {
         kidsView.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -padding).isActive = true
         kidsView.bottomAnchor.constraint(equalTo: guide.bottomAnchor).isActive = true
     }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
-    struct ProfileData {
-        let profileName: String
-        let profileIcon: Int
-        let isKids: Bool
+    private func setImage(stringURL: String, button: UIButton) {
+        guard let url = URL(string: stringURL) else { return }
+        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
+            result in
+            switch result {
+            case .success(let imageResult):
+                button.setImage(imageResult.image, for: .normal)
+            case .failure(let error):
+                print(error)
+            }
+        })
+    }
+    
+    private func settingImage() {
+        let button = addProfileView.newProfileButton
+        setImage(stringURL: randomSetImage, button: button)
     }
     
     @objc private func didTapCancelButton(_ sender: Any) {
@@ -138,20 +159,15 @@ class AddProfileViewController: UIViewController {
     }
     
     @objc private func didTapSaveButton(_ sender: Any) {
-      
-        for vc in navigationController!.viewControllers.reversed() {
-            if let profileVC = vc as? ProfileViewController {
-                switch root {
-                case .main,.manager:
+        
+        if let navi = presentingViewController as? UINavigationController, let vc = navi.viewControllers.first as? ProfileViewController {
+            vc.root = .main
+            profileCreate()
+            dismiss(animated: true)
+        } else {
+            for vc in navigationController!.viewControllers.reversed() {
+                if let profileVC = vc as? ProfileViewController {
                     profileVC.root = .main
-//                    profileVC.userNameArray.append(profileName)
-//                    profileVC.kidsState = isKids
-                    profileCreate()
-                    navigationController?.popViewController(animated: true)
-                case .add:
-                    profileVC.root = .main
-//                    profileVC.userNameArray.append(profileName)
-//                    profileVC.kidsState = isKids
                     profileCreate()
                     navigationController?.popViewController(animated: true)
                 }
@@ -166,12 +182,12 @@ class AddProfileViewController: UIViewController {
         
         let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIcon, "is_kids": isKids]
         guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
-  
+        
         guard
             let token = LoginStatus.shared.getToken(),
             let url = URL(string: APIURL.makeProfile.rawValue)
             else { return }
-       
+        
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -193,18 +209,6 @@ class AddProfileViewController: UIViewController {
         }
         alert.addAction(ok)
         present(alert, animated: true)
-    }
-    private func setImage(stringURL: String, button: UIButton) {
-        guard let url = URL(string: stringURL) else { return }
-        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
-            result in
-            switch result {
-            case .success(let imageResult):
-                button.setImage(imageResult.image, for: .normal)
-            case .failure(let error):
-                print(error)
-            }
-        })
     }
 }
 extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegate {
@@ -231,19 +235,10 @@ extension AddProfileViewController: UITextFieldDelegate {
 
 
 extension AddProfileViewController: ProfileImageViewControllerDelegate {
-    func setImage(image: UIImage, imageID: Int, randomImage: Array<String>) {
-        print("얍얍얍얍얍",randomImage)
-        guard let random = randomImage.randomElement() else { return }
-        print("랜덤얍얍얍얍얍",random)
-        //프로필 추가시 랜덤으로 이미지 들어와야하나 안들어옴..
-        switch root {
-        case .add:
-           let button = addProfileView.newProfileButton
-           setImage(stringURL: random, button: button)
-        case .main, .manager:
-            addProfileView.newProfileButton.setImage(image, for: .normal)
-        }
+    func setImage(image: UIImage, imageID: Int) {
+        
+        addProfileView.newProfileButton.setImage(image, for: .normal)
+        print(image)
         self.imageID = imageID
-
     }
 }
