@@ -145,11 +145,11 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
             watchString = "\(hour)시간 \(minute)분"
         }
         // playMark -> Double Type 퍼센트로
-        let playMark = Double(playMarksData[indexPath.row])
+        let playMarkData = Double(playMarksData[indexPath.row])
+        let playLength: Double = ( 100 / ( Double(watchTime) / playMarkData ) ) / 100
         
-        
-        print("WatchTableViewCell: watchString \(watchString), ")
-        cell.configure(id: idData[indexPath.row], contentId: contentIdData[indexPath.row],poster: postersData[indexPath.row], watchTime: watchString, playMark: 0.5)
+        print("WatchTableViewCell: watchString \(watchString), playMark \(playLength)")
+        cell.configure(id: idData[indexPath.row], contentId: contentIdData[indexPath.row],poster: postersData[indexPath.row], watchTime: watchString, playMark: playLength)
         
         return cell
     }
