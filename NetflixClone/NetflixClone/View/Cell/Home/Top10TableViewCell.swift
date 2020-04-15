@@ -10,7 +10,7 @@ import UIKit
 
 
 protocol Top10TableViewCellDelegate: class {
-    func didTabTop10Cell() -> ()
+    func didTabTop10Cell(id: Int) -> ()
 }
 
 class Top10TableViewCell: UITableViewCell {
@@ -140,6 +140,6 @@ extension Top10TableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didTabTop10Cell()
+        delegate?.didTabTop10Cell(id: idData[indexPath.row])
     }
 }
