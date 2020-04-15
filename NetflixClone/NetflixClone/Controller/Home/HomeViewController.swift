@@ -56,7 +56,7 @@ final class HomeViewController: UIViewController {
         //MARK: JSONPassing
         DispatchQueue.global().sync {
             //            self.jsonPassing()
-            print("--------jsonPassing----------------")
+            print("----------------[ jsonPassing ]----------------")
             let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
                 print("dataTask 입성")
                 guard error == nil else { return print("jsonPassing error: ", error!)}
@@ -65,10 +65,8 @@ final class HomeViewController: UIViewController {
 
                 do {
                     let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-                    print("----------------jsonData 파싱완료--------------------")
-                    print("jsonData = \(jsonData)")
-                    
-                    print("--------------------jsonData--------------------\n",jsonData.recommendContents)
+                    print("----------------[ jsonData 파싱시작 ]--------------------")
+
                     
                     self.latestContents.removeAll()
                     
@@ -83,7 +81,7 @@ final class HomeViewController: UIViewController {
                         self.homeTableView.reloadData()
                     }
                     
-                    print("-----------------jsonData 파싱 종료-------------------")
+                    print("-----------------[ jsonData 파싱 종료 ]-------------------")
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -233,8 +231,7 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             //MARK: PreviewCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let previewCell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
             
             previewCell.delegate = self
@@ -262,8 +259,7 @@ extension HomeViewController: UITableViewDataSource {
             cell = previewCell
         case 1:
             //MARK: LatestCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             var idLatestMovie = [Int]()
             var posterLatestMovie = [UIImage]()
@@ -286,10 +282,7 @@ extension HomeViewController: UITableViewDataSource {
             
         case 2:
             //MARK: VideoCell
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
-     
-            
+       
             let url = URL(string: adContent.previewVideoURL)
             
             
@@ -314,8 +307,7 @@ extension HomeViewController: UITableViewDataSource {
             
         case 3:
             //MARK: WatchContentCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
             
@@ -347,8 +339,7 @@ extension HomeViewController: UITableViewDataSource {
             
         case 4:
             //MARK: Top10Cell
-            //            print("------------------------------------\n")
-            //            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             var idTop10 = [Int]()
@@ -407,12 +398,13 @@ extension HomeViewController: HomeviewTitleDelegate {
 
 //MARK: - PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
-    // 상민 수정부분(04.13일| 17:21분)
+    
     func didTabPreviewCell(index: Int) {
         let previewVC = PreViewController(index: index)
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
     }
+    
 }
 
 //MARK: - LatestMoview Delegate
