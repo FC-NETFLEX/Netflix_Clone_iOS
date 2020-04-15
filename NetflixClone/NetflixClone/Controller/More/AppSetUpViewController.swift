@@ -1,5 +1,5 @@
 //
-//  AppSettingViewController.swift
+//  AppSetUpViewController.swift
 //  NetflixClone
 //
 //  Created by 정유경 on 2020/04/16.
@@ -8,23 +8,25 @@
 
 import UIKit
 
-class AppSettingViewController: UIViewController {
-
+class AppSetUpViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .setNetfilxColor(name: .black)
+        
+        setNavigationBar()
+    }
+    func setNavigationBar() {
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = UIColor.clear
+        
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+        
+        title = "앱 설정"
+        navigationItem.leftBarButtonItem = nil
+        
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
