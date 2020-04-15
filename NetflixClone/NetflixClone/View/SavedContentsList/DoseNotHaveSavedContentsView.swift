@@ -108,7 +108,7 @@ class DoseNotHaveSavedContentsView: UIView {
     //MARK: Action
     
     @objc private func didTapFindStorableContentButton(_ sender: UIButton) {
-        print(#function)
+//        print(#function)
         delegate?.findStorableContent()
     }
     
