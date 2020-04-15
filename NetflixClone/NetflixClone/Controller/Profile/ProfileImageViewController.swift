@@ -63,7 +63,7 @@ class ProfileImageViewController: UIViewController {
     private func requestProfileImage() {
         guard let token = LoginStatus.shared.getToken() else { return }
       
-        let iconList = "http://13.124.222.31/members/profiles/icons/"
+        let iconList = "https://www.netflexx.ga/members/profiles/icons/"
         guard
             let iconURL = URL(string: iconList) else { return }
         

@@ -11,7 +11,7 @@ import UIKit
 class SavedContentsListViewController: BaseViewController {
     
     private let rootView = SavedContentsListView()
-    private var model = SavedContentsListModel()
+    private var model = SavedContentsListModel.shared
 
     //MARK: LifeCycle
     
@@ -23,11 +23,12 @@ class SavedContentsListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationController()
         setUI()
+        test()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let status = model.saveContens.isEmpty
+        let status = model.profiles.isEmpty
         navigationController?.navigationBar.isHidden = status
         rootView.isNoContents = status
     }
@@ -80,14 +81,19 @@ extension SavedContentsListViewController: SavedContentsListViewDelegate {
 
 extension SavedContentsListViewController: UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        model.profiles.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.saveContens.count
+        model.profiles[section].savedConetnts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier, for: indexPath) as! SavedContentCell
-        let content = model.saveContens[indexPath.row]
+        
+        let content = model.getContent(indexPath: indexPath)
         let description = content.rating + " | " + String(content.capacity) + " MB"
         cell.configure(
             title: content.title,
@@ -108,13 +114,17 @@ extension SavedContentsListViewController: UITableViewDataSource {
 extension SavedContentsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        for (index, content) in model.saveContens.enumerated() {
-            if indexPath.row != index && content.isSelected {
-                model.saveContens[index].isSelected = false
-                tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        
+        for (section, profile) in model.profiles.enumerated() {
+            for (row, content) in profile.savedConetnts.enumerated() {
+                if IndexPath(row: row, section: section) != indexPath && content.isSelected {
+                    content.isSelected = false
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
         }
-        model.saveContens[indexPath.row].isSelected.toggle()
+        
+        model.profiles[indexPath.section].savedConetnts[indexPath.row].isSelected.toggle()
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
@@ -126,6 +136,11 @@ extension SavedContentsListViewController: UITableViewDelegate {
 
 extension SavedContentsListViewController {
     func test() {
-        
+        let url = FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask)
+        print(url)
     }
 }
+
+
+
+
