@@ -134,8 +134,9 @@ class ChangeProfileViewController: UIViewController {
         dump(bodys)
         guard
             let token = LoginStatus.shared.getToken(),
-            let url = URL(string: APIURL.makeProfile.rawValue + stringID + "/")
+            let url = APIURL.makeProfile.makeURL(pathItems: [PathItem(name: stringID, value: nil)])
             else { return }
+        
         print(url)
         
         var urlRequest = URLRequest(url: url)
@@ -156,10 +157,9 @@ class ChangeProfileViewController: UIViewController {
     
     private func profileDelete() {
         let stringID = String(userID)
-        print("삭제삭제ㅏㄱㅈ")
         guard
             let token = LoginStatus.shared.getToken(),
-            let url = URL(string: APIURL.makeProfile.rawValue + stringID + "/")
+            let url = APIURL.makeProfile.makeURL(pathItems: [PathItem(name: stringID, value: nil)])
             else { return }
         print(url)
         
