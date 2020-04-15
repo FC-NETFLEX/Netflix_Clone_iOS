@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 class PreViewController: UIViewController {
-    private var preview = [PreviewContents]()
+    private var preview = [PreviewContent]()
     private var previewSubviews = [PreviewView]()
     
     private let receivedPreviewIndex: Int

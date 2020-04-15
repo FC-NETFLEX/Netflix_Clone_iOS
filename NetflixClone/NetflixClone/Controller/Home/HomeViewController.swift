@@ -17,38 +17,33 @@ final class HomeViewController: UIViewController {
     private let cellCount = 5
     
     //MARK: JSON 관련
-    private var decoder = JSONDecoder()
-    private var homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
+    private let decoder = JSONDecoder()
+    private let homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
     
     //MARK: header content
-    private var firstId = 1
-    private var firstCellURL = ""
-    private var firstCellItem = ""//"titleDummy"
-    private var firstCategory = [String]() //["로맨스", "한국 드라마", "드라마"]
-    private var dibsFlag = false
-    private var firstTitleImage = "darkGray"
+    private var topContent = TopConent(id: 1, title: "TopContent", imageURL: "", logoImageURL: "darkGray", categories: [String](), rating: "12세 관람가", selectedFlag: false)
     
     //MARK: preview content
-    private var idPreview = [1, 2, 3, 4, 5]
-    private var posterPreview = [UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray"), UIImage(named: "Gray")] //[UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy"), UIImage(named: "posterDummy")]
-    private var titleImagePreview = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
-    
+
+    private var previewContents: [PreviewContent] = [PreviewContent(id: 1, title: "preview", previewVideoURL: "", logoURL: "darkGray", poster: "Gray"), PreviewContent(id: 2, title: "preview", previewVideoURL: "", logoURL: "darkGray", poster: "Gray"), PreviewContent(id: 3, title: "preview", previewVideoURL: "", logoURL: "darkGray", poster: "Gray"),PreviewContent(id: 4, title: "preview", previewVideoURL: "", logoURL: "darkGray", poster: "Gray")]
+
+
     //MARK: LatestMovie content
-    private var idLatestMovie = [1, 2, 3, 4]
-    private var posterLatestMovie = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
+    private var latestContents: [RecommendContent] = [RecommendContent(id: 1, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 2, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 3, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 4, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"),]
+
     
     //MARK: Top10 content
-    private let idTop10 = [1, 2, 3, 4, 5]
-    private let posterTop10 = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
+    private var top10Contents: [Top10Content] = [Top10Content(id: 1, title: "top10", imageURL: "darkGray"), Top10Content(id: 2, title: "top10", imageURL: "darkGray"), Top10Content(id: 3, title: "top10", imageURL: "darkGray")]
+
     
     //MARK: WatchContents
-    //poster: <#T##[UIImage]#>, watchTime: T##[String], playMark: <#T##[Int64]#>, url: <#T##URL#>
-    private let posterWatch = [UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray"), UIImage(named: "darkGray")]
-    private let watchTimekWatch: [Int] = [0, 0, 0, 0]
-    private let playMark: [Int] = [0, 0, 0, 0]
+    private var watchContents: [WatchVideo] = [WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
+    
     
     //MARK: ADContents
-    private let adVideoURL = "" //"https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp4"
+    private var adContent = ADContent(id: 1, title: "", titleEnglish: "", timeLength: "0", pubYear: "2020", previewVideoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp", selected: false)
+    //"https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp4"
+
     
     //MARK: VideoAdvertisement ->
     private var videoAdvertismentCell: VideoAdvertisementTableViewCell?
@@ -59,29 +54,36 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         //MARK: JSONPassing
-//        DispatchQueue.global().sync {
-//            //            self.jsonPassing()
-//            print("--------jsonPassing----------------")
-//            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
-//                print("dataTask 입성")
-//                guard error == nil else { return print("jsonPassing error: ", error!)}
-//                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
-//                guard let data = data else { return print("jsonPassing data 오류") }
-//                
-//                do {
-//                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-//                    print("jsonData 파싱완료")
-//                    print("jsonData = \(jsonData)")
-//                    
-//                    
-//                    
-//                    
-//                } catch {
-//                    print(error.localizedDescription)
-//                }
-//            }
-//            dataTask.resume()
-//        }
+        DispatchQueue.global().sync {
+            //            self.jsonPassing()
+            print("--------jsonPassing----------------")
+            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
+                print("dataTask 입성")
+                guard error == nil else { return print("jsonPassing error: ", error!)}
+                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
+                guard let data = data else { return print("jsonPassing data 오류") }
+
+                do {
+                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+                    print("----------------jsonData 파싱완료--------------------")
+                    print("jsonData = \(jsonData)")
+                    
+                    print("--------------------jsonData--------------------\n",jsonData.recommendContents)
+                    
+                    self.latestContents.removeAll()
+                    self.latestContents = jsonData.recommendContents
+                    print("=============latestContents==============\n",self.latestContents)
+                    DispatchQueue.main.sync {
+                        self.homeTableView.reloadData()
+                    }
+                    
+                    print("-----------------jsonData 파싱 종료-------------------")
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            dataTask.resume()
+        }
     
         setUI()
         setConstraints()
@@ -201,7 +203,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let header = HomeviewTitle()
-        header.configure(id: firstId, poster: UIImage(named: firstCellItem), category: firstCategory, dibs: dibsFlag, titleImage: UIImage(named: "darkGray"), url: URL(string: firstCellURL))
+        header.configure(id: topContent.id, poster: UIImage(named: topContent.imageURL), category: topContent.categories, dibs: topContent.selectedFlag, titleImage: UIImage(named: topContent.logoImageURL) /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
@@ -223,14 +225,39 @@ extension HomeViewController: UITableViewDataSource {
             let previewCell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
             
             previewCell.delegate = self
+            var idPreview = [Int]()
+            var posterPreview = [String]()
+            var titleImagePreview = [String?]()
             
-            previewCell.configure(id: idPreview, poster: posterPreview as! [UIImage], titleImage: titleImagePreview as! [UIImage])
+            previewContents.forEach {
+                idPreview.append($0.id)
+                posterPreview.append($0.poster)
+                titleImagePreview.append($0.logoURL)
+            }
+            
+            previewCell.configure(id: idPreview, poster: posterPreview, titleImage: titleImagePreview)
             
             cell = previewCell
         case 1:
 //            print("------------------------------------\n")
 //            print("HomeVC: cell Row -> \(indexPath.row)")
             let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
+            var idLatestMovie = [Int]()
+            var posterLatestMovie = [UIImage]()
+            
+            latestContents.forEach {
+                do {
+                    let data = try Data(contentsOf: URL(string: $0.imageURL)!)
+                    posterLatestMovie.append(UIImage(data: data)!)
+                    print("do")
+                } catch {
+                    posterLatestMovie.append(UIImage(named: "darkGray")!)
+                    print("catch")
+                }
+                
+                idLatestMovie.append($0.id)
+            }
+            print("HomeViewController: latestContents contents \(idLatestMovie), \(posterLatestMovie)")
             
             latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie as! [UIImage])
             latestMovieCell.delegate = self
@@ -246,18 +273,15 @@ extension HomeViewController: UITableViewDataSource {
 //            print("HomeVC: cell Row -> \(indexPath.row)")
 
             
-            //되는 url
-            //            let url = URL(string: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/videoplayback.mp4")
             
-            // 안되는 url
-            let url = URL(string: adVideoURL)
+            let url = URL(string: adContent.previewVideoURL)
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
                 // 재사용 cell 있는가??
                 videoCell.delegate = self
                 
-                videoCell.configure(/*advertisement: url, */contentID: 1234, contentName: "고양이의 장난", dibs: false)
+                videoCell.configure(/*advertisement: url, */contentID: adContent.id, contentName: adContent.title, dibs: adContent.selected)
                 
                 cell = videoCell
             } else { // 최초 호출
@@ -266,7 +290,7 @@ extension HomeViewController: UITableViewDataSource {
                 videoAdvertismentCell?.delegate = self
                 
                 
-                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: 1234, contentName: "고양이의 장난", dibs: false)
+                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: adContent.id, contentName: adContent.title, dibs: adContent.selected)
                 
                 
                 cell = videoAdvertismentCell!
@@ -277,6 +301,17 @@ extension HomeViewController: UITableViewDataSource {
 //            print("HomeVC: cell Row -> \(indexPath.row)")
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
+            
+            var posterWatch = [UIImage]()
+            var watchTimekWatch = [Int]()
+            var playMark = [Int]()
+            
+            watchContents.forEach {
+                posterWatch.append(UIImage(named: $0.poster)!)
+                watchTimekWatch.append($0.videoLength)
+                playMark.append($0.playTime)
+            }
+            
             watchContentCell.configure(poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark/*, url: <#T##URL#>*/)
             
             cell = watchContentCell
@@ -285,6 +320,15 @@ extension HomeViewController: UITableViewDataSource {
 //            print("------------------------------------\n")
 //            print("HomeVC: cell Row -> \(indexPath.row)")
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
+            
+            var idTop10 = [Int]()
+            var posterTop10 = [UIImage]()
+            
+            top10Contents.forEach {
+                idTop10.append($0.id)
+                posterTop10.append(UIImage(named: $0.imageURL)!)
+            }
+            
             
             top10Cell.delegate = self
             top10Cell.configure(id: idTop10, poster: posterTop10 as! [UIImage])
@@ -316,8 +360,9 @@ extension HomeViewController: PreviewTableViewCellDelegate {
 
 //MARK: - LatestMoview Delegate
 extension HomeViewController: LatestMovieTableViewCellDelegate {
-    func didTabLatestMovieCell() {
-        let contentVC = ContentViewController()
+    func didTabLatestMovieCell(id: Int) {
+//        let contentVC = ContentViewController()
+        let contentVC = ContentViewController(id: id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
