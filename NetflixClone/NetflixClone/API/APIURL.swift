@@ -13,12 +13,12 @@ typealias PathItem = (name: String, value: String?)
 enum APIURL: String {
     case defaultURL = "https://www.netflexx.ga"
     
-    case signUp = "https://www.netflexx.ga/members/"
-    case logIn = "https://www.netflexx.ga/members/auth_token/"
-    case logOut = "https://www.netflexx.ga/members/logout/"
+    case signUp = "https://www.netflexx.ga/members"
+    case logIn = "https://www.netflexx.ga/members/auth_token"
+    case logOut = "https://www.netflexx.ga/members/logout"
     
-    case iconList = "https://www.netflexx.ga/members/profiles/icons/"
-    case makeProfile = "https://www.netflexx.ga/members/profiles/"
+    case iconList = "https://www.netflexx.ga/members/profiles/icons"
+    case makeProfile = "https://www.netflexx.ga/members/profiles"
    
     
     func makeURL(pathItems: [PathItem] = [], queryItems: [URLQueryItem]? = nil) -> URL? {

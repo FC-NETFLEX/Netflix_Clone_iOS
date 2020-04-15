@@ -9,8 +9,7 @@
 import UIKit
 import AVFoundation
 
-class PreViewController: UIViewController {
-    
+class PreViewController: UIViewController {    
     let label = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
@@ -19,6 +18,7 @@ class PreViewController: UIViewController {
     
     // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
     private var preview = [PreviewContents]()
+
     private var previewSubviews = [PreviewView]()
     
     private let receivedPreviewIndex: Int
