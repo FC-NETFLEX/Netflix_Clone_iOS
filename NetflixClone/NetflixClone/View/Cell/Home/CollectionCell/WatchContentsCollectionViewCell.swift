@@ -132,7 +132,6 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     func configure(id: Int, contentId: Int, poster: UIImage, watchTime: String, playMark: Double) {
         self.id = id
         self.contentId = contentId
-//        posterButton.image = poster
         posterButton.setImage(poster, for: .normal)
         watchTimeLabel.text = watchTime
 
