@@ -51,7 +51,7 @@ class CustomButtonView: UIView {
     }
     
     private func setConstraints() {
-        let buttonImageSizeMultiplying = 0.3
+        let buttonImageSizeMultiplying = 0.2
         let constant5 = CGFloat.dynamicYMargin(margin: 5)
         
         imageView.snp.makeConstraints {
