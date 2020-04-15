@@ -20,9 +20,10 @@ class SavedContentCell: UITableViewCell {
     
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
-    private let statusView = SaveContentStatusView()
+    private let statusView: SaveContentStatusView
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        self.statusView = SaveContentStatusView(id: id, status: .saved)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
         setConstraint()

@@ -50,7 +50,7 @@ class ContentViewController: UIViewController {
                     self.similarContets = contentModel.similarContents
                     self.contentTableView.reloadData()
                     self.bluredBackgroundView.configure(backgroundImage: contentModel.content.contentsImage)
-                    print(contentModel.content.videoURL)
+//                    print(contentModel.content.videoURL)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -70,7 +70,7 @@ class ContentViewController: UIViewController {
         contentTableView.register(PosterTableViewCell.self, forCellReuseIdentifier: PosterTableViewCell.identifier)
         contentTableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: SummaryTableViewCell.identifier)
         contentTableView.register(StaffTableViewCell.self, forCellReuseIdentifier: StaffTableViewCell.identifier)
-        contentTableView.register(ButtonsTableViewCell.self, forCellReuseIdentifier: ButtonsTableViewCell.identifier)
+//        contentTableView.register(ButtonsTableViewCell.self, forCellReuseIdentifier: ButtonsTableViewCell.identifier)
         contentTableView.register(RecommendedTableViewCell.self, forCellReuseIdentifier: RecommendedTableViewCell.identifier)
     }
     
@@ -111,12 +111,19 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             }
             return cell
         } else if indexPath.row == 3{
-            let cell = tableView.dequeueReusableCell(withIdentifier: ButtonsTableViewCell.identifier, for: indexPath) as! ButtonsTableViewCell
-            if let content = self.content {
-                cell.configure(dibsButtonClicked: content.isSelected, likeButtonClicked: content.isLike)
+            let returnCell: ButtonsTableViewCell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: ButtonsTableViewCell.identifier) as? ButtonsTableViewCell {
+                returnCell = cell
+            } else {
+                returnCell = ButtonsTableViewCell(id: contentId, style: .default, reuseIdentifier: ButtonsTableViewCell.identifier)
             }
-            cell.delegate = self
-            return cell
+            
+            if let content = self.content {
+                returnCell.configure(dibsButtonClicked: content.isSelected, likeButtonClicked: content.isLike)
+            }
+            
+            returnCell.delegate = self
+            return returnCell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: RecommendedTableViewCell.identifier, for: indexPath) as! RecommendedTableViewCell 
                 cell.delegate = self
@@ -179,6 +186,24 @@ extension ContentViewController: DismissDelegate {
 }
 
 extension ContentViewController: IsClickedProtocol {
+    
+    func saveAction(status: SaveContentStatus) -> SaveContentStatus {
+        var statusResult = status
+        
+        switch status {
+        case .doseNotSave:
+            statusResult = .waiting
+        case .saved:
+            break
+        case .waiting:
+            break
+        case .downLoading:
+            break
+        }
+        
+        return statusResult
+    }
+    
     
     func dibButtonIsCliked() {
         guard let url = URL(string: "https://www.netflexx.ga/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/select/"),

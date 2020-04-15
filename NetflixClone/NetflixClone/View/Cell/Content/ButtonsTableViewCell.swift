@@ -9,6 +9,7 @@
 protocol IsClickedProtocol: class {
     func dibButtonIsCliked()
     func likeButtonIsCliked()
+    func saveAction(status: SaveContentStatus) -> SaveContentStatus
 }
 
 import UIKit
@@ -21,12 +22,17 @@ class ButtonsTableViewCell: UITableViewCell {
     
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let likeView = CustomButtonView(imageName: "hand.thumbsup", labelText: "평가")
-    private let saveView = CustomButtonView(imageName: "arrow.down.to.line", labelText: "저장")
+    private let saveView = UIView()
+    
+    private let statusButton: SaveContentStatusView
+    private let statusLabel = UILabel()
+    
     private let redView = UIView()
     
     weak var delegate: IsClickedProtocol?
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        self.statusButton = SaveContentStatusView(id: id, status: .doseNotSave)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .clear
         setUI()
@@ -38,23 +44,45 @@ class ButtonsTableViewCell: UITableViewCell {
     }
     
     private func setUI() {
-        [dibsView, likeView, saveView].forEach {
+        [dibsView, likeView].forEach {
             self.addSubview($0)
             $0.button.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
         }
+        
+        [saveView].forEach({
+            self.addSubview($0)
+        })
+        
+        [statusButton, statusLabel].forEach({
+            saveView.addSubview($0)
+        })
+        
         self.addSubview(redView)
         redView.backgroundColor = UIColor.setNetfilxColor(name: .netflixRed)
         
+        statusLabel.text = statusButton.downLoadStatus.rawValue
+        statusLabel.textColor = .setNetfilxColor(name: .white)
+        statusLabel.textAlignment = .center
+        statusLabel.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
+        
         dibsView.button.tag = 0
         likeView.button.tag = 1
-        saveView.button.tag = 2
+        
+        statusButton.delegate = self
+        statusButton.addTarget(self, action: #selector(didTapSaveButton(sender:)), for: .touchUpInside)
+    }
+    
+    @objc private func didTapSaveButton(sender: SaveContentStatusView) {
+        print(#function)
+        let status = delegate?.saveAction(status: sender.downLoadStatus)
+        statusLabel.text = status?.rawValue
     }
     
     // MARK: 상세화면에서 '내가찜한콘텐츠', '평가', '저장' 버튼 눌렀을 때 액션
     @objc private func didTapButton(_ sender: UIButton) {
             var dibsButtonClicked = dibsView.isClicked
             var likeButtonClicked = likeView.isClicked
-            var saveButtonClicked = saveView.isClicked
+//            var saveButtonClicked = saveView.isClicked
 
         switch sender.tag {
         case 0:
@@ -110,14 +138,14 @@ class ButtonsTableViewCell: UITableViewCell {
             delegate?.likeButtonIsCliked()
             likeButtonClicked.toggle()
 
-        case 2:
+//        case 2:
             // MARK: 와이파이 상태와 설정 값에 따라서 다운받기, 안받기 설정해야함
-            if saveButtonClicked {
-                print("저장버튼 클릭: ", saveButtonClicked)
-            } else {
-                print("저장버튼 풀기: ", saveButtonClicked)
-            }
-            saveButtonClicked.toggle()
+//            if saveButtonClicked {
+//                print("저장버튼 클릭: ", saveButtonClicked)
+//            } else {
+//                print("저장버튼 풀기: ", saveButtonClicked)
+//            }
+//            saveButtonClicked.toggle()
         default:
             break
         }
@@ -128,6 +156,8 @@ class ButtonsTableViewCell: UITableViewCell {
         let customViewWidthMultiplying = 0.25
         let constant10 = CGFloat.dynamicXMargin(margin: 10)
         let redViewHeight = CGFloat.dynamicYMargin(margin: 5)
+        let statusViewMultiplying = 0.3
+        let constant5 = CGFloat.dynamicYMargin(margin: 5)
         
         dibsView.snp.makeConstraints {
             $0.width.equalTo(self.snp.width).multipliedBy(customViewWidthMultiplying)
@@ -156,6 +186,18 @@ class ButtonsTableViewCell: UITableViewCell {
             $0.trailing.equalTo(dibsView.snp.trailing)
             $0.height.equalTo(redViewHeight)
         }
+        
+        statusButton.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.width.height.equalTo(saveView.snp.width).multipliedBy(statusViewMultiplying)
+            $0.top.equalToSuperview().offset(constant5)
+        }
+        
+        statusLabel.snp.makeConstraints {
+            $0.centerX.equalTo(statusButton.snp.centerX)
+            $0.top.equalTo(statusButton.snp.bottom).offset(constant5)
+        }
+        
     }
     
     func configure(dibsButtonClicked: Bool, likeButtonClicked: Bool) {
@@ -168,3 +210,9 @@ class ButtonsTableViewCell: UITableViewCell {
 }
 
 
+extension ButtonsTableViewCell: SaveContentStatusViewDelegate {
+    func changeStatus(status: SaveContentStatus) {
+        statusLabel.text = status.rawValue
+    }
+     
+}

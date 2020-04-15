@@ -12,6 +12,7 @@ enum SaveContentStatus: String, Codable {
     case waiting = "대기중"
     case downLoading = "저장중"
     case saved = "저장 완료"
+    case doseNotSave = "저장"
 }
 
 
@@ -71,6 +72,8 @@ class HaveSaveContentsProfile: Codable {
 
 
 class SaveContent: Codable {
+    let id: Int
+    
     var savePoint: Int64? // 영상 재생 포인트
     var contentRange: Int64? // 영상 길이
     
