@@ -73,6 +73,7 @@ extension SavedContentsListViewController: SavedContentsListViewDelegate {
     
     func findStorableContent() {
         print(#function)
+        tabBarController?.selectedIndex = 0
     }
     
 }
