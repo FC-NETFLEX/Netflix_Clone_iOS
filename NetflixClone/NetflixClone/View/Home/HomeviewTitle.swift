@@ -8,7 +8,15 @@
 
 import UIKit
 
+protocol HomeviewTitleDelegate: class {
+    func didTabHomeTitledibsButton() -> ()
+    func didTabHomeTitlePlayButton() -> ()
+    func didTabHomeTitleContentButton() -> ()
+}
+
 class HomeviewTitle: UIView {
+    
+    weak var delegate: HomeviewTitleDelegate?
     
     private let titlePoster = UIImageView()
     private let gradient = CAGradientLayer()
@@ -53,6 +61,7 @@ class HomeviewTitle: UIView {
         let categoryFont: UIFont = .boldSystemFont(ofSize: 12)
         let fixedFont: UIFont = .systemFont(ofSize: 12)
         
+//        titlePoster.contentMode = .scaleAspectFit
         titlePoster.contentMode = .scaleAspectFill
         titlePoster.clipsToBounds = true
         
@@ -61,6 +70,7 @@ class HomeviewTitle: UIView {
         
         
         dibsButton.tintColor = textTintColor
+        dibsButton.addTarget(self, action: #selector(didTabdibsButton(sender:)), for: .touchUpInside)
         
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         playButton.contentHorizontalAlignment = .center
@@ -70,20 +80,21 @@ class HomeviewTitle: UIView {
         playButton.layer.cornerRadius = 2
         playButton.tintColor = .black
         playButton.backgroundColor = textTintColor
+        playButton.addTarget(self, action: #selector(didTabPlayButton(sender:)), for: .touchUpInside)
         
         infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-        //        titleImage.contentMode = .scaleAspectFit
-        titleImage.contentMode = .scaleAspectFill
+                titleImage.contentMode = .scaleAspectFit
+//        titleImage.contentMode = .scaleAspectFill
         titleImage.clipsToBounds = true
         
-//        contentView.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0.5)
         
         dibsLabel.text = "내가 찜한..."
         dibsLabel.font = fixedFont
         dibsLabel.textColor = textTintColor
+        
         
         infoLabel.text = "정보"
         infoLabel.font = fixedFont
@@ -91,9 +102,7 @@ class HomeviewTitle: UIView {
         
         
         addSubview(titlePoster)
-        //        titleImage.layer.addSublayer(gradientLayer)
-//        titlePoster.addSubview(contentView)
-//        titlePoster.addSubview(titleImage)
+
         addSubview(contentView)
         addSubview(titleImage)
         
@@ -113,9 +122,7 @@ class HomeviewTitle: UIView {
         
         let miniButtonWidth: CGFloat = xMargin * 2
         let miniButtonHeight: CGFloat = yMargin * 4
-        
-        //        let titleImageWidth: CGFloat = CGFloat.dynamicXMargin(margin: 350)
-        //        let titleImageHeight: CGFloat = CGFloat.dynamicYMargin(margin: 150)
+
         
         titlePoster.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
@@ -166,7 +173,6 @@ class HomeviewTitle: UIView {
             $0.centerX.equalTo(titlePoster.snp.centerX)
             $0.height.equalTo(miniButtonHeight)
             $0.width.equalToSuperview().multipliedBy(0.35)
-            //            $0.width.equalTo(playButtonWith)
         }
         
         categoryLabel.snp.makeConstraints {
@@ -199,7 +205,6 @@ class HomeviewTitle: UIView {
     
     // MARK: - configure
     func configure(id: Int, poster: UIImage?, category: [String], dibs: Bool, titleImage: UIImage? /*, url: URL?*/) {
-        print("HomeTitle: configure")
         
         var categoryText: String = ""
         
@@ -218,21 +223,20 @@ class HomeviewTitle: UIView {
             dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
         }
         
-        print("configure categoryText = \(categoryText)")
         
     }
     
     //MARK: - action
     @objc private func didTabdibsButton(sender: UIButton) {
-        
+        delegate?.didTabHomeTitledibsButton()
     }
     
     @objc private func didTabPlayButton(sender: UIButton) {
-        
+        delegate?.didTabHomeTitlePlayButton()
     }
     
     @objc private func didTabInfoButton(sender: UIButton) {
-        
+        delegate?.didTabHomeTitleContentButton()
     }
     
 }
