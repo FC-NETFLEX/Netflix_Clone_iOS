@@ -229,7 +229,7 @@ class ProfileViewController: UIViewController {
 
         guard
             let token = LoginStatus.shared.getToken(),
-            let url = URL(string: APIURL.makeProfile.rawValue)
+            let url = APIURL.makeProfile.makeURL()
             else { return }
            print(token)
         var urlRequest = URLRequest(url: url)

@@ -14,7 +14,11 @@ protocol SavedContentsListViewDelegate: class {
 
 class SavedContentsListView: UIView {
     
-    weak var delegate: SavedContentsListViewDelegate?
+    weak var delegate: SavedContentsListViewDelegate? {
+        didSet {
+            noContentsView.delegate = self.delegate
+        }
+    }
     
     let tableView = UITableView()
 
