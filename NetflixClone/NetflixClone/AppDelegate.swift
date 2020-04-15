@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootViewController: UIViewController
 
         if LoginStatus.shared.checkLoginStatus() {
-            rootViewController = TabBarController()
-        }else {
+            rootViewController = UINavigationController(rootViewController: ProfileViewController(root: .login))
+        } else {
             rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
         }
         

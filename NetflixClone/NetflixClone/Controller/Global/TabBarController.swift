@@ -31,6 +31,7 @@ class TabBarController: UITabBarController {
     
     private func addViewControllers() {
         let homeVC = HomeViewController()
+        
         homeVC.tabBarItem.title = "홈"
         homeVC.tabBarItem.image = UIImage(systemName: "house")
         
@@ -38,7 +39,7 @@ class TabBarController: UITabBarController {
         searchVC.tabBarItem.title = "검색"
         searchVC.tabBarItem.image = UIImage(systemName: "magnifyingglass")
         
-        let saveContentListVC = SaveContentListViewController()
+        let saveContentListVC = UINavigationController(rootViewController: SavedContentsListViewController())
         saveContentListVC.tabBarItem.title = "저장한 콘텐츠 목록"
         saveContentListVC.tabBarItem.image = UIImage(systemName: "arrow.down.to.line.alt")
         
