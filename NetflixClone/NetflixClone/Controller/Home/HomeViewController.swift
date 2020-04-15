@@ -77,7 +77,7 @@ final class HomeViewController: UIViewController {
                     self.latestContents = jsonData.recommendContents
                     self.top10Contents = jsonData.top10Contents
                     self.watchContents = jsonData.watchingVideo
-                    self.adContent = jsonData.adContent
+//                    self.adContent = jsonData.adContent
                     
                     DispatchQueue.main.sync {
                         self.homeTableView.reloadData()
