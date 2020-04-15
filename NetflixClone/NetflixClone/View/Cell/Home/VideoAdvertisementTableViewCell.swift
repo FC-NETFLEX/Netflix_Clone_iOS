@@ -194,6 +194,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
         
+//        contentView.reloadInputViews()
     }
     
     //MAKR: -Action
