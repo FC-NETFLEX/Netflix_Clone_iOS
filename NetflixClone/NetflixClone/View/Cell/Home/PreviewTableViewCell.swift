@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PreviewTableViewCellDelegate: class {
-    func selectCell() -> ()
+    func selectCell(index: Int) -> ()
 }
 
 class PreviewTableViewCell: UITableViewCell {
@@ -87,17 +87,20 @@ class PreviewTableViewCell: UITableViewCell {
         
   
     //MARK: - configure
-//    func configure(id: [Int], poster: [UIImage], titleImage: [UIImage]) {
-    func configure(id: [Int], poster: [String], titleImage: [String?]) {
-        var posters = [UIImage]()
-        var titleImages = [UIImage]()
-        
-        poster.forEach { posters.append(UIImage(named: $0)!) }
-        titleImage.forEach { titleImages.append(UIImage(named: $0 ?? "")!) }
+    func configure(id: [Int], posters: [UIImage], titleImages: [UIImage]) {
+//    func configure(id: [Int], poster: [String], titleImage: [String?]) {
+//        var posters = [UIImage]()
+//        var titleImages = [UIImage]()
+//
+//        poster.forEach { posters.append(UIImage(named: $0)!) }
+//        titleImage.forEach { titleImages.append(UIImage(named: $0 ?? "")!) }
         
         self.idData = id
         self.posterData = posters
         self.titleData = titleImages
+        print("=======preview Configure  idData \(idData.count), posterData \(posterData.count), titleImage \(titleImages)")
+        
+        previewConllectionView.reloadData()
     }
 
 }
@@ -149,7 +152,7 @@ extension PreviewTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.selectCell()
+        delegate?.selectCell(index: indexPath.row)
     }
 }
 
