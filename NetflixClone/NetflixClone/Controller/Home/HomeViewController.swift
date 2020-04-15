@@ -54,27 +54,27 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         //MARK: JSONPassing
-//        DispatchQueue.global().sync {
-//            //            self.jsonPassing()
-//            print("--------jsonPassing----------------")
-//            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
-//                print("dataTask 입성")
-//                guard error == nil else { return print("jsonPassing error: ", error!)}
-//                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
-//                guard let data = data else { return print("jsonPassing data 오류") }
-//
-//                do {
-//                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-//                    print("jsonData 파싱완료")
-//                    print("jsonData = \(jsonData)")
-//
-//
-//                } catch {
-//                    print(error.localizedDescription)
-//                }
-//            }
-//            dataTask.resume()
-//        }
+        DispatchQueue.global().sync {
+            //            self.jsonPassing()
+            print("--------jsonPassing----------------")
+            let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
+                print("dataTask 입성")
+                guard error == nil else { return print("jsonPassing error: ", error!)}
+                guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
+                guard let data = data else { return print("jsonPassing data 오류") }
+
+                do {
+                    let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+                    print("jsonData 파싱완료")
+                    print("jsonData = \(jsonData)")
+
+
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            dataTask.resume()
+        }
     
         setUI()
         setConstraints()
