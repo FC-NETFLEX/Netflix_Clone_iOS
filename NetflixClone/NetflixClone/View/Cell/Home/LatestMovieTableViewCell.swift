@@ -10,7 +10,7 @@ import UIKit
 
 
 protocol LatestMovieTableViewCellDelegate: class {
-    func didTabLatestMovieCell() -> ()
+    func didTabLatestMovieCell(id: Int) -> ()
 }
 
 
@@ -93,6 +93,8 @@ class LatestMovieTableViewCell: UITableViewCell {
     func configure(id: [Int], poster: [UIImage]) {
         self.idData = id
         self.posterData = poster
+        print("Latest ----------> poster : \(poster)")
+        contentsCollectionView.reloadData()
     }
     
 }
@@ -138,6 +140,7 @@ extension LatestMovieTableViewCell: UICollectionViewDelegateFlowLayout {
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didTabLatestMovieCell()
+        
+        delegate?.didTabLatestMovieCell(id: idData[indexPath.row])
     }
 }
