@@ -15,13 +15,14 @@ class MoreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+       
         setUI()
         setConstraints()
       
     }
 
     private func setUI() {
+        view.backgroundColor = .setNetfilxColor(name: .black)
         [moreTableView].forEach {
             view.addSubview($0)
         }
@@ -53,7 +54,7 @@ extension MoreViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MoreViewTableCell.identifier, for: indexPath) as? MoreViewTableCell else { fatalError() }
         cell.textLabel?.text = moreViewData[indexPath.row]
-        cell.backgroundColor = #colorLiteral(red: 0.08149587563, green: 0.08149587563, blue: 0.08149587563, alpha: 1)
+        cell.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
         cell.tag = indexPath.row
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = .systemFont(ofSize: 16)
