@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContentViewController: UIViewController {
+class ContentViewController: CanSaveViewController {
     
     private let bluredBackgroundView = BluredBackgroundView()
     private let contentTableView = UITableView()
@@ -50,7 +50,7 @@ class ContentViewController: UIViewController {
                     self.similarContets = contentModel.similarContents
                     self.contentTableView.reloadData()
                     self.bluredBackgroundView.configure(backgroundImage: contentModel.content.contentsImage)
-//                    print(contentModel.content.videoURL)
+                    print(contentModel.content.videoURL)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -79,6 +79,12 @@ class ContentViewController: UIViewController {
             $0.leading.trailing.top.bottom.equalTo(view)
         }
     }
+    
+    
+    //MARK: Action
+    
+    
+    
 }
 
 extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
@@ -121,7 +127,7 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             if let content = self.content {
                 returnCell.configure(dibsButtonClicked: content.isSelected, likeButtonClicked: content.isLike)
             }
-            
+            returnCell.saveControl = self
             returnCell.delegate = self
             return returnCell
         } else {
@@ -187,21 +193,6 @@ extension ContentViewController: DismissDelegate {
 
 extension ContentViewController: IsClickedProtocol {
     
-    func saveAction(status: SaveContentStatus) {
-        
-        switch status {
-        case .doseNotSave:
-            break
-        case .saved:
-            break
-        case .waiting:
-            break
-        case .downLoading:
-            break
-        }
-    }
-    
-    
     func dibButtonIsCliked() {
         guard let url = URL(string: "https://www.netflexx.ga/\(LoginStatus.shared.getProfileID() ?? 1)/contents/\(self.contentId)/select/"),
             let token = LoginStatus.shared.getToken()
@@ -218,3 +209,31 @@ extension ContentViewController: IsClickedProtocol {
     }
 }
 
+extension ContentViewController: SaveStatusContentControl {
+    
+    func control(status: SaveContentStatus) {
+        print(#function, status)
+        switch status {
+        case .doseNotSave:
+            guard let content = self.content else { return }
+            guard let imageURL = URL.safetyURL(string: content.contentsImage) else { return }
+            guard let videoURL = URL.safetyURL(string: content.videoURL) else { return }
+            let saveContent = SaveContent(
+                contentID: content.id,
+                title: content.contentsTitle,
+                rating: content.contentsRating,
+                summary: content.contentsSummay,
+                imageURL: imageURL,
+                videoURL: videoURL,
+                status: .waiting)
+            tryStartDownLoad(saveContent: saveContent)
+        case .saved:
+            break
+        case .waiting:
+            break
+        case .downLoading:
+            break
+        }
+    }
+    
+}

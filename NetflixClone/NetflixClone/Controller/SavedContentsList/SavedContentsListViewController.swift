@@ -11,7 +11,7 @@ import UIKit
 class SavedContentsListViewController: BaseViewController {
     
     private let rootView = SavedContentsListView()
-    private var model = SavedContentsListModel.shared
+    private var model: SavedContentsListModel = SavedContentsListModel.shared 
 
     //MARK: LifeCycle
     
@@ -23,7 +23,9 @@ class SavedContentsListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationController()
         setUI()
+        model.delegate = self
         test()
+        dump(model.profiles)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -31,6 +33,7 @@ class SavedContentsListViewController: BaseViewController {
         let status = model.profiles.isEmpty
         navigationController?.navigationBar.isHidden = status
         rootView.isNoContents = status
+        rootView.tableView.reloadData()
     }
     
     //MARK: UI
@@ -86,8 +89,25 @@ extension SavedContentsListViewController: UITableViewDataSource {
         model.profiles.count
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var resultHeaderView: SavedContentHeaderView
+        
+        if let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SavedContentHeaderView.identifire) as? SavedContentHeaderView {
+            resultHeaderView = headerView
+        } else {
+            let headerView = SavedContentHeaderView(reuseIdentifier: SavedContentHeaderView.identifire)
+            resultHeaderView = headerView
+        }
+        
+        let profile = model.profiles[section]
+        resultHeaderView.configure(imageURL: profile.imageURL, title: profile.name)
+        
+        return resultHeaderView
+        
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.profiles[section].savedConetnts.count
+        model.profiles[section].savedContents.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -97,17 +117,11 @@ extension SavedContentsListViewController: UITableViewDataSource {
         if let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier) as? SavedContentCell {
             resultCell = cell
         } else {
-            resultCell = SavedContentCell(id: content.id, style: .default, reuseIdentifier: SavedContentCell.identifier)
+            resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
         
         
-        let description = content.rating + " | " + String(content.capacity) + " MB"
-        resultCell.configure(
-            title: content.title,
-            description: description,
-            stringImageURL: content.imageURL,
-            summary: content.isSelected ? content.summary: ""
-            )
+        resultCell.configure(content: content)
         
         return resultCell
     }
@@ -123,15 +137,16 @@ extension SavedContentsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         for (section, profile) in model.profiles.enumerated() {
-            for (row, content) in profile.savedConetnts.enumerated() {
+            for (row, content) in profile.savedContents.enumerated() {
                 if IndexPath(row: row, section: section) != indexPath && content.isSelected {
                     content.isSelected = false
+                    let indexPath = IndexPath(row: row, section: section)
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
             }
         }
-        
-        model.profiles[indexPath.section].savedConetnts[indexPath.row].isSelected.toggle()
+
+        model.profiles[indexPath.section].savedContents[indexPath.row].isSelected.toggle()
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
@@ -148,6 +163,16 @@ extension SavedContentsListViewController {
     }
 }
 
+// MARK: SavedContentsListModel
 
+extension SavedContentsListViewController: SavedContentsListModelDelegate {
+    func didchange() {
+        DispatchQueue.main.async {
+            [weak self] in
+            self?.rootView.tableView.reloadData()
+        }
+    }
+    
+}
 
 

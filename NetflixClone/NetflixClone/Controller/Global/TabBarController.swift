@@ -18,6 +18,7 @@ class TabBarController: UITabBarController {
         super.init(nibName: nil, bundle: nil)
         addViewControllers()
         setUI()
+        SavedContentsListModel.shared.setInitialization()
     }
     
     required init?(coder: NSCoder) {

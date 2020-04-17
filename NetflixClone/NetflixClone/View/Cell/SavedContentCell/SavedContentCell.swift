@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class SavedContentCell: UITableViewCell {
     
@@ -47,7 +48,7 @@ class SavedContentCell: UITableViewCell {
         thumbnailView.addSubview(playImageBackgroundView)
         playImageBackgroundView.addSubview(playImageView)
         
-        thumbnailView.contentMode = .scaleAspectFill
+        thumbnailView.contentMode = .scaleToFill
         
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
@@ -125,15 +126,31 @@ class SavedContentCell: UITableViewCell {
     }
     
     
-    private func setImage(stringURL: String) {
-        
+    private func setImage(imageURL: URL) {
+        KingfisherManager.shared.retrieveImage(with: imageURL, completionHandler: {
+            [weak self] result in
+            switch result {
+            case .failure(let error):
+                print(error.localizedDescription)
+            case .success(let data):
+                self?.thumbnailView.setImage(data.image, for: .normal)
+            }
+        })
     }
     
-    func configure(title: String, description: String, stringImageURL: String, summary: String) {
-        titleLabel.text = title
-        descriptionLabel.text = description
-        setImage(stringURL: stringImageURL)
-        summaryLabel.text = summary
+    func configure(content: SaveContent) {
+        
+        var capacityDescription: String = ""
+        
+        if let capacity = content.capacity {
+            capacityDescription = String(capacity) + "KB"
+        }
+        
+        titleLabel.text = content.title
+        descriptionLabel.text = content.rating + capacityDescription
+        setImage(imageURL: content.imageURL)
+        summaryLabel.text = content.isSelected ? content.summary: ""
+        statusView.downLoadStatus = content.status
     }
     
     func insertSummary(summary: String) {

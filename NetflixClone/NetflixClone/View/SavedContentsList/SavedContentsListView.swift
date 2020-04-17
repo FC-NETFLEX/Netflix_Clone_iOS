@@ -45,8 +45,8 @@ class SavedContentsListView: UIView {
             addSubview($0)
         })
         
-        tableView.register(SavedContentCell.self, forCellReuseIdentifier: SavedContentCell.identifier)
-        
+//        tableView.register(SavedContentCell.self, forCellReuseIdentifier: SavedContentCell.identifier)
+        tableView.register(SavedContentHeaderView.self, forHeaderFooterViewReuseIdentifier: SavedContentHeaderView.identifire)
         tableView.backgroundColor = .setNetfilxColor(name: .black)
         tableView.separatorStyle = .none
         
