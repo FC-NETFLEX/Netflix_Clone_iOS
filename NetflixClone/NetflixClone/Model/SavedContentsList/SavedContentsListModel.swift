@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Kingfisher
 
 enum SaveContentStatus: String, Codable {
     case waiting = "대기중"
@@ -15,8 +16,13 @@ enum SaveContentStatus: String, Codable {
     case doseNotSave = "저장"
 }
 
+protocol SavedContentsListModelDelegate: class {
+    func didchange()
+}
 
 class SavedContentsListModel {
+    
+    weak var delegate: SavedContentsListModelDelegate?
     
     static var shared = SavedContentsListModel()
     
@@ -24,68 +30,79 @@ class SavedContentsListModel {
 
     var profiles: [HaveSaveContentsProfile] = []
     
-    init() {
+    func setInitialization() {
         getSavedContentsList()
         sortedSavedContensList()
+        print("=================SavedContentsListModel init():================")
+//        dump(self.profiles)
     }
     
     deinit {
-        putSavedContentsList()
+        print("SavedContentsListModel deinit")
+        
     }
     
-    func sortedSavedContensList() {
+    private func sortedSavedContensList() {
         guard let profileID = LoginStatus.shared.getProfileID() else { return }
         guard let index = profiles.firstIndex(where: { $0.id == profileID }) else { return }
         profiles.swapAt(index, 0)
     }
     
-    func getSavedContentsList() {
+    private func getSavedContentsList() {
         guard
             let email = LoginStatus.shared.getEmail(),
             let data = userDefaults.data(forKey: email),
             let savedContentsList = try? JSONDecoder().decode([HaveSaveContentsProfile].self, from: data)
             else { return }
         self.profiles = savedContentsList
+        profiles.forEach({ (profile) in
+            profile.savedContents.forEach({
+                $0.superProfile = profile
+            })
+        })
     }
     
     func putSavedContentsList() {
+        profiles.forEach({
+            $0.savedContents.forEach({
+                $0.superProfile = nil
+            })
+        })
         guard
             let email = LoginStatus.shared.getEmail(),
             let data = try? JSONEncoder().encode(self.profiles)
             else { return }
         userDefaults.set(data, forKey: email)
+        delegate?.didchange()
+        
     }
     
     func getContent(indexPath: IndexPath) -> SaveContent {
-        profiles[indexPath.section].savedConetnts[indexPath.row]
+        profiles[indexPath.section].savedContents[indexPath.row]
+    }
+    
+    func getContent(contentID: Int) -> SaveContent? {
+        
+        var content: SaveContent?
+        profiles.forEach({
+            $0.savedContents.forEach({
+                if $0.contentID == contentID {
+                    content = $0
+                }
+            })
+        })
+        
+        return content
+    }
+    
+    
+    func saveContent() {
+        
     }
     
 }
 
 
-class HaveSaveContentsProfile: Codable {
-    let id: Int
-    var pfofileName: String
-    var profileImageURL: String
-    var savedConetnts: [SaveContent] = []
-}
 
 
-class SaveContent: Codable {
-    let id: Int
-    
-    var savePoint: Int64? // 영상 재생 포인트
-    var contentRange: Int64? // 영상 길이
-    
-    let title: String // 제목
-    let rating: String // 시청 연령
-    let capacity: Double // 용량
-    let summary: String // 줄거리
-    let imageURL: String // 이미지
-    let videoURL: String // 영상
-    let savedDate: Date // 저장 시점
-    
-    var status: SaveContentStatus
-    var isSelected: Bool = false
-}
 
