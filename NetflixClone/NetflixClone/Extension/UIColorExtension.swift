@@ -26,7 +26,7 @@ extension UIColor {
         case .netflixRed: return .red //
         case .netflixLightGray: return #colorLiteral(red: 0.5647058824, green: 0.5647058824, blue: 0.5647058824, alpha: 1) // 144, 144, 144
         case .netflixGray : return #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1) // 25, 25, 25
-        case .netflixDarkGray: return #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1) // 50, 50, 50
+        case .netflixDarkGray: return #colorLiteral(red: 0.2148318528, green: 0.2148318528, blue: 0.2148318528, alpha: 1) // 50, 50, 50
         case .backgroundGray: return #colorLiteral(red: 0.07843137255, green: 0.07843137255, blue: 0.07843137255, alpha: 1) // 20, 20, 20
         case .positive: return .white
         case .negative: return .red

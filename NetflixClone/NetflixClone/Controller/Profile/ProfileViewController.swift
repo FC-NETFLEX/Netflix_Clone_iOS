@@ -139,7 +139,7 @@ class ProfileViewController: UIViewController {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 8)
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
         [userView0,userView1,userView2,userView3,userView4].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }

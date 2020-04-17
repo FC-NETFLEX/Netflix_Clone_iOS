@@ -18,6 +18,7 @@ class MoreViewTableCell: UITableViewCell {
    
     weak var delegate: MoreViewTableCellDelegate?
     static let identifier = "MoreViewTableCell"
+ 
     private let selectImage = UIImageView()
     private let moreTapButton = UIButton()
     
