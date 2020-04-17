@@ -108,7 +108,8 @@ extension LoginViewController: LoginViewDelegate {
                             return
                     }
                     
-                    LoginStatus.shared.login(email: email, token: token)
+                    let user = User(email: email, token: token)
+                    LoginStatus.shared.login(user: user)
                     let profileVC = ProfileViewController(root: .login)
                     let navi = UINavigationController(rootViewController: profileVC)
                     navi.modalPresentationStyle = .fullScreen

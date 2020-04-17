@@ -14,7 +14,7 @@ protocol SaveContentStatusViewDelegate: class {
 
 class SaveContentStatusView: UIButton {
     
-    var delegate: SaveContentStatusViewDelegate?
+    weak var delegate: SaveContentStatusViewDelegate?
     
     private var status: SaveContentStatus {
         didSet {
@@ -56,6 +56,7 @@ class SaveContentStatusView: UIButton {
         super.init(frame: .zero)
         setUI()
         setConstraints()
+        addNotification()
     }
     
     required init?(coder: NSCoder) {
@@ -64,13 +65,14 @@ class SaveContentStatusView: UIButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if status == .downLoading {
-            drawDownLoadingBackgroundLayer()
-            drawDownLoadingForegroundLayer()
-        }
+//        if status == .downLoading {
+//            drawDownLoadingBackgroundLayer()
+//            drawDownLoadingForegroundLayer()
+//        }
     }
     
     deinit {
+        print("SaveContentStatusView deinit")
         let notificationName = String(id)
         NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
     }
@@ -101,6 +103,13 @@ class SaveContentStatusView: UIButton {
         })
     }
     
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        super.touchesEnded(touches, with: event)
+//        if status == .doseNotSave {
+//            addNotification()
+//        }
+//    }
+    
     // 저장 완료 상태로 UI세팅
     private func setSaved() {
         statusImageView.isHidden = false
@@ -125,8 +134,8 @@ class SaveContentStatusView: UIButton {
         downLoadStatusView.isHidden = false
         foregroundLayer.isHidden = false
         backgroundLayer.isHidden = false
-        //        drawDownLoadingBackgroundLayer()
-        //        drawDownLoadingForegroundLayer()
+        drawDownLoadingBackgroundLayer()
+        drawDownLoadingForegroundLayer()
     }
     
     // 다운로드 하지않은 상태
@@ -141,7 +150,7 @@ class SaveContentStatusView: UIButton {
     // 다운로드 원형 프로그레스바 그리기
     private func drawDownLoadingForegroundLayer() {
         //        guard layer.sublayers?.firstIndex(of: foregroundLayer) == nil else { return }
-        let lineWidth = bounds.width * 0.2
+        let lineWidth = bounds.width * 0.15
         let radius = (bounds.width - lineWidth) / 2
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
         let startAngle = -CGFloat.pi / 2
@@ -173,6 +182,7 @@ class SaveContentStatusView: UIButton {
     //MARK: Observer
     //노티피케이션 셋팅
     private func addNotification() {
+//        print(#function, id)
         let notificationName = String(id)
         NotificationCenter.default.addObserver(
             self,
@@ -183,11 +193,20 @@ class SaveContentStatusView: UIButton {
     
     // 노티 액션
     @objc func responseOfNotification(_ notification: Notification) {
-        print(#function)
+//        print(#function)
         let notificationName = String(id)
+//        print(notification.userInfo)
         guard let downLoadStatus = notification.userInfo?[notificationName] as? DownLoadStatus else { return }
-        self.status = downLoadStatus.status
-        self.foregroundLayer.strokeEnd = downLoadStatus.percent
+//        print(downLoadStatus.status)
+        DispatchQueue.main.async {
+            self.status = downLoadStatus.status
+            self.foregroundLayer.strokeEnd = downLoadStatus.percent
+        }
+        
+//        if downLoadStatus.status != .downLoading {
+//            NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
+//        }
+        
     }
     
     
