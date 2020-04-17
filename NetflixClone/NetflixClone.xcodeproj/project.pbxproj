@@ -70,8 +70,11 @@
 		31E78CD52449D17C0037C73D /* SavedContentHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E78CD42449D17C0037C73D /* SavedContentHeaderView.swift */; };
 		31F472B024321B3D00F8DCF5 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F472AF24321B3D00F8DCF5 /* PlayButton.swift */; };
 		31F472B2243349D900F8DCF5 /* APIURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F472B1243349D900F8DCF5 /* APIURL.swift */; };
+		7030530E244A1D4800715AF1 /* MobileDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7030530D244A1D4800715AF1 /* MobileDataViewController.swift */; };
+		70305310244A1D6F00715AF1 /* MobileDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7030530F244A1D6F00715AF1 /* MobileDataTableViewCell.swift */; };
 		70444E2D2447726100D506A5 /* MoreViewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70444E2C2447726100D506A5 /* MoreViewTableCell.swift */; };
 		70444E2F244772FE00D506A5 /* AppSetUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70444E2E244772FE00D506A5 /* AppSetUpViewController.swift */; };
+		70444E3124498D4A00D506A5 /* AppSetUpTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70444E3024498D4A00D506A5 /* AppSetUpTableViewCell.swift */; };
 		705319A8242DDA8C004D46A6 /* AddProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319A7242DDA8C004D46A6 /* AddProfileView.swift */; };
 		705319AA242DDAA2004D46A6 /* AddProfileButtonVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319A9242DDAA2004D46A6 /* AddProfileButtonVIew.swift */; };
 		705319AC242DDABC004D46A6 /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705319AB242DDABC004D46A6 /* ProfileTableViewCell.swift */; };
@@ -177,8 +180,11 @@
 		31E78CD42449D17C0037C73D /* SavedContentHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedContentHeaderView.swift; sourceTree = "<group>"; };
 		31F472AF24321B3D00F8DCF5 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		31F472B1243349D900F8DCF5 /* APIURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIURL.swift; sourceTree = "<group>"; };
+		7030530D244A1D4800715AF1 /* MobileDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileDataViewController.swift; sourceTree = "<group>"; };
+		7030530F244A1D6F00715AF1 /* MobileDataTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileDataTableViewCell.swift; sourceTree = "<group>"; };
 		70444E2C2447726100D506A5 /* MoreViewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreViewTableCell.swift; sourceTree = "<group>"; };
 		70444E2E244772FE00D506A5 /* AppSetUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetUpViewController.swift; sourceTree = "<group>"; };
+		70444E3024498D4A00D506A5 /* AppSetUpTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSetUpTableViewCell.swift; sourceTree = "<group>"; };
 		705319A7242DDA8C004D46A6 /* AddProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileView.swift; sourceTree = "<group>"; };
 		705319A9242DDAA2004D46A6 /* AddProfileButtonVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileButtonVIew.swift; sourceTree = "<group>"; };
 		705319AB242DDABC004D46A6 /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
@@ -374,6 +380,7 @@
 			children = (
 				31601CE3242A345B00382B94 /* MoreViewController.swift */,
 				70444E2E244772FE00D506A5 /* AppSetUpViewController.swift */,
+				7030530D244A1D4800715AF1 /* MobileDataViewController.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -638,6 +645,8 @@
 			isa = PBXGroup;
 			children = (
 				70444E2C2447726100D506A5 /* MoreViewTableCell.swift */,
+				70444E3024498D4A00D506A5 /* AppSetUpTableViewCell.swift */,
+				7030530F244A1D6F00715AF1 /* MobileDataTableViewCell.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -892,9 +901,11 @@
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
 				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
+				7030530E244A1D4800715AF1 /* MobileDataViewController.swift in Sources */,
 				7094F0022434F74500DFCD52 /* DeleteProfileButtonView.swift in Sources */,
 				31601D2A242A345C00382B94 /* SearchView.swift in Sources */,
 				31601D35242A345C00382B94 /* MoreModel.swift in Sources */,
+				70305310244A1D6F00715AF1 /* MobileDataTableViewCell.swift in Sources */,
 				31601D23242A345C00382B94 /* LaunchScreenViewController.swift in Sources */,
 				31601D21242A345C00382B94 /* ProfileViewController.swift in Sources */,
 				31C5318224478C19000A8607 /* SaveFileManager.swift in Sources */,
@@ -912,6 +923,7 @@
 				705319AA242DDAA2004D46A6 /* AddProfileButtonVIew.swift in Sources */,
 				31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */,
 				F4A5F7B02439E82800052FAE /* RecommendedContentsCollectionViewCell.swift in Sources */,
+				70444E3124498D4A00D506A5 /* AppSetUpTableViewCell.swift in Sources */,
 				7094EFFC2434ED3700DFCD52 /* KidsClassView.swift in Sources */,
 				70A770832435D77300211473 /* ContentsBasicItem.swift in Sources */,
 				31601D25242A345C00382B94 /* HomeView.swift in Sources */,

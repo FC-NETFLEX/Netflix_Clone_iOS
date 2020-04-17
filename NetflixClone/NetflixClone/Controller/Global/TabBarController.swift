@@ -44,12 +44,14 @@ class TabBarController: UITabBarController {
         saveContentListVC.tabBarItem.title = "저장한 콘텐츠 목록"
         saveContentListVC.tabBarItem.image = UIImage(systemName: "arrow.down.to.line.alt")
         
-        let moreVC = MoreViewController()
+        let moreVC = UINavigationController(rootViewController: MoreViewController())
         moreVC.tabBarItem.title = "더보기"
         moreVC.tabBarItem.image = UIImage(systemName: "line.horizontal.3")
         
         let testVC = TestViewController()
         testVC.tabBarItem.title = "Test"
+        
+        
         
         setViewControllers([homeVC, searchVC, saveContentListVC, moreVC, testVC], animated: true)
     }
