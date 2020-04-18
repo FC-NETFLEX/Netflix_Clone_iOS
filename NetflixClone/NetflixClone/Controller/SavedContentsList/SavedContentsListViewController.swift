@@ -24,8 +24,7 @@ class SavedContentsListViewController: BaseViewController {
         setNavigationController()
         setUI()
         model.delegate = self
-        test()
-        dump(model.profiles)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -34,6 +33,8 @@ class SavedContentsListViewController: BaseViewController {
         navigationController?.navigationBar.isHidden = status
         rootView.isNoContents = status
         rootView.tableView.reloadData()
+        dump(model.profiles)
+        
     }
     
     //MARK: UI
@@ -158,8 +159,6 @@ extension SavedContentsListViewController: UITableViewDelegate {
 
 extension SavedContentsListViewController {
     func test() {
-        let url = FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask)
-        print(url)
     }
 }
 
