@@ -10,10 +10,21 @@ import Foundation
 import Kingfisher
 
 enum SaveContentStatus: String, Codable {
-    case waiting = "대기중"
-    case downLoading = "저장중"
-    case saved = "저장 완료"
-    case doseNotSave = "저장"
+    case waiting 
+    case downLoading
+    case saved
+    case doseNotSave
+    
+    func getSign() -> String {
+        switch self {
+        case .waiting, .downLoading:
+            return "저장중"
+        case .saved:
+            return "저장 완료"
+        case .doseNotSave:
+            return "저장"
+        }
+    }
 }
 
 protocol SavedContentsListModelDelegate: class {
@@ -29,12 +40,11 @@ class SavedContentsListModel {
     private let userDefaults = UserDefaults.standard
 
     var profiles: [HaveSaveContentsProfile] = []
+
     
-    func setInitialization() {
+    init() {
         getSavedContentsList()
         sortedSavedContensList()
-        print("=================SavedContentsListModel init():================")
-//        dump(self.profiles)
     }
     
     deinit {
@@ -95,10 +105,7 @@ class SavedContentsListModel {
         return content
     }
     
-    
-    func saveContent() {
         
-    }
     
 }
 
