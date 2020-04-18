@@ -15,8 +15,18 @@ class HaveSaveContentsProfile: Codable {
     
     let id: Int
     var name: String
-    var imageURL: URL?
+    private var _imageURL: URL
     var savedContents: [SaveContent]
+    
+    var imageURL: URL {
+        get {
+            if let savedImageURL = SaveFileManager(saveType: .profileImage).readFile(contentID: id) {
+                return savedImageURL
+            } else {
+                return _imageURL
+            }
+        }
+    }
     
     
     // SaveContentsListModel에 현재의 프로필이 존재하면 있는거 반환, 없으면 만들어서 반환
@@ -27,7 +37,7 @@ class HaveSaveContentsProfile: Codable {
             guard let currentProfile = LoginStatus.shared.getProfile() else { return nil }
             
             let profile = SavedContentsListModel.shared.profiles[index]
-            profile.imageURL = currentProfile.imageURL
+            profile._imageURL = currentProfile.imageURL
             profile.name = currentProfile.name
             resultProfile = profile
         } else {
@@ -44,10 +54,10 @@ class HaveSaveContentsProfile: Codable {
         return resultProfile
     }
     
-    init(id: Int, name: String, imageURL: URL?, savedContents: [SaveContent] = []) {
+    init(id: Int, name: String, imageURL: URL, savedContents: [SaveContent] = []) {
         self.id = id
         self.name = name
-        self.imageURL = imageURL
+        self._imageURL = imageURL
         self.savedContents = savedContents
     }
     
@@ -71,8 +81,8 @@ class HaveSaveContentsProfile: Codable {
             case .failure(let error):
                 print(error.localizedDescription)
             case .success(let url):
-                let url = SaveFileManager(saveType: .profileImage).moveFile(tempURL: url, fileName: String(self.id))
-                self.imageURL = url
+                let _ = SaveFileManager(saveType: .profileImage).moveFile(tempURL: url, fileName: String(self.id))
+//                self.imageURL = url
                 SavedContentsListModel.shared.putSavedContentsList()
             }
         })

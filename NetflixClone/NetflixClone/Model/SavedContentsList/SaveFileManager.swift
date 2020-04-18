@@ -28,15 +28,16 @@ class SaveFileManager {
     private let saveType: SaveType
     private var superURL: URL? {
         get {
-            let path: FileManager.SearchPathDirectory
+            let urls = self.manager.urls(for: .documentDirectory, in: .userDomainMask)
+//            print("SuperURLs:", urls)
+            guard var url = urls.first else { return nil }
             switch self.saveType {
             case .profileImage:
-                path = .picturesDirectory
+                url.appendPathComponent("Profile")
             case .movie, .movieImage:
-                path = .moviesDirectory
+                url.appendPathComponent("Video")
             }
-            let url = self.manager.urls(for: path, in: .userDomainMask).first
-//            print("SuperURL:", url ?? "Don't Have")
+//            print("SuperURL:", url)
             return url
         }
     }
@@ -49,10 +50,10 @@ class SaveFileManager {
     private func checkDirectory() {
         guard let url = superURL else { return }
         do {
-            try manager.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: .producesRelativePathURLs)
-//            print("Check Saved Contets", contents)
+            let _ = try manager.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: .producesRelativePathURLs)
+//            print("Check Saved Contets:", contents)
         } catch {
-            print(error.localizedDescription)
+            print("Check Saved Contets Error:", error.localizedDescription)
             makeDirectory()
         }
     }
@@ -61,7 +62,7 @@ class SaveFileManager {
         guard let url = superURL else { return }
         do {
             try manager.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
-//            print("makeDirectory: Success")
+            print("makeDirectory: Success")
         } catch {
             print("makeDirectory Error:", error.localizedDescription)
         }
@@ -86,6 +87,21 @@ class SaveFileManager {
             deleteFile(url: tempURL)
             return nil
         }
+    }
+    
+    func readFile(contentID: Int) -> URL?{
+        
+        guard let directory = superURL else { print("ReadFile:", "Failed"); return nil }
+        
+        guard let contetnts = try? manager.contentsOfDirectory(at: directory, includingPropertiesForKeys: [], options: .producesRelativePathURLs) else { print("ReadFile:", "Failed"); return nil }
+        
+        guard let index = contetnts.firstIndex(where: {
+            $0.lastPathComponent == String(contentID) + "." + saveType.pathExtension()
+        }) else { return nil }
+        
+        let resultURL = contetnts[index]
+        print("ReadFile: Success", "\nURL:", resultURL)
+        return resultURL
     }
     
     func deleteFile(url: URL) {
