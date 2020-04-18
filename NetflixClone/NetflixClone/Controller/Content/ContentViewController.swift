@@ -212,6 +212,7 @@ extension ContentViewController: IsClickedProtocol {
 extension ContentViewController: SaveStatusContentControl {
     
     func control(status: SaveContentStatus) {
+        
         print(#function, status)
         switch status {
         case .doseNotSave:

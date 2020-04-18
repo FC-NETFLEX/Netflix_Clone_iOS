@@ -90,6 +90,7 @@ class SaveContentStatusView: UIButton {
         
         status = downLoadStatus
         
+        
     }
     
     private func setConstraints() {
@@ -109,6 +110,9 @@ class SaveContentStatusView: UIButton {
 //            addNotification()
 //        }
 //    }
+    
+    
+    //MARK: Action
     
     // 저장 완료 상태로 UI세팅
     private func setSaved() {
@@ -203,12 +207,20 @@ class SaveContentStatusView: UIButton {
             self.foregroundLayer.strokeEnd = downLoadStatus.percent
         }
         
-//        if downLoadStatus.status != .downLoading {
-//            NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
-//        }
         
     }
     
+    //MARK: Touch Event
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        alpha = 0.5
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        alpha = 1
+    }
     
     
     

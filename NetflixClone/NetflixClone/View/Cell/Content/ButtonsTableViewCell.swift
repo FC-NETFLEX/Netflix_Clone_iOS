@@ -65,7 +65,7 @@ class ButtonsTableViewCell: UITableViewCell {
         self.addSubview(redView)
         redView.backgroundColor = UIColor.setNetfilxColor(name: .netflixRed)
         
-        statusLabel.text = statusButton.downLoadStatus.rawValue
+        statusLabel.text = statusButton.downLoadStatus.getSign()
         statusLabel.textColor = .setNetfilxColor(name: .white)
         statusLabel.textAlignment = .center
         statusLabel.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
@@ -221,7 +221,7 @@ class ButtonsTableViewCell: UITableViewCell {
 
 extension ButtonsTableViewCell: SaveContentStatusViewDelegate {
     func changeStatus(status: SaveContentStatus) {
-        statusLabel.text = status.rawValue
+        statusLabel.text = status.getSign()
     }
      
 }
