@@ -9,10 +9,15 @@
 import UIKit
 import Kingfisher
 
+protocol SavedContentCellDelegate: class {
+    func saveContentControl(status: SaveContentStatus, id: Int)
+}
+
 class SavedContentCell: UITableViewCell {
     
     static let identifier = "SavedContentCell"
     
+    var delegate: SavedContentCellDelegate?
     
     private let thumbnailView = UIButton()
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
@@ -35,6 +40,8 @@ class SavedContentCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    //MARK: UI
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
         [summaryLabel, thumbnailView, titleLabel, descriptionLabel, statusView].forEach({
@@ -71,7 +78,7 @@ class SavedContentCell: UITableViewCell {
         summaryLabel.font = .dynamicFont(fontSize: titleFontSize * 0.8, weight: .regular)
         summaryLabel.numberOfLines = 0
         
-        
+        statusView.addTarget(self, action: #selector(didTapStatusView(sender:)), for: .touchUpInside)
         
     }
     
@@ -126,6 +133,8 @@ class SavedContentCell: UITableViewCell {
     }
     
     
+    //MARK: Action
+    
     private func setImage(imageURL: URL) {
         KingfisherManager.shared.retrieveImage(with: imageURL, completionHandler: {
             [weak self] result in
@@ -152,7 +161,6 @@ class SavedContentCell: UITableViewCell {
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
         statusView.id = content.contentID
-//        print("Configure:", content.contentID)
     }
     
     private func switchMBForKB(capacity: Int64) -> String? {
@@ -166,10 +174,10 @@ class SavedContentCell: UITableViewCell {
         return resultString
     }
     
-//    func insertSummary(summary: String) {
-//        summaryLabel.text = summary
-//    }
     
+    @objc private func didTapStatusView(sender: SaveContentStatusView) {
+        delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
+    }
         
 }
 

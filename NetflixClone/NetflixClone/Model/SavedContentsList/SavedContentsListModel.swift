@@ -9,23 +9,6 @@
 import Foundation
 import Kingfisher
 
-enum SaveContentStatus: String, Codable {
-    case waiting 
-    case downLoading
-    case saved
-    case doseNotSave
-    
-    func getSign() -> String {
-        switch self {
-        case .waiting, .downLoading:
-            return "저장중"
-        case .saved:
-            return "저장 완료"
-        case .doseNotSave:
-            return "저장"
-        }
-    }
-}
 
 protocol SavedContentsListModelDelegate: class {
     func didchange()
@@ -39,7 +22,7 @@ class SavedContentsListModel {
     
     private let userDefaults = UserDefaults.standard
 
-    var profiles: [HaveSaveContentsProfile] = []
+    var profiles: [HaveSaveContentsProfile] = [] 
 
     
     init() {

@@ -215,7 +215,6 @@ extension ContentViewController: SaveStatusContentControl {
     
     func control(status: SaveContentStatus) {
         
-        print(#function, status)
         switch status {
         case .doseNotSave:
             guard let content = self.content else { return }
@@ -233,14 +232,12 @@ extension ContentViewController: SaveStatusContentControl {
                 imageURL: imageURL,
                 videoURL: previewURL,
                 status: .waiting)
-            tryStartDownLoad(saveContent: saveContent)
-        case .saved:
-            break
-        case .waiting:
-            break
-        case .downLoading:
-            break
+            saveContentControl(status: status, saveContetnt: saveContent)
+        default:
+            guard let saveContent = SavedContentsListModel.shared.getContent(contentID: contentId) else { return }
+            saveContentControl(status: status, saveContetnt: saveContent)
         }
+       
     }
     
 }

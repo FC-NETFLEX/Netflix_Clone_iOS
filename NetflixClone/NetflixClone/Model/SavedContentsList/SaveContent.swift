@@ -6,7 +6,27 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+enum SaveContentStatus: String, Codable {
+    case waiting
+    case downLoading
+    case saved
+    case doseNotSave
+    
+    func getSign() -> String {
+        switch self {
+        case .downLoading:
+            return "저장 중"
+        case .waiting:
+            return "저장 대기 중"
+        case .saved:
+            return "저장 완료"
+        case .doseNotSave:
+            return "저장"
+        }
+    }
+}
 
 class SaveContent: Codable {
     
@@ -20,7 +40,9 @@ class SaveContent: Codable {
     
     var savePoint: Int64? // 영상 재생 포인트
     var contentRange: Int64? // 영상 길이
+    
     var capacity: Int64? // 용량
+    var writtenByte: Int64? // 받은 용량
     
     let title: String // 제목
     let rating: String // 시청 연령
@@ -29,7 +51,11 @@ class SaveContent: Codable {
     private var _videoURL: URL // 영상
     let savedDate: Date // 저장 시점
     
-    var status: SaveContentStatus
+    var status: SaveContentStatus {
+        didSet {
+            self.postNotification()
+        }
+    }
     var isSelected: Bool = false
     
     var imageURL: URL {
@@ -65,12 +91,12 @@ class SaveContent: Codable {
     
     // 영화 다운로드가 끝나면 해당 폴더로 파일을 이동
     func saveVideo(location: URL) {
-        print(#function, location)
+//        print(#function, location)
         let fileManager = SaveFileManager.init(saveType: .movie)
         
         let url = fileManager.moveFile(tempURL: location, fileName: String(contentID))
         guard let _ = url else { return }
-        print("SaveMovie Success")
+//        print("SaveMovie Success")
 //        self.videoURL = videoURL
         saveContentImage()
     }
@@ -92,5 +118,28 @@ class SaveContent: Codable {
                 self.superProfile?.updateProfile()
             }
         })
+    }
+    
+    func cancelDownLoadContent() {
+        DownLoading.shared.cancleDownLoad(id: contentID, completion: deleteContent)
+    }
+    
+    func deleteContent() {
+        guard let index = superProfile?.savedContents.firstIndex(where: { $0.contentID == contentID }) else { return }
+        SaveFileManager(saveType: .movie).deleteFile(url: self.videoURL)
+        SaveFileManager(saveType: .movieImage).deleteFile(url: self.imageURL)
+        superProfile?.savedContents.remove(at: index)
+        status = .doseNotSave
+    }
+    
+    private func postNotification() {
+        var percent: CGFloat = 0
+        if let current = writtenByte, let total = capacity {
+            percent = CGFloat(current) / CGFloat(total)
+        }
+        let downLoadStatus = DownLoadStatus(contentID: contentID, status: status, percent: percent)
+        let notificationName = String(contentID)
+        let userInfo = ["status": downLoadStatus]
+        NotificationCenter.default.post(name: Notification.Name(notificationName), object: nil, userInfo: userInfo)
     }
 }
