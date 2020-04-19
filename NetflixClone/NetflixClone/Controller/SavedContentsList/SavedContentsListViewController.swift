@@ -62,7 +62,7 @@ class SavedContentsListViewController: CanSaveViewController {
     @objc private func didTapModifyButtotn(_ sender: UIButton) {
         print(#function)
         sender.isSelected.toggle()
-        
+        rootView.tableView.setEditing(sender.isSelected, animated: true)
     }
     
     private func modifyViewController() {

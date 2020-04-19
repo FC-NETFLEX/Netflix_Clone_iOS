@@ -67,7 +67,7 @@ class SavedContentCell: UITableViewCell {
         playImageBackgroundView.backgroundColor = UIColor.setNetfilxColor(name: .black).withAlphaComponent(0.3)
         
         
-        let titleFontSize: CGFloat = 20
+        let titleFontSize: CGFloat = 16
         titleLabel.font = .dynamicFont(fontSize: titleFontSize, weight: .heavy)
         titleLabel.textColor = .setNetfilxColor(name: .white)
         
@@ -109,13 +109,13 @@ class SavedContentCell: UITableViewCell {
         titleLabel.snp.makeConstraints({
             $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.bottom.equalTo(thumbnailView.snp.centerY).offset(-yMargin)
+            $0.bottom.equalTo(thumbnailView.snp.centerY)
         })
         
         descriptionLabel.snp.makeConstraints({
             $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.top.equalTo(thumbnailView.snp.centerY).offset(yMargin)
+            $0.top.equalTo(thumbnailView.snp.centerY)
         })
         
         statusView.snp.makeConstraints({
