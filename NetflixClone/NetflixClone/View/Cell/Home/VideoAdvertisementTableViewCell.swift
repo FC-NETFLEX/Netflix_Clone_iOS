@@ -10,9 +10,9 @@ import UIKit
 import AVKit
 
 protocol VideoAdvertisementTableViewCellDelegate: class {
-    func didTabVideoView() -> ()
+    func didTabVideoView(contentId: Int) -> ()
     func didTabVideoCellPlayButton() -> ()
-    func didTabvideoCellDibsButton() -> ()
+    func didTabVideoCellDibsButton() -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -32,6 +32,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     
     private var muteFlag = true
     
+    private var contentID: Int?
     
     //    private var url: URL?
     var player: AVPlayer?
@@ -177,7 +178,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     //MARK: -Configure
     func configure(/*advertisement: URL, */contentID: Int, contentName: String, dibs: Bool) {
         
-        
+        self.contentID = contentID
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
         
 //        contentView.reloadInputViews()
@@ -185,14 +186,14 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     
     //MAKR: -Action
     @objc private func didTabVideoView(sender: UIView) {
-        delegate?.didTabVideoView()
+        delegate?.didTabVideoView(contentId: contentID!)
     }
     @objc private func didTabPlayButton(sender: UIButton) {
         delegate?.didTabVideoCellPlayButton()
     }
     @objc private func didTabDibsButton(sender: UIButton) {
         // toggle
-        delegate?.didTabvideoCellDibsButton()
+        delegate?.didTabVideoCellDibsButton()
     }
     @objc private func didTabMuteButton(sender: UIButton) {
         
