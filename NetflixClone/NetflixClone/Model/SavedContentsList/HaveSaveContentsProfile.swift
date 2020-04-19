@@ -16,7 +16,14 @@ class HaveSaveContentsProfile: Codable {
     let id: Int
     var name: String
     private var _imageURL: URL
-    var savedContents: [SaveContent]
+    var savedContents: [SaveContent] {
+        didSet {
+            if self.savedContents.isEmpty {
+                removeProfile()
+            }
+            SavedContentsListModel.shared.putSavedContentsList()
+        }
+    }
     
     var imageURL: URL {
         get {
@@ -88,6 +95,12 @@ class HaveSaveContentsProfile: Codable {
         })
     }
     
+    private func removeProfile() {
+        let model = SavedContentsListModel.shared
+        guard let index = model.profiles.firstIndex(where: { $0.id == id }) else { return }
+        SaveFileManager(saveType: .profileImage).deleteFile(url: imageURL)
+        model.profiles.remove(at: index)
+    }
     
     // 다운로드 시작
     func startDownLoad(saveContent: SaveContent) {

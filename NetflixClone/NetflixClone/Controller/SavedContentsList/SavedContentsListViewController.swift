@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SavedContentsListViewController: BaseViewController {
+class SavedContentsListViewController: CanSaveViewController {
     
     private let rootView = SavedContentsListView()
     private var model: SavedContentsListModel = SavedContentsListModel.shared 
@@ -29,10 +29,7 @@ class SavedContentsListViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let status = model.profiles.isEmpty
-        navigationController?.navigationBar.isHidden = status
-        rootView.isNoContents = status
-        rootView.tableView.reloadData()
+        modifyViewController()
 //        dump(model.profiles)
         
     }
@@ -66,6 +63,13 @@ class SavedContentsListViewController: BaseViewController {
         print(#function)
         sender.isSelected.toggle()
         
+    }
+    
+    private func modifyViewController() {
+        let status = model.profiles.isEmpty
+        navigationController?.navigationBar.isHidden = status
+        rootView.isNoContents = status
+        rootView.tableView.reloadData()
     }
 
 }
@@ -102,7 +106,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
         
         let profile = model.profiles[section]
         resultHeaderView.configure(imageURL: profile.imageURL, title: profile.name)
-        
+
         return resultHeaderView
         
     }
@@ -121,7 +125,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
         } else {
             resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
-        
+        resultCell.delegate = self
         resultCell.configure(content: content)
         
         return resultCell
@@ -158,6 +162,15 @@ extension SavedContentsListViewController: UITableViewDelegate {
 }
 
 
+// MARK: SavedContentCellDelegate
+extension SavedContentsListViewController: SavedContentCellDelegate {
+    func saveContentControl(status: SaveContentStatus, id: Int) {
+        guard let saveContent = SavedContentsListModel.shared.getContent(contentID: id) else { return }
+        saveContentControl(status: status, saveContetnt: saveContent)
+    }
+    
+}
+
 
 
 // MARK: Test
@@ -172,10 +185,10 @@ extension SavedContentsListViewController {
 extension SavedContentsListViewController: SavedContentsListModelDelegate {
     
     func didchange() {
-//        DispatchQueue.main.async {
-//            [weak self] in
-//            self?.rootView.tableView.reloadData()
-//        }
+        DispatchQueue.main.async {
+            [weak self] in
+            self?.modifyViewController()
+        }
     }
     
 }

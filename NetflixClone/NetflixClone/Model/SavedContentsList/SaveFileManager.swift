@@ -107,9 +107,10 @@ class SaveFileManager {
     func deleteFile(url: URL) {
         do {
             try manager.removeItem(at: url)
-//            print("Delete file: Success")
+            print("Delete file: Success")
+            print(url)
         } catch {
-//            print("Delete file Error:", error.localizedDescription)
+            print("Delete file Error:", error.localizedDescription)
         }
     }
     

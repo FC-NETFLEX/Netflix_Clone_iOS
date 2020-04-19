@@ -11,15 +11,26 @@ import Foundation
 class DownLoading {
     static let shared = DownLoading()
     
-    var downLoadingList: [DownLoadManager] = []
+    var downLoadingList: [DownLoadManager] = [] {
+        didSet {
+            print(downLoadingList)
+            guard let downLoadManager = downLoadingList.first else { return }
+            guard downLoadManager.task?.state.rawValue != 0 else { return }
+            downLoadManager.task?.resume()
+        }
+    }
     
     func appendDownLoadManager(downLoadManager: DownLoadManager) {
         downLoadManager.delegate = self
-        
-        if downLoadingList.isEmpty {
-            downLoadManager.task?.resume()
-        }
         downLoadingList.append(downLoadManager)
+    }
+    
+    func cancleDownLoad(id: Int, completion: () -> Void) {
+        guard let index = downLoadingList.firstIndex(where: { $0.content.contentID == id }) else { return }
+        let downLoadManager = downLoadingList[index]
+        downLoadManager.task?.cancel()
+        downLoadingList.remove(at: index)
+        completion()
     }
 }
 
@@ -29,4 +40,5 @@ extension DownLoading: DownLoadManagerDelegate {
         guard !downLoadingList.isEmpty else { return }
         downLoadingList[0].task?.resume()
     }
+    
 }

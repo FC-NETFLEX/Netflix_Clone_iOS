@@ -16,7 +16,7 @@ class DownLoadManager: UIResponder {
     
     weak var delegate: DownLoadManagerDelegate?
     
-    private let content: SaveContent
+    let content: SaveContent
     
     var task: URLSessionDownloadTask?
     
@@ -50,12 +50,6 @@ class DownLoadManager: UIResponder {
         
     }
     
-    // 비디오 id를 통해서 같은 id를 옵저버 하고있는 뷰들의 업데이트를 위한 노티피케이션 전송
-    private func postNotification(downLoadStatus: DownLoadStatus) {
-        let notificationName = String(content.contentID)
-        let userInfo = [notificationName: downLoadStatus]
-        NotificationCenter.default.post(name: Notification.Name(notificationName), object: nil, userInfo: userInfo)
-    }
     
 }
 
@@ -63,9 +57,7 @@ extension DownLoadManager: URLSessionDownloadDelegate {
     // 다운로드 완료
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
-        let downLoadStatus = DownLoadStatus(contentID: content.contentID, status: .saved)
         content.saveVideo(location: location)
-        postNotification(downLoadStatus: downLoadStatus)
         delegate?.finishedTask()
     }
     
@@ -75,14 +67,9 @@ extension DownLoadManager: URLSessionDownloadDelegate {
         //        print("totalBytesWritten:", totalBytesWritten) // 지금까지 들어온 바이트
         //        print("totalBytesExpectedToWrite:", totalBytesExpectedToWrite) // 총 예상
         
-        let current = CGFloat(totalBytesWritten)
-        let total = CGFloat(totalBytesExpectedToWrite)
-        let percent = current / total
-        let downLoadStatus = DownLoadStatus(contentID: content.contentID, status: .downLoading, percent: percent)
-        content.status = .downLoading
         content.capacity = totalBytesExpectedToWrite
-        postNotification(downLoadStatus: downLoadStatus)
-//        print(#function, percent)
+        content.writtenByte = totalBytesWritten
+        content.status = .downLoading
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
