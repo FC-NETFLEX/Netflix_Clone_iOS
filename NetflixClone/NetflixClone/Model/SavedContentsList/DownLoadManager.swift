@@ -27,12 +27,10 @@ class DownLoadManager: UIResponder {
     
     // 다운로드 
     func downLoadMovieTask(url: URL) {
-        
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
         let task = session.downloadTask(with: url)
         self.task = task
-        
     }
     
     class func downLoadImage(url: URL, completionHandler:@escaping (Result<URL, Error>) -> Void) {
@@ -52,21 +50,11 @@ class DownLoadManager: UIResponder {
         
     }
     
-    private func completeDownLoad(location: URL) {
-//        let manager = SaveFileManager(saveType: .image)
-//        guard let saveURL = manager.moveFile(tempURL: location, fileName: String(videoID)) else { return }
-//        guard let profile = HaveSaveContentsProfile.default() else { return }
-        delegate?.finishedTask()
-        let downLoadStatus = DownLoadStatus(contentID: content.contentID, status: .saved)
-        postNotification(downLoadStatus: downLoadStatus)
-//        content.save
-    }
-    
     // 비디오 id를 통해서 같은 id를 옵저버 하고있는 뷰들의 업데이트를 위한 노티피케이션 전송
     private func postNotification(downLoadStatus: DownLoadStatus) {
         let notificationName = String(content.contentID)
         let userInfo = [notificationName: downLoadStatus]
-        NotificationCenter.default.post(name: Notification.Name(notificationName), object: self, userInfo: userInfo)
+        NotificationCenter.default.post(name: Notification.Name(notificationName), object: nil, userInfo: userInfo)
     }
     
 }
@@ -74,10 +62,11 @@ class DownLoadManager: UIResponder {
 extension DownLoadManager: URLSessionDownloadDelegate {
     // 다운로드 완료
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        delegate?.finishedTask()
+        
         let downLoadStatus = DownLoadStatus(contentID: content.contentID, status: .saved)
         content.saveVideo(location: location)
         postNotification(downLoadStatus: downLoadStatus)
+        delegate?.finishedTask()
     }
     
     // 다운로드가 진행됨에 따라 노티피케이션 보냄

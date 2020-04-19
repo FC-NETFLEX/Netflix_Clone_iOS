@@ -126,6 +126,8 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             
             if let content = self.content {
                 returnCell.configure(dibsButtonClicked: content.isSelected, likeButtonClicked: content.isLike)
+
+                print("ContentController:", contentId)
             }
             returnCell.saveControl = self
             returnCell.delegate = self

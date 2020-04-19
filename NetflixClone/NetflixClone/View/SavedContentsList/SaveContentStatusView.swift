@@ -41,7 +41,12 @@ class SaveContentStatusView: UIButton {
         }
     }
     
-    private let id: Int
+    var id: Int {
+        didSet {
+            removeNotification(id: oldValue)
+            addNotification(id: self.id)
+        }
+    }
     
     private let statusImageView = UIImageView()
     private let downLoadStatusView = UIView()
@@ -56,7 +61,7 @@ class SaveContentStatusView: UIButton {
         super.init(frame: .zero)
         setUI()
         setConstraints()
-        addNotification()
+        addNotification(id: id)
     }
     
     required init?(coder: NSCoder) {
@@ -65,16 +70,12 @@ class SaveContentStatusView: UIButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        if status == .downLoading {
-//            drawDownLoadingBackgroundLayer()
-//            drawDownLoadingForegroundLayer()
 //        }
     }
     
     deinit {
         print("SaveContentStatusView: deinit")
-        let notificationName = String(id)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
+        removeNotification(id: id)
     }
     
     //MARK: UI
@@ -185,7 +186,7 @@ class SaveContentStatusView: UIButton {
     
     //MARK: Observer
     //노티피케이션 등록
-    private func addNotification() {
+    private func addNotification(id: Int) {
 //        print(#function, id)
         let notificationName = String(id)
         NotificationCenter.default.addObserver(
@@ -193,11 +194,17 @@ class SaveContentStatusView: UIButton {
             selector: #selector(responseOfNotification),
             name: NSNotification.Name(notificationName),
             object: nil)
-        print(#function)
+        print(#function, notificationName)
+    }
+    
+    private func removeNotification(id: Int) {
+        let notificationName = String(id)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
     }
     
     // 노티 액션
     @objc func responseOfNotification(_ notification: Notification) {
+//        print(Date())
         let notificationName = String(id)
 //        print(notification.userInfo)
         guard let downLoadStatus = notification.userInfo?[notificationName] as? DownLoadStatus else { return }
