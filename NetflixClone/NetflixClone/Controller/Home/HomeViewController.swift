@@ -16,6 +16,9 @@ final class HomeViewController: UIViewController {
     
     private let cellCount = 5
     
+    //MARK: MenuBar
+    private let menuBar = HomeMenuBarView()
+    
     //MARK: JSON 관련
     private let decoder = JSONDecoder()
     private let homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
@@ -50,6 +53,8 @@ final class HomeViewController: UIViewController {
     
     
     //MARK: LifeCycle
+    
+    //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -93,6 +98,7 @@ final class HomeViewController: UIViewController {
         setConstraints()
     }
     
+    //MARK: ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
         
         // VideoCell의 영상 재생 멈춤
@@ -116,14 +122,23 @@ final class HomeViewController: UIViewController {
         homeTableView.register(Top10TableViewCell.self, forCellReuseIdentifier: Top10TableViewCell.identifier)
         homeTableView.register(WatchContentsTableViewCell.self, forCellReuseIdentifier: WatchContentsTableViewCell.identifier)
         
-        
+        menuBar.delegate = self
         
         //        homeTableView.register(VideoAdvertisementTableViewCell.self, forCellReuseIdentifier: VideoAdvertisementTableViewCell.identifier)
         
         view.addSubview(homeTableView)
+        view.addSubview(menuBar)
         
     }
     private func setConstraints() {
+        
+        let menuBarHeight: CGFloat = round(view.frame.height / 9)
+        
+        menuBar.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.height.equalTo(menuBarHeight)
+        }
+        
         homeTableView.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -465,4 +480,23 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     
 }
 
-
+//MARK: HomeMenuBarViewDelegate
+extension HomeViewController: HomeMenuBarViewDelegate {
+    func didTabMenuBarIconButton() {
+        print("MenuBar DidTabIcon")
+    }
+    
+    func didTabMenuBarMovieButton() {
+        print("MenuBar DidTabMovie")
+    }
+    
+    func didTabCategoryButton() {
+        print("MenuBar DidTabCategory")
+    }
+    
+    func didTabDibsButton() {
+        print("MenuBar DidTabDibs")
+    }
+    
+    
+}
