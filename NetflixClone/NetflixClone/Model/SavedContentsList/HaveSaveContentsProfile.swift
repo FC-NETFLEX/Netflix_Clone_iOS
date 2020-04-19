@@ -91,7 +91,7 @@ class HaveSaveContentsProfile: Codable {
     
     // 다운로드 시작
     func startDownLoad(saveContent: SaveContent) {
-        saveContent.superProfile = self
+//        saveContent.superProfile = self
         savedContents.insert(saveContent, at: 0)
         let downLoadManager = DownLoadManager(content: saveContent)
         downLoadManager.downLoadMovieTask(url: saveContent.videoURL)
@@ -100,8 +100,3 @@ class HaveSaveContentsProfile: Codable {
 }
 
 
-//extension HaveSaveContentsProfile: SaveContentDelegate {
-//    func finishedSaveContent() {
-//        saveImage()
-//    }
-//}

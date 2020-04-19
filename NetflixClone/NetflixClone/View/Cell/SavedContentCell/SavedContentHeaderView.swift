@@ -29,6 +29,7 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
             contentView.addSubview($0)
         })
         
+        
         contentView.backgroundColor = .setNetfilxColor(name: .black)
         
         titleLabel.font = .dynamicFont(fontSize: 16, weight: .medium)
@@ -41,16 +42,18 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
     
     private func setConstraint() {
         
-        let yMargin = CGFloat.dynamicYMargin(margin: 8)
+//        let yMargin = CGFloat.dynamicYMargin(margin: 8)
         let xMargin = CGFloat.dynamicXMargin(margin: 16)
-        let imageViewSize = CGFloat.dynamicYMargin(margin: 32)
+//        let imageViewSize = CGFloat.dynamicYMargin(margin: 32)
         
         imageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.height.width.equalTo(imageViewSize)
-            $0.top.bottom.equalToSuperview().inset(yMargin)
-//            $0.width.equalTo(imageView.snp.height)
+//            $0.height.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.width.equalTo(imageView.snp.height)
+//            $0.centerY.equalToSuperview()
         })
+        
         
         titleLabel.snp.makeConstraints({
             $0.leading.equalTo(imageView.snp.trailing).offset(xMargin)

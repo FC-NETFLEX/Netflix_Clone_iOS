@@ -33,7 +33,7 @@ class SavedContentsListViewController: BaseViewController {
         navigationController?.navigationBar.isHidden = status
         rootView.isNoContents = status
         rootView.tableView.reloadData()
-        dump(model.profiles)
+//        dump(model.profiles)
         
     }
     
@@ -135,6 +135,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
 
 extension SavedContentsListViewController: UITableViewDelegate {
     
+    // 컨텐츠 선택시 줄거리 보여주는 함수
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         for (section, profile) in model.profiles.enumerated() {
@@ -151,7 +152,13 @@ extension SavedContentsListViewController: UITableViewDelegate {
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        tableView.bounds.height / 18
+    }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        tableView.bounds.height / 6
+    }
 }
 
 
@@ -165,11 +172,12 @@ extension SavedContentsListViewController {
 // MARK: SavedContentsListModel
 
 extension SavedContentsListViewController: SavedContentsListModelDelegate {
+    
     func didchange() {
-        DispatchQueue.main.async {
-            [weak self] in
-            self?.rootView.tableView.reloadData()
-        }
+//        DispatchQueue.main.async {
+//            [weak self] in
+//            self?.rootView.tableView.reloadData()
+//        }
     }
     
 }

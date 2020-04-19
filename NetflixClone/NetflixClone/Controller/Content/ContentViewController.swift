@@ -50,7 +50,7 @@ class ContentViewController: CanSaveViewController {
                     self.similarContets = contentModel.similarContents
                     self.contentTableView.reloadData()
                     self.bluredBackgroundView.configure(backgroundImage: contentModel.content.contentsImage)
-                    print(contentModel.content.videoURL)
+//                    print("Content Preview:", contentModel.content.previewVideo ?? "No preview", #line)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
@@ -218,14 +218,18 @@ extension ContentViewController: SaveStatusContentControl {
         case .doseNotSave:
             guard let content = self.content else { return }
             guard let imageURL = URL.safetyURL(string: content.contentsImage) else { return }
-            guard let videoURL = URL.safetyURL(string: content.videoURL) else { return }
+//            guard let videoURL = URL.safetyURL(string: content.videoURL) else { return }
+            // 비디오 영상 용량이 커서 프리뷰로 테스트 대체함
+            guard let preview = content.previewVideo, let previewURL = URL.safetyURL(string: preview) else { return }
+            // 테스트 끝나면 비디오 URL로 변경 예정
+            
             let saveContent = SaveContent(
                 contentID: content.id,
                 title: content.contentsTitle,
                 rating: content.contentsRating,
                 summary: content.contentsSummay,
                 imageURL: imageURL,
-                videoURL: videoURL,
+                videoURL: previewURL,
                 status: .waiting)
             tryStartDownLoad(saveContent: saveContent)
         case .saved:

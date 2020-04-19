@@ -53,7 +53,7 @@ class SavedContentCell: UITableViewCell {
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
         
-        thumbnailView.backgroundColor = .blue
+        thumbnailView.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
         
         playImageBackgroundView.layer.borderColor = UIColor.setNetfilxColor(name: .white).cgColor
         playImageBackgroundView.layer.borderWidth = 1
@@ -84,9 +84,9 @@ class SavedContentCell: UITableViewCell {
         
         thumbnailView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.equalToSuperview().offset(yMargin)
-            $0.width.equalToSuperview().multipliedBy(0.3)
-            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
+            $0.top.bottom.equalToSuperview().inset(yMargin)
+            $0.width.equalTo(contentView.snp.height).multipliedBy(1.5)
+//            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
         })
         
         playImageBackgroundView.snp.makeConstraints({
@@ -143,9 +143,9 @@ class SavedContentCell: UITableViewCell {
         var capacityDescription: String = ""
         
         if let capacity = content.capacity {
-            capacityDescription = String(capacity) + "KB"
+            capacityDescription = " | " + String(capacity) + "KB"
         }
-        
+//        statusView.addNotification()
         titleLabel.text = content.title
         descriptionLabel.text = content.rating + capacityDescription
         setImage(imageURL: content.imageURL)

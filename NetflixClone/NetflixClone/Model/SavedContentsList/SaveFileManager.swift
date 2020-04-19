@@ -62,7 +62,7 @@ class SaveFileManager {
         guard let url = superURL else { return }
         do {
             try manager.createDirectory(at: url, withIntermediateDirectories: false, attributes: nil)
-            print("makeDirectory: Success")
+//            print("makeDirectory: Success")
         } catch {
             print("makeDirectory Error:", error.localizedDescription)
         }
@@ -71,15 +71,15 @@ class SaveFileManager {
     func moveFile(tempURL: URL, fileName: String) -> URL? {
         guard let saveDir = superURL else { return nil}
         let saveURL = saveDir.appendingPathComponent(fileName).appendingPathExtension(saveType.pathExtension())
-        print("====================move file==============================")
-        print(saveURL)
-        print(tempURL)
-        print("====================move file==============================")
+//        print("====================move file==============================")
+//        print(saveURL)
+//        print(tempURL)
+//        print("====================move file==============================")
         deleteFile(url: saveURL)
         
         do {
             try manager.moveItem(at: tempURL, to: saveURL)
-            print("Move Item: Success", fileName + "." + saveType.pathExtension())
+//            print("Move Item: Success", fileName + "." + saveType.pathExtension())
             deleteFile(url: tempURL)
             return saveURL
         } catch {
@@ -100,16 +100,16 @@ class SaveFileManager {
         }) else { return nil }
         
         let resultURL = contetnts[index]
-        print("ReadFile: Success", "\nURL:", resultURL)
+//        print("ReadFile: Success", "\nURL:", resultURL)
         return resultURL
     }
     
     func deleteFile(url: URL) {
         do {
             try manager.removeItem(at: url)
-            print("Delete file: Success")
+//            print("Delete file: Success")
         } catch {
-            print("Delete file Error:", error.localizedDescription)
+//            print("Delete file Error:", error.localizedDescription)
         }
     }
     
