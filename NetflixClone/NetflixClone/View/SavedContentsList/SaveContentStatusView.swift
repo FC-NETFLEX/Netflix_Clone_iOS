@@ -72,7 +72,7 @@ class SaveContentStatusView: UIButton {
     }
     
     deinit {
-        print("SaveContentStatusView deinit")
+        print("SaveContentStatusView: deinit")
         let notificationName = String(id)
         NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
     }
@@ -184,7 +184,7 @@ class SaveContentStatusView: UIButton {
     
     
     //MARK: Observer
-    //노티피케이션 셋팅
+    //노티피케이션 등록
     private func addNotification() {
 //        print(#function, id)
         let notificationName = String(id)
@@ -193,20 +193,19 @@ class SaveContentStatusView: UIButton {
             selector: #selector(responseOfNotification),
             name: NSNotification.Name(notificationName),
             object: nil)
+        print(#function)
     }
     
     // 노티 액션
     @objc func responseOfNotification(_ notification: Notification) {
-//        print(#function)
         let notificationName = String(id)
 //        print(notification.userInfo)
         guard let downLoadStatus = notification.userInfo?[notificationName] as? DownLoadStatus else { return }
-//        print(downLoadStatus.status)
         DispatchQueue.main.async {
             self.status = downLoadStatus.status
             self.foregroundLayer.strokeEnd = downLoadStatus.percent
         }
-        
+//        print(#function, downLoadStatus.percent)
         
     }
     

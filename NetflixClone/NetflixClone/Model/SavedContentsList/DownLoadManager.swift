@@ -17,6 +17,7 @@ class DownLoadManager: UIResponder {
     weak var delegate: DownLoadManagerDelegate?
     
     private let content: SaveContent
+    
     var task: URLSessionDownloadTask?
     
     init(content: SaveContent) {
@@ -73,10 +74,8 @@ class DownLoadManager: UIResponder {
 extension DownLoadManager: URLSessionDownloadDelegate {
     // 다운로드 완료
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-//        print("didFinishedDownLoadingTo")
         delegate?.finishedTask()
         let downLoadStatus = DownLoadStatus(contentID: content.contentID, status: .saved)
-//        content.finishedSaveContent(location: location)
         content.saveVideo(location: location)
         postNotification(downLoadStatus: downLoadStatus)
     }
@@ -94,7 +93,6 @@ extension DownLoadManager: URLSessionDownloadDelegate {
         content.status = .downLoading
         content.capacity = totalBytesExpectedToWrite
         postNotification(downLoadStatus: downLoadStatus)
-        
 //        print(#function, percent)
     }
     

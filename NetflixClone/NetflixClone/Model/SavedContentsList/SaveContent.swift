@@ -10,7 +10,11 @@ import Foundation
 
 class SaveContent: Codable {
     
-    weak var superProfile: HaveSaveContentsProfile?
+    var superProfile: HaveSaveContentsProfile? {
+        get {
+            return SavedContentsListModel.shared.getProfile(contentID: self.contentID)
+        }
+    }
     
     let contentID: Int
     
