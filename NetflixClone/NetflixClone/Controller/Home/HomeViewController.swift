@@ -11,10 +11,13 @@ import UIKit
 final class HomeViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
-    //    private let homeView = HomeView()
-    private let homeTableView = UITableView(frame: .zero, style: .grouped)
+    private let homeView = HomeView()
     
+
+//    private let homeTableView = UITableView(frame: .zero, style: .grouped)
     private let cellCount = 5
+    
+
     
     //MARK: MenuBar
     private let menuBar = HomeMenuBarView()
@@ -53,7 +56,9 @@ final class HomeViewController: UIViewController {
     
     
     //MARK: LifeCycle
-    
+    override func loadView() {
+        view = homeView
+    }
     //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,7 +88,7 @@ final class HomeViewController: UIViewController {
 //                    self.adContent = jsonData.adContent
                     
                     DispatchQueue.main.sync {
-                        self.homeTableView.reloadData()
+                        self.homeView.homeTableView.reloadData()
                     }
                     
                     print("-----------------[ jsonData 파싱 종료 ]-------------------")
@@ -101,6 +106,11 @@ final class HomeViewController: UIViewController {
     //MARK: ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
         
+//        if view == homeView {
+//            hoeview.videoAdvertismentCell?.player?.pause()
+//
+//        }
+        
         // VideoCell의 영상 재생 멈춤
         videoAdvertismentCell?.player?.pause()
     }
@@ -108,25 +118,15 @@ final class HomeViewController: UIViewController {
     
     //MARK: - UI
     private func setUI() {
-        //        homeTableView.frame = view.frame
-        
-        homeTableView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
-        homeTableView.dataSource = self
-        homeTableView.delegate = self
-        
-        homeTableView.contentInsetAdjustmentBehavior = .never
+
+        homeView.homeTableView.delegate = self
+        homeView.homeTableView.dataSource = self
         
         
-        homeTableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
-        homeTableView.register(LatestMovieTableViewCell.self, forCellReuseIdentifier: LatestMovieTableViewCell.indentifier)
-        homeTableView.register(Top10TableViewCell.self, forCellReuseIdentifier: Top10TableViewCell.identifier)
-        homeTableView.register(WatchContentsTableViewCell.self, forCellReuseIdentifier: WatchContentsTableViewCell.identifier)
-        
+
         menuBar.delegate = self
         
-        //        homeTableView.register(VideoAdvertisementTableViewCell.self, forCellReuseIdentifier: VideoAdvertisementTableViewCell.identifier)
-        
-        view.addSubview(homeTableView)
+
         view.addSubview(menuBar)
         
     }
@@ -139,10 +139,7 @@ final class HomeViewController: UIViewController {
             $0.height.equalTo(menuBarHeight)
         }
         
-        homeTableView.snp.makeConstraints {
-            $0.top.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
-        }
+
     }
     
     
@@ -451,19 +448,19 @@ extension HomeViewController: WatchContentsTableViewDelegate {
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
-    
+
     func didTabWatchContentPlay() {
         print("WatchContentCell Click")
     }
-    
-    
+
+
 }
 
 //MARK: - VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     
-    func didTabVideoView() {
-        let contentVC = ContentViewController()
+    func didTabVideoView(contentId: Int) {
+        let contentVC = ContentViewController(id: contentId)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
@@ -472,7 +469,7 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
         print("영상재생화면 이동")
     }
     
-    func didTabvideoCellDibsButton() {
+    func didTabVideoCellDibsButton() {
         print("찜한 목록 추가하기")
     }
     
