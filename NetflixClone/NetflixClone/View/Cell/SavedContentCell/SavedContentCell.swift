@@ -25,10 +25,10 @@ class SavedContentCell: UITableViewCell {
     
     init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.statusView = SaveContentStatusView(id: id, status: .saved)
+        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
         setConstraint()
-//        test()
     }
     
     required init?(coder: NSCoder) {
@@ -84,9 +84,9 @@ class SavedContentCell: UITableViewCell {
         
         thumbnailView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.bottom.equalToSuperview().inset(yMargin)
-            $0.width.equalTo(contentView.snp.height).multipliedBy(1.5)
-//            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
+            $0.top.equalToSuperview().inset(yMargin)
+            $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
+            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
         })
         
         playImageBackgroundView.snp.makeConstraints({
@@ -102,13 +102,13 @@ class SavedContentCell: UITableViewCell {
         titleLabel.snp.makeConstraints({
             $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.bottom.equalTo(thumbnailView.snp.centerY)
+            $0.bottom.equalTo(thumbnailView.snp.centerY).offset(-yMargin)
         })
         
         descriptionLabel.snp.makeConstraints({
             $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.top.equalTo(thumbnailView.snp.centerY)
+            $0.top.equalTo(thumbnailView.snp.centerY).offset(yMargin)
         })
         
         statusView.snp.makeConstraints({
@@ -142,20 +142,33 @@ class SavedContentCell: UITableViewCell {
         
         var capacityDescription: String = ""
         
-        if let capacity = content.capacity {
-            capacityDescription = " | " + String(capacity) + "KB"
+        if let capacity = content.capacity, let capacityString = switchMBForKB(capacity: capacity) {
+            capacityDescription = " | " + String(capacityString) + "MB"
         }
-//        statusView.addNotification()
+        
         titleLabel.text = content.title
         descriptionLabel.text = content.rating + capacityDescription
         setImage(imageURL: content.imageURL)
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
+        statusView.id = content.contentID
+//        print("Configure:", content.contentID)
     }
     
-    func insertSummary(summary: String) {
-        summaryLabel.text = summary
+    private func switchMBForKB(capacity: Int64) -> String? {
+        let multiflire: Double = 1000000
+        let result = Double(capacity) / multiflire
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 1
+        
+        let resultString = formatter.string(from: result as NSNumber)
+        return resultString
     }
+    
+//    func insertSummary(summary: String) {
+//        summaryLabel.text = summary
+//    }
     
         
 }

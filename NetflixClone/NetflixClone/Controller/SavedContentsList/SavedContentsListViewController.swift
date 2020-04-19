@@ -115,12 +115,12 @@ extension SavedContentsListViewController: UITableViewDataSource {
         
         let resultCell: SavedContentCell
         let content = model.getContent(indexPath: indexPath)
+        
         if let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier) as? SavedContentCell {
             resultCell = cell
         } else {
             resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
-        
         
         resultCell.configure(content: content)
         
@@ -155,11 +155,9 @@ extension SavedContentsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         tableView.bounds.height / 18
     }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.bounds.height / 6
-    }
 }
+
+
 
 
 // MARK: Test
