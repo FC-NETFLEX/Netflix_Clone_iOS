@@ -68,6 +68,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         playButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
         
         posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
+        posterButton.contentMode = .scaleAspectFill
         
         watchTimeLabel.font = timeLabelFont
         watchTimeLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)//.lightGray
