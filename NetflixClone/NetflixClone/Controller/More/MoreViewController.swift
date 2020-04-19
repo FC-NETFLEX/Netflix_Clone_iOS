@@ -11,6 +11,7 @@ import SnapKit
 
 class MoreViewController: UIViewController {
     
+    let stackView = UIStackView()
     let moreTableView = UITableView()
     
     override func viewDidLoad() {
