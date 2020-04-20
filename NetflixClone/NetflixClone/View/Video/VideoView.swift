@@ -63,6 +63,20 @@ class VideoView: UIView {
         }
     }
     
+    var title: String?{
+        get {
+            return titleLabel.text
+        }
+        set {
+            titleLabel.transform = .init(scaleX: 0.001, y: 1)
+            titleLabel.text = newValue
+            UIView.animate(withDuration: 0.5, animations: {
+                [weak self] in
+                self?.titleLabel.transform = .identity
+            })
+        }
+    }
+    
     private var isPlaying = true {
         didSet {
             //            playButtonBackgroundView.setPlaying(self.isPlaying)
@@ -117,13 +131,11 @@ class VideoView: UIView {
     private let seekPointView = UIView()
     
     
-    init(title: String) {
+    override init(frame: CGRect) {
         super.init(frame: .zero)
-        setUI(title: title)
+        setUI()
         setConstraints()
         setGestureRecognizer()
-        
-        //        test()
     }
     
     
@@ -134,7 +146,7 @@ class VideoView: UIView {
     //MARK: UI
     
     
-    private func setUI(title: String) {
+    private func setUI() {
         
         
         [backgroundView, topView, centerView, bottomView, seekPointView, loadingIndicator].forEach({
@@ -186,7 +198,7 @@ class VideoView: UIView {
         backgroundView.backgroundColor = .setNetfilxColor(name: .black)
         backgroundView.alpha = 0.5
         
-        titleLabel.text = title
+        
         titleLabel.textColor = .setNetfilxColor(name: .white)
         
         exitButton.setImage(UIImage(systemName: "xmark"), for: .normal)
