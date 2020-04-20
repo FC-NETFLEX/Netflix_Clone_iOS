@@ -188,6 +188,10 @@ extension ContentViewController: RecommendedCellDalegate {
 }
 
 extension ContentViewController: DismissDelegate {
+    func play() {
+        presentVideoController(contentID: contentId)
+    }
+    
     func dismiss() {
         presentingViewController?.dismiss(animated: true)
     }
