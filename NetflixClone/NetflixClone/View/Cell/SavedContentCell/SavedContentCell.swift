@@ -7,11 +7,17 @@
 //
 
 import UIKit
+import Kingfisher
+
+protocol SavedContentCellDelegate: class {
+    func saveContentControl(status: SaveContentStatus, id: Int)
+}
 
 class SavedContentCell: UITableViewCell {
     
     static let identifier = "SavedContentCell"
     
+    var delegate: SavedContentCellDelegate?
     
     private let thumbnailView = UIButton()
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
@@ -24,16 +30,18 @@ class SavedContentCell: UITableViewCell {
     
     init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.statusView = SaveContentStatusView(id: id, status: .saved)
+        
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUI()
         setConstraint()
-//        test()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    //MARK: UI
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
         [summaryLabel, thumbnailView, titleLabel, descriptionLabel, statusView].forEach({
@@ -47,19 +55,19 @@ class SavedContentCell: UITableViewCell {
         thumbnailView.addSubview(playImageBackgroundView)
         playImageBackgroundView.addSubview(playImageView)
         
-        thumbnailView.contentMode = .scaleAspectFill
+        thumbnailView.contentMode = .scaleToFill
         
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
         
-        thumbnailView.backgroundColor = .blue
+        thumbnailView.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
         
         playImageBackgroundView.layer.borderColor = UIColor.setNetfilxColor(name: .white).cgColor
         playImageBackgroundView.layer.borderWidth = 1
         playImageBackgroundView.backgroundColor = UIColor.setNetfilxColor(name: .black).withAlphaComponent(0.3)
         
         
-        let titleFontSize: CGFloat = 20
+        let titleFontSize: CGFloat = 16
         titleLabel.font = .dynamicFont(fontSize: titleFontSize, weight: .heavy)
         titleLabel.textColor = .setNetfilxColor(name: .white)
         
@@ -70,7 +78,7 @@ class SavedContentCell: UITableViewCell {
         summaryLabel.font = .dynamicFont(fontSize: titleFontSize * 0.8, weight: .regular)
         summaryLabel.numberOfLines = 0
         
-        
+        statusView.addTarget(self, action: #selector(didTapStatusView(sender:)), for: .touchUpInside)
         
     }
     
@@ -83,8 +91,8 @@ class SavedContentCell: UITableViewCell {
         
         thumbnailView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.equalToSuperview().offset(yMargin)
-            $0.width.equalToSuperview().multipliedBy(0.3)
+            $0.top.equalToSuperview().inset(yMargin)
+            $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
             $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
         })
         
@@ -125,21 +133,51 @@ class SavedContentCell: UITableViewCell {
     }
     
     
-    private func setImage(stringURL: String) {
+    //MARK: Action
+    
+    private func setImage(imageURL: URL) {
+        KingfisherManager.shared.retrieveImage(with: imageURL, completionHandler: {
+            [weak self] result in
+            switch result {
+            case .failure(let error):
+                print(error.localizedDescription)
+            case .success(let data):
+                self?.thumbnailView.setImage(data.image, for: .normal)
+            }
+        })
+    }
+    
+    func configure(content: SaveContent) {
         
+        var capacityDescription: String = ""
+        
+        if let capacity = content.capacity, let capacityString = switchMBForKB(capacity: capacity) {
+            capacityDescription = " | " + String(capacityString) + "MB"
+        }
+        
+        titleLabel.text = content.title
+        descriptionLabel.text = content.rating + capacityDescription
+        setImage(imageURL: content.imageURL)
+        summaryLabel.text = content.isSelected ? content.summary: ""
+        statusView.downLoadStatus = content.status
+        statusView.id = content.contentID
     }
     
-    func configure(title: String, description: String, stringImageURL: String, summary: String) {
-        titleLabel.text = title
-        descriptionLabel.text = description
-        setImage(stringURL: stringImageURL)
-        summaryLabel.text = summary
+    private func switchMBForKB(capacity: Int64) -> String? {
+        let multiflire: Double = 1000000
+        let result = Double(capacity) / multiflire
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 1
+        
+        let resultString = formatter.string(from: result as NSNumber)
+        return resultString
     }
     
-    func insertSummary(summary: String) {
-        summaryLabel.text = summary
-    }
     
+    @objc private func didTapStatusView(sender: SaveContentStatusView) {
+        delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
+    }
         
 }
 

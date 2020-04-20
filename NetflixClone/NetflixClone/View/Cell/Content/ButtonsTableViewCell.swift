@@ -9,7 +9,10 @@
 protocol IsClickedProtocol: class {
     func dibButtonIsCliked()
     func likeButtonIsCliked()
-    func saveAction(status: SaveContentStatus)
+}
+
+protocol SaveStatusContentControl: class {
+    func control(status: SaveContentStatus)
 }
 
 import UIKit
@@ -30,6 +33,7 @@ class ButtonsTableViewCell: UITableViewCell {
     private let redView = UIView()
     
     weak var delegate: IsClickedProtocol?
+    weak var saveControl: SaveStatusContentControl?
     
     init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.statusButton = SaveContentStatusView(id: id, status: .doseNotSave)
@@ -37,6 +41,7 @@ class ButtonsTableViewCell: UITableViewCell {
         self.backgroundColor = .clear
         setUI()
         setConstraints()
+        setStatusView(id: id)
     }
     
     required init?(coder: NSCoder) {
@@ -60,7 +65,7 @@ class ButtonsTableViewCell: UITableViewCell {
         self.addSubview(redView)
         redView.backgroundColor = UIColor.setNetfilxColor(name: .netflixRed)
         
-        statusLabel.text = statusButton.downLoadStatus.rawValue
+        statusLabel.text = statusButton.downLoadStatus.getSign()
         statusLabel.textColor = .setNetfilxColor(name: .white)
         statusLabel.textAlignment = .center
         statusLabel.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
@@ -72,9 +77,14 @@ class ButtonsTableViewCell: UITableViewCell {
         statusButton.addTarget(self, action: #selector(didTapSaveButton(sender:)), for: .touchUpInside)
     }
     
+    private func setStatusView(id: Int) {
+        guard let saveContent = SavedContentsListModel.shared.getContent(contentID: id) else { return }
+        statusButton.downLoadStatus = saveContent.status
+    }
+    
     @objc private func didTapSaveButton(sender: SaveContentStatusView) {
         print(#function)
-        delegate?.saveAction(status: sender.downLoadStatus)
+        saveControl?.control(status: sender.downLoadStatus)
     }
     
     // MARK: 상세화면에서 '내가찜한콘텐츠', '평가', '저장' 버튼 눌렀을 때 액션
@@ -211,7 +221,7 @@ class ButtonsTableViewCell: UITableViewCell {
 
 extension ButtonsTableViewCell: SaveContentStatusViewDelegate {
     func changeStatus(status: SaveContentStatus) {
-        statusLabel.text = status.rawValue
+        statusLabel.text = status.getSign()
     }
      
 }

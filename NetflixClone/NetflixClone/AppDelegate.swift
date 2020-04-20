@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let rootViewController: UIViewController
 
         if LoginStatus.shared.checkLoginStatus() {
-            rootViewController = UINavigationController(rootViewController: ProfileViewController(root: .login))
+            rootViewController = UINavigationController(rootViewController: ProfileViewController(root: .main))
         } else {
             rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
         }

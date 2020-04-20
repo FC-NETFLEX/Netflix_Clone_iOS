@@ -16,6 +16,7 @@ class TabBarController: UITabBarController {
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        SavedContentsListModel.shared = SavedContentsListModel()
         addViewControllers()
         setUI()
     }
@@ -43,11 +44,16 @@ class TabBarController: UITabBarController {
         saveContentListVC.tabBarItem.title = "저장한 콘텐츠 목록"
         saveContentListVC.tabBarItem.image = UIImage(systemName: "arrow.down.to.line.alt")
         
-        let moreVC = MoreViewController()
+        let moreVC = UINavigationController(rootViewController: MoreViewController())
         moreVC.tabBarItem.title = "더보기"
         moreVC.tabBarItem.image = UIImage(systemName: "line.horizontal.3")
         
-        setViewControllers([homeVC, searchVC, saveContentListVC, moreVC], animated: true)
+        let testVC = TestViewController()
+        testVC.tabBarItem.title = "Test"
+        
+        
+        
+        setViewControllers([homeVC, searchVC, saveContentListVC, moreVC, testVC], animated: true)
     }
     
     private func setUI() {

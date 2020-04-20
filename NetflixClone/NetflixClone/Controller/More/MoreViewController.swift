@@ -6,132 +6,93 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import AVKit
-//enum RootVC {
-//    case main
-//    case edite
-//    case normal
-//}
+import UIKit
+import SnapKit
 
 class MoreViewController: UIViewController {
-   
-
-    private let tempLogoutbutton = UIButton(type: .system)
-    private let tempVideoButton = UIButton(type: .system)
-    private let tempAddProfileButton = UIButton(type: .system)
-    private let tempProfileManagerButton = UIButton(type: .system)
-    private let tempChoiceProfileButton = UIButton(type: .system)
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
+    let moreTableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        testUI()
-        testConstraint()
+        setNavigation()
+        setUI()
+        setConstraints()
+        
     }
-
-}
-
-
-// MARK: Test
-extension MoreViewController {
-    
-    private func testUI() {
-        view.addSubview(tempLogoutbutton)
-        tempLogoutbutton.setTitle("로그아웃", for: .normal)
-        tempLogoutbutton.tintColor = .white
-        tempLogoutbutton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        
-        view.addSubview(tempVideoButton)
-        tempVideoButton.setTitle("비디오", for: .normal)
-        tempVideoButton.tintColor = .white
-        tempVideoButton.addTarget(self, action: #selector(didTapVideoButton), for: .touchUpInside)
-        
-        view.addSubview(tempAddProfileButton)
-        tempAddProfileButton.setTitle("프로필추가", for: .normal)
-        tempAddProfileButton.tintColor = .white
-        tempAddProfileButton.addTarget(self, action: #selector(didTapTempAddProfileButton), for: .touchUpInside)
-        
-        view.addSubview(tempProfileManagerButton)
-        tempProfileManagerButton.setTitle("프로필관리", for: .normal)
-        tempProfileManagerButton.tintColor = .white
-        tempProfileManagerButton.addTarget(self, action: #selector(didTapTempProfileManagerButton), for: .touchUpInside)
-        
-        view.addSubview(tempChoiceProfileButton)
-        tempChoiceProfileButton.setTitle("첫화면프로필선택", for: .normal)
-        tempChoiceProfileButton.tintColor = .white
-        tempChoiceProfileButton.addTarget(self, action: #selector(didTapTempChoiceProfileButton), for: .touchUpInside)
-        
-        
-        
+    private func setNavigation() {
+        navigationController?.isNavigationBarHidden = true
     }
     
-    private func testConstraint() {
-        tempLogoutbutton.frame.size = CGSize(width: 80, height: 40)
-        tempLogoutbutton.center.x = view.center.x
-        tempLogoutbutton.center.y = view.center.y + 200
-        
-        tempVideoButton.frame.size = CGSize(width: 80, height: 40)
-        tempVideoButton.center.x = view.center.x
-        tempVideoButton.center.y = tempLogoutbutton.center.y - 100
-        
-        tempAddProfileButton.frame.size = CGSize(width: 80, height: 40)
-        tempAddProfileButton.center.x = view.center.x
-        tempAddProfileButton.center.y = tempVideoButton.center.y - 100
-        
-        tempProfileManagerButton.frame.size = CGSize(width: 80, height: 40)
-        tempProfileManagerButton.center.x = view.center.x
-        tempProfileManagerButton.center.y = tempAddProfileButton.center.y - 100
-        
-        tempChoiceProfileButton.frame.size = CGSize(width: 120, height: 40)
-        tempChoiceProfileButton.center.x = view.center.x
-        tempChoiceProfileButton.center.y = tempProfileManagerButton.center.y - 100
+    private func setUI() {
+        view.backgroundColor = .setNetfilxColor(name: .black)
+        [moreTableView].forEach {
+            view.addSubview($0)
+        }
+        moreTableView.delegate = self
+        moreTableView.dataSource = self
+        moreTableView.separatorColor = .setNetfilxColor(name: .black)
+        moreTableView.backgroundColor = .setNetfilxColor(name: .black)
+        moreTableView.register(MoreViewTableCell.self, forCellReuseIdentifier: MoreViewTableCell.identifier)
     }
-    
-    @objc private func didTapLogoutButton() {
+    private func setConstraints() {
+        let margin: CGFloat = 30
+        let padding: CGFloat = 4
         
-        LoginStatus.shared.logout()
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = appDelegate.window
-        let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
-        
-    }
-    
-    @objc private func didTapVideoButton() {
-        
-        let urlString = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/MM002732____BBQ_161____1080p____A054_C116_03279U_001.mp4"
-        presentVideoController(urlString: urlString, title: "Test")
-        
-
-    }
-    @objc private func didTapTempAddProfileButton() {
-        let profileVC = ProfileViewController(root: .add)
-        let navi = UINavigationController(rootViewController: profileVC)
-        print("추가")
-        present(navi, animated: true)
-        
-        
-    }
-    @objc private func didTapTempChoiceProfileButton() {
-        let profileVC = ProfileViewController(root: .main)
-        let navi = UINavigationController(rootViewController: profileVC)
-        print("메인")
-        present(navi, animated: true)
-        
-        
-    }
-    @objc private func didTapTempProfileManagerButton() {
-        
-        let profileVC = ProfileViewController(root: .manager)
-        let navi = UINavigationController(rootViewController: profileVC)
-        print("관리")
-        present(navi, animated: true)
-        
+        moreTableView.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(view.snp.centerY)
+            $0.bottom.equalToSuperview()
+            
+        }
     }
     
 }
+extension MoreViewController: UITableViewDelegate {
+    
+}
+extension MoreViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return moreViewData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MoreViewTableCell.identifier, for: indexPath) as? MoreViewTableCell else { fatalError() }
+        cell.textLabel?.text = moreViewData[indexPath.row]
+        cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
+        cell.tag = indexPath.row
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.font = .systemFont(ofSize: 16)
+        cell.imageView?.image = UIImage(named: moreViewImage[indexPath.row])
+        cell.delegate = self
+        
+        
+        
+        return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        60
+    }
+    
+}
+
+extension MoreViewController: MoreViewTableCellDelegate {
+    func didTapMoreTapButton(cell: MoreViewTableCell) {
+        switch cell.tag {
+        case 0:
+            print("내가찜한컨텐츠 컨트롤러 연결하기")
+        //네비로 바꾸기
+        case 1:
+            let appSettingVC = AppSetUpViewController()
+            navigationController?.pushViewController(appSettingVC, animated: true)
+            //            let navi = UINavigationController(rootViewController: appSettingVC)
+            //            present(navi, animated: true)
+            //            navigationController?.pushViewController(appSettingVC, animated: true)
+            
+        default:
+            break
+        }
+    }
+}
+

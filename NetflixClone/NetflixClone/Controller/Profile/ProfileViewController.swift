@@ -139,7 +139,7 @@ class ProfileViewController: UIViewController {
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 8)
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
         [userView0,userView1,userView2,userView3,userView4].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -326,7 +326,11 @@ extension ProfileViewController: ProfilViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
         // 양중창이 수정함
-        LoginStatus.shared.selectedProfile(profileID: userIDArray[tag])
+        guard let imageURL = URL(string: userImageArray[tag]) else { return }
+        let id = userIDArray[tag]
+        let name = userNameArray[tag]
+        let profile = Profile(id: id, name: name, imageURL: imageURL)
+        LoginStatus.shared.selectedProfile(profile: profile)
         // 양중창이 수정함
         
         let tabBarController = TabBarController()

@@ -85,7 +85,7 @@ class RecommendedTableViewCell: UITableViewCell {
     func configure(contents: [SimilarContent]) {
         self.contents = contents
         contentCollectionView.reloadData()
-        print(contents)
+//        print(contents)
 //        self.idData = id
 //        self.posterData = poster
 //
