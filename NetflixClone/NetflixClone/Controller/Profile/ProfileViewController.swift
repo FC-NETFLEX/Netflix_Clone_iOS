@@ -26,20 +26,22 @@ class ProfileViewController: UIViewController {
     private let userView2 = UIView()
     private let userView3 = UIView()
     private let userView4 = UIView()
-    private let titleLabel = UILabel()
     
+    var userProfileList = [ProfileList]()
+    var userIconList = [ProfileIcons]()
+
     private var userIsKids = [Bool]()
     private var userViewArray = [UIView]()
     private var profileViewArray = [ProfileView]()
+//
+//    var userImage = String()
+//    var userName = String()
+//    var userNameArray = [String]()
+//    var userImageArray = [String]()
+//    var userIDArray = [Int]()
+//    var userIDNumArray = [Int]()
     
-    var userImage = String()
-    var userName = String()
-    var userNameArray = [String]()
-    var userImageArray = [String]()
-    var userIDArray = [Int]()
-    var userIDNumArray = [Int]()
-    
-    private var isStateArray = [Bool]()
+//    private var isStateArray = [Bool]()
     
     
     init(root: ProfileRoots) {
@@ -62,9 +64,7 @@ class ProfileViewController: UIViewController {
         super.viewWillAppear(animated)
         setNavigationBar()
         reqeustProfileList()
-        print(userIDArray)
-        print(userIDNumArray)
-        
+     
     }
     
     private func setUI() {
@@ -118,16 +118,16 @@ class ProfileViewController: UIViewController {
         
         let addVC = AddProfileViewController(root: .add)
         
-        switch userImageArray.isEmpty {
-        case true:
-            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
-            addVC.randomIndex = 3
-            
-        case false:
-            guard let imageIndex = (0..<self.userImageArray.count).randomElement() else { return }
-            addVC.randomSetImage = self.userImageArray[imageIndex]
-            addVC.randomIndex = self.userIDNumArray[imageIndex]
-        }
+//        switch userIconList[id].isEmpty {
+//        case true:
+//            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
+//            addVC.randomIndex = 3
+//            
+//        case false:
+//            guard let imageIndex = (0..<self.userIconList[].count).randomElement() else { return }
+//            addVC.randomSetImage = self.userImageArray[imageIndex]
+//            addVC.randomIndex = self.userIDNumArray[imageIndex]
+//        }
         
         let navi = UINavigationController(rootViewController: addVC)
         navi.modalPresentationStyle = .fullScreen
@@ -180,7 +180,9 @@ class ProfileViewController: UIViewController {
     }
     
     private func viewSetting() {
-        let count = userNameArray.count
+     
+        let count = userProfileList.count
+        print(count)
         
         for (index, userView) in userViewArray.enumerated() {
             userView.subviews.forEach { $0.removeFromSuperview() }
@@ -188,9 +190,9 @@ class ProfileViewController: UIViewController {
             if index < count {
                 let tempProfileView = ProfileView()
                 tempProfileView.tag = index
-                tempProfileView.profileLabel.text = userNameArray[index]
+                tempProfileView.profileLabel.text = userProfileList[index].name
                 let button = tempProfileView.profileButton
-                setImage(stringURL: userImageArray[index], button: button)
+                setImage(stringURL: userIconList[index].iconURL, button: button)
                 userView.addSubview(tempProfileView)
                 profileViewArray.append(tempProfileView)
                 tempProfileView.delegate = self
@@ -257,11 +259,16 @@ class ProfileViewController: UIViewController {
                 let data = data,
                 let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                 else { return }
+            
             // 양중창이 수정함
-            self.userIDArray.removeAll()
-            // 양중창이 수정함
-            self.userNameArray.removeAll()
-            self.userImageArray.removeAll()
+            self.userIconList.removeAll()
+            self.userProfileList.removeAll()
+//            self.userIDArray.removeAll()
+//            // 양중창이 수정함
+//            self.userNameArray.removeAll()
+//            self.userImageArray.removeAll()
+          
+//            var profile = [ProfileList]()
             
             for profileList in profileLists {
                 guard
@@ -270,19 +277,26 @@ class ProfileViewController: UIViewController {
                     let iskids = profileList["is_kids"] as? Bool,
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
                     else { return }
+
                 
-                self.userIDArray.append(id)
-                self.userNameArray.append(name)
-                self.userIsKids.append(iskids)
+//                let tempProfile = ProfileList(id: id, name: name, iskids: iskids)
+//                profile.append(tempProfile)
+                
+                self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
+            
+              
+//                var icon = [ProfileIcons]()
                 
                 guard
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
                     else { return }
-            
-                self.userIDNumArray.append(idNum)
-                self.userImageArray.append(iconURL)
-                self.userImage = iconURL
+              
+//                let temp = ProfileIcons(idNum: idNum, iconURL: iconURL)
+//                icon.append(temp)
+                self.userIconList.append(ProfileIcons(idNum: idNum, iconURL: iconURL))
+
+    
             }
             
             DispatchQueue.main.async {
@@ -298,6 +312,8 @@ class ProfileViewController: UIViewController {
         }
         task.resume()
     }
+    
+   
     
     
     @objc func changeButtonDidTap() {
@@ -322,11 +338,12 @@ class ProfileViewController: UIViewController {
         }
     }
 }
+
 extension ProfileViewController: ProfilViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
         // 양중창이 수정함
-        LoginStatus.shared.selectedProfile(profileID: userIDArray[tag])
+        LoginStatus.shared.selectedProfile(profileID: userProfileList[tag].id)
         // 양중창이 수정함
         
         let tabBarController = TabBarController()
@@ -369,11 +386,11 @@ extension ProfileViewController: ProfilViewDelegate {
         //
         //        }
         let changeVC = ChangeProfileViewController()
-        changeVC.userID = userIDArray[tag]
-        changeVC.profileName = userNameArray[tag]
+        changeVC.userID = userProfileList[tag].id
+        changeVC.profileName = userProfileList[tag].name
         changeVC.profileIcon = selectViewImage
-        changeVC.isKids = userIsKids[tag]
-        changeVC.profileIconNum = userIDNumArray[tag]
+        changeVC.isKids = userProfileList[tag].iskids
+        changeVC.profileIconNum = userIconList[tag].idNum
         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
         navigationController?.pushViewController(changeVC, animated: true)
         

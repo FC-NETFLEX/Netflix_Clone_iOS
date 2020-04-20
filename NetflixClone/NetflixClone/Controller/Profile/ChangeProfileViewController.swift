@@ -17,6 +17,9 @@ class ChangeProfileViewController: UIViewController {
     private let changeView = ChangeCustomView()
     private let deleteView = DeleteProfileButtonView()
     
+    private var userProfileList = [ProfileList]()
+    private var userIconList = [ProfileIcons]()
+    
     var isKids = Bool()
     var profileName = String()
     var profileIcon = UIImage()
@@ -186,6 +189,7 @@ class ChangeProfileViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         
+//        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         profileName = userName
         
@@ -214,7 +218,7 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .main
                 profileDelete()
-                profileVC.userNameArray.removeAll()
+                profileVC.userProfileList.removeAll()
                 navigationController?.popViewController(animated: true)
                 
                 print("프로필삭제")

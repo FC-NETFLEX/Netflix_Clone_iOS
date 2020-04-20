@@ -8,47 +8,225 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class MoreViewController: UIViewController {
     
-    let stackView = UIStackView()
-    let moreTableView = UITableView()
+    private var userArray = [MorePofileView]()
+    private let stackView = UIStackView()
+    private let netflixView = 
+    private let profileButton = ProfileManageButton()
+    private let moreTableView = UITableView()
+    private let logoutButton = LogoutVersionButton()
+    
+    private var userProfileList = [ProfileList]()
+    private var userIconList = [ProfileIcons]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
         setUI()
         setConstraints()
+    
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        profileStactViewSetting()
+        reqeustProfileList()
         
     }
     private func setNavigation() {
         navigationController?.isNavigationBarHidden = true
     }
+    private func profileStactViewSetting() {
+        
+        let userView0 = UIView()
+        let userView1 = UIView()
+        let userView2 = UIView()
+        let userView3 = UIView()
+        let userView4 = UIView()
+        var userViewArray = [UIView]()
+        
+        [userView0,userView1,userView2,userView3,userView4].forEach {
+            userViewArray.append($0)
+        }
+        
+        let count = userProfileList.count
+        print(count)
+        for (index, userView) in userViewArray.enumerated() {
+            userView.subviews.forEach { $0.removeFromSuperview() }
+            
+            if index < count {
+                let tempProfileView = MorePofileView()
+                tempProfileView.delegate = self
+                tempProfileView.tag = index
+                tempProfileView.profileLabel.text = userProfileList[index].name
+                let button = tempProfileView.profileButton
+                setImage(stringURL: userIconList[index].iconURL, button: button)
+                stackView.addArrangedSubview(tempProfileView)
+                userArray.append(tempProfileView)
+                
+                tempProfileView.snp.makeConstraints {
+                    $0.width.equalToSuperview().multipliedBy(0.17)
+                    
+                    $0.top.equalToSuperview()
+                }
+                
+            } else if index == count {
+                let tempAddView = MoreAddProfileButtonView()
+                stackView.addArrangedSubview(tempAddView)
+                
+                tempAddView.snp.makeConstraints {
+                    $0.width.equalToSuperview().multipliedBy(0.17)
+                    $0.top.equalToSuperview()
+                }
+            }
+        }
+    }
+    private func setImage(stringURL: String, button: UIButton) {
+        guard let url = URL(string: stringURL) else { return }
+        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
+            result in
+            switch result {
+            case .success(let imageResult):
+                button.setImage(imageResult.image, for: .normal)
+            case .failure(let error):
+                print(error)
+            }
+        })
+    }
     
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
-        [moreTableView].forEach {
+        [stackView,profileButton,moreTableView,logoutButton].forEach {
             view.addSubview($0)
         }
+        stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
+        stackView.alignment = .center
+        stackView.spacing = 10
+        
+        profileButton.delegate = self
+        
         moreTableView.delegate = self
         moreTableView.dataSource = self
         moreTableView.separatorColor = .setNetfilxColor(name: .black)
         moreTableView.backgroundColor = .setNetfilxColor(name: .black)
         moreTableView.register(MoreViewTableCell.self, forCellReuseIdentifier: MoreViewTableCell.identifier)
+        
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
     }
     private func setConstraints() {
-        let margin: CGFloat = 30
-        let padding: CGFloat = 4
+        let guide = view.safeAreaLayoutGuide
         
+        
+        stackView.snp.makeConstraints {
+            $0.top.leading.trailing.equalTo(guide)
+            $0.height.equalToSuperview().multipliedBy(0.15)
+        }
+        profileButton.snp.makeConstraints {
+            $0.top.equalTo(stackView.snp.bottom)
+            $0.leading.trailing.equalTo(guide)
+            $0.height.equalToSuperview().multipliedBy(0.08)
+        }
         moreTableView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(view.snp.centerY)
-            $0.bottom.equalToSuperview()
+            $0.top.equalTo(profileButton.snp.bottom)
+            $0.bottom.equalTo(logoutButton.snp.top)
             
         }
+        logoutButton.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalTo(guide)
+            $0.height.equalToSuperview().multipliedBy(0.1)
+        }
+        
+    }
+    //    MARK: API
+    func reqeustProfileList() {
+        self.userProfileList.removeAll()
+        guard
+            let token = LoginStatus.shared.getToken(),
+            let url = APIURL.makeProfile.makeURL()
+            else { return }
+        print(token)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.addValue("TOKEN \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: urlRequest) {
+            (data, _, _) in
+            guard
+                let data = data,
+                let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+                else { return }
+           
+//            self.userProfileList.removeAll()
+            
+            for profileList in profileLists {
+                guard
+                    let id = profileList["id"] as? Int,
+                    let name = profileList["profile_name"] as? String,
+                    let iskids = profileList["is_kids"] as? Bool,
+                    let profileIcons = profileList["profile_icon"] as? [String: Any]
+                    else { return }
+                
+                self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
+                
+                
+                guard
+                    let idNum = profileIcons["id"] as? Int,
+                    let iconURL = profileIcons["icon"] as? String
+                    else { return }
+             
+                self.userIconList.append(ProfileIcons(idNum: idNum, iconURL: iconURL))
+                
+                
+                
+            }
+            DispatchQueue.main.async {
+                self.profileStactViewSetting()
+            }
+        }
+        
+        task.resume()
+    }
+    
+    private func alertAction() {
+        let alert = UIAlertController(title: "로그아웃", message: "로그아웃하시겠어요?", preferredStyle: .alert)
+        let no = UIAlertAction(title: "아니요", style: .default) { _ in
+        }
+        let ok = UIAlertAction(title: "예", style: .default) { _ in
+            LoginStatus.shared.logout()
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let window = appDelegate.window
+            let rootViewController = UINavigationController(rootViewController: LaunchScreenViewController())
+            window?.rootViewController = rootViewController
+            window?.makeKeyAndVisible()
+            
+        }
+        alert.addAction(no)
+        alert.addAction(ok)
+        present(alert, animated: true)
+    }
+    @objc private func didTapLogoutButton() {
+        alertAction()
+    }
+}
+extension MoreViewController: MoreProfileViewDelegate {
+    
+    func profileButtonDidTap(tag: Int) {
+        LoginStatus.shared.selectedProfile(profileID: userProfileList[tag].id)
+        
+        let tabBarController = TabBarController()
+        tabBarController.modalTransitionStyle = .coverVertical
+        tabBarController.changeRootViewController()
+        
     }
     
 }
+
 extension MoreViewController: UITableViewDelegate {
     
 }
@@ -59,15 +237,16 @@ extension MoreViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MoreViewTableCell.identifier, for: indexPath) as? MoreViewTableCell else { fatalError() }
+        cell.tag = indexPath.row
         cell.textLabel?.text = moreViewData[indexPath.row]
         cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
-        cell.tag = indexPath.row
         cell.textLabel?.textColor = .white
         cell.textLabel?.font = .systemFont(ofSize: 16)
         cell.imageView?.image = UIImage(named: moreViewImage[indexPath.row])
         cell.delegate = self
-        
         
         
         return cell
@@ -96,4 +275,14 @@ extension MoreViewController: MoreViewTableCellDelegate {
         }
     }
 }
+extension MoreViewController: ProfileManageButtonDelegate {
+    func didTapMoreProfileButton() {
+        let profileVC = ProfileViewController(root: .manager)
+        let navi = UINavigationController(rootViewController: profileVC)
+        present(navi, animated: true)
+    }
+    
+    
+}
+
 
