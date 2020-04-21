@@ -25,8 +25,8 @@ class PreviewTableViewCell: UITableViewCell {
     private lazy var previewConllectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
 
     private var idData = [Int]()
-    private var posterData = [UIImage]()
-    private var titleData = [UIImage]()
+    private var posterData = [URL]()
+    private var titleData = [URL]()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -82,7 +82,7 @@ class PreviewTableViewCell: UITableViewCell {
         
   
     //MARK: - configure
-    func configure(id: [Int], posters: [UIImage], titleImages: [UIImage]) {
+    func configure(id: [Int], posters: [URL], titleImages: [URL]) {
         
         self.idData = id
         self.posterData = posters
