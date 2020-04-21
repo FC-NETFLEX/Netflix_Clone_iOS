@@ -95,10 +95,10 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Configure
-    func configure(color: UIColor, poster: URL, title: URL) {
-        
-        self.posterImage.kf.setImage(with: poster)
-        self.titleImage.kf.setImage(with: title)
+    func configure(color: UIColor, poster: String, title: String) {
+    
+        self.posterImage.kf.setImage(with: URL(string: poster))
+        self.titleImage.kf.setImage(with: URL(string: title))
         
     }
     
