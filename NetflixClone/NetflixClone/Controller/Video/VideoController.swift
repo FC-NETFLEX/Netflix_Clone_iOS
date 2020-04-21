@@ -14,17 +14,6 @@ import SnapKit
 //func step(byCount: Int)
 //플레이어 항목의 현재 시간을 지정된 단계 수만큼 앞뒤로 이동합니다.
 
-enum PlayerStatus: String {
-    case readyToPlay
-    case fail
-    case finished
-    case changeTime
-    
-    func notificationName() {
-       
-    }
-}
-
 
 class VideoController: UIViewController {
     
@@ -67,6 +56,7 @@ class VideoController: UIViewController {
     deinit {
         removePlayerItemObserver()
         removePeriodicTimeObserver()
+        setSavePoint()
     }
     
     //MARK: UI
@@ -92,6 +82,64 @@ class VideoController: UIViewController {
     
     //MARK: Action
     
+    private func setSavePoint() {
+        guard videoModel != nil else { return }
+        if let savedContent = SavedContentsListModel.shared.getContent(contentID: videoModel.contentID) {
+            savedContent.savePoint = videoModel.currentTime
+            savedContent.contentRange = videoModel.range
+            SavedContentsListModel.shared.putSavedContentsList()
+        } else {
+            savePointRequest()
+        }
+    }
+    
+    // 마지막 시청 구간 서버에 저장
+    private func savePointRequest() {
+        guard let videoID = videoModel.videoID else { return }
+        guard let token = LoginStatus.shared.getToken(), let profileID =  LoginStatus.shared.getProfileID() else { return }
+        let bodyData: Data
+        let requestURL: URL
+        let method: APIMethod
+        
+        if let watching = videoModel.watching { // update
+            print("Update")
+            let body = ["playtime": videoModel.currentTime]
+            
+            guard
+                let data = try? JSONSerialization.data(withJSONObject: body, options: []),
+                let url = APIURL.defaultURL.getURL(path: [
+                (name: APIPathKey.profiles, value: String(profileID)),
+                (name: APIPathKey.watch, value: String(watching.id))
+                ]) else { return }
+            method = .patch
+            bodyData = data
+            requestURL = url
+        } else { // create
+            let body: [String: Any] = ["video": videoID, "playtime": videoModel.currentTime, "video_length": videoModel.range]
+            print("Create")
+            guard
+                let data = try? JSONSerialization.data(withJSONObject: body, options: []),
+                let url = APIURL.defaultURL.getURL(path: [
+                (APIPathKey.profiles, String(profileID)),
+                (APIPathKey.watch, nil)
+            ]) else { return }
+            method = .post
+            bodyData = data
+            requestURL = url
+        }
+        
+        APIManager().request(url: requestURL, method: method, token: token, body: bodyData, completionHandler: {
+            result in
+            switch result {
+            case .success(let data):
+                print("저장 성공:", String(data: data, encoding: .utf8) ?? "디코딩 실패")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        })
+    }
+    
+    // Model 세팅 -> model세팅이 정상적으로 이루어지지 않으면 해당 컨트롤러를 종료
     private func setVideoModel(id: Int) {
         VideoModel.default(contentID: id, completionHandler: {
             [weak self] result in
@@ -135,6 +183,7 @@ class VideoController: UIViewController {
     }
     
     private func exitThisViewController() {
+        
         UIView.animate(withDuration: 0.3, animations: { [weak self]  in
             
             self?.view.transform = .init(rotationAngle: -(CGFloat.pi / 2))
@@ -273,9 +322,6 @@ extension VideoController {
                                 context: playerItemContext)
     }
     
-    @objc func notiTest(notification: Notification) {
-        
-    }
     
     // 등록해 두었던 playerItem의 옵저버 삭제
     private func removePlayerItemObserver() {

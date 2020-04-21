@@ -11,18 +11,32 @@ import UIKit
 
 class VideoModel {
     
+    let contentID: Int
     let title: String
+    var videoID: Int?
     let videoURL: URL
     var range: Int64
     var currentTime: Int64
     var images: [Int64: UIImage] = [:]
+    var watching: Watching?
     
-    init(title: String, videoURL: URL, range: Int64 = 0, currentTime: Int64 = 0, images: [Int64: UIImage] = [:]) {
+    init(
+        contentID: Int,
+        title: String,
+        videoURL: URL,
+        range: Int64 = 0,
+        currentTime: Int64 = 0,
+        images: [Int64: UIImage] = [:],
+        videoID: Int? = nil,
+        watching: Watching? = nil) {
+        self.contentID = contentID
         self.title = title
         self.videoURL = videoURL
         self.range = range
         self.currentTime = currentTime
         self.images = images
+        self.videoID = videoID
+        self.watching = watching
     }
     
     func getRestTime(currentTime: Int64) -> Int64 {
@@ -40,7 +54,7 @@ class VideoModel {
     
     private class func checkSaveContent(contentID: Int) -> VideoModel? {
         guard let savedContent = SavedContentsListModel.shared.getContent(contentID: contentID) else { return nil }
-        return VideoModel(title: savedContent.title, videoURL: savedContent.videoURL, currentTime: savedContent.savePoint ?? 0 )
+        return VideoModel(contentID: savedContent.contentID, title: savedContent.title, videoURL: savedContent.videoURL, currentTime: savedContent.savePoint ?? 0 )
     }
     
     private class func requestContent(contentID: Int, completionHandler: @escaping (Result<VideoModel, Error>) -> Void) {
@@ -72,7 +86,13 @@ class VideoModel {
                         return
                 }
                 let content = contentModel.content
-                let model = VideoModel(title: content.contentsTitle, videoURL: videoURL, currentTime: content.watching?.savePoint ?? 0)
+                let model = VideoModel(
+                    contentID: content.id,
+                    title: content.contentsTitle,
+                    videoURL: videoURL,
+                    currentTime: content.watching?.savePoint ?? 0,
+                    videoID: content.videoID,
+                    watching: content.watching)
                 completionHandler(.success(model))
             }
         })

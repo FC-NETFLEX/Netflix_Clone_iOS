@@ -332,7 +332,8 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController: ProfilViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
-        
+
+
         let userProfile = userProfileList[tag]
         let icon = userIconList[tag]
         guard let imageURL = URL(string: icon.iconURL) else { return }
@@ -340,7 +341,7 @@ extension ProfileViewController: ProfilViewDelegate {
         let name = userProfile.name
         let profile = Profile(id: id, name: name, imageURL: imageURL)
         LoginStatus.shared.selectedProfile(profile: profile)
-
+        // 양중창이 수정함
         let tabBarController = TabBarController()
         tabBarController.modalTransitionStyle = .coverVertical
         tabBarController.changeRootViewController()
