@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import Kingfisher
+
 protocol WatchContentsCollectionViewCellDelegate: class {
     func didTabWatchContentInfo(contentId: Int) -> ()
     func didTabWatchPlay() -> ()
 }
+
 class WatchContentsCollectionViewCell: UICollectionViewCell {
     static let identifier = "WatchContentCVC"
     
@@ -130,28 +133,26 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: configure
-    func configure(id: Int, contentId: Int, poster: UIImage, watchTime: String, playMark: Double) {
+    func configure(id: Int, contentId: Int, poster: URL, watchTime: String, playMark: Double) {
         self.id = id
         self.contentId = contentId
-        posterButton.setImage(poster, for: .normal)
         watchTimeLabel.text = watchTime
 
         progressView.setProgress(Float(playMark), animated: true)   // 길이
-        /*
-         private func setImage(stringURL: String, button: UIButton) {
-                guard let url = URL(string: stringURL) else { return }
-                KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
-                    result in
-                    switch result {
-                    case .success(let imageResult):
-                        button.setImage(imageResult.image, for: .normal)
-                    case .failure(let error):
-                        print(error)
-                    }
-                })
+
+        KingfisherManager.shared.retrieveImage(with: poster, completionHandler: {
+            result in
+            switch result {
+            case .success(let imageResult):
+                self.posterButton.setImage(imageResult.image, for: .normal)
+            case .failure(let error):
+                print(error)
             }
-         */
+        })
+        
+        
     }
+    
     
     @objc private func didTabInfoButton(sender: UIButton) {
         delegate?.didTabWatchContentInfo(contentId: contentId!)
