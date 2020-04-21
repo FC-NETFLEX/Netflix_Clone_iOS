@@ -137,6 +137,20 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         watchTimeLabel.text = watchTime
 
         progressView.setProgress(Float(playMark), animated: true)   // 길이
+        /*
+         private func setImage(stringURL: String, button: UIButton) {
+                guard let url = URL(string: stringURL) else { return }
+                KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
+                    result in
+                    switch result {
+                    case .success(let imageResult):
+                        button.setImage(imageResult.image, for: .normal)
+                    case .failure(let error):
+                        print(error)
+                    }
+                })
+            }
+         */
     }
     
     @objc private func didTabInfoButton(sender: UIButton) {
