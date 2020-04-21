@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol HomeviewTitleDelegate: class {
     func didTabHomeTitledibsButton() -> ()
@@ -216,18 +217,7 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(id: Int, poster: UIImage?, category: [String], dibs: Bool, titleImage: UIImage? /*, url: URL?*/) {
-        
-        var categoryText: String = ""
-        
-        category.forEach {
-            categoryText += $0 + ","
-        }
-        
-        titlePoster.image = poster
-        categoryLabel.text = categoryText
-        
-        self.titleImage.image = titleImage ?? UIImage(named: "darkGray")
+    func configure(id: Int, poster: URL, category: [String], dibs: Bool, titleImage: URL /*, url: URL?*/) {
         
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
@@ -235,6 +225,17 @@ class HomeviewTitle: UIView {
             dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
         }
         
+        
+        var categoryText: String = ""
+        
+        category.forEach {
+            categoryText += $0 + ","
+        }
+        
+        titlePoster.kf.setImage(with: poster)
+        categoryLabel.text = categoryText
+        self.titleImage.kf.setImage(with: titleImage)
+
         
     }
     

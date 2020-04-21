@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class PreviewCollectionViewCell: UICollectionViewCell {
     static let identifier = "PreviewCVC"
@@ -94,9 +95,11 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Configure
-    func configure(color: UIColor, poster: UIImage, title: UIImage) {
-        self.posterImage.image = poster
-        self.titleImage.image = title
+    func configure(color: UIColor, poster: URL, title: URL) {
+        
+        self.posterImage.kf.setImage(with: poster)
+        self.titleImage.kf.setImage(with: title)
+        
     }
     
 }
