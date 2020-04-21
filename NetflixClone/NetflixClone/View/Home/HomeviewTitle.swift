@@ -217,7 +217,7 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(id: Int, poster: URL, category: [String], dibs: Bool, titleImage: URL /*, url: URL?*/) {
+    func configure(id: Int, poster: String, category: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
         
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
@@ -231,10 +231,13 @@ class HomeviewTitle: UIView {
         category.forEach {
             categoryText += $0 + ","
         }
-        
-        titlePoster.kf.setImage(with: poster)
+        /*
+         self.posterImage.kf.setImage(with: URL(string: url))
+
+         */
+        titlePoster.kf.setImage(with: URL(string: poster))
         categoryLabel.text = categoryText
-        self.titleImage.kf.setImage(with: titleImage)
+        self.titleImage.kf.setImage(with: URL(string: titleImage))
 
         
     }
