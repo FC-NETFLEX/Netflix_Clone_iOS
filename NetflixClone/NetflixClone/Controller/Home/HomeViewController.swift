@@ -11,52 +11,71 @@ import UIKit
 final class HomeViewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
-    //    private let homeView = HomeView()
-    private let homeTableView = UITableView(frame: .zero, style: .grouped)
+    private let homeView = HomeView()
+
+    private let dibsView = DibsView()
     
-    private let cellCount = 5
+//MARK: layout관련 CGFloat
+    private let menuBarHeight: CGFloat = 90
+//MARK: MenuBar
+    private let menuBar = HomeMenuBarView()
     
-    //MARK: JSON 관련
+//MARK: JSON 관련
     private let decoder = JSONDecoder()
     private let homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
     
+    
+//MARK: HomeView 관련
+    
+    //    private let homeTableView = UITableView(frame: .zero, style: .grouped)
+    private let homeViewCellCount = 5
+    
     //MARK: header content
-    private var topContent = TopConent(id: 1, title: "TopContent", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", logoImageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", categories: [String](), rating: "12세 관람가", selectedFlag: false)
+    private var homeViewTopContent = TopConent(id: 1, title: "TopContent", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", logoImageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", categories: [String](), rating: "12세 관람가", selectedFlag: false)
     
     //MARK: preview content
 
-    private var previewContents: [PreviewContent] = [PreviewContent(id: 1, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 2, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 3, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()),PreviewContent(id: 4, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]())]
+    private var homeViewPreviewContents: [PreviewContent] = [PreviewContent(id: 1, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 2, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 3, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()),PreviewContent(id: 4, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]())]
 
 
     //MARK: LatestMovie content
-    private var latestContents: [RecommendContent] = [RecommendContent(id: 1, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 2, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 3, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 4, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"),]
+    private var homeViewLatestContents: [RecommendContent] = [RecommendContent(id: 1, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 2, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 3, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"), RecommendContent(id: 4, title: "최신영화", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp"),]
 
     
     //MARK: Top10 content
-    private var top10Contents: [Top10Content] = [Top10Content(id: 1, title: "top10", imageURL: "darkGray"), Top10Content(id: 2, title: "top10", imageURL: "darkGray"), Top10Content(id: 3, title: "top10", imageURL: "darkGray")]
+    private var homeViewTop10Contents: [Top10Content] = [Top10Content(id: 1, title: "top10", imageURL: "darkGray"), Top10Content(id: 2, title: "top10", imageURL: "darkGray"), Top10Content(id: 3, title: "top10", imageURL: "darkGray")]
 
     
     //MARK: WatchContents
-    private var watchContents: [WatchVideo] = [WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
+    private var homeViewWatchContents: [WatchVideo] = [WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
     
     
     //MARK: ADContents
-    private var adContent = ADContent(id: 1, title: "", titleEnglish: "", timeLength: "0", pubYear: "2020", previewVideoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp", selected: false)
+    private var homeViewADContent = ADContent(id: 1, title: "", titleEnglish: "", timeLength: "0", pubYear: "2020", previewVideoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp", selected: false)
     //"https://fc-netflex.s3.ap-northeast-2.amazonaws.com/video/preview/29_04_09_19.mp4"
 
     
     //MARK: VideoAdvertisement ->
     private var videoAdvertismentCell: VideoAdvertisementTableViewCell?
     
+//MARK: DibsView관련
+//    private var dibsViewContents
+    private let dibsViewFlowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
+
     
     //MARK: LifeCycle
+//    override func loadView() {
+//        view = homeView
+//    }
+    //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+//        view = homeView
+
         //MARK: JSONPassing
-        DispatchQueue.global().sync {
+        DispatchQueue.global().async {
             //            self.jsonPassing()
-            print("--------jsonPassing----------------")
+            print("----------------[ jsonPassing ]----------------")
             let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
                 print("dataTask 입성")
                 guard error == nil else { return print("jsonPassing error: ", error!)}
@@ -65,25 +84,23 @@ final class HomeViewController: UIViewController {
 
                 do {
                     let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-                    print("----------------jsonData 파싱완료--------------------")
-                    print("jsonData = \(jsonData)")
+                    print("----------------[ jsonData 파싱시작 ]--------------------")
+
                     
-                    print("--------------------jsonData--------------------\n",jsonData.recommendContents)
+                    self.homeViewLatestContents.removeAll()
                     
-                    self.latestContents.removeAll()
-                    
-                    self.topContent = jsonData.topContent
-                    self.previewContents = jsonData.previewContents
-                    self.latestContents = jsonData.recommendContents
-                    self.top10Contents = jsonData.top10Contents
-                    self.watchContents = jsonData.watchingVideo
+                    self.homeViewTopContent = jsonData.topContent
+                    self.homeViewPreviewContents = jsonData.previewContents
+                    self.homeViewLatestContents = jsonData.recommendContents
+                    self.homeViewTop10Contents = jsonData.top10Contents
+                    self.homeViewWatchContents = jsonData.watchingVideo
 //                    self.adContent = jsonData.adContent
                     
                     DispatchQueue.main.sync {
-                        self.homeTableView.reloadData()
+                        self.homeView.homeTableView.reloadData()
                     }
                     
-                    print("-----------------jsonData 파싱 종료-------------------")
+                    print("-----------------[ jsonData 파싱 종료 ]-------------------")
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -95,7 +112,13 @@ final class HomeViewController: UIViewController {
         setConstraints()
     }
     
+    //MARK: ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
+        
+//        if view == homeView {
+//            hoeview.videoAdvertismentCell?.player?.pause()
+//
+//        }
         
         // VideoCell의 영상 재생 멈춤
         videoAdvertismentCell?.player?.pause()
@@ -104,38 +127,84 @@ final class HomeViewController: UIViewController {
     
     //MARK: - UI
     private func setUI() {
-        //        homeTableView.frame = view.frame
+        //상단 menuBar관련
+        menuBar.delegate = self
         
-        homeTableView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
-        homeTableView.dataSource = self
-        homeTableView.delegate = self
+        //HomeView 관련
+        homeView.homeTableView.delegate = self
+        homeView.homeTableView.dataSource = self
         
-        homeTableView.contentInsetAdjustmentBehavior = .never
+        //DibsView 관련
+        dibsView.collectionView.delegate = self
+        dibsView.collectionView.dataSource = self
         
-        
-        homeTableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
-        homeTableView.register(LatestMovieTableViewCell.self, forCellReuseIdentifier: LatestMovieTableViewCell.indentifier)
-        homeTableView.register(Top10TableViewCell.self, forCellReuseIdentifier: Top10TableViewCell.identifier)
-        homeTableView.register(WatchContentsTableViewCell.self, forCellReuseIdentifier: WatchContentsTableViewCell.identifier)
-        
-        
-        
-        //        homeTableView.register(VideoAdvertisementTableViewCell.self, forCellReuseIdentifier: VideoAdvertisementTableViewCell.identifier)
-        
-        view.addSubview(homeTableView)
-        
+//        homeView.addSubview(menuBar)
+        view.addSubview(homeView)
+
+        view.addSubview(menuBar)
+
     }
     private func setConstraints() {
-        homeTableView.snp.makeConstraints {
+        
+        homeView.snp.makeConstraints {
+            $0.top.bottom.leading.trailing.equalToSuperview()
+        }
+        
+        menuBar.snp.makeConstraints {
             $0.top.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(menuBarHeight)
+        }
+        
+
+    }
+    
+    
+}
+
+
+//MARK: HomeMenuBarViewDelegate
+extension HomeViewController: HomeMenuBarViewDelegate {
+    func didTabMenuBarIconButton() {
+        print("MenuBar DidTabIcon")
+//        view = homeView
+        if view.subviews[0] == dibsView {
+            print("view dibsView")
+            dibsView.removeFromSuperview()
+            view.insertSubview(homeView, at: 0)
+            
+            homeView.snp.makeConstraints {
+                $0.top.bottom.leading.trailing.equalToSuperview()
+            }
+        }
+    }
+    
+    func didTabMenuBarMovieButton() {
+        print("MenuBar DidTabMovie")
+    }
+    
+    func didTabCategoryButton() {
+        print("MenuBar DidTabCategory")
+    }
+    
+    func didTabDibsButton() {
+        print("MenuBar DidTabDibs")
+//        view = dibsView
+//        if view
+        homeView.removeFromSuperview()
+        view.insertSubview(dibsView, at: 0)
+        
+        dibsView.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview()
+            $0.top.equalToSuperview().inset(menuBarHeight)
         }
     }
     
     
 }
 
-//MARK: - Delegate TableView
+//MARK: HomeView 관련 extension
+
+//MARK: - HomeView Delegate TableView
 extension HomeViewController: UITableViewDelegate {
     
     //MARK: -UITableViewCell willDisplay
@@ -191,7 +260,7 @@ extension HomeViewController: UITableViewDelegate {
     
 }
 
-//MARK: - Datasource TableView
+//MARK: - HomeView Datasource TableView
 extension HomeViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         1
@@ -205,8 +274,8 @@ extension HomeViewController: UITableViewDataSource {
         var logo: UIImage
         
         do {
-            let posterData = try Data(contentsOf: URL(string: topContent.imageURL)!)
-            let logoData = try Data(contentsOf: URL(string: topContent.logoImageURL)!)
+            let posterData = try Data(contentsOf: URL(string: homeViewTopContent.imageURL)!)
+            let logoData = try Data(contentsOf: URL(string: homeViewTopContent.logoImageURL)!)
             poster = UIImage(data: posterData)!
             logo = UIImage(data: logoData)!
         } catch {
@@ -215,12 +284,12 @@ extension HomeViewController: UITableViewDataSource {
         }
         
         
-        header.configure(id: topContent.id, poster: poster, category: topContent.categories, dibs: topContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
+        header.configure(id: homeViewTopContent.id, poster: poster, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellCount
+        return homeViewCellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -233,8 +302,7 @@ extension HomeViewController: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             //MARK: PreviewCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let previewCell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier, for: indexPath) as! PreviewTableViewCell
             
             previewCell.delegate = self
@@ -242,7 +310,7 @@ extension HomeViewController: UITableViewDataSource {
             var posterPreview = [UIImage]()
             var titleImagePreview = [UIImage]()
             
-            previewContents.forEach {
+            homeViewPreviewContents.forEach {
          
                 do {
                     let posterData = try Data(contentsOf: URL(string: $0.poster)!)
@@ -262,13 +330,12 @@ extension HomeViewController: UITableViewDataSource {
             cell = previewCell
         case 1:
             //MARK: LatestCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             var idLatestMovie = [Int]()
             var posterLatestMovie = [UIImage]()
             
-            latestContents.forEach {
+            homeViewLatestContents.forEach {
                 do {
                     let data = try Data(contentsOf: URL(string: $0.imageURL)!)
                     posterLatestMovie.append(UIImage(data: data)!)
@@ -286,18 +353,15 @@ extension HomeViewController: UITableViewDataSource {
             
         case 2:
             //MARK: VideoCell
-            print("------------------------------------\n")
-            print("HomeVC: cell Row -> \(indexPath.row)")
-     
-            
-            let url = URL(string: adContent.previewVideoURL)
+       
+            let url = URL(string: homeViewADContent.previewVideoURL)
             
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
                 // 재사용 cell 있는가??
                 videoCell.delegate = self
                 
-                videoCell.configure(/*advertisement: url, */contentID: adContent.id, contentName: adContent.title, dibs: adContent.selected)
+                videoCell.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 cell = videoCell
             } else { // 최초 호출
@@ -306,7 +370,7 @@ extension HomeViewController: UITableViewDataSource {
                 videoAdvertismentCell?.delegate = self
                 
                 
-                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: adContent.id, contentName: adContent.title, dibs: adContent.selected)
+                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 
                 cell = videoAdvertismentCell!
@@ -314,8 +378,7 @@ extension HomeViewController: UITableViewDataSource {
             
         case 3:
             //MARK: WatchContentCell
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
             
@@ -326,7 +389,7 @@ extension HomeViewController: UITableViewDataSource {
             var playMark = [Int]()
             var contentId = [Int]()
             
-            watchContents.forEach {
+            homeViewWatchContents.forEach {
                 do {
                     let data = try Data(contentsOf: URL(string: $0.poster)!)
                     posterWatch.append(UIImage(data: data)!)
@@ -347,14 +410,13 @@ extension HomeViewController: UITableViewDataSource {
             
         case 4:
             //MARK: Top10Cell
-            //            print("------------------------------------\n")
-            //            print("HomeVC: cell Row -> \(indexPath.row)")
+
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             var idTop10 = [Int]()
             var posterTop10 = [UIImage]()
             
-            top10Contents.forEach {
+            homeViewTop10Contents.forEach {
                 
                 do {
                     let data = try Data(contentsOf: URL(string: $0.imageURL)!)
@@ -371,8 +433,7 @@ extension HomeViewController: UITableViewDataSource {
             cell = top10Cell
             
         default:
-//            print("------------------------------------\n")
-//            print("HomeVC: cell Row -> \(indexPath.row)")
+
             cell = UITableViewCell()
         }
         
@@ -396,7 +457,7 @@ extension HomeViewController: HomeviewTitleDelegate {
     }
     
     func didTabHomeTitleContentButton() {
-        let contentVC = ContentViewController(id: topContent.id)
+        let contentVC = ContentViewController(id: homeViewTopContent.id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
@@ -405,17 +466,18 @@ extension HomeViewController: HomeviewTitleDelegate {
     
 }
 
-//MARK: - PreviewDelegate (미리보기 델리게이트)
+//MARK: - HomeView PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
-    // 상민 수정부분(04.13일| 17:21분)
+    
     func didTabPreviewCell(index: Int) {
         let previewVC = PreViewController(index: index)
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
     }
+    
 }
 
-//MARK: - LatestMoview Delegate
+//MARK: - HomeView LatestMoview Delegate
 extension HomeViewController: LatestMovieTableViewCellDelegate {
     func didTabLatestMovieCell(id: Int) {
         let contentVC = ContentViewController(id: id)
@@ -426,7 +488,7 @@ extension HomeViewController: LatestMovieTableViewCellDelegate {
     
 }
 
-//MARK: - Top10 Delegate
+//MARK: - HomeView Top10 Delegate
 extension HomeViewController: Top10TableViewCellDelegate {
     func didTabTop10Cell(id: Int) {
         let contentVC = ContentViewController(id: id)
@@ -437,26 +499,26 @@ extension HomeViewController: Top10TableViewCellDelegate {
     
 }
 
-//MARK: - WatchContentCell Delegate
+//MARK: - HomeView WatchContentCell Delegate
 extension HomeViewController: WatchContentsTableViewDelegate {
     func didTabWatchContentInfo(contentId: Int) {
         let contentVC = ContentViewController(id: contentId)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
-    
+
     func didTabWatchContentPlay() {
         print("WatchContentCell Click")
     }
-    
-    
+
+
 }
 
-//MARK: - VideoAdvertisemntTableViewCellDelegate
+//MARK: - HomeView VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     
-    func didTabVideoView() {
-        let contentVC = ContentViewController()
+    func didTabVideoView(contentId: Int) {
+        let contentVC = ContentViewController(id: contentId)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
@@ -465,12 +527,68 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
         print("영상재생화면 이동")
     }
     
-    func didTabvideoCellDibsButton() {
+    func didTabVideoCellDibsButton() {
         print("찜한 목록 추가하기")
     }
     
     
     
+}
+
+//MARK: DibsView 관련 extension
+
+//MARK: DibsView CollectionView Datasource
+extension HomeViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 20
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = dibsView.collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as! ContentsBasicItem
+        cell.configure(poster: UIImage(named: "top10Dummy")!)
+
+        return cell
+    }
+
+
+}
+
+//MARK: DibsView CollectionView Delegate
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return dibsViewFlowLayout.edgeInsets
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return dibsViewFlowLayout.linesOnScreen
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return dibsViewFlowLayout.itemSpacing
+    }
+
+
+     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+         return setDibsViewFlowLayout()
+     }
+
+
+    func setDibsViewFlowLayout() -> CGSize {
+        let itemSpacing = dibsViewFlowLayout.itemSpacing * (dibsViewFlowLayout.itemsInLine - 1) //
+        let lineSpacing = dibsViewFlowLayout.lineSpacing * (dibsViewFlowLayout.linesOnScreen - 1) // 5 * 2.5
+        let horizontalInset = dibsViewFlowLayout.edgeInsets.left + dibsViewFlowLayout.edgeInsets.right
+        let verticalInset = dibsViewFlowLayout.edgeInsets.top + dibsViewFlowLayout.edgeInsets.bottom
+
+        let horizontalSpacing = itemSpacing + horizontalInset
+        let verticalSpacing = lineSpacing + verticalInset
+
+        let contentWidth = dibsView.collectionView.frame.width - horizontalSpacing
+        let contentHeight = dibsView.collectionView.frame.height - verticalSpacing
+        let width = contentWidth / dibsViewFlowLayout.itemsInLine
+        let height = contentHeight / dibsViewFlowLayout.linesOnScreen
+
+        return CGSize(width: width.rounded(.down), height: height.rounded(.down) - 1)
+    }
 }
 
 

@@ -93,7 +93,6 @@ class LatestMovieTableViewCell: UITableViewCell {
     func configure(id: [Int], poster: [UIImage]) {
         self.idData = id
         self.posterData = poster
-        print("Latest ----------> poster : \(poster)")
         contentsCollectionView.reloadData()
     }
     

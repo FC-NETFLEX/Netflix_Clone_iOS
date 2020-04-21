@@ -91,7 +91,6 @@ class Top10TableViewCell: UITableViewCell {
         self.posterData = poster
         
         contentCollectionView.reloadData()
-//        print("Top10TableViewCell: configure idData = \(idData), posterData = \(posterData)")
     }
 }
 
@@ -104,14 +103,11 @@ extension Top10TableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        print("Top10TableViewCell: cellforItemAt")
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Top10CollectionViewCell.identifier, for: indexPath) as! Top10CollectionViewCell
         
         cell.configure(poster: posterData[indexPath.row], count: indexPath.row)
         
-//        print("Top10TableViewCell: cell \(cell) ")
-
         
         return cell
     }
