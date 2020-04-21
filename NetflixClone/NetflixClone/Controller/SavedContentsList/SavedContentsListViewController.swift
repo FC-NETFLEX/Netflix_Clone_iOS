@@ -30,7 +30,7 @@ class SavedContentsListViewController: CanSaveViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         modifyViewController()
-//        dump(model.profiles)
+        SavedContentsListModel.shared.getWatchingContentOfSavedContent()
         
     }
     

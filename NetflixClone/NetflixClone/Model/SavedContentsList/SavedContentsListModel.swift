@@ -111,7 +111,6 @@ class SavedContentsListModel {
             tempContents += contents
         })
         let result = tempContents.compactMap({ content in
-//            let video = Video(id: <#T##Int#>, videoURL: <#T##String#>)
             
             
         })
