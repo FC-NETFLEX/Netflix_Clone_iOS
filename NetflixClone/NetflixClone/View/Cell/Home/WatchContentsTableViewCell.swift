@@ -89,7 +89,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(id: [Int], poster: [URL], watchTime: [Int], playMark: [Int], contentID: [Int] /*url: URL*/) {
+    func configure(id: [Int], poster: [URL], watchTime: [Int], playMark: [Int], contentID: [Int]) {
 
         self.idData = id
         self.contentIdData = contentID

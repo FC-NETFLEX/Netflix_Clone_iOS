@@ -55,9 +55,10 @@ class Top10CollectionViewCell: UICollectionViewCell {
 
     
     //MARK: - configure
-    func configure(poster: URL, count: Int) {
+    func configure(poster: String, count: Int) {
+        
         topNumLabel.text = "\(count + 1)"
-        posterImage.kf.setImage(with: poster)
+        posterImage.kf.setImage(with: URL(string: poster))
         
     }
 }

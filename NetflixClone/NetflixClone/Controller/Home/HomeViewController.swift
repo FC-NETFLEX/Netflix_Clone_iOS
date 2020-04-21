@@ -270,20 +270,8 @@ extension HomeViewController: UITableViewDataSource {
         
         let header = HomeviewTitle()
         header.delegate = self
-        let poster = URL(string: homeViewTopContent.imageURL)
-        let logo = URL(string: homeViewTopContent.logoImageURL)!
-//        do {
-//            let posterData = try Data(contentsOf: URL(string: homeViewTopContent.imageURL)!)
-//            let logoData = try Data(contentsOf: URL(string: homeViewTopContent.logoImageURL)!)
-//            poster = UIImage(data: posterData)!
-//            logo = UIImage(data: logoData)!
-//        } catch {
-//            logo = UIImage(named: "darkGray")!
-//            poster = UIImage(named: "")!
-//        }
-        
-        
-        header.configure(id: homeViewTopContent.id, poster: poster!, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
+
+        header.configure(id: homeViewTopContent.id, poster: homeViewTopContent.imageURL, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: homeViewTopContent.logoImageURL /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
@@ -306,14 +294,14 @@ extension HomeViewController: UITableViewDataSource {
             
             previewCell.delegate = self
             var idPreview = [Int]()
-            var posterPreview = [URL]()
-            var titleImagePreview = [URL]()
+            var posterPreview = [String]()
+            var titleImagePreview = [String]()
             
             homeViewPreviewContents.forEach {
 
                 idPreview.append($0.id)
-                posterPreview.append(URL(string: $0.poster)!)
-                titleImagePreview.append(URL(string: $0.logoURL)!)
+                posterPreview.append($0.poster)
+                titleImagePreview.append($0.logoURL)
             }
             
             previewCell.configure(id: idPreview, posters: posterPreview, titleImages: titleImagePreview)
@@ -376,7 +364,7 @@ extension HomeViewController: UITableViewDataSource {
             var contentId = [Int]()
             
             homeViewWatchContents.forEach {
-                id.append($0.id)
+                id.append($0.id!)
                 contentId.append($0.contentId)
                 playMark.append($0.playTime)
                 watchTimekWatch.append($0.videoLength)
@@ -393,12 +381,12 @@ extension HomeViewController: UITableViewDataSource {
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             var idTop10 = [Int]()
-            var posterTop10 = [URL]()
+            var posterTop10 = [String]()
             
             homeViewTop10Contents.forEach {
                 
                 idTop10.append($0.id)
-                posterTop10.append(URL(string: $0.imageURL)!)
+                posterTop10.append($0.imageURL)
             }
             
             top10Cell.delegate = self
