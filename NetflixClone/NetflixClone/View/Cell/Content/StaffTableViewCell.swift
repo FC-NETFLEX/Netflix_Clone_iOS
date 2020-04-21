@@ -31,7 +31,7 @@ class StaffTableViewCell: UITableViewCell {
         [actor, director, actorLabel, directorLabel].forEach {
             self.addSubview($0)
             $0.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-            $0.font = UIFont.dynamicFont(fontSize: 12, weight: .regular)
+            $0.font = UIFont.systemFont(ofSize: 12)
         }
         self.backgroundColor = .clear
         actor.text = "출연: "
