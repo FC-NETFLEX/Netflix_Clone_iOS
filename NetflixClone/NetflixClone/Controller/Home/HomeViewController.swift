@@ -22,7 +22,7 @@ final class HomeViewController: UIViewController {
     
 //MARK: JSON 관련
     private let decoder = JSONDecoder()
-    private let homeURL = URL(string: "https://www.netflexx.ga/profiles/2/contents/")
+    private let homeURL = URL(string: "https://www.netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 2)/contents/")
     
     
 //MARK: HomeView 관련
