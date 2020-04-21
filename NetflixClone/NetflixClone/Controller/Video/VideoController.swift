@@ -335,7 +335,7 @@ extension VideoController {
             guard let self = self else { return }
             
             let currentTime = time.value / Int64(NSEC_PER_SEC)
-            print("observerTime:", currentTime)
+//            print("observerTime:", currentTime)
 //            guard currentTime > 0 else { return }
             
             self.videoModel.currentTime = currentTime

@@ -9,20 +9,28 @@
 import UIKit
 
 
-struct VideoModel {
+class VideoModel {
     
     let title: String
     let videoURL: URL
-    var range: Int64 = 0
-    var currentTime: Int64 = 0
+    var range: Int64
+    var currentTime: Int64
     var images: [Int64: UIImage] = [:]
+    
+    init(title: String, videoURL: URL, range: Int64 = 0, currentTime: Int64 = 0, images: [Int64: UIImage] = [:]) {
+        self.title = title
+        self.videoURL = videoURL
+        self.range = range
+        self.currentTime = currentTime
+        self.images = images
+    }
     
     func getRestTime(currentTime: Int64) -> Int64 {
         let rest = range - currentTime
         return rest
     }
     
-    static func `default`(contentID: Int, completionHandler: @escaping (Result<VideoModel, Error>) -> Void) {
+    class func `default`(contentID: Int, completionHandler: @escaping (Result<VideoModel, Error>) -> Void) {
         if let model = checkSaveContent(contentID: contentID) {
             completionHandler(.success(model))
         } else {
@@ -30,12 +38,12 @@ struct VideoModel {
         }
     }
     
-    private static func checkSaveContent(contentID: Int) -> VideoModel? {
+    private class func checkSaveContent(contentID: Int) -> VideoModel? {
         guard let savedContent = SavedContentsListModel.shared.getContent(contentID: contentID) else { return nil }
         return VideoModel(title: savedContent.title, videoURL: savedContent.videoURL, currentTime: savedContent.savePoint ?? 0 )
     }
     
-    private static func requestContent(contentID: Int, completionHandler: @escaping (Result<VideoModel, Error>) -> Void) {
+    private class func requestContent(contentID: Int, completionHandler: @escaping (Result<VideoModel, Error>) -> Void) {
         guard
             let profileID = LoginStatus.shared.getProfileID(),
             let token = LoginStatus.shared.getToken(),
@@ -63,7 +71,8 @@ struct VideoModel {
                         completionHandler(.failure(APIError.failedDecoding))
                         return
                 }
-                let model = VideoModel(title: contentModel.content.contentsTitle, videoURL: videoURL)
+                let content = contentModel.content
+                let model = VideoModel(title: content.contentsTitle, videoURL: videoURL, currentTime: content.watching?.savePoint ?? 0)
                 completionHandler(.success(model))
             }
         })

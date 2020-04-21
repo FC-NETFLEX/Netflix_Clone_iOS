@@ -41,6 +41,7 @@ struct ContentDetail: Decodable {
     let isLike: Bool
     let videoURL: String
     let videoID: Int
+    let watching: Watching?
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -58,6 +59,7 @@ struct ContentDetail: Decodable {
         case isSelected = "is_select"
         case isLike = "is_like"
         case video = "videos"
+        case watching
     }
     
     private enum NestedKeys: String, CodingKey {
@@ -81,12 +83,13 @@ struct ContentDetail: Decodable {
         directors = try container.decode([String].self, forKey: .directors)
         isSelected = try container.decode(Bool.self, forKey: .isSelected)
         isLike = try container.decode(Bool.self, forKey: .isLike)
-        
+        watching = try container.decode(Watching?.self, forKey: .watching)
         var videoArray = try container.nestedUnkeyedContainer(forKey: .video)
         let nestedContaner = try videoArray.nestedContainer(keyedBy: NestedKeys.self)
         
         videoID = try nestedContaner.decode(Int.self, forKey: .videoID)
         videoURL = try nestedContaner.decode(String.self, forKey: .videoURL)
+        
     }
 }
 
@@ -102,6 +105,18 @@ struct SimilarContent: Decodable {
         case title = "contents_title"
         case imageURL = "contents_image"
     }
+}
+
+struct Watching: Decodable {
+    
+    let savePoint: Int64
+    let videoRange: Int64
+    
+    private enum CodingKeys: String, CodingKey {
+        case savePoint = "playtime"
+        case videoRange = "video_length"
+    }
+    
 }
 
 //}
