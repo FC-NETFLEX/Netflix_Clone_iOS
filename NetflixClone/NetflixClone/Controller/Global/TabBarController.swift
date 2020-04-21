@@ -16,6 +16,7 @@ class TabBarController: UITabBarController {
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        SavedContentsListModel.shared = SavedContentsListModel()
         addViewControllers()
         setUI()
     }

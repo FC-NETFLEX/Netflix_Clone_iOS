@@ -9,6 +9,11 @@
 import UIKit
 import Kingfisher
 
+//enum ChangeRoots {
+//    case main
+//    case manager
+//}
+
 class ChangeProfileViewController: UIViewController {
     
     let addProfileView = AddProfileView()
@@ -189,7 +194,6 @@ class ChangeProfileViewController: UIViewController {
     
     @objc private func didTapSaveButton() {
         
-//        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
         profileName = userName
         
@@ -199,7 +203,10 @@ class ChangeProfileViewController: UIViewController {
                 profileUpdate()
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
+            } else {
+                print("프로필관리프렌젠트?")
             }
+            
         }
     }
 }
