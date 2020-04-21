@@ -324,21 +324,16 @@ extension HomeViewController: UITableViewDataSource {
 
             let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             var idLatestMovie = [Int]()
-            var posterLatestMovie = [UIImage]()
+            var posterLatestMovie = [String]()
             
             homeViewLatestContents.forEach {
-                do {
-                    let data = try Data(contentsOf: URL(string: $0.imageURL)!)
-                    posterLatestMovie.append(UIImage(data: data)!)
-                } catch {
-                    posterLatestMovie.append(UIImage(named: "darkGray")!)
-                }
-                
+               
                 idLatestMovie.append($0.id)
+                posterLatestMovie.append($0.imageURL)
             }
 
             
-            latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie as! [UIImage])
+            latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie)
             latestMovieCell.delegate = self
             cell = latestMovieCell
             
@@ -375,27 +370,20 @@ extension HomeViewController: UITableViewDataSource {
             
             var id = [Int]()
             
-            var posterWatch = [UIImage]()
+            var posterWatch = [URL]()
             var watchTimekWatch = [Int]()
             var playMark = [Int]()
             var contentId = [Int]()
             
             homeViewWatchContents.forEach {
-                do {
-                    let data = try Data(contentsOf: URL(string: $0.poster)!)
-                    posterWatch.append(UIImage(data: data)!)
-                } catch {
-                    posterWatch.append(UIImage(named: "darkGray")!)
-                }
-                
-                
                 id.append($0.id)
                 contentId.append($0.contentId)
                 playMark.append($0.playTime)
                 watchTimekWatch.append($0.videoLength)
+                posterWatch.append(URL(string: $0.poster)!)
             }
             
-            watchContentCell.configure(id: id, poster: posterWatch as! [UIImage], watchTime: watchTimekWatch, playMark: playMark, contentID: contentId/*, url: <#T##URL#>*/)
+            watchContentCell.configure(id: id, poster: posterWatch, watchTime: watchTimekWatch, playMark: playMark, contentID: contentId/*, url: <#T##URL#>*/)
             
             cell = watchContentCell
             
@@ -530,7 +518,7 @@ extension HomeViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dibsView.collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as! ContentsBasicItem
-        cell.configure(poster: UIImage(named: "top10Dummy")!)
+        cell.configure(url: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EC%95%84%EC%9D%BC%EB%9D%BC.jpg")
 
         return cell
     }

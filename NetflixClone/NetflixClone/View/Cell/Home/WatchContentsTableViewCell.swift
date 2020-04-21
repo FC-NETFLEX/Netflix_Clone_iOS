@@ -25,7 +25,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     private var idData = [Int]()
     private var contentIdData = [Int]()
-    private var postersData = [UIImage]()
+    private var postersData = [URL]()
     private var watchTimesData = [Int]()
     private var playMarksData = [Int]()
     private var url = [URL]()
@@ -89,7 +89,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(id: [Int], poster: [UIImage], watchTime: [Int], playMark: [Int], contentID: [Int] /*url: URL*/) {
+    func configure(id: [Int], poster: [URL], watchTime: [Int], playMark: [Int], contentID: [Int] /*url: URL*/) {
 
         self.idData = id
         self.contentIdData = contentID
