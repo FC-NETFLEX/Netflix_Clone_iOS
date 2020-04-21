@@ -14,7 +14,7 @@ protocol SaveContentStatusViewDelegate: class {
 
 class SaveContentStatusView: UIButton {
     
-    var delegate: SaveContentStatusViewDelegate?
+    weak var delegate: SaveContentStatusViewDelegate?
     
     private var status: SaveContentStatus {
         didSet {
@@ -41,7 +41,12 @@ class SaveContentStatusView: UIButton {
         }
     }
     
-    private let id: Int
+    var id: Int {
+        didSet {
+            removeNotification(id: oldValue)
+            addNotification(id: self.id)
+        }
+    }
     
     private let statusImageView = UIImageView()
     private let downLoadStatusView = UIView()
@@ -56,6 +61,7 @@ class SaveContentStatusView: UIButton {
         super.init(frame: .zero)
         setUI()
         setConstraints()
+        addNotification(id: id)
     }
     
     required init?(coder: NSCoder) {
@@ -64,15 +70,12 @@ class SaveContentStatusView: UIButton {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if status == .downLoading {
-            drawDownLoadingBackgroundLayer()
-            drawDownLoadingForegroundLayer()
-        }
+//        }
     }
     
     deinit {
-        let notificationName = String(id)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
+        print("SaveContentStatusView: deinit")
+        removeNotification(id: id)
     }
     
     //MARK: UI
@@ -88,6 +91,7 @@ class SaveContentStatusView: UIButton {
         
         status = downLoadStatus
         
+        
     }
     
     private func setConstraints() {
@@ -100,6 +104,16 @@ class SaveContentStatusView: UIButton {
             $0.width.height.equalToSuperview().multipliedBy(0.3)
         })
     }
+    
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        super.touchesEnded(touches, with: event)
+//        if status == .doseNotSave {
+//            addNotification()
+//        }
+//    }
+    
+    
+    //MARK: Action
     
     // 저장 완료 상태로 UI세팅
     private func setSaved() {
@@ -125,8 +139,8 @@ class SaveContentStatusView: UIButton {
         downLoadStatusView.isHidden = false
         foregroundLayer.isHidden = false
         backgroundLayer.isHidden = false
-        //        drawDownLoadingBackgroundLayer()
-        //        drawDownLoadingForegroundLayer()
+        drawDownLoadingBackgroundLayer()
+        drawDownLoadingForegroundLayer()
     }
     
     // 다운로드 하지않은 상태
@@ -141,7 +155,7 @@ class SaveContentStatusView: UIButton {
     // 다운로드 원형 프로그레스바 그리기
     private func drawDownLoadingForegroundLayer() {
         //        guard layer.sublayers?.firstIndex(of: foregroundLayer) == nil else { return }
-        let lineWidth = bounds.width * 0.2
+        let lineWidth = bounds.width * 0.15
         let radius = (bounds.width - lineWidth) / 2
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
         let startAngle = -CGFloat.pi / 2
@@ -170,9 +184,9 @@ class SaveContentStatusView: UIButton {
     }
     
     
-    //MARK: Observer
-    //노티피케이션 셋팅
-    private func addNotification() {
+    //MARK: Notification
+    //노티피케이션 등록
+    private func addNotification(id: Int) {
         let notificationName = String(id)
         NotificationCenter.default.addObserver(
             self,
@@ -181,15 +195,32 @@ class SaveContentStatusView: UIButton {
             object: nil)
     }
     
-    // 노티 액션
-    @objc func responseOfNotification(_ notification: Notification) {
-        print(#function)
+    private func removeNotification(id: Int) {
         let notificationName = String(id)
-        guard let downLoadStatus = notification.userInfo?[notificationName] as? DownLoadStatus else { return }
-        self.status = downLoadStatus.status
-        self.foregroundLayer.strokeEnd = downLoadStatus.percent
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(notificationName), object: nil)
     }
     
+    // 노티 액션
+    @objc func responseOfNotification(_ notification: Notification) {
+        guard let downLoadStatus = notification.userInfo?["status"] as? DownLoadStatus else { return }
+        DispatchQueue.main.async {
+            self.status = downLoadStatus.status
+            self.foregroundLayer.strokeEnd = downLoadStatus.percent
+        }
+        
+    }
+    
+    //MARK: Touch Event
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        alpha = 0.5
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        alpha = 1
+    }
     
     
     
