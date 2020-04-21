@@ -210,6 +210,7 @@ class AddProfileViewController: UIViewController {
         present(alert, animated: true)
     }
 }
+
 extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegate {
     func kidsSwitchDidTap() {
         alertAction()
