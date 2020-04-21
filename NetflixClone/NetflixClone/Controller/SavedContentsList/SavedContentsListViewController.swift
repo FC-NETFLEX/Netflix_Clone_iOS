@@ -8,10 +8,10 @@
 
 import UIKit
 
-class SavedContentsListViewController: BaseViewController {
+class SavedContentsListViewController: CanSaveViewController {
     
     private let rootView = SavedContentsListView()
-    private var model = SavedContentsListModel.shared
+    private var model: SavedContentsListModel = SavedContentsListModel.shared 
 
     //MARK: LifeCycle
     
@@ -23,14 +23,15 @@ class SavedContentsListViewController: BaseViewController {
         super.viewDidLoad()
         setNavigationController()
         setUI()
-        test()
+        model.delegate = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let status = model.profiles.isEmpty
-        navigationController?.navigationBar.isHidden = status
-        rootView.isNoContents = status
+        modifyViewController()
+//        dump(model.profiles)
+        
     }
     
     //MARK: UI
@@ -61,7 +62,14 @@ class SavedContentsListViewController: BaseViewController {
     @objc private func didTapModifyButtotn(_ sender: UIButton) {
         print(#function)
         sender.isSelected.toggle()
-        
+        rootView.tableView.setEditing(sender.isSelected, animated: true)
+    }
+    
+    private func modifyViewController() {
+        let status = model.profiles.isEmpty
+        navigationController?.navigationBar.isHidden = status
+        rootView.isNoContents = status
+        rootView.tableView.reloadData()
     }
 
 }
@@ -86,28 +94,39 @@ extension SavedContentsListViewController: UITableViewDataSource {
         model.profiles.count
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var resultHeaderView: SavedContentHeaderView
+        
+        if let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SavedContentHeaderView.identifire) as? SavedContentHeaderView {
+            resultHeaderView = headerView
+        } else {
+            let headerView = SavedContentHeaderView(reuseIdentifier: SavedContentHeaderView.identifire)
+            resultHeaderView = headerView
+        }
+        
+        let profile = model.profiles[section]
+        resultHeaderView.configure(imageURL: profile.imageURL, title: profile.name)
+
+        return resultHeaderView
+        
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.profiles[section].savedConetnts.count
+        model.profiles[section].savedContents.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let resultCell: SavedContentCell
         let content = model.getContent(indexPath: indexPath)
+        
         if let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier) as? SavedContentCell {
             resultCell = cell
         } else {
-            resultCell = SavedContentCell(id: content.id, style: .default, reuseIdentifier: SavedContentCell.identifier)
+            resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
-        
-        
-        let description = content.rating + " | " + String(content.capacity) + " MB"
-        resultCell.configure(
-            title: content.title,
-            description: description,
-            stringImageURL: content.imageURL,
-            summary: content.isSelected ? content.summary: ""
-            )
+        resultCell.delegate = self
+        resultCell.configure(content: content)
         
         return resultCell
     }
@@ -120,34 +139,58 @@ extension SavedContentsListViewController: UITableViewDataSource {
 
 extension SavedContentsListViewController: UITableViewDelegate {
     
+    // 컨텐츠 선택시 줄거리 보여주는 함수
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         for (section, profile) in model.profiles.enumerated() {
-            for (row, content) in profile.savedConetnts.enumerated() {
+            for (row, content) in profile.savedContents.enumerated() {
                 if IndexPath(row: row, section: section) != indexPath && content.isSelected {
                     content.isSelected = false
+                    let indexPath = IndexPath(row: row, section: section)
                     tableView.reloadRows(at: [indexPath], with: .automatic)
                 }
             }
         }
-        
-        model.profiles[indexPath.section].savedConetnts[indexPath.row].isSelected.toggle()
+
+        model.profiles[indexPath.section].savedContents[indexPath.row].isSelected.toggle()
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        tableView.bounds.height / 18
+    }
+}
+
+
+// MARK: SavedContentCellDelegate
+extension SavedContentsListViewController: SavedContentCellDelegate {
+    func saveContentControl(status: SaveContentStatus, id: Int) {
+        guard let saveContent = SavedContentsListModel.shared.getContent(contentID: id) else { return }
+        saveContentControl(status: status, saveContetnt: saveContent)
+    }
     
 }
+
 
 
 // MARK: Test
 
 extension SavedContentsListViewController {
     func test() {
-        let url = FileManager.default.urls(for: .moviesDirectory, in: .userDomainMask)
-        print(url)
     }
 }
 
+// MARK: SavedContentsListModel
 
+extension SavedContentsListViewController: SavedContentsListModelDelegate {
+    
+    func didchange() {
+        DispatchQueue.main.async {
+            [weak self] in
+            self?.modifyViewController()
+        }
+    }
+    
+}
 
 
