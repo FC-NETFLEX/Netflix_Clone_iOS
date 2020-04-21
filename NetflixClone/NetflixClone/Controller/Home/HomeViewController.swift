@@ -270,21 +270,20 @@ extension HomeViewController: UITableViewDataSource {
         
         let header = HomeviewTitle()
         header.delegate = self
-        var poster: UIImage
-        var logo: UIImage
+        let poster = URL(string: homeViewTopContent.imageURL)
+        let logo = URL(string: homeViewTopContent.logoImageURL)!
+//        do {
+//            let posterData = try Data(contentsOf: URL(string: homeViewTopContent.imageURL)!)
+//            let logoData = try Data(contentsOf: URL(string: homeViewTopContent.logoImageURL)!)
+//            poster = UIImage(data: posterData)!
+//            logo = UIImage(data: logoData)!
+//        } catch {
+//            logo = UIImage(named: "darkGray")!
+//            poster = UIImage(named: "")!
+//        }
         
-        do {
-            let posterData = try Data(contentsOf: URL(string: homeViewTopContent.imageURL)!)
-            let logoData = try Data(contentsOf: URL(string: homeViewTopContent.logoImageURL)!)
-            poster = UIImage(data: posterData)!
-            logo = UIImage(data: logoData)!
-        } catch {
-            logo = UIImage(named: "darkGray")!
-            poster = UIImage(named: "")!
-        }
         
-        
-        header.configure(id: homeViewTopContent.id, poster: poster, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
+        header.configure(id: homeViewTopContent.id, poster: poster!, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: logo /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
@@ -307,22 +306,14 @@ extension HomeViewController: UITableViewDataSource {
             
             previewCell.delegate = self
             var idPreview = [Int]()
-            var posterPreview = [UIImage]()
-            var titleImagePreview = [UIImage]()
+            var posterPreview = [URL]()
+            var titleImagePreview = [URL]()
             
             homeViewPreviewContents.forEach {
-         
-                do {
-                    let posterData = try Data(contentsOf: URL(string: $0.poster)!)
-                    let logoData = try? Data(contentsOf: URL(string: $0.logoURL)!)
-                    posterPreview.append(UIImage(data: posterData) ?? UIImage(named: "Gray")!)
-                    titleImagePreview.append(UIImage(data: logoData!) ?? UIImage(named: "darkGray")!)
-                } catch {
-                    posterPreview.append(UIImage(named: "Gray")!)
-                    titleImagePreview.append(UIImage(named: "darkGray")!)
-                }
-                
+
                 idPreview.append($0.id)
+                posterPreview.append(URL(string: $0.poster)!)
+                titleImagePreview.append(URL(string: $0.logoURL)!)
             }
             
             previewCell.configure(id: idPreview, posters: posterPreview, titleImages: titleImagePreview)
@@ -414,22 +405,16 @@ extension HomeViewController: UITableViewDataSource {
             let top10Cell = tableView.dequeueReusableCell(withIdentifier: Top10TableViewCell.identifier, for: indexPath) as! Top10TableViewCell
             
             var idTop10 = [Int]()
-            var posterTop10 = [UIImage]()
+            var posterTop10 = [URL]()
             
             homeViewTop10Contents.forEach {
                 
-                do {
-                    let data = try Data(contentsOf: URL(string: $0.imageURL)!)
-                    posterTop10.append(UIImage(data: data)!)
-                } catch {
-                    posterTop10.append(UIImage(named: "darkGray")!)
-                }
-                
                 idTop10.append($0.id)
+                posterTop10.append(URL(string: $0.imageURL)!)
             }
             
             top10Cell.delegate = self
-            top10Cell.configure(id: idTop10, poster: posterTop10 as! [UIImage])
+            top10Cell.configure(id: idTop10, poster: posterTop10)
             cell = top10Cell
             
         default:
