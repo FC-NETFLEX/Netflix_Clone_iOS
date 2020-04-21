@@ -8,7 +8,7 @@
 
 import Foundation
 
-var categoryList = [CategoryList]()
+
 //프로필 아이콘
 struct CategoryList {
     let name: String

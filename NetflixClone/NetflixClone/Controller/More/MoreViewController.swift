@@ -28,7 +28,7 @@ class MoreViewController: UIViewController {
         setNavigation()
         setUI()
         setConstraints()
-
+        
         
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -68,17 +68,21 @@ class MoreViewController: UIViewController {
                 userArray.append(tempProfileView)
                 
                 tempProfileView.snp.makeConstraints {
-                    $0.width.equalToSuperview().multipliedBy(0.17)
-                    
+                    $0.width.equalTo(view.snp.width).multipliedBy(0.15)
+                    //                    equalToSuperview().multipliedBy(0.17)
+                    $0.height.equalToSuperview()
                     $0.top.equalToSuperview()
+                    
                 }
                 
-            } else if index == count {
+            } else if index == count && count < 5 {
                 let tempAddView = MoreAddProfileButtonView()
                 stackView.addArrangedSubview(tempAddView)
                 tempAddView.delegate = self
                 tempAddView.snp.makeConstraints {
-                    $0.width.equalToSuperview().multipliedBy(0.18)
+                    $0.width.equalTo(view.snp.width).multipliedBy(0.17)
+                    //                    $0.width.equalToSuperview().multipliedBy(0.18)
+                    $0.height.equalToSuperview()
                     $0.top.equalToSuperview()
                 }
             }
@@ -103,8 +107,10 @@ class MoreViewController: UIViewController {
             view.addSubview($0)
         }
         stackView.axis = .horizontal
-        stackView.distribution = .equalCentering
+        stackView.distribution = .equalSpacing
         stackView.alignment = .center
+        stackView.spacing = 15
+        
         
         profileButton.delegate = self
         
@@ -119,12 +125,14 @@ class MoreViewController: UIViewController {
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
         let padding: CGFloat = 30
+        let topMargin: CGFloat = 55
         
         stackView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(padding * 2)
-            $0.leading.equalToSuperview().inset(padding)
-            $0.trailing.equalToSuperview().offset(-padding)
-            $0.height.equalToSuperview().multipliedBy(0.1)
+            $0.top.equalToSuperview().inset(topMargin)
+            $0.centerX.equalToSuperview()
+            //            $0.leading.equalToSuperview().inset(padding)
+            //            $0.trailing.equalToSuperview().offset(-padding)
+            $0.height.equalToSuperview().multipliedBy(0.125)
         }
         profileButton.snp.makeConstraints {
             $0.top.equalTo(stackView.snp.bottom)
@@ -166,9 +174,15 @@ class MoreViewController: UIViewController {
                 let data = data,
                 let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                 else { return }
-           
+            
             self.userIconList.removeAll()
             self.userProfileList.removeAll()
+            DispatchQueue.main.async {
+                for view in self.stackView.subviews {
+                    self.stackView.removeArrangedSubview(view)
+                }
+            }
+            
             
             for profileList in profileLists {
                 guard
@@ -185,7 +199,7 @@ class MoreViewController: UIViewController {
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
                     else { return }
-             
+                
                 self.userIconList.append(ProfileIcons(idNum: idNum, iconURL: iconURL))
                 
                 
@@ -221,18 +235,18 @@ class MoreViewController: UIViewController {
     }
     private func imageSetting() {
         
-        let addVC = AddProfileViewController(root: .add)
+        let addVC = AddProfileViewController(root: .manager)
         
-        //        switch userIconList[id].isEmpty {
-        //        case true:
-        //            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
-        //            addVC.randomIndex = 3
-        //
-        //        case false:
-        //            guard let imageIndex = (0..<self.userIconList[].count).randomElement() else { return }
-        //            addVC.randomSetImage = self.userImageArray[imageIndex]
-        //            addVC.randomIndex = self.userIDNumArray[imageIndex]
-        //        }
+        switch userIconList.isEmpty {
+        case true:
+            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
+            addVC.randomIndex = 3
+            
+        case false:
+            guard let imageIndex = (0..<self.userIconList.count).randomElement() else { return }
+            addVC.randomSetImage = self.userIconList[imageIndex].iconURL
+            addVC.randomIndex = self.userIconList[imageIndex].idNum
+        }
         
         let navi = UINavigationController(rootViewController: addVC)
         navi.modalPresentationStyle = .fullScreen
@@ -311,16 +325,17 @@ extension MoreViewController: ProfileManageButtonDelegate {
         let profileVC = ProfileViewController(root: .manager)
         let navi = UINavigationController(rootViewController: profileVC)
         present(navi, animated: true)
+        //present
     }
     
     
 }
 extension MoreViewController: MoreAddProfileButtonViewDelegate {
     func addProfileButtonDidTap() {
-         imageSetting()
+        imageSetting() //present
     }
     
-   
+    
 }
 
 
