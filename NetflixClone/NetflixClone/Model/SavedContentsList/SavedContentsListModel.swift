@@ -104,6 +104,19 @@ class SavedContentsListModel {
     }
         
     
+    func getWatchingContentOfSavedContent() {
+        var tempContents: [SaveContent] = []
+        profiles.forEach({
+            let contents = $0.savedContents.filter({ $0.contentRange != nil && $0.savePoint != nil })
+            tempContents += contents
+        })
+        let result = tempContents.compactMap({ content in
+            
+            
+        })
+        
+    }
+    
 }
 
 
