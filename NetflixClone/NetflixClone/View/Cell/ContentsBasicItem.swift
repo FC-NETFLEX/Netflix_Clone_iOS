@@ -42,10 +42,6 @@ final class ContentsBasicItem: UICollectionViewCell {
 
     
     //MARK: -configure (포스터, contentID)
-    func configure(poster: UIImage) {
-        self.posterImage.image = poster
-        self.posterImage.backgroundColor = .red
-    }
     
     func configure(url: String) {
         self.posterImage.kf.setImage(with: URL(string: url))
