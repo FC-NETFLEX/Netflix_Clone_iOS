@@ -19,7 +19,8 @@ class HomeviewTitle: UIView {
     weak var delegate: HomeviewTitleDelegate?
     
     private let titlePoster = UIImageView()
-    private let gradient = CAGradientLayer()
+    private let topGradient = CAGradientLayer()
+    private let bottomGradient = CAGradientLayer()
     
     private let contentView = UIView()
     private let categoryLabel = UILabel()
@@ -188,17 +189,28 @@ class HomeviewTitle: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        gradient.startPoint = CGPoint(x: 1, y: 1)
-        gradient.endPoint = CGPoint(x: 1, y: 0.5)
-        
-        gradient.colors = [
+        bottomGradient.startPoint = CGPoint(x: 1, y: 1)
+        bottomGradient.endPoint = CGPoint(x: 1, y: 0.5)
+        bottomGradient.colors = [
             #colorLiteral(red: 0.07841768116, green: 0.07843924314, blue: 0.07841629535, alpha: 1).cgColor,
             #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
         ]
-        gradient.locations = [0, 1]
-        gradient.frame = CGRect(origin: .zero, size: frame.size)
+        bottomGradient.locations = [0, 1]
+        bottomGradient.frame = CGRect(origin: .zero, size: frame.size)
         
-        titlePoster.layer.addSublayer(gradient)
+        
+        topGradient.startPoint = CGPoint(x: 0, y: 0)
+        topGradient.endPoint = CGPoint(x: 0, y: 0.3)
+        topGradient.colors = [
+            #colorLiteral(red: 0.07841768116, green: 0.07843924314, blue: 0.07841629535, alpha: 1).cgColor,
+            #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        ]
+        topGradient.locations = [0, 1]
+        topGradient.frame = CGRect(origin: .zero, size: frame.size)
+        
+        
+        titlePoster.layer.addSublayer(bottomGradient)
+        titlePoster.layer.addSublayer(topGradient)
     }
     
     

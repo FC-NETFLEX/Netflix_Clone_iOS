@@ -68,6 +68,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         playButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
         
         posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
+        posterButton.contentMode = .scaleAspectFill
         
         watchTimeLabel.font = timeLabelFont
         watchTimeLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)//.lightGray
@@ -132,7 +133,6 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     func configure(id: Int, contentId: Int, poster: UIImage, watchTime: String, playMark: Double) {
         self.id = id
         self.contentId = contentId
-//        posterButton.image = poster
         posterButton.setImage(poster, for: .normal)
         watchTimeLabel.text = watchTime
 
