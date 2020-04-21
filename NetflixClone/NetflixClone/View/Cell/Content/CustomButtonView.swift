@@ -41,7 +41,7 @@ class CustomButtonView: UIView {
         }
         self.backgroundColor = .clear
         imageView.tintColor = UIColor.setNetfilxColor(name: .white)
-        label.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
     }

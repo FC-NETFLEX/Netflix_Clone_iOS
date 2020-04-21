@@ -15,7 +15,7 @@ class ContentViewController: CanSaveViewController {
     
     private var contentId: Int
     private var content: ContentDetail?
-    private var similarContets: [SimilarContent] = []
+    private var similarContents: [SimilarContent] = []
     
     // 수정 후 사용
         init(id: Int = 3) {
@@ -47,7 +47,7 @@ class ContentViewController: CanSaveViewController {
 //                print(String(data: data, encoding: .utf8)!)
                 if let contentModel = try? JSONDecoder().decode(ContentModel.self, from: data) {
                     self.content = contentModel.content
-                    self.similarContets = contentModel.similarContents
+                    self.similarContents = contentModel.similarContents
                     self.contentTableView.reloadData()
                     self.bluredBackgroundView.configure(backgroundImage: contentModel.content.contentsImage)
 //                    print("Content Preview:", contentModel.content.previewVideo ?? "No preview", #line)
@@ -135,7 +135,7 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: RecommendedTableViewCell.identifier, for: indexPath) as! RecommendedTableViewCell 
                 cell.delegate = self
-                cell.configure(contents: similarContets)
+                cell.configure(contents: similarContents)
                 return cell
             
         }
@@ -158,7 +158,7 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             return CGFloat.dynamicYMargin(margin: 70)
         } else {
             // recommend
-            return CGFloat.dynamicYMargin(margin: height * 0.5)
+            return height * 0.5
         }
     }
     
@@ -179,11 +179,10 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension ContentViewController: RecommendedCellDalegate {
-    func didTapRecommendedContents() {
-        // MARK: 서버로부터 컨텐츠 아이디 값 받아서 present 할 것
-        
-        print("해당 컨텐츠 상세화면으로 이동 할 것")
-        
+    func didTapRecommendedContents(indexPath: IndexPath) {
+        let contentVC = ContentViewController(id: similarContents[indexPath.row].id)
+        contentVC.modalPresentationStyle = .fullScreen
+        present(contentVC, animated: true)
     }
 }
 

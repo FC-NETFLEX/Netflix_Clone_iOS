@@ -48,7 +48,7 @@ class SearchView: UIView {
         }
         noSearchResultsLabel.text = "검색어와 일치하는 결과가 없습니다."
         noSearchResultsLabel.textColor = UIColor.setNetfilxColor(name: .white)
-        noSearchResultsLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .regular)
+        noSearchResultsLabel.font = UIFont.dynamicFont(fontSize: 25, weight: .regular)
         noSearchResultsLabel.isHidden = true
     }
     
@@ -73,7 +73,7 @@ class SearchView: UIView {
         
         noSearchResultsLabel.snp.makeConstraints {
             $0.centerX.equalTo(self.snp.centerX)
-            $0.top.equalTo(self.snp.top).offset(CGFloat.dynamicYMargin(margin: 40))
+            $0.centerY.equalTo(self.snp.centerY)
         }
     }
     

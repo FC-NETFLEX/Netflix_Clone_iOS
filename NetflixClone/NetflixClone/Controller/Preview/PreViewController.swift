@@ -15,7 +15,6 @@ class PreViewController: UIViewController {
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let infoView = CustomButtonView(imageName: "info.circle", labelText: "정보")
     private let dismissButton = UIButton()
-    private let logoScrollView = UIScrollView()
     private let playerScrollView = UIScrollView()
     
     // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
@@ -27,7 +26,6 @@ class PreViewController: UIViewController {
     
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
-    
     
     init(index: Int = 0) {
         self.receivedPreviewIndex = index
@@ -71,7 +69,7 @@ class PreViewController: UIViewController {
     }
     
     private func setUI() {
-        [playerScrollView, dibsView, infoView, playButton, dismissButton, logoScrollView].forEach {
+        [playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
             view.addSubview($0)
         }
         
@@ -101,9 +99,6 @@ class PreViewController: UIViewController {
         
         playerScrollView.isPagingEnabled = true
         playerScrollView.delegate = self
-        
-        logoScrollView.isPagingEnabled = true
-        logoScrollView.backgroundColor = .yellow
     }
     
     
@@ -184,11 +179,6 @@ class PreViewController: UIViewController {
     private func setConstraints() {
         playerScrollView.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalTo(view)
-        }
-        
-        logoScrollView.snp.makeConstraints {
-            $0.top.leading.trailing.equalTo(view)
-            $0.height.equalTo(CGFloat.dynamicYMargin(margin: 100))
         }
         
         let buttonHeight = CGFloat.dynamicYMargin(margin: 40)

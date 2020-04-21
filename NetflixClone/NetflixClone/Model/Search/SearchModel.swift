@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+struct SearchContent: Codable {
+    let id: Int
+    let title: String
+    let image: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case image = "contents_image"
+    }
+}
