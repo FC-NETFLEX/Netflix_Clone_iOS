@@ -9,8 +9,13 @@
 import UIKit
 
 class DibsView: UIView {
+    
+//    private let flowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
 
-    let collectionView = UICollectionView()
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,12 +28,27 @@ class DibsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: UI
     private func setUI() {
+        collectionView.register(ContentsBasicItem.self, forCellWithReuseIdentifier: ContentsBasicItem.identifier)
+        collectionView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
         
+        addSubview(collectionView)
     }
     
     private func setConstraints() {
-        
+//        let topMargin: CGFloat = 80//round(frame.height / 9)
+//        print("DibsView setConstraints topMargin = \(topMargin)")
+        collectionView.snp.makeConstraints {
+//            $0.top.equalToSuperview().inset(topMargin)
+//            $0.top.equalTo()
+            $0.top.leading.trailing.bottom.equalToSuperview()
+        }
     }
-
+    
+    
+    //MARK: Configure
+//    func configure() {
+//        
+//    }
 }
