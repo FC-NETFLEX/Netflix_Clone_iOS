@@ -14,7 +14,7 @@ class MoreViewController: UIViewController {
     
     private var userArray = [MorePofileView]()
     private let stackView = UIStackView()
-    private let netflixView = 
+    private let netflixView = NetflixView()
     private let profileButton = ProfileManageButton()
     private let moreTableView = UITableView()
     private let logoutButton = LogoutVersionButton()
@@ -28,11 +28,11 @@ class MoreViewController: UIViewController {
         setNavigation()
         setUI()
         setConstraints()
-    
+
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        profileStactViewSetting()
         reqeustProfileList()
         
     }
@@ -76,9 +76,9 @@ class MoreViewController: UIViewController {
             } else if index == count {
                 let tempAddView = MoreAddProfileButtonView()
                 stackView.addArrangedSubview(tempAddView)
-                
+                tempAddView.delegate = self
                 tempAddView.snp.makeConstraints {
-                    $0.width.equalToSuperview().multipliedBy(0.17)
+                    $0.width.equalToSuperview().multipliedBy(0.18)
                     $0.top.equalToSuperview()
                 }
             }
@@ -99,13 +99,12 @@ class MoreViewController: UIViewController {
     
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
-        [stackView,profileButton,moreTableView,logoutButton].forEach {
+        [stackView,profileButton,netflixView,moreTableView,logoutButton].forEach {
             view.addSubview($0)
         }
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
         stackView.alignment = .center
-        stackView.spacing = 10
         
         profileButton.delegate = self
         
@@ -119,32 +118,38 @@ class MoreViewController: UIViewController {
     }
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-        
+        let padding: CGFloat = 30
         
         stackView.snp.makeConstraints {
-            $0.top.leading.trailing.equalTo(guide)
-            $0.height.equalToSuperview().multipliedBy(0.15)
+            $0.top.equalToSuperview().inset(padding * 2)
+            $0.leading.equalToSuperview().inset(padding)
+            $0.trailing.equalToSuperview().offset(-padding)
+            $0.height.equalToSuperview().multipliedBy(0.1)
         }
         profileButton.snp.makeConstraints {
             $0.top.equalTo(stackView.snp.bottom)
             $0.leading.trailing.equalTo(guide)
             $0.height.equalToSuperview().multipliedBy(0.08)
         }
+        netflixView.snp.makeConstraints {
+            $0.top.equalTo(profileButton.snp.bottom)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalToSuperview().multipliedBy(0.22)
+        }
         moreTableView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(profileButton.snp.bottom)
+            $0.top.equalTo(netflixView.snp.bottom)
             $0.bottom.equalTo(logoutButton.snp.top)
             
         }
         logoutButton.snp.makeConstraints {
             $0.leading.trailing.bottom.equalTo(guide)
-            $0.height.equalToSuperview().multipliedBy(0.1)
+            $0.height.equalToSuperview().multipliedBy(0.2)
         }
         
     }
     //    MARK: API
     func reqeustProfileList() {
-        self.userProfileList.removeAll()
         guard
             let token = LoginStatus.shared.getToken(),
             let url = APIURL.makeProfile.makeURL()
@@ -162,7 +167,8 @@ class MoreViewController: UIViewController {
                 let profileLists = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
                 else { return }
            
-//            self.userProfileList.removeAll()
+            self.userIconList.removeAll()
+            self.userProfileList.removeAll()
             
             for profileList in profileLists {
                 guard
@@ -212,6 +218,25 @@ class MoreViewController: UIViewController {
     }
     @objc private func didTapLogoutButton() {
         alertAction()
+    }
+    private func imageSetting() {
+        
+        let addVC = AddProfileViewController(root: .add)
+        
+        //        switch userIconList[id].isEmpty {
+        //        case true:
+        //            addVC.randomSetImage = "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/profile/icon/icon3.png"
+        //            addVC.randomIndex = 3
+        //
+        //        case false:
+        //            guard let imageIndex = (0..<self.userIconList[].count).randomElement() else { return }
+        //            addVC.randomSetImage = self.userImageArray[imageIndex]
+        //            addVC.randomIndex = self.userIDNumArray[imageIndex]
+        //        }
+        
+        let navi = UINavigationController(rootViewController: addVC)
+        navi.modalPresentationStyle = .fullScreen
+        self.present(navi, animated: true)
     }
 }
 extension MoreViewController: MoreProfileViewDelegate {
@@ -283,6 +308,13 @@ extension MoreViewController: ProfileManageButtonDelegate {
     }
     
     
+}
+extension MoreViewController: MoreAddProfileButtonViewDelegate {
+    func addProfileButtonDidTap() {
+         imageSetting()
+    }
+    
+   
 }
 
 
