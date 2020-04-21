@@ -41,7 +41,7 @@ class CustomButtonView: UIView {
         }
         self.backgroundColor = .clear
         imageView.tintColor = UIColor.setNetfilxColor(name: .white)
-        label.font = UIFont.dynamicFont(fontSize: 8, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 10)
         label.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
     }
@@ -51,7 +51,7 @@ class CustomButtonView: UIView {
     }
     
     private func setConstraints() {
-        let buttonImageSizeMultiplying = 0.3
+        let buttonImageSizeMultiplying = 0.2
         let constant5 = CGFloat.dynamicYMargin(margin: 5)
         
         imageView.snp.makeConstraints {
