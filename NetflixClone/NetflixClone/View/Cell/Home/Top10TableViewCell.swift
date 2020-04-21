@@ -25,7 +25,7 @@ class Top10TableViewCell: UITableViewCell {
     private let headerLabel = UILabel()
     
     private var idData = [Int]()
-    private var posterData = [UIImage]()
+    private var posterData = [URL]()
     
     private let contentCollectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
@@ -86,7 +86,7 @@ class Top10TableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(id: [Int], poster: [UIImage]) {
+    func configure(id: [Int], poster: [URL]) {
         self.idData = id
         self.posterData = poster
         
