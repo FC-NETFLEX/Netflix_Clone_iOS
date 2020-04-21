@@ -44,7 +44,7 @@ class HomeMenuBarView: UIView {
     //MARK: UI
     private func setUI() {
         let fontColor: UIColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.white)
-        let buttonFont: UIFont = .boldSystemFont(ofSize: 12)
+        let buttonFont: UIFont = .boldSystemFont(ofSize: 14)
         
         iconButton.setImage(UIImage(named: "netflixIcon"), for: .normal)
         iconButton.contentMode = .scaleAspectFill
@@ -77,8 +77,8 @@ class HomeMenuBarView: UIView {
     private func setConstraints() {
         let margin: CGFloat = 16
         let buttonHeight: CGFloat = 30
-        let movieWidth: CGFloat = 80
-        let categoryWidth: CGFloat = 150
+        let movieWidth: CGFloat = 50
+        let categoryWidth: CGFloat = 100
         let dibsWidth: CGFloat = 150
         
 //        let top: CGFloat = UIScreen.accessibilityFrame().frame
@@ -93,21 +93,21 @@ class HomeMenuBarView: UIView {
         
         movieButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(margin + top)
-            $0.leading.equalTo(iconButton.snp.trailing).inset(margin)
+            $0.leading.equalTo(iconButton.snp.trailing).offset(margin)
             $0.height.equalTo(buttonHeight)
             $0.width.equalTo(movieWidth)
         }
         
         categoryButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(margin + top)
-            $0.leading.equalTo(movieButton.snp.trailing).inset(margin)
+            $0.leading.equalTo(movieButton.snp.trailing).offset(margin)
             $0.height.equalTo(buttonHeight)
             $0.width.equalTo(categoryWidth)
         }
         
         dibsButton.snp.makeConstraints {
             $0.top.equalToSuperview().inset(margin + top)
-            $0.leading.equalTo(categoryButton.snp.trailing).inset(margin)
+            $0.leading.equalTo(categoryButton.snp.trailing).offset(margin)
             $0.height.equalTo(buttonHeight)
             $0.width.equalTo(dibsWidth)
         }
@@ -134,6 +134,7 @@ class HomeMenuBarView: UIView {
     }
     
     @objc private func didTabDibsButton(sender: UIButton) {
+        print("HomeMenuBar")
         backgroundColor = .black
         dibsButton.setTitle("내가 찜한 콘텐츠 ▼", for: .normal)
         delegate?.didTabDibsButton()
