@@ -109,10 +109,14 @@ struct SimilarContent: Decodable {
 
 struct Watching: Decodable {
     
+    let id: Int
+    let videoID: Int
     let savePoint: Int64
     let videoRange: Int64
     
     private enum CodingKeys: String, CodingKey {
+        case id
+        case videoID = "video"
         case savePoint = "playtime"
         case videoRange = "video_length"
     }

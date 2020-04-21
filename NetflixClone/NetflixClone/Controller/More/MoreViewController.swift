@@ -242,7 +242,13 @@ class MoreViewController: UIViewController {
 extension MoreViewController: MoreProfileViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
-        LoginStatus.shared.selectedProfile(profileID: userProfileList[tag].id)
+        let userProfile = userProfileList[tag]
+        let icon = userIconList[tag]
+        guard let imageURL = URL(string: icon.iconURL) else { return }
+        let id = userProfile.id
+        let name = userProfile.name
+        let profile = Profile(id: id, name: name, imageURL: imageURL)
+        LoginStatus.shared.selectedProfile(profile: profile)
         
         let tabBarController = TabBarController()
         tabBarController.modalTransitionStyle = .coverVertical
