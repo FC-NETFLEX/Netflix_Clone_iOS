@@ -263,12 +263,7 @@ class ProfileViewController: UIViewController {
             // 양중창이 수정함
             self.userIconList.removeAll()
             self.userProfileList.removeAll()
-//            self.userIDArray.removeAll()
-//            // 양중창이 수정함
-//            self.userNameArray.removeAll()
-//            self.userImageArray.removeAll()
-          
-//            var profile = [ProfileList]()
+
             
             for profileList in profileLists {
                 guard
@@ -278,22 +273,15 @@ class ProfileViewController: UIViewController {
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
                     else { return }
 
-                
-//                let tempProfile = ProfileList(id: id, name: name, iskids: iskids)
-//                profile.append(tempProfile)
-                
-                self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
             
-              
-//                var icon = [ProfileIcons]()
-                
+                self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
+        
                 guard
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
                     else { return }
               
-//                let temp = ProfileIcons(idNum: idNum, iconURL: iconURL)
-//                icon.append(temp)
+
                 self.userIconList.append(ProfileIcons(idNum: idNum, iconURL: iconURL))
 
     
@@ -394,8 +382,6 @@ extension ProfileViewController: ProfilViewDelegate {
         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
         navigationController?.pushViewController(changeVC, animated: true)
         
-        print(selectViewImage)
-        print(selectViewName)
     }
     
 }
