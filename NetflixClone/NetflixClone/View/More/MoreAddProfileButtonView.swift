@@ -48,7 +48,7 @@ class MoreAddProfileButtonView: UIView {
         
         addProfileLabel.text = "프로필 추가"
         addProfileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
-        addProfileLabel.font = .systemFont(ofSize: 15)
+        addProfileLabel.font = .systemFont(ofSize: 14)
         
     }
     private func setConstrains() {
@@ -57,15 +57,15 @@ class MoreAddProfileButtonView: UIView {
         
         
         profilePluButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(margin * 2)
+            $0.top.equalToSuperview().offset(margin * 1.5)
             $0.centerX.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.8)
+            $0.width.equalToSuperview().multipliedBy(0.85)
             $0.height.equalTo(profilePluButton.snp.width)
 
             
         }
         addProfileLabel.snp.makeConstraints {
-            $0.top.equalTo(profilePluButton.snp.bottom).offset(margin)
+            $0.top.equalTo(profilePluButton.snp.bottom).offset(padding)
             $0.centerX.equalTo(profilePluButton.snp.centerX)
             
         }
