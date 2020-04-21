@@ -47,7 +47,7 @@ class MorePofileView: UIView{
         
         profileLabel.text = "양중창"
         profileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
-        profileLabel.font = .systemFont(ofSize: 15)
+        profileLabel.font = .systemFont(ofSize: 14)
         
     }
     
