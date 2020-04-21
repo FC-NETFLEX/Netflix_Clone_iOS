@@ -107,22 +107,20 @@ class ProfileImageViewController: UIViewController {
         task.resume()
 
     }
-    
-    
     private var categoryList = [CategoryList]()
 }
 
-struct CategoryList {
-    let name: String
-    let icon: [Icon]
-    
-}
-
-struct Icon {
-    let id: Int
-    let iconURL: String
-    
-}
+//struct CategoryList {
+//    let name: String
+//    let icon: [Icon]
+//
+//}
+//
+//struct Icon {
+//    let id: Int
+//    let iconURL: String
+//
+//}
 
 extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource {
     

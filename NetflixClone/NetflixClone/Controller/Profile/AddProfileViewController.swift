@@ -144,25 +144,30 @@ class AddProfileViewController: UIViewController {
     
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
-        switch root {
-        case .main,.manager:
-            for vc in navigationController!.viewControllers.reversed() {
-                if let profileVC = vc as? ProfileViewController {
-                    profileVC.root = .main
-                    navigationController?.popViewController(animated: true)
-                }
-            }
-        case .add:
-            presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-        }
+        presentingViewController?.dismiss(animated: true)
+        
+//        switch root {
+//        case .main:
+//            for vc in navigationController!.viewControllers.reversed() {
+//                if let profileVC = vc as? ProfileViewController {
+//                    profileVC.root = .main
+//                    navigationController?.popViewController(animated: true)
+//                }
+//            }
+//        case .add,.manager:
+//            presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+//        }
     }
     
     @objc private func didTapSaveButton(_ sender: Any) {
+//        print("프로필 만들기 저장")
         
-        if let navi = presentingViewController as? UINavigationController, let vc = navi.viewControllers.first as? ProfileViewController {
-            vc.root = .main
+//        if let navi = presentingViewController as? UINavigationController, let vc = navi.viewControllers.first as?
+        if let navi = presentingViewController as? UIViewController {
+            print("프로필 만들기 저장")
+            //            vc.root = .main
             profileCreate()
-            dismiss(animated: true)
+            presentingViewController?.dismiss(animated: true)
         } else {
             for vc in navigationController!.viewControllers.reversed() {
                 if let profileVC = vc as? ProfileViewController {
@@ -210,6 +215,7 @@ class AddProfileViewController: UIViewController {
         present(alert, animated: true)
     }
 }
+
 extension AddProfileViewController: KidsCustomViewDelegate,AddProfileViewDelegate {
     func kidsSwitchDidTap() {
         alertAction()

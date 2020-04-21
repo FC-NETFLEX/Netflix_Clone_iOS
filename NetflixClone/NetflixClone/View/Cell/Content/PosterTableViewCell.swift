@@ -12,6 +12,7 @@ import Kingfisher
 
 protocol DismissDelegate: class {
     func dismiss() -> ()
+    func play()
 }
 
 class PosterTableViewCell: UITableViewCell {
@@ -51,6 +52,7 @@ class PosterTableViewCell: UITableViewCell {
         playButton.setTitle("▶︎ 재생", for: .normal)
         playButton.backgroundColor = UIColor.setNetfilxColor(name: .netflixRed)
         playButton.layer.cornerRadius = 3
+        playButton.addTarget(self, action: #selector(didTapPlayButton), for: .touchUpInside)
         
         //MARK: 서버에서 응답 받은 텍스트 및 이미지 => Fixed
         releaseYear.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
@@ -105,6 +107,10 @@ class PosterTableViewCell: UITableViewCell {
         self.releaseYear.text = releaseYear
         self.ageGroup.image = UIImage(named: ageGroup)
         self.runningTime.text = runningTime
+    }
+    
+    @objc private func didTapPlayButton() {
+        delegate?.play()
     }
     
     @objc private func didTapDismissButton(_ sender: UIButton) {

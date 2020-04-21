@@ -23,11 +23,6 @@ class PreviewTableViewCell: UITableViewCell {
     
     private let headerLabel = UILabel()
     private lazy var previewConllectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-//    private let previewConllectionView: UICollectionView = {
-//        let layout = UICollectionViewFlowLayout()
-//        layout.scrollDirection = .horizontal
-//        return UICollectionView(frame: .zero, collectionViewLayout: layout)
-//    }()
 
     private var idData = [Int]()
     private var posterData = [UIImage]()
@@ -88,17 +83,10 @@ class PreviewTableViewCell: UITableViewCell {
   
     //MARK: - configure
     func configure(id: [Int], posters: [UIImage], titleImages: [UIImage]) {
-//    func configure(id: [Int], poster: [String], titleImage: [String?]) {
-//        var posters = [UIImage]()
-//        var titleImages = [UIImage]()
-//
-//        poster.forEach { posters.append(UIImage(named: $0)!) }
-//        titleImage.forEach { titleImages.append(UIImage(named: $0 ?? "")!) }
         
         self.idData = id
         self.posterData = posters
         self.titleData = titleImages
-        print("=======preview Configure  idData \(idData.count), posterData \(posterData.count), titleImage \(titleImages)")
         
         previewConllectionView.reloadData()
     }

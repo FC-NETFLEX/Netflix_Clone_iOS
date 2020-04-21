@@ -9,6 +9,11 @@
 import UIKit
 import Kingfisher
 
+//enum ChangeRoots {
+//    case main
+//    case manager
+//}
+
 class ChangeProfileViewController: UIViewController {
     
     let addProfileView = AddProfileView()
@@ -16,6 +21,9 @@ class ChangeProfileViewController: UIViewController {
     private let universalCV = UniversalClassView()
     private let changeView = ChangeCustomView()
     private let deleteView = DeleteProfileButtonView()
+    
+    private var userProfileList = [ProfileList]()
+    private var userIconList = [ProfileIcons]()
     
     var isKids = Bool()
     var profileName = String()
@@ -195,7 +203,10 @@ class ChangeProfileViewController: UIViewController {
                 profileUpdate()
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
+            } else {
+                print("프로필관리프렌젠트?")
             }
+            
         }
     }
 }
@@ -214,7 +225,7 @@ extension ChangeProfileViewController: AddProfileViewDelegate, DeleteProfileButt
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .main
                 profileDelete()
-                profileVC.userNameArray.removeAll()
+                profileVC.userProfileList.removeAll()
                 navigationController?.popViewController(animated: true)
                 
                 print("프로필삭제")
