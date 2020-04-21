@@ -9,7 +9,7 @@
 import UIKit
 
 protocol RecommendedCellDalegate: class {
-    func didTapRecommendedContents() -> ()
+    func didTapRecommendedContents(indexPath: IndexPath) -> ()
 }
 
 class RecommendedTableViewCell: UITableViewCell {
@@ -131,7 +131,7 @@ extension RecommendedTableViewCell: UICollectionViewDelegateFlowLayout {
     // MARK: 추천 컨텐츠의 상세화면으로 이동할 것
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("추천 컨텐츠의 상세화면으로 이동", indexPath)
-        delegate?.didTapRecommendedContents()
+        delegate?.didTapRecommendedContents(indexPath: indexPath)
     }
 }
 
