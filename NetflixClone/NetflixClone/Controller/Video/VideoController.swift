@@ -84,9 +84,10 @@ class VideoController: UIViewController {
     
     private func setSavePoint() {
         guard videoModel != nil else { return }
+        
         if let savedContent = SavedContentsListModel.shared.getContent(contentID: videoModel.contentID) {
-            savedContent.savePoint = videoModel.currentTime
-            savedContent.contentRange = videoModel.range
+            savedContent.savePoint = videoModel.currentTime == 0 ? nil: videoModel.currentTime
+            savedContent.contentRange = videoModel.currentTime == 0 ? nil: videoModel.range
             SavedContentsListModel.shared.putSavedContentsList()
         } else {
             savePointRequest()
@@ -95,25 +96,31 @@ class VideoController: UIViewController {
     
     // 마지막 시청 구간 서버에 저장
     private func savePointRequest() {
+        
         guard let videoID = videoModel.videoID else { return }
         guard let token = LoginStatus.shared.getToken(), let profileID =  LoginStatus.shared.getProfileID() else { return }
-        let bodyData: Data
+        let bodyData: Data?
         let requestURL: URL
         let method: APIMethod
         
-        if let watching = videoModel.watching { // update
+        if let watching = videoModel.watching { // update, delete
             print("Update")
             let body = ["playtime": videoModel.currentTime]
-            
-            guard
-                let data = try? JSONSerialization.data(withJSONObject: body, options: []),
-                let url = APIURL.defaultURL.getURL(path: [
-                (name: APIPathKey.profiles, value: String(profileID)),
-                (name: APIPathKey.watch, value: String(watching.id))
-                ]) else { return }
-            method = .patch
-            bodyData = data
+            guard let url = APIURL.defaultURL.getURL(path: [
+            (name: APIPathKey.profiles, value: String(profileID)),
+            (name: APIPathKey.watch, value: String(watching.id))
+            ]) else { return }
             requestURL = url
+            
+            if videoModel.currentTime == 0 {
+                method = .delete
+                bodyData = nil
+            } else {
+                guard let data = try? JSONSerialization.data(withJSONObject: body, options: []) else { return }
+                method = .patch
+                bodyData = data
+            }
+            
         } else { // create
             let body: [String: Any] = ["video": videoID, "playtime": videoModel.currentTime, "video_length": videoModel.range]
             print("Create")
@@ -132,7 +139,7 @@ class VideoController: UIViewController {
             result in
             switch result {
             case .success(let data):
-                print("저장 성공:", String(data: data, encoding: .utf8) ?? "디코딩 실패")
+                print("WatchingResponse:", String(data: data, encoding: .utf8) ?? "디코딩 실패")
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -381,9 +388,6 @@ extension VideoController {
             guard let self = self else { return }
             
             let currentTime = time.value / Int64(NSEC_PER_SEC)
-//            print("observerTime:", currentTime)
-//            guard currentTime > 0 else { return }
-            
             self.videoModel.currentTime = currentTime
             let restTime = self.videoModel.getRestTime(currentTime: currentTime)
             self.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
