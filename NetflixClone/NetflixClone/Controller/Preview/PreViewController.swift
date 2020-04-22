@@ -8,21 +8,35 @@
 
 import UIKit
 import AVFoundation
+import Kingfisher
 
-class PreViewController: UIViewController {
+class PreViewController: BaseViewController {
     let label = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let infoView = CustomButtonView(imageName: "info.circle", labelText: "정보")
     private let dismissButton = UIButton()
     private let playerScrollView = UIScrollView()
+    private var displayingViewIndex: Int {
+        set {
+            
+        }
+        get {
+           let index = Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
+            print(index)
+            return index
+        }
+    }
+    override var prefersStatusBarHidden: Bool {
+              return true
+          }
     
     // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
     private var preview = [PreviewContent]()
 
     private var previewSubviews = [PreviewView]()
     
-    private let receivedPreviewIndex: Int
+    private var receivedPreviewIndex: Int
     
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
@@ -38,14 +52,26 @@ class PreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print(receivedPreviewIndex)
         setUI()
         setConstraints()
         request(id: LoginStatus.shared.getProfileID() ?? 0)
     }
     
     override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
         playerScrollView.setContentOffset(CGPoint(x: CGFloat(receivedPreviewIndex) * playerScrollView.bounds.width, y: 0), animated: false)
-//        previewSubviews[receivedPreviewIndex].player.play()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard preview.count != 0 else { return }
+        previewSubviews[receivedPreviewIndex].player.play()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        previewSubviews[displayingViewIndex].player.pause()
     }
     
     private func request(id: Int) {
@@ -101,8 +127,6 @@ class PreViewController: UIViewController {
         playerScrollView.delegate = self
     }
     
-    
-    
     private func createPreviewSubviews() {
         self.previewSubviews = preview.compactMap {
             guard let url = URL(string: $0.previewVideoURL) else {
@@ -110,6 +134,8 @@ class PreViewController: UIViewController {
                 return nil
             }
             let view = PreviewView(url: url)
+            view.configure(image: $0.poster)
+            NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: view.player.currentItem)
             return view
         }
         
@@ -166,11 +192,17 @@ class PreViewController: UIViewController {
             
         // 정보버튼 눌렀을 때
         case 1:
-            print("정보버튼 눌렀다~")
-            //            delegate?.infoButtonClicked()
-        //            infoButtonClicked.toggle()
+            print("정보 버튼 눌렀을 때 인덱스: ", displayingViewIndex)
+            self.receivedPreviewIndex = displayingViewIndex
+            let contentsVC = ContentViewController(id: preview[displayingViewIndex].id)
+            print(preview[displayingViewIndex].title)
+            print(preview[displayingViewIndex].poster)
+            contentsVC.modalPresentationStyle = .fullScreen
+            present(contentsVC, animated: true)
         case 2:
-            print("재생하자~")
+            print("재생 버튼 눌렀을 때 인덱스: ", displayingViewIndex)
+            self.receivedPreviewIndex = displayingViewIndex
+            presentVideoController(contentID: preview[displayingViewIndex].id)
         default:
             break
         }
@@ -209,6 +241,24 @@ class PreViewController: UIViewController {
         }
     }
     
+    @objc func playerDidFinishPlaying(note: NSNotification) {
+        print("영상 끝나면 다음 영상으로 넘겨 줄 것")
+        let cmTime = CMTime(value: 0, timescale: 1)
+        previewSubviews[displayingViewIndex].player.seek(to: cmTime)
+        
+        if displayingViewIndex < previewSubviews.count - 1 {
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+                    self.playerScrollView.contentOffset.x = CGFloat(self.displayingViewIndex + 1) * self.view.frame.width
+                }, completion: { _ in
+                    self.previewSubviews[self.displayingViewIndex].player.play()
+                })
+            }
+        } else {
+            dismiss(animated: true)
+        }
+        
+    }
 }
 
 var random: UIColor {
@@ -224,15 +274,20 @@ var random: UIColor {
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        let displayingViewIndex = Int(scrollView.contentOffset.x / scrollView.bounds.width)
+//        let displayingViewIndex = Int(scrollView.contentOffset.x / scrollView.bounds.width)
+//        print(displayingViewIndex)
+        print(#function)
         previewSubviews[displayingViewIndex].player.play()
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        print(#function)
         previewSubviews.forEach {
             $0.player.pause()
         }
     }
     
-    
+    func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {
+        
+    }
 }
