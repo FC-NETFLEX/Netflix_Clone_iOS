@@ -13,7 +13,7 @@ protocol AddProfileButtonDelegate: class {
 }
 class AddProfileButtonView: UIView {
     
-    private let profilePluButton = UIButton()
+    private let profilePlusButton = UIButton()
     private let addProfileLabel = UILabel()
     
     weak var delegate: AddProfileButtonDelegate?
@@ -34,17 +34,17 @@ class AddProfileButtonView: UIView {
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
         
-        [profilePluButton,addProfileLabel].forEach {
+        [profilePlusButton,addProfileLabel].forEach {
             self.addSubview($0)
         }
-        profilePluButton.setImage(UIImage(named: "플러스"), for: .normal)
-        profilePluButton.backgroundColor = #colorLiteral(red: 0.09802349657, green: 0.0980482474, blue: 0.09802193195, alpha: 1)
-        profilePluButton.layer.borderWidth = 1.5
-        profilePluButton.layer.borderColor = #colorLiteral(red: 0.1489986479, green: 0.1490316391, blue: 0.1489965916, alpha: 1)
-        profilePluButton.contentMode = .scaleAspectFill
-        profilePluButton.layer.masksToBounds = true
-        profilePluButton.layer.cornerRadius = cornerRadius
-        profilePluButton.addTarget(self, action: #selector(addProfileButtonDidTap), for: .touchUpInside)
+        profilePlusButton.setImage(UIImage(named: "플러스"), for: .normal)
+        profilePlusButton.backgroundColor = #colorLiteral(red: 0.09802349657, green: 0.0980482474, blue: 0.09802193195, alpha: 1)
+        profilePlusButton.layer.borderWidth = 1.5
+        profilePlusButton.layer.borderColor = #colorLiteral(red: 0.1489986479, green: 0.1490316391, blue: 0.1489965916, alpha: 1)
+        profilePlusButton.contentMode = .scaleAspectFill
+        profilePlusButton.layer.masksToBounds = true
+        profilePlusButton.layer.cornerRadius = cornerRadius
+        profilePlusButton.addTarget(self, action: #selector(addProfileButtonDidTap), for: .touchUpInside)
         
         addProfileLabel.text = "프로필 추가"
         addProfileLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -55,18 +55,29 @@ class AddProfileButtonView: UIView {
         let margin: CGFloat = 20
         let padding: CGFloat = 10
         
-        [profilePluButton, addProfileLabel].forEach {
+        [profilePlusButton, addProfileLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        profilePluButton.topAnchor.constraint(equalTo: self.topAnchor, constant: padding).isActive = true
-        profilePluButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        profilePluButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.6).isActive = true
-        profilePluButton.heightAnchor.constraint(equalTo: profilePluButton.widthAnchor).isActive = true
-
+        profilePlusButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+        profilePlusButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: margin).isActive = true
+        profilePlusButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -margin).isActive = true
+        profilePlusButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.70).isActive = true
+        profilePlusButton.heightAnchor.constraint(equalTo: profilePlusButton.widthAnchor).isActive = true
+        
+        addProfileLabel.topAnchor.constraint(equalTo: profilePlusButton.bottomAnchor, constant: margin).isActive = true
         addProfileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         addProfileLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         
+        
+//        profilePlusButton.topAnchor.constraint(equalTo: self.topAnchor, constant: padding).isActive = true
+//        profilePlusButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+//        profilePlusButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.6).isActive = true
+//        profilePlusButton.heightAnchor.constraint(equalTo: profilePlusButton.widthAnchor).isActive = true
+//
+//        addProfileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+//        addProfileLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+//
         
     }
     @objc private func addProfileButtonDidTap() {
