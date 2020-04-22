@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class Top10CollectionViewCell: UICollectionViewCell {
     static let identifier = "Top10CVC"
@@ -54,8 +55,10 @@ class Top10CollectionViewCell: UICollectionViewCell {
 
     
     //MARK: - configure
-    func configure(poster: UIImage, count: Int) {
+    func configure(poster: String, count: Int) {
+        
         topNumLabel.text = "\(count + 1)"
-        posterImage.image = poster
+        posterImage.kf.setImage(with: URL(string: poster))
+        
     }
 }

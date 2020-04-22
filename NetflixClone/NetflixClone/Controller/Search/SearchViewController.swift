@@ -11,7 +11,6 @@ import SnapKit
 
 // 찾는 데이터 없으면 없다는 표시 나오는 기능 구현 => 체크해서 쓸데없는 부분 쳐낼것
 // indicator
-// 상세화면 구현
 
 class SearchViewController: UIViewController {
     
@@ -19,54 +18,31 @@ class SearchViewController: UIViewController {
         return .lightContent
     }
     
-
     // MARK: Search Result CollectionView Datas
-    // 더미
-    let data = ["3"]
-    var filteredData = [String]()
-    
-    private var isSearchBarEmpty: Bool {
-        return searchController.searchBar.text?.isEmpty ?? true
-    }
-    
-    private var isFiltering: Bool {
-        return searchController.isActive && !isSearchBarEmpty
-    }
-    
-    private func filterContentForSearchText(searchText: String) {
-        filteredData = data.filter({(dataString: String) -> Bool in
-            return dataString.range(of: searchText, options: .caseInsensitive) != nil
-        })
-        searchView.searchResultCollectionView.reloadData()
-    }
-    
-    private func setIsFilteringToShow(filteredItemCount: Int, of totalItemCount: Int) {
-        if (filteredItemCount == totalItemCount) {
-            return
-        } else if (filteredItemCount == 0 && contentsSearchBar.text?.isEmpty == false) {
-            searchView.searchResultCollectionView.isHidden = true
-            searchView.noSearchResultsLabel.isHidden = false
-        } else if (filteredItemCount == 0 && contentsSearchBar.text?.isEmpty == true) {
-            searchView.searchResultCollectionView.isHidden = false
-            searchView.noSearchResultsLabel.isHidden = true
-        } else {
-            searchView.searchResultCollectionView.isHidden = false
-            searchView.noSearchResultsLabel.isHidden = true
-            print("검색 결과: \(filteredItemCount)개")
-            
+    private var searchResultDatas = [SearchContent]() {
+        didSet {
+            searchView.searchResultCollectionView.reloadData()
+            if !isSearchBarEmpty && searchResultDatas.count == 0 {
+                searchView.noSearchResultsLabel.isHidden = false
+                searchView.searchResultCollectionView.isHidden = true
+            } else {
+                searchView.noSearchResultsLabel.isHidden = true
+                searchView.searchResultCollectionView.isHidden = false
+            }
         }
     }
+    
+    private var isSearchBarEmpty: Bool {
+        return contentsSearchBar.text?.isEmpty ?? true
+    }
+    
+    private var dataTask: URLSessionDataTask?
     
     private let flowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
     
     // MARK: Properties
     private let searchView = SearchView()
-    private let searchController = UISearchController(searchResultsController: nil)
-    lazy var contentsSearchBar = self.searchController.searchBar
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
-        searchBarTextDidEndEditing(contentsSearchBar)
-    }
+    private lazy var contentsSearchBar = UISearchBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +50,10 @@ class SearchViewController: UIViewController {
         setSearchBarInNavigation()
         setSearchController()
         setSearchView()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+        searchBarTextDidEndEditing(contentsSearchBar)
     }
     
     // MARK: SearchView 세팅
@@ -95,8 +75,7 @@ class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
         
-        self.navigationItem.titleView = searchController.searchBar
-        searchController.hidesNavigationBarDuringPresentation = false
+        self.navigationItem.titleView = contentsSearchBar
         
         // searchTextField 내부 세팅
         contentsSearchBar.tintColor = UIColor.setNetfilxColor(name: .white)
@@ -104,20 +83,39 @@ class SearchViewController: UIViewController {
         contentsSearchBar.setValue("취소", forKey: "cancelButtonText")
         contentsSearchBar.searchTextField.backgroundColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
         contentsSearchBar.searchTextField.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        contentsSearchBar.searchTextField.clearButtonMode = .always
+        contentsSearchBar.searchTextField.clearButtonMode = .never
         contentsSearchBar.searchTextField.leftView?.tintColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        
     }
     
     // MARK: SearchView 세팅
     private func setSearchController() {
+        contentsSearchBar.delegate = self
+        contentsSearchBar.returnKeyType = .default
+        
         searchView.searchResultCollectionView.dataSource = self
         searchView.searchResultCollectionView.delegate = self
-        contentsSearchBar.delegate = self
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
         //        definesPresentationContext = true // iOS 13 미만에서만 해줌, 13은 필요없음. 서치바에 커서 올라가면 주변 어두워지는 기능
-        filteredData = data
+    }
+    
+    private func request(id: Int, keyword: String) {
+        let urlString = "https://netflexx.ga/profiles/\(id)/contents/search/?keyword=\(keyword)"
+        guard let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
+            let token = LoginStatus.shared.getToken() else { return }
+        self.dataTask =  APIManager().request(url: url, method: .get, token: token) { (result) in
+            switch result {
+            case .success(let data):
+                if let results = try? JSONDecoder().decode([SearchContent].self, from: data) {
+                    DispatchQueue.main.async {
+                        self.searchResultDatas = results
+                    }
+                }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        self.dataTask?.resume()
+        
     }
     
 }
@@ -125,11 +123,7 @@ class SearchViewController: UIViewController {
 // MARK: Search Result Collection View DataSource, Delegate
 extension SearchViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //        if isFiltering {
-        //            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
-        //        }
-        //        return self.filteredData.count
-        return self.data.count
+        return searchResultDatas.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -142,24 +136,14 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as? ContentsBasicItem
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as! ContentsBasicItem
         
-        //유진 - 바뀐 셀에 관련된 부분 configure에 더미 image 넣어서 사용하세유~
-        // 임시 background
-        //        cell?.backgroundColor = .white
-        //        cell?.titleLabel.text = self.filteredData[indexPath.item
-        
-        cell?.configure(poster: UIImage(named: "posterCellDummy")!)
-        
-        return cell!
+        cell.configure(url: searchResultDatas[indexPath.row].image)
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        print(filteredData[indexPath.item])
-        print(data[indexPath.item])
-        // request
-//        delegate?.deliveryContentId(id: 3)
-        let contentVC = ContentViewController()
+        let contentVC = ContentViewController(id: searchResultDatas[indexPath.row].id)
         contentVC.modalPresentationStyle = .fullScreen
         present(contentVC, animated: true)
     }
@@ -173,7 +157,6 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return flowLayout.linesOnScreen
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -185,46 +168,43 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: Search Result Updating
-extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        // 체크
-        if isFiltering {
-            setIsFilteringToShow(filteredItemCount: filteredData.count, of: data.count)
-        }
-        guard let searchText = contentsSearchBar.text else { return }
-        filterContentForSearchText(searchText: searchText)
-    }
-}
-
 extension SearchViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.setShowsCancelButton(true, animated: true)
+        contentsSearchBar.setShowsCancelButton(true, animated: true)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.text = ""
-        searchBarTextDidEndEditing(searchBar)
+        contentsSearchBar.text = ""
+        searchResultDatas.removeAll()
+        searchBarTextDidEndEditing(contentsSearchBar)
+        
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchBar.setShowsCancelButton(false, animated: true)
+        contentsSearchBar.setShowsCancelButton(false, animated: true)
     }
     
-    // 텍스트 바뀔 때마다 요청
-    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    //
-    //    }
     
-    // 다 입력하고 검색 버튼 누르면 요청
-    //    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    //        <#code#>
-    //    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let profileId = LoginStatus.shared.getProfileID() else { return }
+        if searchText != "" {
+            self.dataTask?.cancel()
+            request(id: profileId, keyword: searchText)
+        } else {
+            contentsSearchBar.resignFirstResponder()
+            searchResultDatas.removeAll()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
 }
 
 // MARK: 네비게이션바 때문에 가려져서 preferredStatusBarStyle 안먹히기 때문에 사용
 extension UINavigationController {
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-       return topViewController?.preferredStatusBarStyle ?? .default
+        return topViewController?.preferredStatusBarStyle ?? .default
     }
 }

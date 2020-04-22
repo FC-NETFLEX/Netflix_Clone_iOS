@@ -6,19 +6,17 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import Foundation
+
 import UIKit
+import Kingfisher
 
 final class ContentsBasicItem: UICollectionViewCell {
     static let identifier = "contentsBasic"
     
-    //    let titleLabel = UILabel()
     private let posterImage = UIImageView()
-    
-    
+     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setUI()
     }
     
@@ -44,9 +42,8 @@ final class ContentsBasicItem: UICollectionViewCell {
 
     
     //MARK: -configure (포스터, contentID)
-    func configure(poster: UIImage) {
-        self.posterImage.image = poster
-        self.posterImage.backgroundColor = .red
-    }
     
+    func configure(url: String) {
+        self.posterImage.kf.setImage(with: URL(string: url))
+    }
 }
