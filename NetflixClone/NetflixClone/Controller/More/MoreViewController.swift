@@ -14,10 +14,9 @@ class MoreViewController: UIViewController {
     
     private var userArray = [MorePofileView]()
     private let stackView = UIStackView()
-    private let netflixView = NetflixView()
     private let profileButton = ProfileManageButton()
-    private let moreTableView = UITableView()
-    private let logoutButton = LogoutVersionButton()
+    private let moreTableView = UITableView(frame: .zero, style: .grouped)
+ 
     
     private var userProfileList = [ProfileList]()
     private var userIconList = [ProfileIcons]()
@@ -39,8 +38,10 @@ class MoreViewController: UIViewController {
     private func setNavigation() {
         navigationController?.isNavigationBarHidden = true
     }
+  
     private func profileStactViewSetting() {
         
+
         let userView0 = UIView()
         let userView1 = UIView()
         let userView2 = UIView()
@@ -52,10 +53,13 @@ class MoreViewController: UIViewController {
             userViewArray.append($0)
         }
         
+        
         let count = userProfileList.count
         print(count)
+
         for (index, userView) in userViewArray.enumerated() {
             userView.subviews.forEach { $0.removeFromSuperview() }
+            
             
             if index < count {
                 let tempProfileView = MorePofileView()
@@ -103,7 +107,7 @@ class MoreViewController: UIViewController {
     
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
-        [stackView,profileButton,netflixView,moreTableView,logoutButton].forEach {
+        [stackView,profileButton,moreTableView].forEach {
             view.addSubview($0)
         }
         stackView.axis = .horizontal
@@ -120,7 +124,7 @@ class MoreViewController: UIViewController {
         moreTableView.backgroundColor = .setNetfilxColor(name: .black)
         moreTableView.register(MoreViewTableCell.self, forCellReuseIdentifier: MoreViewTableCell.identifier)
         
-        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+//        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
     }
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
@@ -139,22 +143,22 @@ class MoreViewController: UIViewController {
             $0.leading.trailing.equalTo(guide)
             $0.height.equalToSuperview().multipliedBy(0.08)
         }
-        netflixView.snp.makeConstraints {
-            $0.top.equalTo(profileButton.snp.bottom)
-            $0.leading.trailing.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.22)
-        }
+//        netflixView.snp.makeConstraints {
+//            $0.top.equalTo(profileButton.snp.bottom)
+//            $0.leading.trailing.equalToSuperview()
+//            $0.height.equalToSuperview().multipliedBy(0.22)
+//        }
         moreTableView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(netflixView.snp.bottom)
-            $0.bottom.equalTo(logoutButton.snp.top)
+            $0.top.equalTo(profileButton.snp.bottom)
+            $0.bottom.equalTo(guide.snp.bottom)
             
         }
-        logoutButton.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalTo(guide)
-            $0.height.equalToSuperview().multipliedBy(0.2)
-        }
-        
+//        logoutButton.snp.makeConstraints {
+//            $0.leading.trailing.bottom.equalTo(guide)
+//            $0.height.equalToSuperview().multipliedBy(0.2)
+//        }
+//
     }
     //    MARK: API
     func reqeustProfileList() {
@@ -276,7 +280,27 @@ extension MoreViewController: UITableViewDelegate {
     
 }
 extension MoreViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int { 1 }
+  
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let logout = LogoutVersionButton()
+        logout.backgroundColor = .red
+        return logout
+    }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+      let logoutHeight = view.frame.height / 4
+        return logoutHeight
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let netflix = NetflixView()
+        return netflix
+ 
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+           return 200
+       }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return moreViewData.count
     }
@@ -285,6 +309,7 @@ extension MoreViewController: UITableViewDataSource {
         
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MoreViewTableCell.identifier, for: indexPath) as? MoreViewTableCell else { fatalError() }
+    
         cell.tag = indexPath.row
         cell.textLabel?.text = moreViewData[indexPath.row]
         cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
