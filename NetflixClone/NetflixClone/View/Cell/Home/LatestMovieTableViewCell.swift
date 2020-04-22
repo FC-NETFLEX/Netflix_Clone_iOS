@@ -20,7 +20,7 @@ class LatestMovieTableViewCell: UITableViewCell {
     
     //MARK: data
     private var idData = [Int]()
-    private var posterData = [UIImage]()
+    private var posterData = [String]()
     
     weak var delegate: LatestMovieTableViewCellDelegate?
     
@@ -90,7 +90,7 @@ class LatestMovieTableViewCell: UITableViewCell {
     
     
     //MARK: -configure
-    func configure(id: [Int], poster: [UIImage]) {
+    func configure(id: [Int], poster: [String]) {
         self.idData = id
         self.posterData = poster
         contentsCollectionView.reloadData()
@@ -107,8 +107,8 @@ extension LatestMovieTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = contentsCollectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as! ContentsBasicItem
         
-        cell.configure(poster: posterData[indexPath.row])
-        
+//        cell.configure(poster: posterData[indexPath.row])
+        cell.configure(url: posterData[indexPath.row])
         return cell
     }
     

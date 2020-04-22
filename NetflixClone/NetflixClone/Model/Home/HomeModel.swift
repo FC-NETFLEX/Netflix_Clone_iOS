@@ -151,8 +151,8 @@ struct PreviewContent: Codable {
 
 
 struct WatchVideo: Codable {
-    let id: Int
-    let video: Video
+    let id: Int?
+    let video: Video?
     let playTime: Int
     let videoLength: Int
     let poster: String
