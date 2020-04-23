@@ -14,6 +14,13 @@ class PreViewController: BaseViewController {
     let categoryLabel = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
+//    private lazy var dibsView = {
+//        if {
+//            CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
+//        } else {
+//
+//        }
+//    }
     private let infoView = CustomButtonView(imageName: "info.circle", labelText: "정보")
     private let dismissButton = UIButton()
     private let playerScrollView = UIScrollView()
@@ -128,8 +135,6 @@ class PreViewController: BaseViewController {
         for (index, view) in previewSubviews.enumerated() {
             playerScrollView.addSubview(view)
             let leading = index == 0 ? playerScrollView.snp.leading : previewSubviews[index-1].snp.trailing
-            view.backgroundColor = random
-            
             view.snp.makeConstraints {
                 $0.leading.equalTo(leading)
                 $0.top.bottom.width.height.equalTo(playerScrollView)
@@ -253,23 +258,17 @@ class PreViewController: BaseViewController {
         }
         
     }
-}
-
-var random: UIColor {
-    get {
-        let min: CGFloat = 0.1
-        let max: CGFloat = 0.9
-        let red = CGFloat.random(in: min ... max)
-        let green = CGFloat.random(in: min ... max)
-        let blue = CGFloat.random(in: min ... max)
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+    
+    // 레이블 값 바꿔주고, 찜한 값 이미지 변경해주기
+    private func applyContentsUniqueValue() {
+        // 포매터 사용
+//        self.categoryLabel.text =
     }
 }
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //        let displayingViewIndex = Int(scrollView.contentOffset.x / scrollView.bounds.width)
-        //        print(displayingViewIndex)
+
         print(#function)
         previewSubviews[displayingViewIndex].player.play()
     }
@@ -288,6 +287,7 @@ extension PreViewController: IsClickedProtocol {
     }
     
     func dibButtonIsCliked() {
+        print("displayingIndex: ", displayingViewIndex )
         let contentId = self.preview[displayingViewIndex].id
         
         guard let profileID =  LoginStatus.shared.getProfileID(),let url = URL(string: "https://www.netflexx.ga/\(profileID)/contents/\(contentId)/select/"),

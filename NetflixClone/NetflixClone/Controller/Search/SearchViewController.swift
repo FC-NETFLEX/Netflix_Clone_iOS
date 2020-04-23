@@ -83,8 +83,9 @@ class SearchViewController: UIViewController {
         contentsSearchBar.setValue("취소", forKey: "cancelButtonText")
         contentsSearchBar.searchTextField.backgroundColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
         contentsSearchBar.searchTextField.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        contentsSearchBar.searchTextField.clearButtonMode = .never
+        contentsSearchBar.searchTextField.clearButtonMode = .whileEditing
         contentsSearchBar.searchTextField.leftView?.tintColor = UIColor.setNetfilxColor(name: .netflixLightGray)
+        
     }
     
     // MARK: SearchView 세팅
@@ -103,6 +104,7 @@ class SearchViewController: UIViewController {
         guard let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             let token = LoginStatus.shared.getToken() else { return }
         self.dataTask =  APIManager().request(url: url, method: .get, token: token) { (result) in
+            
             switch result {
             case .success(let data):
                 if let results = try? JSONDecoder().decode([SearchContent].self, from: data) {
@@ -116,7 +118,6 @@ class SearchViewController: UIViewController {
             }
         }
         self.dataTask?.resume()
-        
     }
     
 }
