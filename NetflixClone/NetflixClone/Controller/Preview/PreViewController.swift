@@ -32,17 +32,18 @@ class PreViewController: BaseViewController {
           }
     
     // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
-    private var preview = [PreviewContent]()
 
     private var previewSubviews = [PreviewView]()
     
+    private var preview: [PreviewContent]
     private var receivedPreviewIndex: Int
     
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
     
-    init(index: Int = 0) {
+    init(index: Int = 0, previews: [PreviewContent]) {
         self.receivedPreviewIndex = index
+        self.preview = previews
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -55,7 +56,7 @@ class PreViewController: BaseViewController {
         print(receivedPreviewIndex)
         setUI()
         setConstraints()
-        request(id: LoginStatus.shared.getProfileID() ?? 0)
+//        request(id: LoginStatus.shared.getProfileID() ?? 0)
     }
     
     override func viewWillLayoutSubviews() {
@@ -74,25 +75,25 @@ class PreViewController: BaseViewController {
         previewSubviews[displayingViewIndex].player.pause()
     }
     
-    private func request(id: Int) {
-        guard let url = URL(string: "https://www.netflexx.ga/profiles/\(id)/contents/"),
-            let token = LoginStatus.shared.getToken()
-            else { return }
-        
-        APIManager().request(url: url, method: .get, token: token) { (result) in
-            switch result {
-            case .success(let data):
-                
-                if let home = try? JSONDecoder().decode(HomeContent.self, from: data) {
-                    self.preview = home.previewContents
-                    self.createPreviewSubviews()
-                }
-                
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
+//    private func request(id: Int) {
+//        guard let url = URL(string: "https://www.netflexx.ga/profiles/\(id)/contents/"),
+//            let token = LoginStatus.shared.getToken()
+//            else { return }
+//
+//        APIManager().request(url: url, method: .get, token: token) { (result) in
+//            switch result {
+//            case .success(let data):
+//
+//                if let home = try? JSONDecoder().decode(HomeContent.self, from: data) {
+//                    self.preview = home.previewContents
+//                    self.createPreviewSubviews()
+//                }
+//
+//            case .failure(let error):
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
     
     private func setUI() {
         [playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
@@ -214,7 +215,7 @@ class PreViewController: BaseViewController {
         }
         
         let buttonHeight = CGFloat.dynamicYMargin(margin: 40)
-        let bottomOffset = CGFloat.dynamicYMargin(margin: -40)
+        let bottomOffset = CGFloat.dynamicYMargin(margin: -60)
         let dismissButtonSize = CGFloat.dynamicXMargin(margin: 25)
         
         playButton.snp.makeConstraints {
