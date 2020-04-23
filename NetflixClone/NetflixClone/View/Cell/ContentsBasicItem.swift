@@ -43,7 +43,7 @@ final class ContentsBasicItem: UICollectionViewCell {
     
     //MARK: -configure (포스터, contentID)
     
-    func configure(url: String) {
-        self.posterImage.kf.setImage(with: URL(string: url))
+    func jinConfigure(urlString: String) {
+        self.posterImage.kf.setImage(with: URL(string: urlString))
     }
 }
