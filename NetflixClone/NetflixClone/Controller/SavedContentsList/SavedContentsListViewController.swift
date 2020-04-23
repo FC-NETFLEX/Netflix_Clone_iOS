@@ -163,6 +163,10 @@ extension SavedContentsListViewController: UITableViewDelegate {
 
 // MARK: SavedContentCellDelegate
 extension SavedContentsListViewController: SavedContentCellDelegate {
+    func presentVideonController(contentID: Int) {
+        presentVideoController(contentID: contentID)
+    }
+    
     func saveContentControl(status: SaveContentStatus, id: Int) {
         guard let saveContent = SavedContentsListModel.shared.getContent(contentID: id) else { return }
         saveContentControl(status: status, saveContetnt: saveContent)

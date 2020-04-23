@@ -43,7 +43,9 @@ class CanSaveViewController: BaseViewController {
     // 저장 콘텐츠 삭제
     private func deleteContent(saveContent: SaveContent) {
         let actions = [
-            UIAlertAction(title: "재생", style: .default, handler: nil),
+            UIAlertAction(title: "재생", style: .default, handler: { _ in
+                self.presentVideoController(contentID: saveContent.contentID)
+            }),
             UIAlertAction(title: "저장한 콘텐츠 삭제", style: .destructive, handler: { _ in
                 saveContent.deleteContent()
             }),
