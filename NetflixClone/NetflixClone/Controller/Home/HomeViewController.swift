@@ -23,7 +23,7 @@ final class HomeViewController: UIViewController {
 //MARK: JSON 관련
     private let decoder = JSONDecoder()
     private let homeURL = URL(string: "https://www.netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 2)/contents/")
-    
+    private let dibsURL = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/selects/")
     
 //MARK: HomeView 관련
     
@@ -61,30 +61,25 @@ final class HomeViewController: UIViewController {
 //MARK: DibsView관련
 //    private var dibsViewContents
     private let dibsViewFlowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
-
+    private var dibsViewContents = [DibsContent]()
     
     //MARK: LifeCycle
-//    override func loadView() {
-//        view = homeView
-//    }
+
     //MARK: ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
 //        view = homeView
 
-        //MARK: JSONPassing
-        DispatchQueue.global().async {
-            //            self.jsonPassing()
-            print("----------------[ jsonPassing ]----------------")
+        //MARK: HomeViewRequest
+
             let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
-                print("dataTask 입성")
                 guard error == nil else { return print("jsonPassing error: ", error!)}
                 guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
                 guard let data = data else { return print("jsonPassing data 오류") }
-
+                
                 do {
                     let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-                    print("----------------[ jsonData 파싱시작 ]--------------------")
+                    print("----------------[ HomeView jsonData 파싱시작 ]--------------------")
 
                     
                     self.homeViewLatestContents.removeAll()
@@ -94,20 +89,21 @@ final class HomeViewController: UIViewController {
                     self.homeViewLatestContents = jsonData.recommendContents
                     self.homeViewTop10Contents = jsonData.top10Contents
                     self.homeViewWatchContents = jsonData.watchingVideo
-//                    self.adContent = jsonData.adContent
+                    self.homeViewADContent = jsonData.adContent
                     
                     DispatchQueue.main.sync {
                         self.homeView.homeTableView.reloadData()
                     }
                     
-                    print("-----------------[ jsonData 파싱 종료 ]-------------------")
+                    
+                    print("-----------------[ HomeView jsonData 파싱 종료 ]-------------------")
                 } catch {
                     print(error.localizedDescription)
                 }
             }
             dataTask.resume()
-        }
-    
+        
+        
         setUI()
         setConstraints()
     }
@@ -115,13 +111,13 @@ final class HomeViewController: UIViewController {
     //MARK: ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
         
-//        if view == homeView {
-//            hoeview.videoAdvertismentCell?.player?.pause()
-//
-//        }
+        if view.subviews[0] == homeView {
+            self.videoAdvertismentCell?.player?.pause()
+
+        }
         
         // VideoCell의 영상 재생 멈춤
-        videoAdvertismentCell?.player?.pause()
+//        videoAdvertismentCell?.player?.pause()
     }
   
     
@@ -166,7 +162,7 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: HomeMenuBarViewDelegate {
     func didTabMenuBarIconButton() {
         print("MenuBar DidTabIcon")
-//        view = homeView
+
         if view.subviews[0] == dibsView {
             print("view dibsView")
             dibsView.removeFromSuperview()
@@ -176,6 +172,7 @@ extension HomeViewController: HomeMenuBarViewDelegate {
                 $0.top.bottom.leading.trailing.equalToSuperview()
             }
         }
+        
     }
     
     func didTabMenuBarMovieButton() {
@@ -184,24 +181,94 @@ extension HomeViewController: HomeMenuBarViewDelegate {
     
     func didTabCategoryButton() {
         print("MenuBar DidTabCategory")
+        
+        let categoryVC = CategorySelectViewController()
+        categoryVC.modalPresentationStyle = .overFullScreen
+        present(categoryVC, animated: true)
     }
     
     func didTabDibsButton() {
         print("MenuBar DidTabDibs")
-//        view = dibsView
-//        if view
-        homeView.removeFromSuperview()
-        view.insertSubview(dibsView, at: 0)
         
-        dibsView.snp.makeConstraints {
-            $0.bottom.leading.trailing.equalToSuperview()
-            $0.top.equalToSuperview().inset(menuBarHeight)
+        // dibsView 화면전환
+        if view.subviews[0] == homeView {
+            print("subView => homeview 전환 DibsView로")
+            homeView.removeFromSuperview()
+            view.insertSubview(dibsView, at: 0)
+            
+            dibsView.snp.makeConstraints {
+                $0.bottom.leading.trailing.equalToSuperview()
+                $0.top.equalToSuperview().inset(menuBarHeight)
+            }
+            
+//MARK: - dibsView Request
+            if dibsViewContents.count == 0 {
+                //request
+                //request객체로
+                
+                guard let token = LoginStatus.shared.getToken() else { return }
+                var urlRequest = URLRequest(url: dibsURL!)
+                urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+                
+                let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+//                let dataTask = URLSession.shared.dataTask(with: self.dibsURL!) { (data, response, error) in
+                    print(" DibsView dataTask 입성")
+                   
+                    print("dibURL -> \(self.dibsURL)")
+                    
+                    guard error == nil else { return print("error:", error!) }
+                    guard let response = response as? HTTPURLResponse else { return print("response 오류")}
+                    guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
+                    guard let data = data else { return  print("jsonPassing data 오류") }
+                    
+                    do {
+                        let jsonData = try self.decoder.decode([DibsContent].self, from: data)
+                        print("----------------[ DibsView jsonData 파싱시작 ]--------------------")
+                        self.dibsViewContents = jsonData
+                        
+                        DispatchQueue.main.async {
+                            self.dibsView.collectionView.reloadData()
+                        }
+                        
+                        print("----------------[ DibsView jsonData 파싱종료 ]--------------------")
+
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                dataTask.resume()
+            }
+            
         }
+        
+        print("dibsContents count", dibsViewContents.count)
+        //dibsViewContents 비어있지 않을 경우 request
+
     }
     
     
 }
 
+//MARK: - HomeViewTitleDelegate
+extension HomeViewController: HomeviewTitleDelegate {
+    func didTabHomeTitledibsButton() {
+       print("Hometitle dibsButton Click")
+    }
+    
+    func didTabHomeTitlePlayButton() {
+        print("HomeTitle playButtonClick")
+
+    }
+    
+    func didTabHomeTitleContentButton() {
+        let contentVC = ContentViewController(id: homeViewTopContent.id)
+        contentVC.modalPresentationStyle = .fullScreen//.overFullScreen
+        present(contentVC, animated: true)
+    }
+    
+
+    
+}
 //MARK: HomeView 관련 extension
 
 //MARK: - HomeView Delegate TableView
@@ -328,8 +395,10 @@ extension HomeViewController: UITableViewDataSource {
         case 2:
             //MARK: VideoCell
        
-            let url = URL(string: homeViewADContent.previewVideoURL)
-            
+            let url = URL.safetyURL(string: homeViewADContent.previewVideoURL)//URL(string: homeViewADContent.previewVideoURL)
+            print("**************************************************\n\n")
+            print("url -> \(url)")
+            print("\n\n**************************************************")
             
             if let videoCell = tableView.dequeueReusableCell(withIdentifier: VideoAdvertisementTableViewCell.identifier) as? VideoAdvertisementTableViewCell {
                 // 재사용 cell 있는가??
@@ -406,26 +475,7 @@ extension HomeViewController: UITableViewDataSource {
     
 }
 
-//MARK: - HomeViewTitleDelegate
-extension HomeViewController: HomeviewTitleDelegate {
-    func didTabHomeTitledibsButton() {
-       print("Hometitle dibsButton Click")
-    }
-    
-    func didTabHomeTitlePlayButton() {
-        print("HomeTitle playButtonClick")
 
-    }
-    
-    func didTabHomeTitleContentButton() {
-        let contentVC = ContentViewController(id: homeViewTopContent.id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
-    }
-    
-
-    
-}
 
 //MARK: - HomeView PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
@@ -501,12 +551,13 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
 //MARK: DibsView CollectionView Datasource
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return dibsViewContents.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dibsView.collectionView.dequeueReusableCell(withReuseIdentifier: ContentsBasicItem.identifier, for: indexPath) as! ContentsBasicItem
-        cell.configure(url: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EC%95%84%EC%9D%BC%EB%9D%BC.jpg")
+
+        cell.jinConfigure(urlString: dibsViewContents[indexPath.row].imageURL)
 
         return cell
     }

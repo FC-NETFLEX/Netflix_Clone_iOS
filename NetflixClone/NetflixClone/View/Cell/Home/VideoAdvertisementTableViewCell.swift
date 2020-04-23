@@ -109,7 +109,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         videoView.layer.addSublayer(playerLayer)
         
-        
+        print("\n*********************\n\nVideoView",player?.status.rawValue)
 //MARK: - 음소거버튼 셋팅
         videoView.addSubview(muteButton)
         
@@ -181,9 +181,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         self.contentID = contentID
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
         
-        /*
-        let url = URL(string: "https://example.com/image.png") imageView.kf.setImage(with: url)
-        */
+        contentView.reloadInputViews()
     }
     
     //MAKR: -Action
