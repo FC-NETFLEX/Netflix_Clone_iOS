@@ -147,6 +147,8 @@ struct PreviewContent: Codable {
     let logoURL: String
     let poster: String
     let videos: [Video]
+    let categories: [String]
+    let isSelect: Bool
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -155,6 +157,8 @@ struct PreviewContent: Codable {
         case logoURL = "contents_logo"
         case poster = "contents_image"
         case videos
+        case categories
+        case isSelect = "is_select"
     }
 }
 
