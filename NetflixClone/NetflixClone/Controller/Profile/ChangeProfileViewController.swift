@@ -42,9 +42,10 @@ class ChangeProfileViewController: UIViewController {
     }
     
     private func setNavigationBar() {
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+        
         
         navigationItem.title = "프로필 변경"
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:UIColor.white]
         
         let cancelButton = UIBarButtonItem(title: "취소", style: .plain, target: self, action: #selector(didTapCancelButton(_:)))
         cancelButton.tintColor = .white
@@ -193,8 +194,12 @@ class ChangeProfileViewController: UIViewController {
     
     
     @objc private func didTapSaveButton() {
+        guard
+            let selectProfile = LoginStatus.shared.getProfile(),
+            let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty
+            else { return }
         
-        guard let userName = addProfileView.nickNameTextfield.text, !userName.isEmpty else { return }
+        
         profileName = userName
         
         for vc in navigationController!.viewControllers.reversed() {

@@ -165,7 +165,6 @@ class MoreViewController: UIViewController {
                 }
             }
             
-            
             for profileList in profileLists {
                 guard
                     let id = profileList["id"] as? Int,
