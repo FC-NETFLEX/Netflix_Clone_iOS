@@ -9,14 +9,14 @@
 import UIKit
 import SnapKit
 
-protocol CategoryViewDelegate: class {
+protocol CategorySelectViewDelegate: class {
     func didTabdismisButton() -> ()
     
 }
 
 class CategorySelectView: UIView {
     
-    weak var delegate: CategoryViewDelegate?
+    weak var delegate: CategorySelectViewDelegate?
     
     private let blurView = UIVisualEffectView()
     
