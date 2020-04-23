@@ -11,7 +11,7 @@ import AVFoundation
 import Kingfisher
 
 class PreViewController: BaseViewController {
-    let label = UILabel()
+    let categoryLabel = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
     private let infoView = CustomButtonView(imageName: "info.circle", labelText: "정보")
@@ -72,35 +72,20 @@ class PreViewController: BaseViewController {
         super.viewDidDisappear(animated)
         previewSubviews[displayingViewIndex].player.pause()
     }
-    
-//    private func request(id: Int) {
-//        guard let url = URL(string: "https://www.netflexx.ga/profiles/\(id)/contents/"),
-//            let token = LoginStatus.shared.getToken()
-//            else { return }
-//
-//        APIManager().request(url: url, method: .get, token: token) { (result) in
-//            switch result {
-//            case .success(let data):
-//
-//                if let home = try? JSONDecoder().decode(HomeContent.self, from: data) {
-//                    self.preview = home.previewContents
-
-//                }
-//
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//            }
-//        }
-//    }
-    
+        
     private func setUI() {
-        [playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
+        [categoryLabel, playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
             view.addSubview($0)
         }
         
         dibsView.button.tag = 0
         infoView.button.tag = 1
         playButton.tag = 2
+        
+        categoryLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
+        categoryLabel.textColor = UIColor.setNetfilxColor(name: .white)
+        categoryLabel.textAlignment = .center
+        
         
         playButton.layer.borderWidth = 2
         playButton.layer.borderColor = UIColor.white.cgColor
@@ -142,8 +127,6 @@ class PreViewController: BaseViewController {
             playerScrollView.addSubview(view)
             let leading = index == 0 ? playerScrollView.snp.leading : previewSubviews[index-1].snp.trailing
             view.backgroundColor = random
-            
-//            view.blurredBackgroundView.configure(backgroundImage: preview[index].image)
             
             view.snp.makeConstraints {
                 $0.leading.equalTo(leading)
@@ -212,9 +195,16 @@ class PreViewController: BaseViewController {
             $0.top.bottom.leading.trailing.equalTo(view)
         }
         
+        let betweenLabelAndButton = CGFloat.dynamicYMargin(margin: 20)
         let buttonHeight = CGFloat.dynamicYMargin(margin: 40)
         let bottomOffset = CGFloat.dynamicYMargin(margin: -60)
         let dismissButtonSize = CGFloat.dynamicXMargin(margin: 25)
+        
+        categoryLabel.snp.makeConstraints {
+            $0.centerX.equalTo(view.snp.centerX)
+            $0.width.equalTo(view.snp.width).multipliedBy(0.7)
+            $0.bottom.equalTo(playButton.snp.top).offset(betweenLabelAndButton)
+        }
         
         playButton.snp.makeConstraints {
             $0.centerX.equalTo(view.snp.centerX)
@@ -248,8 +238,11 @@ class PreViewController: BaseViewController {
         if displayingViewIndex < previewSubviews.count - 1 {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+                    self.categoryLabel.alpha = 0
+                    
                     self.playerScrollView.contentOffset.x = CGFloat(self.displayingViewIndex + 1) * self.view.frame.width
                 }, completion: { _ in
+                    self.categoryLabel.alpha = 1
                     self.previewSubviews[self.displayingViewIndex].player.play()
                 })
             }
