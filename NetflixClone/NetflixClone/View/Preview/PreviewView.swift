@@ -15,7 +15,10 @@ class PreviewView: UIView {
     var player: AVPlayer
     var playerLayer: AVPlayerLayer
     var durationTime: Float64
-    private var blurredBackgroundView = BluredBackgroundView()
+    
+    private var backgroundImage = UIImageView()
+    private let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+    lazy var blurEffectView = UIVisualEffectView(effect: blurEffect)
     
     init(url: URL) {
         print(url)
@@ -29,9 +32,10 @@ class PreviewView: UIView {
         self.playerLayer = AVPlayerLayer(player: self.player)
         super.init(frame: .zero)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+//        NotificationCenter.default.addObserver(self, selector: #selector(playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
         playerLayer.videoGravity = .resizeAspectFill
-//        setPlayerLayer(url: url)
+
+        setBlurredBackground()
         
         
         print("duration Time: ", self.durationTime)
@@ -46,9 +50,9 @@ class PreviewView: UIView {
         print(#function)
     }
     
-    @objc func playerDidFinishPlaying(note: NSNotification) {
-        print("영상 끝나면 다음 영상으로 넘겨 줄 것")
-    }
+//    @objc func playerDidFinishPlaying(note: NSNotification) {
+//        print("영상 끝나면 다음 영상으로 넘겨 줄 것")
+//    }
     override func layoutSubviews() {
         super.layoutSubviews()
         setVideo()
@@ -65,9 +69,14 @@ class PreviewView: UIView {
 //    }
     
     private func setBlurredBackground() {
-        self.addSubview(blurredBackgroundView)
+        self.addSubview(backgroundImage)
+        self.addSubview(blurEffectView)
         
-        blurredBackgroundView.snp.makeConstraints {
+        backgroundImage.snp.makeConstraints {
+            $0.leading.trailing.top.bottom.equalToSuperview()
+        }
+        
+        blurEffectView.snp.makeConstraints {
             $0.leading.trailing.top.bottom.equalTo(self)
         }
     }
@@ -77,6 +86,9 @@ class PreviewView: UIView {
         self.layer.addSublayer(playerLayer)
     }
     
+    func configure(image: String) {
+        self.backgroundImage.kf.setImage(with: URL(string: image))
+    }
 }
 
 
