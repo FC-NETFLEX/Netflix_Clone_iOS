@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 protocol HomeviewTitleDelegate: class {
-    func didTabHomeTitledibsButton(isEnable: () -> (), disEnable: () -> ()) -> ()
+    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
     func didTabHomeTitlePlayButton() -> ()
     func didTabHomeTitleContentButton() -> ()
 }
@@ -34,6 +34,7 @@ class HomeviewTitle: UIView {
     
     private let titleImage = UIImageView()
     
+    private var id: Int?
     private var dibs: Bool?
     
     //    private let gradientLayer: CAGradientLayer = {
@@ -64,7 +65,7 @@ class HomeviewTitle: UIView {
         let categoryFont: UIFont = .boldSystemFont(ofSize: 12)
         let fixedFont: UIFont = .systemFont(ofSize: 12)
         
-//        titlePoster.contentMode = .scaleAspectFit
+        //        titlePoster.contentMode = .scaleAspectFit
         titlePoster.contentMode = .scaleAspectFill
         titlePoster.clipsToBounds = true
         
@@ -89,8 +90,8 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-                titleImage.contentMode = .scaleAspectFit
-//        titleImage.contentMode = .scaleAspectFill
+        titleImage.contentMode = .scaleAspectFit
+        //        titleImage.contentMode = .scaleAspectFill
         titleImage.clipsToBounds = true
         
         
@@ -105,7 +106,7 @@ class HomeviewTitle: UIView {
         
         
         addSubview(titlePoster)
-
+        
         addSubview(contentView)
         addSubview(titleImage)
         
@@ -125,7 +126,7 @@ class HomeviewTitle: UIView {
         
         let miniButtonWidth: CGFloat = xMargin * 2
         let miniButtonHeight: CGFloat = yMargin * 4
-
+        
         
         titlePoster.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
@@ -219,7 +220,9 @@ class HomeviewTitle: UIView {
     
     // MARK: - configure
     func configure(id: Int, poster: String, category: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
+        self.id = id
         self.dibs = dibs
+        
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
         } else {
@@ -236,13 +239,12 @@ class HomeviewTitle: UIView {
         titlePoster.kf.setImage(with: URL(string: poster))
         categoryLabel.text = categoryText
         self.titleImage.kf.setImage(with: URL(string: titleImage))
-
         
     }
     
     //MARK: - action
     @objc private func didTabdibsButton(sender: UIButton) {
-        delegate?.didTabHomeTitledibsButton(isEnable: isEnabled, disEnable: disEnabled)
+        delegate?.didTabHomeTitledibsButton(id: id!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:) )
     }
     
     @objc private func didTabPlayButton(sender: UIButton) {
@@ -254,23 +256,28 @@ class HomeviewTitle: UIView {
     }
     
     
-     //MARK: Button Touch 막기
-        func isEnabled() {
-            dibsButton.isEnabled = true
-            
-        }
+    //MARK: Button Touch 막기
+    func isEnabled() {
+        dibsButton.isEnabled = true
         
-        func disEnabled() {
-            dibsButton.isEnabled = false
+    }
+    
+    func disEnabled() {
+        dibsButton.isEnabled = false
+        
+        let flag = dibs ?? true
+        
+        
+    }
+    
+    func buttonUIToggle(dibsFlag: Bool) {
+        
+        if dibsFlag {
+            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        } else {
+            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
             
-            let flag = dibs ?? true
-            
-            if flag {
-                dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            } else {
-                dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-
-            }
         }
-     
+    }
+    
 }

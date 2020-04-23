@@ -13,7 +13,7 @@ protocol VideoAdvertisementTableViewCellDelegate: class {
     func didTabVideoView(contentId: Int) -> ()
     func didTabVideoCellPlayButton() -> ()
 //    func didTabVideoCellDibsButton() -> ()
-    func didTabVideoCellDibsButton(isEnable: () -> (), disEnable: () -> () ) -> ()
+    func didTabVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -211,7 +211,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         delegate?.didTabVideoCellPlayButton()
     }
     @objc private func didTabDibsButton(sender: UIButton) {
-        delegate?.didTabVideoCellDibsButton(isEnable: isEnabled, disEnable: disEnabled)
+        delegate?.didTabVideoCellDibsButton(id: contentID!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:))
     }
     @objc private func didTabMuteButton(sender: UIButton) {
         
@@ -243,6 +243,16 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         } else {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
 
+        }
+    }
+    
+    func buttonUIToggle(dibsFlag: Bool) {
+        
+        if dibsFlag {
+            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        } else {
+            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            
         }
     }
 }
