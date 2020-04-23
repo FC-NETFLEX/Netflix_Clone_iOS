@@ -136,15 +136,15 @@ class ProfileViewController: UIViewController {
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-//        let margin: CGFloat = 10
-//        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-//        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
-
+        //        let margin: CGFloat = 10
+        //        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
+        //        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
+        
         stackViewArray.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-//            $0.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
-//            $0.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -(padding)).isActive = true
+            //            $0.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
+            //            $0.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -(padding)).isActive = true
             $0.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
         stackViewArray[0].bottomAnchor.constraint(equalTo: stackViewArray[1].topAnchor, constant: -48).isActive = true
@@ -177,7 +177,7 @@ class ProfileViewController: UIViewController {
         }
         profileViews.removeAll()
         
- 
+        
         for (index, value) in userProfileList.enumerated() {
             let tempStackView = stackViewArray[index / 2]
             let profileView = ProfileView()
@@ -252,11 +252,11 @@ class ProfileViewController: UIViewController {
                     let iskids = profileList["is_kids"] as? Bool,
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
                     else { return }
-            
-            
+                
+                
                 self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
                 
-            
+                
                 guard
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
@@ -267,7 +267,7 @@ class ProfileViewController: UIViewController {
                 
                 
             }
-        
+            
             DispatchQueue.main.async {
                 self.stackViewSetting()
                 if self.root == .manager {
@@ -301,19 +301,19 @@ class ProfileViewController: UIViewController {
         }
         presentingViewController?.dismiss(animated: true)
         
-//        switch root {
-//        case .main, .login:
-//            profileViewArray.forEach {
-//                $0.setHidden(state: true)
-//                setNavigationBar()
-//            }
-//        case .manager, .add:
-//            profileViewArray.forEach {
-//                $0.setHidden(state: true)
-//                setNavigationBar()
-//            }
-//            presentingViewController?.dismiss(animated: true)
-//        }
+        //        switch root {
+        //        case .main, .login:
+        //            profileViewArray.forEach {
+        //                $0.setHidden(state: true)
+        //                setNavigationBar()
+        //            }
+        //        case .manager, .add:
+        //            profileViewArray.forEach {
+        //                $0.setHidden(state: true)
+        //                setNavigationBar()
+        //            }
+        //            presentingViewController?.dismiss(animated: true)
+        //        }
     }
 }
 
@@ -342,42 +342,55 @@ extension ProfileViewController: ProfilViewDelegate {
             let selectViewName = selectView.profileLabel.text,
             let selectViewImage = selectView.profileButton.imageView?.image
             else { return }
-        
+        selectView.alpha = 0
         print("셀렉",selectViewName, selectViewImage)
         
-        
-                UIView.animateKeyframes(
-                    withDuration: 0.3,
-                    delay: 0,
-                    animations: {
-                        UIView.addKeyframe(
-                        withRelativeStartTime: 0.0, relativeDuration: 0.3) {
-                            let selectView = self.profileViewArray[tag]
-                            selectView.center.x = self.view.center.x
-                            selectView.center.y = self.view.center.y
-        
-                            print("애니메이션", selectView)
-                        }
-        
-        
-                }) { _ in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        let changeVC = ChangeProfileViewController()
-                        changeVC.isKids = self.userProfileList[tag].iskids
-                        changeVC.profileIcon = selectViewImage
-                        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userProfileList[tag].name, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-                        self.navigationController?.pushViewController(changeVC, animated: true)
-                    }
-        
-                }
         let changeVC = ChangeProfileViewController()
-        changeVC.userID = userProfileList[tag].id
-        changeVC.profileName = userProfileList[tag].name
-        changeVC.profileIcon = selectViewImage
-        changeVC.isKids = userProfileList[tag].iskids
-        changeVC.profileIconNum = userIconList[tag].idNum
-        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-        navigationController?.pushViewController(changeVC, animated: true)
+         changeVC.userID = self.userProfileList[tag].id
+         changeVC.profileName = self.userProfileList[tag].name
+         changeVC.profileIcon = selectViewImage
+         changeVC.isKids = self.userProfileList[tag].iskids
+         changeVC.profileIconNum = self.userIconList[tag].idNum
+         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
+        
+         self.navigationController?.pushViewController(changeVC, animated: true)
+        
+        
+//        UIView.animateKeyframes(
+//            withDuration: 0.3,
+//            delay: 0,
+//            animations: {
+//                UIView.addKeyframe(
+//                withRelativeStartTime: 0.0, relativeDuration: 0.3) {
+//                    selectView.alpha = 1
+//
+//                    selectView.center.x = self.view.center.x
+//                    selectView.center.y = self.view.center.y
+//
+//                    print("애니메이션", selectView)
+//                }
+//
+//        })
+//        { _ in
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                let changeVC = ChangeProfileViewController()
+//                changeVC.userID = self.userProfileList[tag].id
+//                changeVC.profileName = self.userProfileList[tag].name
+//                changeVC.profileIcon = selectViewImage
+//                changeVC.isKids = self.userProfileList[tag].iskids
+//                changeVC.profileIconNum = self.userIconList[tag].idNum
+//                changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
+//
+//                //                        changeVC.isKids = self.userProfileList[tag].iskids
+//                //                        changeVC.profileIcon = selectViewImage
+//                //                        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userProfileList[tag].name, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
+//
+//                //                        let navi = UINavigationController(rootViewController: changeVC)
+//                //                        self.present(navi, animated: true, completion: nil)
+//                self.navigationController?.pushViewController(changeVC, animated: true)
+//            }
+//
+//        }
         
     }
     
