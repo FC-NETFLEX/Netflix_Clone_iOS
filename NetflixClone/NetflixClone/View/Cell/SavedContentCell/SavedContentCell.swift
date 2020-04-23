@@ -70,7 +70,8 @@ class SavedContentCell: UITableViewCell {
         playImageBackgroundView.addSubview(playImageView)
         
         thumbnailView.contentMode = .scaleToFill
-        thumbnailView.addTarget(self, action: #selector(didTapThumbnailView(sender:)), for: .touchUpInside)
+        thumbnailView.addTarget(self, action: #selector(didTapThumbnailView(_:)), for: .touchUpInside)
+        
         
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
@@ -93,7 +94,7 @@ class SavedContentCell: UITableViewCell {
         summaryLabel.font = .dynamicFont(fontSize: titleFontSize * 0.8, weight: .regular)
         summaryLabel.numberOfLines = 0
         
-        statusView.addTarget(self, action: #selector(didTapStatusView(sender:)), for: .touchUpInside)
+        statusView.addTarget(self, action: #selector(didTapStatusView(_:)), for: .touchUpInside)
         
     }
     
@@ -190,11 +191,11 @@ class SavedContentCell: UITableViewCell {
     }
     
     
-    @objc private func didTapStatusView(sender: SaveContentStatusView) {
+    @objc private func didTapStatusView(_ sender: SaveContentStatusView) {
         delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
     }
     
-    @objc private func didTapThumbnailView(sender: UIButton) {
+    @objc private func didTapThumbnailView(_ sender: UIButton) {
         delegate?.presentVideonController(contentID: statusView.id)
     }
         
