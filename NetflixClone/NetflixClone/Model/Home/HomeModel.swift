@@ -46,7 +46,7 @@ struct TopConent: Codable {
     let logoImageURL: String
     let categories: [String]
     let rating: String          // 관람가
-    let selectedFlag: Bool
+    var selectedFlag: Bool
     
     
 //    let titleEnglish: String
