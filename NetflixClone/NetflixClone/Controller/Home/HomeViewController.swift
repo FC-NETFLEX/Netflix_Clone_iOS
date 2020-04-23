@@ -15,6 +15,7 @@ final class HomeViewController: UIViewController {
 
     private let dibsView = DibsView()
     
+    
 //MARK: layout관련 CGFloat
     private let menuBarHeight: CGFloat = 90
 //MARK: MenuBar
