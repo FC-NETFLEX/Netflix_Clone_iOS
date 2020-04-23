@@ -73,7 +73,7 @@ class PreViewController: BaseViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard preview.count != 0 else { return }
+        guard preview.count > 0 else { return }
         previewSubviews[receivedPreviewIndex].player.play()
     }
     
@@ -94,7 +94,7 @@ class PreViewController: BaseViewController {
         categoryLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
         categoryLabel.textColor = UIColor.setNetfilxColor(name: .white)
         categoryLabel.textAlignment = .center
-        
+//        self.applyContentsUniqueValue()
         
         playButton.layer.borderWidth = 2
         playButton.layer.borderColor = UIColor.white.cgColor
@@ -245,8 +245,8 @@ class PreViewController: BaseViewController {
         if displayingViewIndex < previewSubviews.count - 1 {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                    self.categoryLabel.alpha = 0
                     
+                    self.categoryLabel.alpha = 0
                     self.playerScrollView.contentOffset.x = CGFloat(self.displayingViewIndex + 1) * self.view.frame.width
                 }, completion: { _ in
                     self.categoryLabel.alpha = 1
@@ -261,8 +261,9 @@ class PreViewController: BaseViewController {
     
     // 레이블 값 바꿔주고, 찜한 값 이미지 변경해주기
     private func applyContentsUniqueValue() {
-        // 포매터 사용
-//        self.categoryLabel.text =
+        let categoryArr = preview[displayingViewIndex].categories
+        let categoryString = categoryArr.joined(separator: "・")
+        self.categoryLabel.text = categoryString
     }
 }
 
