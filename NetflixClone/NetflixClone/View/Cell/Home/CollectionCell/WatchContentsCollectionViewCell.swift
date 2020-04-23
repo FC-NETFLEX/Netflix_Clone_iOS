@@ -37,7 +37,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     //MARK: initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .clear
         setUI()
         setConstraints()
     }
@@ -71,7 +71,11 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         playButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
         
         posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
-        posterButton.contentMode = .scaleAspectFill
+//        posterButton.contentMode = .scaleAspectFill
+        posterButton.backgroundColor = .blue
+        posterButton.layer.masksToBounds = true
+        posterButton.imageView?.contentMode = .scaleAspectFill
+        
         
         watchTimeLabel.font = timeLabelFont
         watchTimeLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)//.lightGray

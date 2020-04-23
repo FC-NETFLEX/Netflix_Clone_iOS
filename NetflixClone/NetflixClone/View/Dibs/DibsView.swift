@@ -40,8 +40,6 @@ class DibsView: UIView {
 //        let topMargin: CGFloat = 80//round(frame.height / 9)
 //        print("DibsView setConstraints topMargin = \(topMargin)")
         collectionView.snp.makeConstraints {
-//            $0.top.equalToSuperview().inset(topMargin)
-//            $0.top.equalTo()
             $0.top.leading.trailing.bottom.equalToSuperview()
         }
     }
