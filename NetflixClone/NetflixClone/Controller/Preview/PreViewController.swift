@@ -22,14 +22,14 @@ class PreViewController: BaseViewController {
             
         }
         get {
-           let index = Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
+            let index = Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
             print(index)
             return index
         }
     }
     override var prefersStatusBarHidden: Bool {
-              return true
-          }
+        return true
+    }
     
     private var previewSubviews = [PreviewView]()
     
@@ -38,6 +38,8 @@ class PreViewController: BaseViewController {
     
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
+    
+    weak var delegate: IsClickedProtocol?
     
     init(index: Int = 0, previews: [PreviewContent]) {
         self.receivedPreviewIndex = index
@@ -72,7 +74,7 @@ class PreViewController: BaseViewController {
         super.viewDidDisappear(animated)
         previewSubviews[displayingViewIndex].player.pause()
     }
-        
+    
     private func setUI() {
         [categoryLabel, playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
             view.addSubview($0)
@@ -169,7 +171,7 @@ class PreViewController: BaseViewController {
                     self.dibsView.imageView.image = UIImage(systemName: "plus")
                 })
             }
-            //            delegate?.dibButtonIsCliked()
+            delegate?.dibButtonIsCliked()
             dibsButtonClicked.toggle()
             
         // 정보버튼 눌렀을 때
@@ -266,8 +268,8 @@ var random: UIColor {
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        let displayingViewIndex = Int(scrollView.contentOffset.x / scrollView.bounds.width)
-//        print(displayingViewIndex)
+        //        let displayingViewIndex = Int(scrollView.contentOffset.x / scrollView.bounds.width)
+        //        print(displayingViewIndex)
         print(#function)
         previewSubviews[displayingViewIndex].player.play()
     }
@@ -278,8 +280,20 @@ extension PreViewController: UIScrollViewDelegate {
             $0.player.pause()
         }
     }
-    
-    func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) {
-        
+}
+
+extension PreViewController: IsClickedProtocol {
+    func likeButtonIsCliked() {
+        print("필요없는 버튼")
     }
+    
+    func dibButtonIsCliked() {
+        let contentId = self.preview[displayingViewIndex].id
+        
+        guard let profileID =  LoginStatus.shared.getProfileID(),let url = URL(string: "https://www.netflexx.ga/\(profileID)/contents/\(contentId)/select/"),
+            let token = LoginStatus.shared.getToken()
+            else { return }
+        APIManager().request(url: url, method: .get, token: token) { _ in }
+    }
+    
 }
