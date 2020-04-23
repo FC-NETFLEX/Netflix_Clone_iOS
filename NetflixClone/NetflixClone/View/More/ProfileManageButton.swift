@@ -39,17 +39,16 @@ class ProfileManageButton: UIView {
         moreProfileButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         
         
-
+        
     }
     private func setConstraints() {
         
         moreProfileButton.snp.makeConstraints {
             $0.centerX.centerY.equalToSuperview()
-
+            
         }
-    
-        
     }
+    
     @objc private func didTapMoreProfileButton() {
         delegate?.didTapMoreProfileButton()
         

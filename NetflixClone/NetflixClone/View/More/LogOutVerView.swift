@@ -1,5 +1,5 @@
 //
-//  LogoutView.swift
+//  LogOutVerTableViewCell.swift
 //  NetflixClone
 //
 //  Created by 정유경 on 2020/04/20.
@@ -9,29 +9,35 @@
 import UIKit
 import SnapKit
 
-class LogoutVersionButton: UIButton {
+protocol LogOutVerViewDelegate: class {
+    func didTapLogoutButton()
+}
+
+class LogOutVerView: UIView{
     
-    private let logoutLabel = UILabel()
+    weak var delegate: LogOutVerViewDelegate?
+   
+    private let logoutButton = UIButton()
     private let versionLabel = UILabel()
     
     override init(frame: CGRect) {
-        super .init(frame: frame)
+        super.init(frame: frame)
         setUI()
         setConstraints()
-        
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     private func setUI() {
-        [logoutLabel,versionLabel].forEach {
+        [logoutButton,versionLabel].forEach {
             addSubview($0)
         }
-        logoutLabel.text = "로그아웃"
-        logoutLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
-        logoutLabel.textAlignment = .center
-        logoutLabel.font = UIFont.systemFont(ofSize: 17)
+        logoutButton.setTitle("로그아웃", for: .normal)
+        logoutButton.setTitleColor(UIColor.setNetfilxColor(name: .netflixLightGray), for: .normal)
+        logoutButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         
         versionLabel.text = "버전: 92.09.18(1234)"
         versionLabel.textColor = .setNetfilxColor(name: .netflixDarkGray)
@@ -41,18 +47,22 @@ class LogoutVersionButton: UIButton {
     
     private func setConstraints() {
         let margin: CGFloat = 10
-
         
-        logoutLabel.snp.makeConstraints {
+        
+        logoutButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.bottom.equalTo(snp.centerY)
         }
         versionLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(logoutLabel.snp.bottom).inset(-margin)
+            $0.top.equalTo(logoutButton.snp.bottom).inset(-margin)
         }
         
+    }
+    @objc func didTapLogoutButton() {
+        delegate?.didTapLogoutButton()
     }
     
     
 }
+

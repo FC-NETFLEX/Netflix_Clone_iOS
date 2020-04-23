@@ -15,6 +15,7 @@ class MoreAddProfileButtonView: UIView {
     
     private let profilePluButton = UIButton()
     private let addProfileLabel = UILabel()
+    private let selectButton = UIButton()
     
     weak var delegate: MoreAddProfileButtonViewDelegate?
     
@@ -34,7 +35,7 @@ class MoreAddProfileButtonView: UIView {
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
         
-        [profilePluButton,addProfileLabel].forEach {
+        [profilePluButton, addProfileLabel].forEach {
             self.addSubview($0)
         }
         profilePluButton.setImage(UIImage(named: "더보기플러스"), for: .normal)
@@ -49,29 +50,24 @@ class MoreAddProfileButtonView: UIView {
         addProfileLabel.text = "프로필 추가"
         addProfileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
         addProfileLabel.font = .systemFont(ofSize: 14)
-        
     }
     private func setConstrains() {
-        let margin: CGFloat = 10
-        let padding: CGFloat = 5
+        let margin: CGFloat = 15
+        let padding: CGFloat = 10
         
         
         profilePluButton.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(margin * 1.5)
+            $0.top.equalToSuperview().offset(padding)
             $0.centerX.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.85)
+            $0.width.equalToSuperview().multipliedBy(0.75)
             $0.height.equalTo(profilePluButton.snp.width)
-
-            
         }
         addProfileLabel.snp.makeConstraints {
             $0.top.equalTo(profilePluButton.snp.bottom).offset(padding)
             $0.centerX.equalTo(profilePluButton.snp.centerX)
-            
         }
-        
-        
     }
+    
     @objc private func addProfileButtonDidTap() {
         delegate?.addProfileButtonDidTap()
     }
