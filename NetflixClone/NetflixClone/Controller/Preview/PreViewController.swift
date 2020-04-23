@@ -35,15 +35,16 @@ class PreViewController: BaseViewController {
 
     private var previewSubviews = [PreviewView]()
     
-    private var preview: [PreviewContent]
+//    private var preview: [PreviewContent]
+    private var preview = [PreviewContent]() // 붙인후 주석처리할것 - 유진
     private var receivedPreviewIndex: Int
     
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
     
-    init(index: Int = 0, previews: [PreviewContent]) {
+    init(index: Int = 0/*, previews: [PreviewContent]*/) {
         self.receivedPreviewIndex = index
-        self.preview = previews
+        /*self.preview = previews*/
         super.init(nibName: nil, bundle: nil)
     }
     
