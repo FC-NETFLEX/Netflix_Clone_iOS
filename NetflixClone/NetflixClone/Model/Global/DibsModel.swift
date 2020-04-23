@@ -7,3 +7,16 @@
 //
 
 import Foundation
+
+//MARK: DibsView Model
+struct DibsContent: Codable {
+    let id: Int
+    let title: String
+    let imageURL: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title = "contents_title"
+        case imageURL = "contents_image"
+    }
+}
