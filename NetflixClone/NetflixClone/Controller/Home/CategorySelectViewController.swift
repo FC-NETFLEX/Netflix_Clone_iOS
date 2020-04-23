@@ -16,6 +16,13 @@ class CategorySelectViewController: UIViewController {
     private let categorys = Category().category
     private let categoryKey = Category().keys
     
+    
+    private var categoryView: CategoryView?
+    
+    //MARK: Initilizer
+    
+    
+    //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
@@ -71,7 +78,7 @@ extension CategorySelectViewController: UITableViewDataSource {
         cell.backgroundColor = .clear
         cell.textLabel?.textColor = .lightGray
         cell.textLabel?.text = categorys[categoryKey[indexPath.row]]
-
+        cell.textLabel?.font = .systemFont(ofSize: 18)
         
         cell.textLabel?.textAlignment = .center
         return cell
@@ -79,10 +86,15 @@ extension CategorySelectViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         tableView.cellForRow(at: indexPath)?.textLabel?.textColor = .white
-        tableView.cellForRow(at: indexPath)?.textLabel?.font = .systemFont(ofSize: 18)
+//        tableView.cellForRow(at: indexPath)?.textLabel?.font = .systemFont(ofSize: 18)
         return indexPath
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let categoryNum = categoryKey[indexPath.row]
+        categoryView = CategoryView(frame: view.frame, categoryNum: categoryNum)
+        
+    }
     
 }
 
