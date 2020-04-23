@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CategoryViewHeader: UIView {
+class CategorySelectViewHeader: UIView {
 
     private let title = UILabel()
     
