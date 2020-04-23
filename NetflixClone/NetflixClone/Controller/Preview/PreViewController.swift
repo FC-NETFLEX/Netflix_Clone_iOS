@@ -31,12 +31,9 @@ class PreViewController: BaseViewController {
               return true
           }
     
-    // 유진이 decode 끝나면, 이 부분이랑 receivedPreviewIndex(cell Indexpath도 넘겨달라고 요청)
-
     private var previewSubviews = [PreviewView]()
     
     private var preview: [PreviewContent]
-//    private var preview = [PreviewContent]()
     private var receivedPreviewIndex: Int
     
     var player: AVPlayer!
@@ -57,7 +54,7 @@ class PreViewController: BaseViewController {
         print(receivedPreviewIndex)
         setUI()
         setConstraints()
-//        request(id: LoginStatus.shared.getProfileID() ?? 0)
+        createPreviewSubviews()
     }
     
     override func viewWillLayoutSubviews() {
@@ -87,7 +84,7 @@ class PreViewController: BaseViewController {
 //
 //                if let home = try? JSONDecoder().decode(HomeContent.self, from: data) {
 //                    self.preview = home.previewContents
-//                    self.createPreviewSubviews()
+
 //                }
 //
 //            case .failure(let error):
