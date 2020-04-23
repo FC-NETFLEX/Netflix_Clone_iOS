@@ -8,12 +8,19 @@
 
 import UIKit
 
+
+
 final class HomeViewController: UIViewController {
+    
+//    weak var delegate: HomeViewControllerCategoryDelegate?
     
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     private let homeView = HomeView()
 
     private let dibsView = DibsView()
+    
+    private var categoryView: CategoryView?
+    var categoryNum: Int?
     
 //MARK: layout관련 CGFloat
     private let menuBarHeight: CGFloat = 90
@@ -35,7 +42,11 @@ final class HomeViewController: UIViewController {
     
     //MARK: preview content
 
-    private var homeViewPreviewContents: [PreviewContent] = [PreviewContent(id: 1, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 2, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()), PreviewContent(id: 3, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]()),PreviewContent(id: 4, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video]())]
+    private var homeViewPreviewContents: [PreviewContent] = [
+        PreviewContent(id: 1, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video](), categories: [String](), isSelect: true),
+        PreviewContent(id: 2, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video](), categories: [String](), isSelect: true),
+        PreviewContent(id: 3, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video](), categories: [String](), isSelect: true),
+        PreviewContent(id: 4, title: "preview", previewVideoURL: "", logoURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", poster: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", videos: [Video](), categories: [String](), isSelect: true)]
 
 
     //MARK: LatestMovie content
@@ -162,7 +173,7 @@ final class HomeViewController: UIViewController {
 extension HomeViewController: HomeMenuBarViewDelegate {
     func didTabMenuBarIconButton() {
         print("MenuBar DidTabIcon")
-
+        
         if view.subviews[0] == dibsView {
             print("view dibsView")
             dibsView.removeFromSuperview()
