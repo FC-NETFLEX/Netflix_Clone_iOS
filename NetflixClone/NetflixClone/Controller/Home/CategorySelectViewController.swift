@@ -16,11 +16,7 @@ class CategorySelectViewController: UIViewController {
     private let categorys = Category().category
     private let categoryKey = Category().keys
     
-    
-    private var categoryView: CategoryView?
-    
-    //MARK: Initilizer
-    
+
     
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
@@ -90,10 +86,12 @@ extension CategorySelectViewController: UITableViewDataSource {
         return indexPath
     }
     
+    // HomeView에서 바탕화면 categoryView로 교체.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.cellForRow(at: indexPath)?.textLabel?.textColor = .white
+
         let categoryNum = categoryKey[indexPath.row]
-        categoryView = CategoryView(frame: view.frame, categoryNum: categoryNum)
-        
+        dismiss(animated: true)
     }
     
 }
