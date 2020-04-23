@@ -58,8 +58,10 @@
 		31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D17242A345C00382B94 /* UIColorExtension.swift */; };
 		31601D3C242A345C00382B94 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D18242A345C00382B94 /* CGFloatExtension.swift */; };
 		31601D3D242A345C00382B94 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31601D19242A345C00382B94 /* UIFontExtension.swift */; };
-		316B91582451B4A4000EAE0D /* FindCanSaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B91572451B4A4000EAE0D /* FindCanSaveViewController.swift */; };
-		316B915A2451B4D1000EAE0D /* FindCanSaveContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B91592451B4D1000EAE0D /* FindCanSaveContentView.swift */; };
+		316B91582451B4A4000EAE0D /* FindStorableContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B91572451B4A4000EAE0D /* FindStorableContentViewController.swift */; };
+		316B915A2451B4D1000EAE0D /* FindStorableContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B91592451B4D1000EAE0D /* FindStorableContentView.swift */; };
+		316B915C2451B68D000EAE0D /* PresentFindStorableContentViewControllerButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B915B2451B68D000EAE0D /* PresentFindStorableContentViewControllerButtonCell.swift */; };
+		316B915E2451B7A5000EAE0D /* FindStorableContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316B915D2451B7A5000EAE0D /* FindStorableContentModel.swift */; };
 		31C5317E24459BB4000A8607 /* DownLoadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C5317D24459BB4000A8607 /* DownLoadManager.swift */; };
 		31C5318024476E11000A8607 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C5317F24476E11000A8607 /* TestViewController.swift */; };
 		31C5318224478C19000A8607 /* SaveFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C5318124478C19000A8607 /* SaveFileManager.swift */; };
@@ -181,8 +183,10 @@
 		31601D17242A345C00382B94 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		31601D18242A345C00382B94 /* CGFloatExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		31601D19242A345C00382B94 /* UIFontExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
-		316B91572451B4A4000EAE0D /* FindCanSaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindCanSaveViewController.swift; sourceTree = "<group>"; };
-		316B91592451B4D1000EAE0D /* FindCanSaveContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindCanSaveContentView.swift; sourceTree = "<group>"; };
+		316B91572451B4A4000EAE0D /* FindStorableContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindStorableContentViewController.swift; sourceTree = "<group>"; };
+		316B91592451B4D1000EAE0D /* FindStorableContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindStorableContentView.swift; sourceTree = "<group>"; };
+		316B915B2451B68D000EAE0D /* PresentFindStorableContentViewControllerButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentFindStorableContentViewControllerButtonCell.swift; sourceTree = "<group>"; };
+		316B915D2451B7A5000EAE0D /* FindStorableContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindStorableContentModel.swift; sourceTree = "<group>"; };
 		31C5317D24459BB4000A8607 /* DownLoadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownLoadManager.swift; sourceTree = "<group>"; };
 		31C5317F24476E11000A8607 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		31C5318124478C19000A8607 /* SaveFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveFileManager.swift; sourceTree = "<group>"; };
@@ -295,6 +299,7 @@
 			children = (
 				3128D0DD243F3C82001E08D3 /* SavedContentCell.swift */,
 				31E78CD42449D17C0037C73D /* SavedContentHeaderView.swift */,
+				316B915B2451B68D000EAE0D /* PresentFindStorableContentViewControllerButtonCell.swift */,
 			);
 			path = SavedContentCell;
 			sourceTree = "<group>";
@@ -392,7 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				31601CDF242A345B00382B94 /* SavedContentsListViewController.swift */,
-				316B91572451B4A4000EAE0D /* FindCanSaveViewController.swift */,
+				316B91572451B4A4000EAE0D /* FindStorableContentViewController.swift */,
 			);
 			path = SavedContentsList;
 			sourceTree = "<group>";
@@ -497,7 +502,7 @@
 				31601CF3242A345B00382B94 /* SavedContentsListView.swift */,
 				31198C7B243E808C002C30B0 /* DoseNotHaveSavedContentsView.swift */,
 				31198C7D243EABDE002C30B0 /* SaveContentStatusView.swift */,
-				316B91592451B4D1000EAE0D /* FindCanSaveContentView.swift */,
+				316B91592451B4D1000EAE0D /* FindStorableContentView.swift */,
 			);
 			path = SavedContentsList;
 			sourceTree = "<group>";
@@ -612,6 +617,7 @@
 				31E78CCC244832B50037C73D /* DownLoading.swift */,
 				31C5317D24459BB4000A8607 /* DownLoadManager.swift */,
 				31C5318124478C19000A8607 /* SaveFileManager.swift */,
+				316B915D2451B7A5000EAE0D /* FindStorableContentModel.swift */,
 			);
 			path = SavedContentsList;
 			sourceTree = "<group>";
@@ -943,6 +949,7 @@
 				7094EFFA2434D62800DFCD52 /* ChangeProfileViewController.swift in Sources */,
 				F4A5F7B12439E82800052FAE /* SummaryTableViewCell.swift in Sources */,
 				31601D37242A345C00382B94 /* ProfileModel.swift in Sources */,
+				316B915C2451B68D000EAE0D /* PresentFindStorableContentViewControllerButtonCell.swift in Sources */,
 				F4A5F7AF2439E82800052FAE /* RecommendedContentsTableViewCell.swift in Sources */,
 				31133C68243B4E8D00EFE28E /* Category.swift in Sources */,
 				31601D28242A345C00382B94 /* ContentView.swift in Sources */,
@@ -972,6 +979,7 @@
 				310B01D7242B1AE100C5858D /* LoginStatus.swift in Sources */,
 				31601D2F242A345C00382B94 /* ThirdView.swift in Sources */,
 				964C733624517C98001B26A1 /* CategorySelectViewHeader.swift in Sources */,
+				316B915E2451B7A5000EAE0D /* FindStorableContentModel.swift in Sources */,
 				705319B0242DDB02004D46A6 /* ProfileImageViewController.swift in Sources */,
 				70B31253244CEE600068ABB9 /* MoreAddProfileButtonView.swift in Sources */,
 				31601D3B242A345C00382B94 /* UIColorExtension.swift in Sources */,
@@ -981,7 +989,7 @@
 				31601D2D242A345C00382B94 /* FirstView.swift in Sources */,
 				31601D1F242A345C00382B94 /* MoreViewController.swift in Sources */,
 				31601CD6242A344500382B94 /* API.swift in Sources */,
-				316B91582451B4A4000EAE0D /* FindCanSaveViewController.swift in Sources */,
+				316B91582451B4A4000EAE0D /* FindStorableContentViewController.swift in Sources */,
 				705319AA242DDAA2004D46A6 /* AddProfileButtonView.swift in Sources */,
 				31601D1B242A345C00382B94 /* HomeViewController.swift in Sources */,
 				96BBDC73244C2C3400DCD8B2 /* HomeMenuBarView.swift in Sources */,
@@ -1012,7 +1020,7 @@
 				96BBDC7E2450366F00DCD8B2 /* CategorySelectView.swift in Sources */,
 				964C7338245185E7001B26A1 /* CategoryViewController.swift in Sources */,
 				31601D2C242A345C00382B94 /* SecondView.swift in Sources */,
-				316B915A2451B4D1000EAE0D /* FindCanSaveContentView.swift in Sources */,
+				316B915A2451B4D1000EAE0D /* FindStorableContentView.swift in Sources */,
 				31601D2B242A345C00382B94 /* ProfileView.swift in Sources */,
 				7094EFFE2434EDD200DFCD52 /* UniversalClassView.swift in Sources */,
 				31601D29242A345C00382B94 /* MorePofileView.swift in Sources */,
