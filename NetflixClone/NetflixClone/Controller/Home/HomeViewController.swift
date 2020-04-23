@@ -481,7 +481,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: PreviewTableViewCellDelegate {
     
     func didTabPreviewCell(index: Int) {
-        let previewVC = PreViewController(index: index)
+        let previewVC = PreViewController(index: index, previews: homeViewPreviewContents)
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
     }
