@@ -107,7 +107,7 @@
 		963716942438A08700AC14C7 /* WatchContentsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963716932438A08700AC14C7 /* WatchContentsCollectionViewCell.swift */; };
 		963716962439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963716952439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift */; };
 		964C733624517C98001B26A1 /* CategorySelectViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C733524517C98001B26A1 /* CategorySelectViewHeader.swift */; };
-		964C7338245185E7001B26A1 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C7337245185E7001B26A1 /* CategoryViewController.swift */; };
+		964C733A2451BA27001B26A1 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C73392451BA27001B26A1 /* CategoryView.swift */; };
 		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
 		96BBDC73244C2C3400DCD8B2 /* HomeMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC72244C2C3400DCD8B2 /* HomeMenuBarView.swift */; };
 		96BBDC76244C986100DCD8B2 /* DibsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC75244C986100DCD8B2 /* DibsView.swift */; };
@@ -232,7 +232,7 @@
 		963716932438A08700AC14C7 /* WatchContentsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentsCollectionViewCell.swift; sourceTree = "<group>"; };
 		963716952439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAdvertisementTableViewCell.swift; sourceTree = "<group>"; };
 		964C733524517C98001B26A1 /* CategorySelectViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectViewHeader.swift; sourceTree = "<group>"; };
-		964C7337245185E7001B26A1 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		964C73392451BA27001B26A1 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
 		96BBDC72244C2C3400DCD8B2 /* HomeMenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuBarView.swift; sourceTree = "<group>"; };
 		96BBDC75244C986100DCD8B2 /* DibsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DibsView.swift; sourceTree = "<group>"; };
@@ -380,7 +380,6 @@
 			children = (
 				31601CDB242A345B00382B94 /* HomeViewController.swift */,
 				96BBDC7B2450365500DCD8B2 /* CategorySelectViewController.swift */,
-				964C7337245185E7001B26A1 /* CategoryViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -483,6 +482,7 @@
 				96BBDC72244C2C3400DCD8B2 /* HomeMenuBarView.swift */,
 				96BBDC7D2450366F00DCD8B2 /* CategorySelectView.swift */,
 				964C733524517C98001B26A1 /* CategorySelectViewHeader.swift */,
+				964C73392451BA27001B26A1 /* CategoryView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -963,6 +963,7 @@
 				31601D32242A345C00382B94 /* VideoModel.swift in Sources */,
 				313670CE2439AE6100231AE0 /* SignUpView.swift in Sources */,
 				9631610E24310A20003C468A /* HomeviewTitle.swift in Sources */,
+				964C733A2451BA27001B26A1 /* CategoryView.swift in Sources */,
 				963716962439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
 				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
@@ -1018,7 +1019,6 @@
 				9611E2EC243534B400393E84 /* Top10CollectionViewCell.swift in Sources */,
 				96BBDC76244C986100DCD8B2 /* DibsView.swift in Sources */,
 				96BBDC7E2450366F00DCD8B2 /* CategorySelectView.swift in Sources */,
-				964C7338245185E7001B26A1 /* CategoryViewController.swift in Sources */,
 				31601D2C242A345C00382B94 /* SecondView.swift in Sources */,
 				316B915A2451B4D1000EAE0D /* FindStorableContentView.swift in Sources */,
 				31601D2B242A345C00382B94 /* ProfileView.swift in Sources */,
