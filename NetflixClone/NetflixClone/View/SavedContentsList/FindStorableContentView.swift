@@ -8,14 +8,36 @@
 
 import UIKit
 
-class FindCanSaveContentView: UIView {
+class FindStorableContentView: UIView {
+    
+    let tableView = UITableView()
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUI()
+        setConstraint()
     }
-    */
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    //MARK: UI
+    
+    private func setUI() {
+        backgroundColor = .setNetfilxColor(name: .black)
+        
+        self.addSubview(tableView)
+        
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    }
+    
+    private func setConstraint() {
+        let guide = safeAreaLayoutGuide
+        tableView.snp.makeConstraints({
+            $0.top.bottom.leading.trailing.equalTo(guide)
+        })
+    }
 
 }
