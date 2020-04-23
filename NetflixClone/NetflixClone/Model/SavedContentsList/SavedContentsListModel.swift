@@ -104,17 +104,28 @@ class SavedContentsListModel {
     }
         
     
-    func getWatchingContentOfSavedContent() {
+    func getWatchingContentOfSavedContent() -> [WatchVideo] {
         var tempContents: [SaveContent] = []
         profiles.forEach({
             let contents = $0.savedContents.filter({ $0.contentRange != nil && $0.savePoint != nil })
             tempContents += contents
         })
-        let result = tempContents.compactMap({ content in
-            
-            
+        let result: [WatchVideo] = tempContents.compactMap({ (content: SaveContent) in
+            guard
+                let range = content.contentRange,
+                let savePoint = content.savePoint
+                else { return nil }
+            let watchingContent = WatchVideo(
+                id: nil,
+                video: nil,
+                playTime: Int(savePoint),
+                videoLength: Int(range),
+                poster: content.imageURL.absoluteString,
+                contentId: content.contentID)
+            return watchingContent
         })
         
+        return result
     }
     
 }

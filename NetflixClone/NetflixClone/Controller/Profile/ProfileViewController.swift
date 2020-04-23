@@ -21,12 +21,7 @@ class ProfileViewController: UIViewController {
     
     var root: ProfileRoots
     
-    private let userView0 = UIView()
-    private let userView1 = UIView()
-    private let userView2 = UIView()
-    private let userView3 = UIView()
-    private let userView4 = UIView()
-    
+    let stackViewArray = [UIStackView(), UIStackView(), UIStackView()]
     var userProfileList = [ProfileList]()
     var userIconList = [ProfileIcons]()
     
@@ -69,10 +64,14 @@ class ProfileViewController: UIViewController {
     
     private func setUI() {
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        [userView0,userView1,userView2,userView3,userView4].forEach {
-            userViewArray.append($0)
+        
+        stackViewArray.forEach {
+            $0.axis = .horizontal
+            $0.distribution = .equalSpacing
+            $0.alignment = .center
             view.addSubview($0)
         }
+        
     }
     func setNavigationBar() {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
@@ -137,32 +136,22 @@ class ProfileViewController: UIViewController {
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-        let margin: CGFloat = 10
-        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
-        [userView0,userView1,userView2,userView3,userView4].forEach {
+//        let margin: CGFloat = 10
+//        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
+//        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
+
+        stackViewArray.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
+            $0.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
+//            $0.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
+//            $0.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -(padding)).isActive = true
+            $0.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
+        stackViewArray[0].bottomAnchor.constraint(equalTo: stackViewArray[1].topAnchor, constant: -48).isActive = true
+        stackViewArray[1].centerYAnchor.constraint(equalTo: guide.centerYAnchor, constant: -40).isActive = true
+        stackViewArray[2].topAnchor.constraint(equalTo: stackViewArray[1].bottomAnchor, constant: 48).isActive = true
         
-        userView0.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
-        userView0.trailingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView0.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
-        userView1.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
-        userView1.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView1.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        userView2.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 4).isActive = true
-        userView2.trailingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView2.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        userView3.topAnchor.constraint(equalTo: userView0.bottomAnchor, constant: margin * 4).isActive = true
-        userView3.leadingAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView3.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
-        
-        userView4.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        userView4.topAnchor.constraint(equalTo: userView2.bottomAnchor, constant: margin * 4).isActive = true
-        userView4.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.33).isActive = true
         
     }
     
@@ -179,44 +168,35 @@ class ProfileViewController: UIViewController {
         })
     }
     
-    private func viewSetting() {
-        
+    var profileViews = [UIView]()
+    func stackViewSetting() {
         let count = userProfileList.count
-        print(count)
         
-        for (index, userView) in userViewArray.enumerated() {
-            userView.subviews.forEach { $0.removeFromSuperview() }
-            
-            if index < count {
-                let tempProfileView = ProfileView()
-                tempProfileView.tag = index
-                tempProfileView.profileLabel.text = userProfileList[index].name
-                let button = tempProfileView.profileButton
-                setImage(stringURL: userIconList[index].iconURL, button: button)
-                userView.addSubview(tempProfileView)
-                profileViewArray.append(tempProfileView)
-                tempProfileView.delegate = self
-                
-                tempProfileView.translatesAutoresizingMaskIntoConstraints = false
-                tempProfileView.topAnchor.constraint(equalTo: userView.topAnchor).isActive = true
-                tempProfileView.leadingAnchor.constraint(equalTo: userView.leadingAnchor).isActive = true
-                tempProfileView.trailingAnchor.constraint(equalTo: userView.trailingAnchor).isActive = true
-                tempProfileView.bottomAnchor.constraint(equalTo: userView.bottomAnchor).isActive = true
-                
-                
-            } else if index == count {
-                let tempAddView = AddProfileButtonView()
-                tempAddView.delegate = self
-                userView.addSubview(tempAddView)
-                
-                tempAddView.translatesAutoresizingMaskIntoConstraints = false
-                tempAddView.topAnchor.constraint(equalTo: userView.topAnchor).isActive = true
-                tempAddView.leadingAnchor.constraint(equalTo: userView.leadingAnchor).isActive = true
-                tempAddView.trailingAnchor.constraint(equalTo: userView.trailingAnchor).isActive = true
-                tempAddView.bottomAnchor.constraint(equalTo: userView.bottomAnchor).isActive = true
-                tempAddView.heightAnchor.constraint(equalTo: userView0.widthAnchor).isActive = true
-                
-            }
+        profileViews.forEach { tempView in
+            tempView.removeFromSuperview()
+        }
+        profileViews.removeAll()
+        
+ 
+        for (index, value) in userProfileList.enumerated() {
+            let tempStackView = stackViewArray[index / 2]
+            let profileView = ProfileView()
+            profileView.profileLabel.text = value.name
+            profileView.tag = index
+            let button = profileView.profileButton
+            setImage(stringURL: userIconList[index].iconURL, button: button)
+            profileView.delegate = self
+            tempStackView.addArrangedSubview(profileView)
+            profileViewArray.append(profileView)
+            profileViews.append(profileView)
+        }
+        
+        if count < 5 {
+            let tempStackView = stackViewArray[count / 2]
+            let addProfileView = AddProfileButtonView()
+            addProfileView.delegate = self
+            tempStackView.addArrangedSubview(addProfileView)
+            profileViews.append(addProfileView)
         }
     }
     
@@ -272,10 +252,11 @@ class ProfileViewController: UIViewController {
                     let iskids = profileList["is_kids"] as? Bool,
                     let profileIcons = profileList["profile_icon"] as? [String: Any]
                     else { return }
-                
-                
+            
+            
                 self.userProfileList.append(ProfileList(id: id, name: name, iskids: iskids))
                 
+            
                 guard
                     let idNum = profileIcons["id"] as? Int,
                     let iconURL = profileIcons["icon"] as? String
@@ -286,9 +267,9 @@ class ProfileViewController: UIViewController {
                 
                 
             }
-            
+        
             DispatchQueue.main.async {
-                self.viewSetting()
+                self.stackViewSetting()
                 if self.root == .manager {
                     self.profileViewArray.forEach {
                         $0.setHidden(state: false)
@@ -301,8 +282,10 @@ class ProfileViewController: UIViewController {
         task.resume()
     }
     
-
+    
     @objc func changeButtonDidTap() {
+        print("변경버튼")
+        print(profileViewArray.count)
         profileViewArray.forEach {
             $0.setHidden(state: false)
         }
@@ -312,28 +295,33 @@ class ProfileViewController: UIViewController {
     
     @objc private func completeButtonDidTap() {
         leftNavigationMake()
-        
-        switch root {
-        case .main, .login:
-            profileViewArray.forEach {
-                $0.setHidden(state: true)
-                setNavigationBar()
-            }
-        case .manager, .add, .main:
-            profileViewArray.forEach {
-                $0.setHidden(state: true)
-                setNavigationBar()
-            }
-            presentingViewController?.dismiss(animated: true)
+        profileViewArray.forEach {
+            $0.setHidden(state: true)
+            setNavigationBar()
         }
+        presentingViewController?.dismiss(animated: true)
+        
+//        switch root {
+//        case .main, .login:
+//            profileViewArray.forEach {
+//                $0.setHidden(state: true)
+//                setNavigationBar()
+//            }
+//        case .manager, .add:
+//            profileViewArray.forEach {
+//                $0.setHidden(state: true)
+//                setNavigationBar()
+//            }
+//            presentingViewController?.dismiss(animated: true)
+//        }
     }
 }
 
 extension ProfileViewController: ProfilViewDelegate {
     
     func profileButtonDidTap(tag: Int) {
-
-
+        
+        
         let userProfile = userProfileList[tag]
         let icon = userIconList[tag]
         guard let imageURL = URL(string: icon.iconURL) else { return }
@@ -354,33 +342,34 @@ extension ProfileViewController: ProfilViewDelegate {
             let selectViewName = selectView.profileLabel.text,
             let selectViewImage = selectView.profileButton.imageView?.image
             else { return }
+        
         print("셀렉",selectViewName, selectViewImage)
         
         
-        //        UIView.animateKeyframes(
-        //            withDuration: 0.3,
-        //            delay: 0,
-        //            animations: {
-        //                UIView.addKeyframe(
-        //                withRelativeStartTime: 0.0, relativeDuration: 0.3) {
-        //                    let selectView = self.profileViewArray[tag]
-        //                    selectView.center.x = self.view.center.x
-        //                    selectView.center.y = self.view.center.y
-        //
-        //                    print("애니메이션", selectView)
-        //                }
-        //
-        //
-        //        }) { _ in
-        //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-        //                let changeVC = ChangeProfileViewController()
-        //                changeVC.isKids = self.kidState
-        //                changeVC.profileIcon = self.userImage
-        //                changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-        //                self.navigationController?.pushViewController(changeVC, animated: true)
-        //            }
-        //
-        //        }
+                UIView.animateKeyframes(
+                    withDuration: 0.3,
+                    delay: 0,
+                    animations: {
+                        UIView.addKeyframe(
+                        withRelativeStartTime: 0.0, relativeDuration: 0.3) {
+                            let selectView = self.profileViewArray[tag]
+                            selectView.center.x = self.view.center.x
+                            selectView.center.y = self.view.center.y
+        
+                            print("애니메이션", selectView)
+                        }
+        
+        
+                }) { _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        let changeVC = ChangeProfileViewController()
+                        changeVC.isKids = self.userProfileList[tag].iskids
+                        changeVC.profileIcon = selectViewImage
+                        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userProfileList[tag].name, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
+                        self.navigationController?.pushViewController(changeVC, animated: true)
+                    }
+        
+                }
         let changeVC = ChangeProfileViewController()
         changeVC.userID = userProfileList[tag].id
         changeVC.profileName = userProfileList[tag].name
