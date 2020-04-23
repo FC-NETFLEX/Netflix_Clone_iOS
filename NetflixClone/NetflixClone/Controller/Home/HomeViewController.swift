@@ -19,8 +19,10 @@ final class HomeViewController: UIViewController {
 
     private let dibsView = DibsView()
     
-    private var categoryView: CategoryView?
-    var categoryNum: Int?
+//    private var categoryView = CategoryView()
+//    var categoryNum: Int?
+    
+    
     
 //MARK: layout관련 CGFloat
     private let menuBarHeight: CGFloat = 90
@@ -58,7 +60,7 @@ final class HomeViewController: UIViewController {
 
     
     //MARK: WatchContents
-    private var homeViewWatchContents: [WatchVideo] = [WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
+    private var homeViewWatchContents: [WatchVideo] = [WatchVideo]() //[WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
     
     
     //MARK: ADContents
@@ -144,6 +146,7 @@ final class HomeViewController: UIViewController {
         //DibsView 관련
         dibsView.collectionView.delegate = self
         dibsView.collectionView.dataSource = self
+        
         
 //        homeView.addSubview(menuBar)
         view.addSubview(homeView)
@@ -262,9 +265,14 @@ extension HomeViewController: HomeMenuBarViewDelegate {
 
 //MARK: - HomeViewTitleDelegate
 extension HomeViewController: HomeviewTitleDelegate {
-    func didTabHomeTitledibsButton() {
-       print("Hometitle dibsButton Click")
+    func didTabHomeTitledibsButton(isEnable: () -> (), disEnable: () -> ()) {
+        
+        print("Hometitle dibsButton Click")
+//        isEnable()
+//        disEnable()
+        
     }
+    
     
     func didTabHomeTitlePlayButton() {
         print("HomeTitle playButtonClick")
@@ -538,6 +546,14 @@ extension HomeViewController: WatchContentsTableViewDelegate {
 
 //MARK: - HomeView VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
+    func didTabVideoCellDibsButton(isEnable: () -> (), disEnable: () -> ()) {
+        
+        print("찜한 목록 추가하기")
+//        disEnable()
+//        isEnable()
+        
+    }
+    
     
     func didTabVideoView(contentId: Int) {
         let contentVC = ContentViewController(id: contentId)
@@ -548,11 +564,6 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     func didTabVideoCellPlayButton() {
         print("영상재생화면 이동")
     }
-    
-    func didTabVideoCellDibsButton() {
-        print("찜한 목록 추가하기")
-    }
-    
     
     
 }
@@ -613,5 +624,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width.rounded(.down), height: height.rounded(.down) - 1)
     }
 }
+
 
 

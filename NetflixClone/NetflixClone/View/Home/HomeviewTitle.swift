@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 protocol HomeviewTitleDelegate: class {
-    func didTabHomeTitledibsButton() -> ()
+    func didTabHomeTitledibsButton(isEnable: () -> (), disEnable: () -> ()) -> ()
     func didTabHomeTitlePlayButton() -> ()
     func didTabHomeTitleContentButton() -> ()
 }
@@ -34,6 +34,7 @@ class HomeviewTitle: UIView {
     
     private let titleImage = UIImageView()
     
+    private var dibs: Bool?
     
     //    private let gradientLayer: CAGradientLayer = {
     //        let gradientLayer = CAGradientLayer()
@@ -218,7 +219,7 @@ class HomeviewTitle: UIView {
     
     // MARK: - configure
     func configure(id: Int, poster: String, category: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
-        
+        self.dibs = dibs
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
         } else {
@@ -231,10 +232,7 @@ class HomeviewTitle: UIView {
         category.forEach {
             categoryText += $0 + ","
         }
-        /*
-         self.posterImage.kf.setImage(with: URL(string: url))
-
-         */
+        
         titlePoster.kf.setImage(with: URL(string: poster))
         categoryLabel.text = categoryText
         self.titleImage.kf.setImage(with: URL(string: titleImage))
@@ -244,7 +242,7 @@ class HomeviewTitle: UIView {
     
     //MARK: - action
     @objc private func didTabdibsButton(sender: UIButton) {
-        delegate?.didTabHomeTitledibsButton()
+        delegate?.didTabHomeTitledibsButton(isEnable: isEnabled, disEnable: disEnabled)
     }
     
     @objc private func didTabPlayButton(sender: UIButton) {
@@ -255,4 +253,24 @@ class HomeviewTitle: UIView {
         delegate?.didTabHomeTitleContentButton()
     }
     
+    
+     //MARK: Button Touch 막기
+        func isEnabled() {
+            dibsButton.isEnabled = true
+            
+        }
+        
+        func disEnabled() {
+            dibsButton.isEnabled = false
+            
+            let flag = dibs ?? true
+            
+            if flag {
+                dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            } else {
+                dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+
+            }
+        }
+     
 }

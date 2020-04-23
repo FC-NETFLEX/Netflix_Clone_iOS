@@ -12,7 +12,8 @@ import AVKit
 protocol VideoAdvertisementTableViewCellDelegate: class {
     func didTabVideoView(contentId: Int) -> ()
     func didTabVideoCellPlayButton() -> ()
-    func didTabVideoCellDibsButton() -> ()
+//    func didTabVideoCellDibsButton() -> ()
+    func didTabVideoCellDibsButton(isEnable: () -> (), disEnable: () -> () ) -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -24,15 +25,17 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     private let headerHeight: CGFloat = 24
     
     private let headerLabel = UILabel()
-    private let playButton = UIButton()
-    private let dibsButton = UIButton()
+    let playButton = UIButton()
+    let dibsButton = UIButton()
     
     private let videoView = UIView()
+    private let paddingView = UIView()
     private let muteButton = UIButton()
     
     private var muteFlag = true
     
     private var contentID: Int?
+    private var dibs: Bool?
     
     //    private var url: URL?
     var player: AVPlayer?
@@ -62,6 +65,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     //MARK: -UI
     private func setUI() {
         let HeaderFont: UIFont = .boldSystemFont(ofSize: 16)
+        let buttonFont: UIFont = .systemFont(ofSize: 14)
         headerLabel.font = HeaderFont
         headerLabel.backgroundColor = .clear
         headerLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.white)
@@ -72,26 +76,34 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         playButton.backgroundColor = .white
         playButton.layer.cornerRadius = 5
-        playButton.setTitle("재생", for: .normal)
+        playButton.setTitle("  재생", for: .normal)
         playButton.setTitleColor(.black, for: .normal)
-        //        playButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.tintColor = .black
+        playButton.contentHorizontalAlignment = .center
+        playButton.titleLabel?.font = buttonFont
         playButton.addTarget(self, action: #selector(didTabPlayButton(sender:)), for: .touchUpInside)
         
         dibsButton.backgroundColor = .gray
         dibsButton.layer.cornerRadius = 5
-        dibsButton.setTitle("내가 찜한 콘텐츠", for: .normal)
+        dibsButton.setTitle("  내가 찜한 콘텐츠", for: .normal)
         dibsButton.setTitleColor(.white, for: .normal)
-        //        dibsButton.setImage(<#T##image: UIImage?##UIImage?#>, for: <#T##UIControl.State#>)
+        dibsButton.tintColor = .white
+        dibsButton.contentHorizontalAlignment = .center
+        dibsButton.titleLabel?.font = buttonFont
         dibsButton.addTarget(self, action: #selector(didTabDibsButton(sender:)), for: .touchUpInside)
         
         muteButton.backgroundColor = .clear
         muteButton.setImage(UIImage(named: "Mute_icon"), for: .normal)
         muteButton.addTarget(self, action: #selector(didTabMuteButton(sender:)), for: .touchUpInside)
         
+        paddingView.backgroundColor = .clear
+        
         contentView.addSubview(headerLabel)
         contentView.addSubview(playButton)
         contentView.addSubview(dibsButton)
         contentView.addSubview(videoView)
+        contentView.addSubview(paddingView)
         
         
     }
@@ -130,24 +142,20 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     
     
     private func setConstrinats() {
-        let headerYMargin: CGFloat = 10
-        let headerXMargin: CGFloat = 10
-        
+
         let margin: CGFloat = 10
-        
-//        let muteButtonSize: CGFloat = 20
+        let padding: CGFloat = 4
         
         let buttonHeight: CGFloat = 25
         let buttonWidth: CGFloat = round(contentView.frame.width - (margin * 3) ) / 2
         
         let viewHeight: CGFloat = round(contentView.frame.height / 3 ) * 2
         
-        
     
         headerLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(headerYMargin)
+            $0.top.equalToSuperview().inset(margin)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(headerHeight - headerYMargin)
+            $0.height.equalTo(headerHeight - margin)
         }
         
         videoView.snp.makeConstraints {
@@ -157,20 +165,25 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
             $0.trailing.equalToSuperview()
         }
         
+        paddingView.snp.makeConstraints {
+            $0.top.equalTo(videoView.snp.bottom)
+            $0.height.equalTo(margin)
+            $0.width.equalTo(margin)
+            $0.centerX.equalToSuperview()
+        }
+        
         playButton.snp.makeConstraints {
             $0.top.equalTo(videoView.snp.bottom).offset(margin)
             $0.leading.equalToSuperview().inset(margin)
-            //            $0.trailing.equalTo(contentView.snp.centerX).offset(margin)
+            $0.trailing.equalTo(paddingView.snp.leading)
             $0.height.equalTo(buttonHeight)
-            $0.width.equalTo(buttonWidth)
         }
         
         dibsButton.snp.makeConstraints {
             $0.top.equalTo(videoView.snp.bottom).offset(margin)
             $0.trailing.equalToSuperview().inset(margin)
-            //            $0.leading.equalTo(contentView.snp.centerX).offset(margin)
+            $0.leading.equalTo(paddingView.snp.trailing)
             $0.height.equalTo(buttonHeight)
-            $0.width.equalTo(buttonWidth)
         }
         
     }
@@ -180,6 +193,12 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         self.contentID = contentID
         headerLabel.text = "절찬 스트리밍 중: \(contentName)"
+        self.dibs = dibs
+        if dibs {
+            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+        } else {
+            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        }
         
         contentView.reloadInputViews()
     }
@@ -192,8 +211,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         delegate?.didTabVideoCellPlayButton()
     }
     @objc private func didTabDibsButton(sender: UIButton) {
-        // toggle
-        delegate?.didTabVideoCellDibsButton()
+        delegate?.didTabVideoCellDibsButton(isEnable: isEnabled, disEnable: disEnabled)
     }
     @objc private func didTabMuteButton(sender: UIButton) {
         
@@ -208,5 +226,23 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
             muteFlag = true
         }
 
+    }
+    
+    //MARK: Button Touch 막기
+    func isEnabled() {
+        dibsButton.isEnabled = true
+        
+    }
+    
+    func disEnabled() {
+        dibsButton.isEnabled = false
+        let flag = dibs ?? true
+        
+        if flag {
+            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        } else {
+            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+
+        }
     }
 }
