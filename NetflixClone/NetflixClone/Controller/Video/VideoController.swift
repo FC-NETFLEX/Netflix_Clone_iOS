@@ -28,6 +28,7 @@ class VideoController: UIViewController {
     
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
         return [.landscapeRight]
     }
     
@@ -49,6 +50,13 @@ class VideoController: UIViewController {
         test()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let playerLayer = self.playerLayer else { return }
+        playerLayer.frame = getVideoLayerFrame()
+        
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
@@ -58,6 +66,8 @@ class VideoController: UIViewController {
         removePeriodicTimeObserver()
         setSavePoint()
     }
+    
+   
     
     //MARK: UI
     
@@ -94,6 +104,15 @@ class VideoController: UIViewController {
         }
     }
     
+    private func getVideoLayerFrame() -> CGRect {
+           let x = view.bounds.minX + view.safeAreaInsets.left
+           let y = view.bounds.minY + view.safeAreaInsets.top
+           let width = view.bounds.width - (view.safeAreaInsets.left + view.safeAreaInsets.right)
+           let heigth = view.bounds.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)
+           let result = CGRect(x: x, y: y, width: width, height: heigth)
+           return result
+       }
+    
     // 마지막 시청 구간 서버에 저장
     private func savePointRequest() {
         
@@ -104,7 +123,7 @@ class VideoController: UIViewController {
         let method: APIMethod
         
         if let watching = videoModel.watching { // update, delete
-            print("Update")
+            
             let body = ["playtime": videoModel.currentTime]
             guard let url = APIURL.defaultURL.getURL(path: [
             (name: APIPathKey.profiles, value: String(profileID)),
@@ -115,15 +134,19 @@ class VideoController: UIViewController {
             if videoModel.currentTime == 0 {
                 method = .delete
                 bodyData = nil
+                
+                print("Delete")
             } else {
                 guard let data = try? JSONSerialization.data(withJSONObject: body, options: []) else { return }
                 method = .patch
                 bodyData = data
+                
+                print("Update")
             }
             
         } else { // create
             let body: [String: Any] = ["video": videoID, "playtime": videoModel.currentTime, "video_length": videoModel.range]
-            print("Create")
+            
             guard
                 let data = try? JSONSerialization.data(withJSONObject: body, options: []),
                 let url = APIURL.defaultURL.getURL(path: [
@@ -133,6 +156,8 @@ class VideoController: UIViewController {
             method = .post
             bodyData = data
             requestURL = url
+            
+            print("Create")
         }
         
         APIManager().request(url: requestURL, method: method, token: token, body: bodyData, completionHandler: {
@@ -272,6 +297,7 @@ class VideoController: UIViewController {
     
     
     //MARK: Player
+    private var playerLayer: AVPlayerLayer?
     
     //player 객체 세팅
     private func setPlayer() {
@@ -280,25 +306,17 @@ class VideoController: UIViewController {
         let player = AVPlayer(playerItem: playerItem)
         
         let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = view.bounds
         view.layer.addSublayer(playerLayer)
+        playerLayer.frame = getVideoLayerFrame()
         view.bringSubviewToFront(videoView)
+        self.playerLayer = playerLayer
+        
         self.player = player
         addPeriodicTimeObserver()
+        
     }
     
     private func setPlayerItem(asset: AVAsset) {
-        //         print(#function)
-        //         playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["playable", "hasProtectedContent"] )
-        
-//        guard
-//            let video = asset.tracks.first(where: { $0.mediaType == .video })
-//            else {
-//            unNaturalDismiss()
-//            return
-//        }
-//        let range = video.timeRange.duration.value / Int64(video.timeRange.duration.timescale)
-        
         
         let range = asset.duration.value / Int64(asset.duration.timescale)
         let imageGenerator = AVAssetImageGenerator(asset: asset)

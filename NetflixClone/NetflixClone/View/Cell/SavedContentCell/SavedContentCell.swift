@@ -11,17 +11,29 @@ import Kingfisher
 
 protocol SavedContentCellDelegate: class {
     func saveContentControl(status: SaveContentStatus, id: Int)
+    func presentVideonController(contentID: Int)
 }
 
 class SavedContentCell: UITableViewCell {
     
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let hitView = super.hitTest(point, with: event)
+        switch hitView {
+        case playImageView, playImageBackgroundView:
+            return thumbnailView
+        default:
+            return hitView
+        }
+    }
+    
     static let identifier = "SavedContentCell"
     
-    var delegate: SavedContentCellDelegate?
+    weak var delegate: SavedContentCellDelegate?
     
     private let thumbnailView = UIButton()
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
     private let playImageBackgroundView = CircleView()
+    
     private let summaryLabel = UILabel()
     
     private let titleLabel = UILabel()
@@ -32,6 +44,7 @@ class SavedContentCell: UITableViewCell {
         self.statusView = SaveContentStatusView(id: id, status: .saved)
         
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setUI()
         setConstraint()
     }
@@ -53,9 +66,12 @@ class SavedContentCell: UITableViewCell {
         selectionStyle = .none
         
         thumbnailView.addSubview(playImageBackgroundView)
+        
         playImageBackgroundView.addSubview(playImageView)
         
         thumbnailView.contentMode = .scaleToFill
+        thumbnailView.addTarget(self, action: #selector(didTapThumbnailView(_:)), for: .touchUpInside)
+        
         
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
@@ -78,7 +94,7 @@ class SavedContentCell: UITableViewCell {
         summaryLabel.font = .dynamicFont(fontSize: titleFontSize * 0.8, weight: .regular)
         summaryLabel.numberOfLines = 0
         
-        statusView.addTarget(self, action: #selector(didTapStatusView(sender:)), for: .touchUpInside)
+        statusView.addTarget(self, action: #selector(didTapStatusView(_:)), for: .touchUpInside)
         
     }
     
@@ -175,8 +191,12 @@ class SavedContentCell: UITableViewCell {
     }
     
     
-    @objc private func didTapStatusView(sender: SaveContentStatusView) {
+    @objc private func didTapStatusView(_ sender: SaveContentStatusView) {
         delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
+    }
+    
+    @objc private func didTapThumbnailView(_ sender: UIButton) {
+        delegate?.presentVideonController(contentID: statusView.id)
     }
         
 }
