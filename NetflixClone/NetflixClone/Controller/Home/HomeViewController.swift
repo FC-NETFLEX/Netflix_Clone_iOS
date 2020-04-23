@@ -265,12 +265,45 @@ extension HomeViewController: HomeMenuBarViewDelegate {
 
 //MARK: - HomeViewTitleDelegate
 extension HomeViewController: HomeviewTitleDelegate {
-    func didTabHomeTitledibsButton(isEnable: () -> (), disEnable: () -> ()) {
+    
+    //MARK: - Dibs Request (HomeHeader)
+    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
         
         print("Hometitle dibsButton Click")
-//        isEnable()
-//        disEnable()
+        buttonToogle(homeViewTopContent.selectedFlag)
+        disEnable()
         
+        let url = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/\(id)/select/")
+        
+        guard let token = LoginStatus.shared.getToken() else { return }
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        
+        
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            //                let dataTask = URLSession.shared.dataTask(with: self.dibsURL!) { (data, response, error) in
+            print(" DibsSelect dataTask 입성")
+            
+            print("dibsSelect url -> \(urlRequest)")
+
+            guard error == nil else { return print("error:", error!) }
+            guard let response = response as? HTTPURLResponse else { return print("response 오류")}
+            guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
+            
+            DispatchQueue.main.sync {
+                if self.homeViewTopContent.selectedFlag {
+                    self.homeViewTopContent.selectedFlag = false
+                } else {
+                    self.homeViewTopContent.selectedFlag = true
+
+                }
+
+                isEnable()
+            }
+
+        }
+        dataTask.resume()
+
     }
     
     
@@ -546,13 +579,47 @@ extension HomeViewController: WatchContentsTableViewDelegate {
 
 //MARK: - HomeView VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
-    func didTabVideoCellDibsButton(isEnable: () -> (), disEnable: () -> ()) {
+    func didTabVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
         
-        print("찜한 목록 추가하기")
-//        disEnable()
-//        isEnable()
+        
+         print("AD dibsButton Click")
+        buttonToogle(homeViewADContent.selected)
+         disEnable()
+         
+         let url = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/\(id)/select/")
+         
+         guard let token = LoginStatus.shared.getToken() else { return }
+         var urlRequest = URLRequest(url: url!)
+         urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+         
+         
+         let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+             //                let dataTask = URLSession.shared.dataTask(with: self.dibsURL!) { (data, response, error) in
+             print(" DibsSelect dataTask 입성")
+             
+             print("dibsSelect url -> \(urlRequest)")
+
+             guard error == nil else { return print("error:", error!) }
+             guard let response = response as? HTTPURLResponse else { return print("response 오류")}
+             guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
+             
+             DispatchQueue.main.sync {
+                 if self.homeViewTopContent.selectedFlag {
+                     self.homeViewTopContent.selectedFlag = false
+                 } else {
+                     self.homeViewTopContent.selectedFlag = true
+
+                 }
+
+                 isEnable()
+             }
+
+         }
+         dataTask.resume()
+         
         
     }
+
     
     
     func didTabVideoView(contentId: Int) {
