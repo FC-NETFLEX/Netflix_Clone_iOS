@@ -27,6 +27,15 @@ struct HomeContent: Codable {
     }
 }
 
+struct CategoryContent: Codable {
+    let topContent: TopConent
+    let similarContent: [RecommendContent]
+    
+    private enum CodingKeys: String, CodingKey {
+        case topContent = "contents"
+        case similarContent = "similar_contents"
+    }
+}
 
 
 
