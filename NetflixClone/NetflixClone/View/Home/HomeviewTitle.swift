@@ -265,9 +265,6 @@ class HomeviewTitle: UIView {
     func disEnabled() {
         dibsButton.isEnabled = false
         
-        let flag = dibs ?? true
-        
-        
     }
     
     func buttonUIToggle(dibsFlag: Bool) {

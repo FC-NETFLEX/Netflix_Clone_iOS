@@ -74,7 +74,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
 //        posterButton.contentMode = .scaleAspectFill
         posterButton.backgroundColor = .blue
         posterButton.layer.masksToBounds = true
-        posterButton.imageView?.contentMode = .scaleAspectFill
+        posterButton.imageView?.contentMode = .scaleToFill
         
         
         watchTimeLabel.font = timeLabelFont
@@ -148,7 +148,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
             result in
             switch result {
             case .success(let imageResult):
-                self.posterButton.setImage(imageResult.image, for: .normal)
+                self.posterButton.setBackgroundImage(imageResult.image, for: .normal)
             case .failure(let error):
                 print(error)
             }

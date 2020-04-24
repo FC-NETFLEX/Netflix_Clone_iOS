@@ -236,21 +236,17 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     
     func disEnabled() {
         dibsButton.isEnabled = false
-        let flag = dibs ?? true
         
-        if flag {
-            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
-        } else {
-            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-
-        }
     }
     
     func buttonUIToggle(dibsFlag: Bool) {
+        print("ADContent ButtonToggle")
         
         if dibsFlag {
+            print("true")
             dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
         } else {
+            print("false")
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
             
         }

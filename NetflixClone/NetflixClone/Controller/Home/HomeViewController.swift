@@ -583,6 +583,7 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
         
         
          print("AD dibsButton Click")
+        print("homeViewADContent.selected \(homeViewADContent.selected)")
         buttonToogle(homeViewADContent.selected)
          disEnable()
          
@@ -604,10 +605,10 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
              guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
              
              DispatchQueue.main.sync {
-                 if self.homeViewTopContent.selectedFlag {
-                     self.homeViewTopContent.selectedFlag = false
+                if self.homeViewADContent.selected {
+                     self.homeViewADContent.selected = false
                  } else {
-                     self.homeViewTopContent.selectedFlag = true
+                     self.homeViewADContent.selected = true
 
                  }
 

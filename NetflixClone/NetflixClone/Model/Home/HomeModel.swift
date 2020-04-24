@@ -91,7 +91,7 @@ struct ADContent: Codable {
     let timeLength: String
     let pubYear: String
     let previewVideoURL: String
-    let selected: Bool
+    var selected: Bool
     //    let summary: String
     //    let imageString: String
     //    let logoString: String
