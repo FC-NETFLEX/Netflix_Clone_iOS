@@ -8,6 +8,11 @@
 
 import UIKit
 
+/*
+ didscroll alpha
+ */
+
+
 protocol HomeMenuBarViewDelegate: class {
     func didTabMenuBarIconButton() -> ()
     func didTabMenuBarMovieButton() -> ()
