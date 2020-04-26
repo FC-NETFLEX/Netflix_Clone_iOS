@@ -36,7 +36,8 @@ class ProfileManageButton: UIView {
         moreProfileButton.setTitleColor(UIColor.setNetfilxColor(name: .netflixLightGray), for: .normal)
         moreProfileButton.addTarget(self, action: #selector(didTapMoreProfileButton), for: .touchUpInside)
         moreProfileButton.contentMode = .scaleAspectFill
-        moreProfileButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        moreProfileButton.titleLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .bold)
+        
         
         
         

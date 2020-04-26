@@ -95,6 +95,12 @@
 		7094F0022434F74500DFCD52 /* DeleteProfileButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7094F0012434F74500DFCD52 /* DeleteProfileButtonView.swift */; };
 		70A770832435D77300211473 /* ContentsBasicItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A770822435D77300211473 /* ContentsBasicItem.swift */; };
 		70B31253244CEE600068ABB9 /* MoreAddProfileButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B31252244CEE600068ABB9 /* MoreAddProfileButtonView.swift */; };
+		70B3125B2451C2F40068ABB9 /* UsingDataGraphCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3125A2451C2F40068ABB9 /* UsingDataGraphCellTableViewCell.swift */; };
+		70B3125D2451C69C0068ABB9 /* UsingDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3125C2451C69C0068ABB9 /* UsingDataView.swift */; };
+		70B3125F2451C6AE0068ABB9 /* SquareUsingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B3125E2451C6AE0068ABB9 /* SquareUsingView.swift */; };
+		70B312612451D8CA0068ABB9 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B312602451D8CA0068ABB9 /* AccountViewController.swift */; };
+		70B312632451D8F00068ABB9 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B312622451D8F00068ABB9 /* AccountView.swift */; };
+		70B312652451FD6B0068ABB9 /* UIDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B312642451FD6B0068ABB9 /* UIDeviceExtension.swift */; };
 		70DCA747244CB84400D970D4 /* NetflixView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70DCA746244CB84400D970D4 /* NetflixView.swift */; };
 		70DCA749244CBE0A00D970D4 /* LogOutVerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70DCA748244CBE0A00D970D4 /* LogOutVerView.swift */; };
 		9611E2E624347A8200393E84 /* LatestMovieTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9611E2E524347A8200393E84 /* LatestMovieTableViewCell.swift */; };
@@ -220,6 +226,12 @@
 		7094F0012434F74500DFCD52 /* DeleteProfileButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteProfileButtonView.swift; sourceTree = "<group>"; };
 		70A770822435D77300211473 /* ContentsBasicItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentsBasicItem.swift; sourceTree = "<group>"; };
 		70B31252244CEE600068ABB9 /* MoreAddProfileButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreAddProfileButtonView.swift; sourceTree = "<group>"; };
+		70B3125A2451C2F40068ABB9 /* UsingDataGraphCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsingDataGraphCellTableViewCell.swift; sourceTree = "<group>"; };
+		70B3125C2451C69C0068ABB9 /* UsingDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsingDataView.swift; sourceTree = "<group>"; };
+		70B3125E2451C6AE0068ABB9 /* SquareUsingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SquareUsingView.swift; sourceTree = "<group>"; };
+		70B312602451D8CA0068ABB9 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		70B312622451D8F00068ABB9 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		70B312642451FD6B0068ABB9 /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		70DCA746244CB84400D970D4 /* NetflixView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixView.swift; sourceTree = "<group>"; };
 		70DCA748244CBE0A00D970D4 /* LogOutVerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogOutVerView.swift; sourceTree = "<group>"; };
 		9611E2E524347A8200393E84 /* LatestMovieTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatestMovieTableViewCell.swift; sourceTree = "<group>"; };
@@ -416,6 +428,7 @@
 				31601CE3242A345B00382B94 /* MoreViewController.swift */,
 				70444E2E244772FE00D506A5 /* AppSetUpViewController.swift */,
 				7030530D244A1D4800715AF1 /* MobileDataViewController.swift */,
+				70B312602451D8CA0068ABB9 /* AccountViewController.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -524,6 +537,9 @@
 				31601CF7242A345B00382B94 /* MorePofileView.swift */,
 				70DCA748244CBE0A00D970D4 /* LogOutVerView.swift */,
 				70B31252244CEE600068ABB9 /* MoreAddProfileButtonView.swift */,
+				70B3125C2451C69C0068ABB9 /* UsingDataView.swift */,
+				70B3125E2451C6AE0068ABB9 /* SquareUsingView.swift */,
+				70B312622451D8F00068ABB9 /* AccountView.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -673,6 +689,7 @@
 				310B01DE242CB33D00C5858D /* DateExtension.swift */,
 				31CABBE6242D07A300BA6B8A /* UIViewControllerExtension.swift */,
 				31E78CD224498D4F0037C73D /* URLExtension.swift */,
+				70B312642451FD6B0068ABB9 /* UIDeviceExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -699,6 +716,7 @@
 				70444E2C2447726100D506A5 /* MoreViewTableCell.swift */,
 				7030530F244A1D6F00715AF1 /* MobileDataTableViewCell.swift */,
 				70444E3024498D4A00D506A5 /* AppSetUpTableViewCell.swift */,
+				70B3125A2451C2F40068ABB9 /* UsingDataGraphCellTableViewCell.swift */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -910,11 +928,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				31198C7C243E808C002C30B0 /* DoseNotHaveSavedContentsView.swift in Sources */,
+				70B3125B2451C2F40068ABB9 /* UsingDataGraphCellTableViewCell.swift in Sources */,
 				31E78CD52449D17C0037C73D /* SavedContentHeaderView.swift in Sources */,
 				31601D1C242A345C00382B94 /* VideoController.swift in Sources */,
 				31C5318024476E11000A8607 /* TestViewController.swift in Sources */,
 				963716942438A08700AC14C7 /* WatchContentsCollectionViewCell.swift in Sources */,
 				31601D20242A345C00382B94 /* SearchViewController.swift in Sources */,
+				70B312652451FD6B0068ABB9 /* UIDeviceExtension.swift in Sources */,
 				31601D24242A345C00382B94 /* LoginViewController.swift in Sources */,
 				31601D27242A345C00382B94 /* SavedContentsListView.swift in Sources */,
 				31C5317E24459BB4000A8607 /* DownLoadManager.swift in Sources */,
@@ -934,11 +954,14 @@
 				F4A5F7A72439E73E00052FAE /* BluredBackgroundView.swift in Sources */,
 				965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */,
 				705319B42431C629004D46A6 /* TopCustomView.swift in Sources */,
+				70B312632451D8F00068ABB9 /* AccountView.swift in Sources */,
+				70B312612451D8CA0068ABB9 /* AccountViewController.swift in Sources */,
 				7094EFF62434D40200DFCD52 /* ChangeCustomView.swift in Sources */,
 				31601D36242A345C00382B94 /* SearchModel.swift in Sources */,
 				70DCA749244CBE0A00D970D4 /* LogOutVerView.swift in Sources */,
 				31601D3A242A345C00382B94 /* UIAlertControllerExtension.swift in Sources */,
 				31F472B024321B3D00F8DCF5 /* PlayButton.swift in Sources */,
+				70B3125D2451C69C0068ABB9 /* UsingDataView.swift in Sources */,
 				31601D26242A345C00382B94 /* VideoView.swift in Sources */,
 				7081BB862433654A00899FA2 /* ProfileManageTopView.swift in Sources */,
 				31601D1A242A345C00382B94 /* Util.swift in Sources */,
@@ -1009,6 +1032,7 @@
 				F464AEB62444413C00F8EAAF /* PreViewController.swift in Sources */,
 				31F472B2243349D900F8DCF5 /* APIURL.swift in Sources */,
 				F4A5F7B42439E82800052FAE /* StaffTableViewCell.swift in Sources */,
+				70B3125F2451C6AE0068ABB9 /* SquareUsingView.swift in Sources */,
 				31601D1D242A345C00382B94 /* SavedContentsListViewController.swift in Sources */,
 				31601D31242A345C00382B94 /* HomeModel.swift in Sources */,
 				31E78CCF24483B660037C73D /* CanSaveViewController.swift in Sources */,

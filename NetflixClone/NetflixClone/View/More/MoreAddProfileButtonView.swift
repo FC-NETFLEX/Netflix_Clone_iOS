@@ -49,7 +49,7 @@ class MoreAddProfileButtonView: UIView {
         
         addProfileLabel.text = "프로필 추가"
         addProfileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
-        addProfileLabel.font = .systemFont(ofSize: 14)
+        addProfileLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
     }
     private func setConstrains() {
         let margin: CGFloat = 15

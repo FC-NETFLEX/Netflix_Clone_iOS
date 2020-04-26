@@ -54,7 +54,8 @@ class MorePofileView: UIView{
         
         profileLabel.text = "양중창"
         profileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
-        profileLabel.font = .systemFont(ofSize: 14)
+        profileLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
+        
         
         selectButton.backgroundColor = .clear
         selectButton.layer.borderWidth = borderWidth
@@ -92,7 +93,8 @@ class MorePofileView: UIView{
         }
     }
      func selectProfile() {
-        profileLabel.font = .boldSystemFont(ofSize: 14)
+        profileLabel.font = UIFont.dynamicFont(fontSize: 14, weight: .bold)
+        
         profileLabel.textColor = .setNetfilxColor(name: .white)
         
         selectButton.isHidden = false

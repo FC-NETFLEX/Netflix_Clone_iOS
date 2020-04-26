@@ -8,7 +8,7 @@
 
 import UIKit
 protocol MobileDataTableViewCellDelegate: class {
-    func autoSwitchIsOn(autoSwitch: UISwitch)
+    func autoSwitchIsOn(autoSwitch: UISwitch, cell: MobileDataTableViewCell)
 }
 
 class MobileDataTableViewCell: UITableViewCell {
@@ -48,20 +48,29 @@ class MobileDataTableViewCell: UITableViewCell {
         
     }
     func mobileCellConfigure(indexPath: IndexPath) {
+        
         switch indexPath.row {
         case 0:
             accessoryType = .none
             break
+        case 1:
+//            accessoryType = .checkmark
+            autoSwitch.isHidden = true
         case 2:
-            accessoryType = .checkmark
+//            accessoryType = .checkmark
             autoSwitch.isHidden = true
+        case 3:
+//            accessoryType = .checkmark
+            autoSwitch.isHidden = true
+            
         default:
-            accessoryType = .none
+            //            accessoryType = .none
             autoSwitch.isHidden = true
-
+            
         }
     }
     @objc private func autoSwitchIsOn() {
-        delegate?.autoSwitchIsOn(autoSwitch: autoSwitch)
+ 
+        delegate?.autoSwitchIsOn(autoSwitch: autoSwitch, cell: self)
     }
 }
