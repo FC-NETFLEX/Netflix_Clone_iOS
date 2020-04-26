@@ -28,6 +28,7 @@ class FindStorableContentViewController: BaseViewController {
     
     private func setUI() {
         rootView.tableView.dataSource = self
+        rootView.tableView.delegate = self
     }
     
     private func setNevigationController() {
@@ -50,7 +51,7 @@ class FindStorableContentViewController: BaseViewController {
     
 }
 
-
+//MARK: FindStorableContentModelDelegate
 extension FindStorableContentViewController: FindStorableContentModelDelegate {
     
     func categorysDidChange() {
@@ -62,20 +63,36 @@ extension FindStorableContentViewController: FindStorableContentModelDelegate {
 }
 
 
+//MARK: UITableViewDataSource
 extension FindStorableContentViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return model.categorys.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        print("Content Count:", model.categorys[indexPath.row].contents.count)
-        let title = model.categorymNames[model.categorys[indexPath.row].categoryID]
-        cell.textLabel?.text = title
+        let cell = tableView.dequeueReusableCell(withIdentifier: FindStorableContentTableViewCell.identifier, for: indexPath) as! FindStorableContentTableViewCell
+        let category = model.categorys[indexPath.row]
+        let categoryName = model.categorymNames[category.categoryID]
+        cell.configure(categoryName: categoryName, contents: category.contents)
+        cell.delegate = self
         return cell
     }
     
     
 }
 
+//MARK: UITableViewDelegate
+extension FindStorableContentViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        tableView.frame.height / 2.5
+    }
+}
+
+extension FindStorableContentViewController: FindStorableContentTableViewCellDelegate {
+    func selectedContent(contentID: Int) {
+        let contentVC = ContentViewController(id: contentID)
+        contentVC.modalPresentationStyle = .fullScreen
+        present(contentVC, animated: true)
+    }
+}
 

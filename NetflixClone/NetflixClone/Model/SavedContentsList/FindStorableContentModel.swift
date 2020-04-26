@@ -41,7 +41,6 @@ class FindStorableContentModel {
             case .failure(let error):
                 print(error.localizedDescription)
             case .success(let data):
-                print(data)
                 guard let categorys = try? JSONDecoder().decode([StorableCategory].self, from: data) else { return }
                 self?.categorys = categorys
             }
