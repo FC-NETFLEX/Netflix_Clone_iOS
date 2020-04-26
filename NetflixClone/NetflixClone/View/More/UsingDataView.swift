@@ -11,19 +11,23 @@ import SnapKit
 
 class UsingDataView: UIView {
     let myDeviceLabel = UILabel()
+    
     let usageGraphView = UIView()
-    let nonUseGraphView = UIView()
+    let unUsedGraphView = UIView()
     
     let device = UIDevice.current
     
     let usageView = SquareUsingView()
-    let nonUseView = SquareUsingView()
+    let unUsedView = SquareUsingView()
     let netflixView = SquareUsingView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
         setConstraints()
+        deviceDataGraph()
+
+        
         
     }
     
@@ -31,7 +35,7 @@ class UsingDataView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     private func setUI() {
-        [myDeviceLabel, usageGraphView, nonUseGraphView, usageView, nonUseView, netflixView].forEach {
+        [myDeviceLabel, usageGraphView, unUsedGraphView, usageView, unUsedView, netflixView].forEach {
             addSubview($0)
         }
         backgroundColor = .setNetfilxColor(name: .backgroundGray)
@@ -42,7 +46,7 @@ class UsingDataView: UIView {
         
         usageGraphView.backgroundColor = .darkGray
         
-        nonUseGraphView.backgroundColor = .white
+        unUsedGraphView.backgroundColor = .white
         
         usageView.usingLabel.text = "사용함"
         usageView.usingLabel.textAlignment = .left
@@ -51,9 +55,9 @@ class UsingDataView: UIView {
         netflixView.usingLabel.textAlignment = .center
         netflixView.squareView.backgroundColor = #colorLiteral(red: 0.2057322158, green: 0.6013665585, blue: 0.8699436865, alpha: 1)
         
-        nonUseView.usingLabel.text = "사용 안 함"
-        nonUseView.usingLabel.textAlignment = .right
-        nonUseView.squareView.backgroundColor = .white
+        unUsedView.usingLabel.text = "사용 안 함"
+        unUsedView.usingLabel.textAlignment = .right
+        unUsedView.squareView.backgroundColor = .white
         
         
         
@@ -74,10 +78,11 @@ class UsingDataView: UIView {
             $0.height.equalToSuperview().multipliedBy(0.13)
         }
         
-        nonUseGraphView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(padding)
+        unUsedGraphView.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(padding)
             $0.centerY.equalToSuperview()
-            $0.height.equalToSuperview().multipliedBy(0.13)
+            $0.height.equalTo(usageGraphView.snp.height)
+            $0.width.equalTo(usageGraphView.snp.width).multipliedBy(deviceDataGraph())
         }
         
         usageView.snp.makeConstraints {
@@ -94,15 +99,36 @@ class UsingDataView: UIView {
             $0.width.equalTo(guide.snp.width).multipliedBy(0.15)
         }
         
-        nonUseView.snp.makeConstraints {
-            $0.trailing.equalTo(nonUseGraphView.snp.trailing)
+        unUsedView.snp.makeConstraints {
+            $0.trailing.equalTo(unUsedGraphView.snp.trailing)
             $0.top.equalTo(usageView.snp.top)
             $0.height.equalToSuperview().multipliedBy(0.13)
             $0.width.equalTo(guide.snp.width).multipliedBy(0.17)
         }
         
     }
+    func deviceRemainingFreeSpaceInBytes() -> NSNumber { // 남은 데이터
+        let documentDirectoryPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let systemAttributes = try! FileManager.default.attributesOfFileSystem(forPath: documentDirectoryPath.last! as String)
+        return systemAttributes[FileAttributeKey.systemFreeSize] as! NSNumber
+    }
+    func deviceRemainingSpaceInBytes() -> NSNumber { // 전체 데이터
+        let documentDirectoryPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let systemAttributes = try! FileManager.default.attributesOfFileSystem(forPath: documentDirectoryPath.last! as String)
+        return systemAttributes[FileAttributeKey.systemSize] as! NSNumber
+    }
     
-    
+    func deviceDataGraph() -> Double {
+        guard
+            let totalData = deviceRemainingSpaceInBytes() as? Double,
+            let unUsedData = deviceRemainingFreeSpaceInBytes() as? Double
+            else { return 0 }
+        
+        return (floor((unUsedData / totalData) * 1000)) / 1000
+        
+        
+        
+        
+    }
     
 }
