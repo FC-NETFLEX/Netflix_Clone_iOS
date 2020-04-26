@@ -40,7 +40,8 @@ class DeleteProfileButtonView: UIView {
         deleteButton.backgroundColor = .setNetfilxColor(name: .black)
         deleteButton.setTitle("  삭제", for: .normal)
         deleteButton.tintColor = .setNetfilxColor(name: .white)
-        deleteButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        deleteButton.titleLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .bold)
+        
         
         
     }

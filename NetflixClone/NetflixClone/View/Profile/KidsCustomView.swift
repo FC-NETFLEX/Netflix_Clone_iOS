@@ -37,7 +37,7 @@ class KidsCustomView: UIView {
         
         kidsLabel.text = "키즈용"
         kidsLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        kidsLabel.font = UIFont.systemFont(ofSize: 17)
+        kidsLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .regular)
         
         kidsSwitch.onTintColor = #colorLiteral(red: 0.04303120111, green: 0.4391969315, blue: 0.9407585816, alpha: 1)
         kidsSwitch.tintColor = #colorLiteral(red: 0.1489986479, green: 0.1490316391, blue: 0.1489965916, alpha: 1)

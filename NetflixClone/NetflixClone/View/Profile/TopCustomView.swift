@@ -32,7 +32,7 @@ class TopCustomView: UIView {
             
             titleLabel.text = "아이콘 선택"
             titleLabel.textAlignment = .center
-            titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+            titleLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .regular)
             titleLabel.textColor = .setNetfilxColor(name: .white)
             titleLabel.backgroundColor = .setNetfilxColor(name: .black)
   

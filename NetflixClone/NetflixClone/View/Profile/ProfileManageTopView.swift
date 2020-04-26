@@ -36,13 +36,13 @@ class ProfileManageTopView: UIView {
             
             titleLabel.text = "프로필 관리"
             titleLabel.textAlignment = .center
-            titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+            titleLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .regular)
             titleLabel.textColor = .setNetfilxColor(name: .white)
             titleLabel.backgroundColor = .setNetfilxColor(name: .black)
             
             completeButton.setTitle("완료", for: .normal)
             completeButton.titleLabel?.textColor = .setNetfilxColor(name: .white)
-            completeButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .heavy)
+            completeButton.titleLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .heavy)
             completeButton.addTarget(self, action: #selector(didTapCompleteButton), for: .touchUpInside)
             completeButton.backgroundColor = .setNetfilxColor(name: .black)
             
