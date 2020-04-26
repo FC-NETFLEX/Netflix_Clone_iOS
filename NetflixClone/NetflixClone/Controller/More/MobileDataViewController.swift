@@ -7,9 +7,27 @@
 //
 
 import UIKit
+import SnapKit
 
 class MobileDataViewController: UIViewController {
-  
+    
+    struct MobileDataCellStatus {
+        let title: String
+        var status: Bool
+        let cellType: CellType
+        
+        enum CellType {
+            case switchType
+            case markType
+        }
+    }
+    var list: [MobileDataCellStatus] = [
+        MobileDataCellStatus(title: "자동", status: false, cellType: .switchType),
+        MobileDataCellStatus(title: "Wi-Fi에서만 저장", status: false, cellType: .markType),
+        MobileDataCellStatus(title: "데이터 절약하기", status: true, cellType: .markType),
+        MobileDataCellStatus(title: "데이터 최대 사용", status: false, cellType: .markType)
+    ]
+    
     let mobileTableView = UITableView()
     
     override func viewDidLoad() {
@@ -46,6 +64,7 @@ class MobileDataViewController: UIViewController {
         mobileTableView.separatorColor = .setNetfilxColor(name: .black)
         mobileTableView.backgroundColor = .setNetfilxColor(name: .black)
         mobileTableView.register(MobileDataTableViewCell.self, forCellReuseIdentifier: MobileDataTableViewCell.identifier)
+        mobileTableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
     }
     private func setConstraints() {
@@ -68,6 +87,49 @@ extension MobileDataViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        list.count 
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
+        switch list[indexPath.row].cellType {
+        case .switchType:
+            let cell = tableView.dequeueReusableCell(withIdentifier: MobileDataTableViewCell.identifier) as! MobileDataTableViewCell
+            cell.selectionStyle = .none
+            cell.textLabel?.text = list[indexPath.row].title
+            cell.textLabel?.text = list[indexPath.row].title
+            cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
+            cell.textLabel?.textColor = .white
+            cell.textLabel?.font = .dynamicFont(fontSize: 12, weight: .regular)
+            cell.delegate = self
+            
+            return cell
+            
+        case .markType:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            cell.selectionStyle = .none
+            cell.textLabel?.text = list[indexPath.row].title
+            cell.textLabel?.font = .dynamicFont(fontSize: 12, weight: .regular)
+            
+            switch list[0].status {
+            case true:
+                cell.textLabel?.textColor = .gray
+                cell.accessoryType = .none
+                
+            case false:
+                cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
+                cell.textLabel?.textColor = .white
+                cell.accessoryType = list[indexPath.row].status ? .checkmark : .none
+            }
+            return cell
+        }
+    }
+    
+}
+
+extension MobileDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let label = UILabel()
         label.backgroundColor = .setNetfilxColor(name:.black)
@@ -81,48 +143,34 @@ extension MobileDataViewController: UITableViewDataSource {
         65
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        mobileData.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: MobileDataTableViewCell.identifier) as! MobileDataTableViewCell
-        
-        cell.textLabel?.text = mobileData[indexPath.row]
-        cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
-        cell.textLabel?.textColor = .white
-        cell.selectionStyle = .none
-//        cell.accessoryType = .checkmark
-        cell.tag = indexPath.row
-        cell.delegate = self
-        cell.mobileCellConfigure(indexPath: indexPath)
-        
-        return cell
-        
-    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
+        guard indexPath.row != 0 else { return }
 
-//        let cell = tableView.dequeueReusableCell(withIdentifier: MobileDataTableViewCell.identifier) as! MobileDataTableViewCell
-
+        print(indexPath.row)
+        
+        for (index, _) in list.enumerated() {
+            guard index != 0 else { continue }
+            print(list[indexPath.row].status)
+            print(list[index].status)
+           
+            list[index].status = indexPath.row == index
+            
+//            if indexPath.row == index {
+//                list[index].status = true
+//            } else {
+//                list[index].status = false
+//            }
+        }
+        
+        mobileTableView.reloadData()
+        
     }
-    
-}
-
-extension MobileDataViewController: UITableViewDelegate {
-
     
 }
 extension MobileDataViewController: MobileDataTableViewCellDelegate {
-    func autoSwitchIsOn(autoSwitch: UISwitch, cell: MobileDataTableViewCell) {
-      
-        if autoSwitch.isOn == true {
-            checkMarkOn(cell: cell)
-            print("온")
-        } else {
-            print("오프")
-        }
+    func autoSwitchIsOn(status: Bool) {
+        list[0].status = status
+        mobileTableView.reloadData()
     }
     
 }
