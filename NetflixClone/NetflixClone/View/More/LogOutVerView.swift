@@ -36,13 +36,14 @@ class LogOutVerView: UIView{
         }
         logoutButton.setTitle("로그아웃", for: .normal)
         logoutButton.setTitleColor(UIColor.setNetfilxColor(name: .netflixLightGray), for: .normal)
-        logoutButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+        logoutButton.titleLabel?.font = UIFont.dynamicFont(fontSize: 15, weight: .regular)
+        
         logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         
         versionLabel.text = "버전: 92.09.18(1234)"
         versionLabel.textColor = .setNetfilxColor(name: .netflixDarkGray)
         versionLabel.textAlignment = .center
-        versionLabel.font = UIFont.systemFont(ofSize: 17)
+        versionLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .regular)
     }
     
     private func setConstraints() {

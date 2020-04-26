@@ -36,13 +36,14 @@ class UniversalClassView: UIView {
         viewtingClassLabel.layer.cornerRadius = 4
         viewtingClassLabel.clipsToBounds = true
         viewtingClassLabel.textColor = .setNetfilxColor(name: .white)
-        viewtingClassLabel.font = UIFont.boldSystemFont(ofSize: 11)
+        viewtingClassLabel.font = UIFont.dynamicFont(fontSize: 11, weight: .bold)
         
         viewContentsLabel.text = "이 프로필에서는 모든 관람등급 등급의\n콘텐츠가 표시됩니다."
         viewContentsLabel.textAlignment = .center
         viewContentsLabel.numberOfLines = 0
         viewContentsLabel.textColor = .setNetfilxColor(name: .white)
-        viewContentsLabel.font = UIFont.systemFont(ofSize: 14)
+        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
+        
     }
     private func setConstraints() {
         

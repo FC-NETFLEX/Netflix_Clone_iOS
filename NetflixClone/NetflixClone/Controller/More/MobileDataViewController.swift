@@ -18,6 +18,7 @@ class MobileDataViewController: UIViewController {
         setUI()
         setConstraints()
         
+        
     }
     func setNavigationBar() {
         navigationController?.isNavigationBarHidden = false
@@ -26,7 +27,7 @@ class MobileDataViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .setNetfilxColor(name: .black)
         
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 15, weight: .regular)]
         
         let backButton = UIBarButtonItem(image: UIImage(named: "백"), style: .plain, target: self, action: #selector(backButtonDidTap))
         backButton.tintColor = .setNetfilxColor(name: .white)
@@ -54,6 +55,10 @@ class MobileDataViewController: UIViewController {
             $0.top.trailing.leading.bottom.equalTo(guide)
         }
     }
+    private func checkMarkOn(cell: MobileDataTableViewCell) {
+        cell.accessoryType = .checkmark
+    }
+    
     @objc private func backButtonDidTap() {
         navigationController?.popViewController(animated: true)
     }
@@ -88,7 +93,7 @@ extension MobileDataViewController: UITableViewDataSource {
         cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
         cell.textLabel?.textColor = .white
         cell.selectionStyle = .none
-        cell.accessoryType = .checkmark
+//        cell.accessoryType = .checkmark
         cell.tag = indexPath.row
         cell.delegate = self
         cell.mobileCellConfigure(indexPath: indexPath)
@@ -97,28 +102,27 @@ extension MobileDataViewController: UITableViewDataSource {
         
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        guard let cell = tableView.cellForRow(at: indexPath) as? MobileDataTableViewCell else { return }
-        print(indexPath)
-
        
+
+//        let cell = tableView.dequeueReusableCell(withIdentifier: MobileDataTableViewCell.identifier) as! MobileDataTableViewCell
+
     }
     
 }
 
 extension MobileDataViewController: UITableViewDelegate {
 
-
+    
 }
 extension MobileDataViewController: MobileDataTableViewCellDelegate {
-    func autoSwitchIsOn(autoSwitch: UISwitch) {
+    func autoSwitchIsOn(autoSwitch: UISwitch, cell: MobileDataTableViewCell) {
+      
         if autoSwitch.isOn == true {
+            checkMarkOn(cell: cell)
             print("온")
-            
-            
         } else {
             print("오프")
         }
     }
-    
     
 }

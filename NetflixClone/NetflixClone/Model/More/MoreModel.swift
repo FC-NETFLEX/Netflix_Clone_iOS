@@ -8,8 +8,8 @@
 
 import Foundation
 
-let moreViewData = ["내가 찜한 콘텐츠","앱 설정"]
-let moreViewImage = ["체크", "설정"]
+let moreViewData = ["내가 찜한 콘텐츠","앱 설정","계정","고객 센터"]
+let moreViewImage = ["체크", "설정", "계정","고객센터"]
 let mobileData = ["자동","Wi-Fi에서만 저장","데이터 절약하기","데이터 최대 사용"]
 
 struct AppSetUp {
@@ -27,7 +27,8 @@ let ASData: [AppSetUp] = [
     ]),
     AppSetUp(dataHeader: "     콘텐츠 저장 설정", settingData: [
         AppSetData(text: "Wi-Fi에서만 저장", appSetImage: "와이파이"),
-        AppSetData(text: "저장한 콘텐츠 모두 삭제", appSetImage: "삭제")
+        AppSetData(text: "저장한 콘텐츠 모두 삭제", appSetImage: "삭제"),
+        AppSetData(text: "", appSetImage: "")
     ]),
     AppSetUp(dataHeader: "     앱 정보", settingData: [
         AppSetData(text: "인터넷 속도 검사", appSetImage: "속도")

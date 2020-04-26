@@ -79,7 +79,7 @@ class ProfileViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = UIColor.clear
         
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 15, weight: .regular)]
         
         switch root {
             
@@ -92,18 +92,18 @@ class ProfileViewController: UIViewController {
             
             let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
             changeButton.tintColor = .setNetfilxColor(name: .white)
-            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 14, weight: .heavy)], for: .normal)
             navigationItem.rightBarButtonItem = changeButton
         case .manager:
             let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
             completeButton.tintColor = .setNetfilxColor(name: .white)
-            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 14, weight: .heavy)], for: .normal)
             navigationItem.leftBarButtonItem = completeButton
         case .add:
             title = "Netflix를 시청할 프로필을 선택하세요."
             let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
             changeButton.tintColor = .setNetfilxColor(name: .white)
-            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+            changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 14, weight: .heavy)], for: .normal)
             navigationItem.rightBarButtonItem = changeButton
             
             
@@ -205,7 +205,7 @@ class ProfileViewController: UIViewController {
         navigationItem.rightBarButtonItem = nil
         let completeButton = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(completeButtonDidTap))
         completeButton.tintColor = .setNetfilxColor(name: .white)
-        completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+        completeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 14, weight: .heavy)], for: .normal)
         navigationItem.leftBarButtonItem = completeButton
         
         
@@ -216,7 +216,7 @@ class ProfileViewController: UIViewController {
         navigationItem.leftBarButtonItem = nil
         let changeButton = UIBarButtonItem(title: "변경", style: .plain, target: self, action: #selector(changeButtonDidTap))
         changeButton.tintColor = .setNetfilxColor(name: .white)
-        changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .heavy)], for: .normal)
+        changeButton.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 14, weight: .heavy)], for: .normal)
         navigationItem.rightBarButtonItem = changeButton
         
     }
