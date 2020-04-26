@@ -79,8 +79,7 @@ class SavedContentsListViewController: CanSaveViewController {
 extension SavedContentsListViewController: SavedContentsListViewDelegate {
     
     func findStorableContent() {
-        print(#function)
-        tabBarController?.selectedIndex = 0
+        navigationController?.pushViewController(FindStorableContentViewController(), animated: true)
     }
     
 }
@@ -90,10 +89,11 @@ extension SavedContentsListViewController: SavedContentsListViewDelegate {
 extension SavedContentsListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        model.profiles.count
+        model.profiles.count + 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard section < model.profiles.count else { return nil}
         var resultHeaderView: SavedContentHeaderView
         
         if let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SavedContentHeaderView.identifire) as? SavedContentHeaderView {
@@ -111,10 +111,22 @@ extension SavedContentsListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        model.profiles[section].savedContents.count
+        if section < model.profiles.count {
+            return model.profiles[section].savedContents.count
+        } else {
+            return 1
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard indexPath.section < model.profiles.count
+            else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: PresentFindStorableContentViewControllerButtonCell.identifier, for: indexPath) as! PresentFindStorableContentViewControllerButtonCell
+                cell.delegate = self
+                return cell
+        }
         
         let resultCell: SavedContentCell
         let content = model.getContent(indexPath: indexPath)
@@ -140,6 +152,7 @@ extension SavedContentsListViewController: UITableViewDelegate {
     
     // 컨텐츠 선택시 줄거리 보여주는 함수
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.section < model.profiles.count else { return }
         
         for (section, profile) in model.profiles.enumerated() {
             for (row, content) in profile.savedContents.enumerated() {
@@ -156,7 +169,11 @@ extension SavedContentsListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        tableView.bounds.height / 18
+        if section < model.profiles.count {
+            return tableView.bounds.height / 18
+        } else {
+            return 0
+        }
     }
 }
 
