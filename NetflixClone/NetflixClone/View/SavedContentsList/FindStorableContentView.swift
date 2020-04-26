@@ -29,8 +29,11 @@ class FindStorableContentView: UIView {
         backgroundColor = .setNetfilxColor(name: .black)
         
         self.addSubview(tableView)
+        tableView.backgroundColor = .setNetfilxColor(name: .black)
+        tableView.register(FindStorableContentTableViewCell.self, forCellReuseIdentifier: FindStorableContentTableViewCell.identifier)
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.allowsSelection = false
+        
     }
     
     private func setConstraint() {
