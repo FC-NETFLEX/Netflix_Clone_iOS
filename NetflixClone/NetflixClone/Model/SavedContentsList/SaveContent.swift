@@ -36,6 +36,16 @@ class SaveContent: Codable {
         }
     }
     
+    var description: String {
+        get {
+            var description = self.rating
+            if let capacity = self.capacity, let capacityString = switchMBForKB(capacity: capacity) {
+                description += " | " + String(capacityString) + "MB"
+            }
+            return description
+        }
+    }
+    
     let contentID: Int
     
     var savePoint: Int64? // 영상 재생 포인트
@@ -141,5 +151,16 @@ class SaveContent: Codable {
         let notificationName = String(contentID)
         let userInfo = ["status": downLoadStatus]
         NotificationCenter.default.post(name: Notification.Name(notificationName), object: nil, userInfo: userInfo)
+    }
+    
+    private func switchMBForKB(capacity: Int64) -> String? {
+        let multiflire: Double = 1048576
+        let result = Double(capacity) / multiflire
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 1
+        
+        let resultString = formatter.string(from: result as NSNumber)
+        return resultString
     }
 }
