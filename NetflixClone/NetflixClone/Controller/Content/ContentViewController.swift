@@ -190,7 +190,7 @@ extension ContentViewController: DismissDelegate {
 extension ContentViewController: IsClickedProtocol {
     
     func dibButtonIsCliked() {
-        guard let profileID = LoginStatus.shared.getProfileID(), let url = URL(string: "https://www.netflexx.ga/\(profileID)/contents/\(self.contentId)/select/"),
+        guard let profileID = LoginStatus.shared.getProfileID(), let url = URL(string: "https://netflexx.ga/profiles/\(profileID)/contents/\(contentId)/select/"),
             let token = LoginStatus.shared.getToken()
             else { return }
         APIManager().request(url: url, method: .get, token: token) { _ in }
@@ -198,7 +198,8 @@ extension ContentViewController: IsClickedProtocol {
     
     func likeButtonIsCliked() {
         // 애니메이션 설정하고, bool 상태 서버에서 받도록 수정
-        guard let profileID = LoginStatus.shared.getProfileID(), let url = URL(string: "https://www.netflexx.ga/profiles/\(profileID)/contents/\(contentId)/like/"),
+        guard let profileID = LoginStatus.shared.getProfileID(), let url = URL(string:
+            "https://www.netflexx.ga/profiles/\(profileID)/contents/\(contentId)/like/"),
             let token = LoginStatus.shared.getToken()
             else { return }
         APIManager().request(url: url, method: .get, token: token) { _ in }
