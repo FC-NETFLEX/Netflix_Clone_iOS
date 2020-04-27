@@ -95,7 +95,7 @@ class HomeviewTitle: UIView {
         titleImage.clipsToBounds = true
         
         
-        dibsLabel.text = "내가 찜한..."
+        dibsLabel.text = "내가 찜한콘텐츠"
         dibsLabel.font = fixedFont
         dibsLabel.textColor = textTintColor
         
@@ -219,7 +219,7 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(id: Int, poster: String, category: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
+    func configure(id: Int, poster: String, categories: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
         self.id = id
         self.dibs = dibs
         
@@ -231,9 +231,15 @@ class HomeviewTitle: UIView {
         
         
         var categoryText: String = ""
-        
-        category.forEach {
-            categoryText += $0 + ","
+
+        var forNum = 0
+        for category in categories {
+            forNum += 1
+            categoryText += category
+            if forNum == categories.count {
+                continue
+            }
+            categoryText += ", "
         }
         
         titlePoster.kf.setImage(with: URL(string: poster))

@@ -21,6 +21,7 @@ class TestViewController: UIViewController {
     private let tempAddProfileButton = UIButton(type: .system)
     private let tempProfileManagerButton = UIButton(type: .system)
     private let tempChoiceProfileButton = UIButton(type: .system)
+    private let dibsVCButton = UIButton()
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -60,7 +61,10 @@ class TestViewController: UIViewController {
         tempChoiceProfileButton.tintColor = .white
         tempChoiceProfileButton.addTarget(self, action: #selector(didTapTempChoiceProfileButton), for: .touchUpInside)
         
-        
+        dibsVCButton.setTitle("내가찜한 컨텐츠", for: .normal)
+        dibsVCButton.tintColor = .white
+        dibsVCButton.addTarget(self, action: #selector(didTabDibsVCButton(sender:)), for: .touchUpInside)
+        view.addSubview(dibsVCButton)
         
     }
     
@@ -84,6 +88,10 @@ class TestViewController: UIViewController {
         tempChoiceProfileButton.frame.size = CGSize(width: 120, height: 40)
         tempChoiceProfileButton.center.x = view.center.x
         tempChoiceProfileButton.center.y = tempProfileManagerButton.center.y - 100
+        
+        dibsVCButton.frame.size = CGSize(width: 80, height: 40)
+        dibsVCButton.center.x = view.center.x
+        dibsVCButton.center.y = tempChoiceProfileButton.center.y - 100
     }
     
     @objc private func didTapLogoutButton() {
@@ -125,6 +133,12 @@ class TestViewController: UIViewController {
         print("관리")
         present(navi, animated: true)
         
+    }
+    @objc private func didTabDibsVCButton(sender: UIButton) {
+        let dibsVC = DibsViewController()
+        let navi = UINavigationController(rootViewController: dibsVC)
+        navi.modalPresentationStyle = .fullScreen
+        present(navi, animated: true)
     }
     
 }
