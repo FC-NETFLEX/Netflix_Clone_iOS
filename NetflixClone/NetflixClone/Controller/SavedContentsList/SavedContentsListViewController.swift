@@ -9,7 +9,7 @@
 import UIKit
 
 class SavedContentsListViewController: CanSaveViewController {
-    
+    private let modifyButton = UIButton()
     private let rootView = SavedContentsListView()
     private var model: SavedContentsListModel = SavedContentsListModel.shared 
 
@@ -46,7 +46,7 @@ class SavedContentsListViewController: CanSaveViewController {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
-        let modifyButton = UIButton()
+        
         modifyButton.setImage(UIImage(named: "펜슬"), for: .normal)
         modifyButton.setImage(UIImage(), for: .selected)
         
@@ -60,8 +60,13 @@ class SavedContentsListViewController: CanSaveViewController {
     
     @objc private func didTapModifyButtotn(_ sender: UIButton) {
         sender.isSelected.toggle()
-        rootView.tableView.setEditing(sender.isSelected, animated: true)
+        rootView.setEditingMode(isEditing: sender.isSelected)
+//        rootView.tableView.allowsSelectionDuringEditing = sender.isSelected
+//        print(rootView.tableView.isEditing)
+//        rootView.tableView.setEditing(sender.isSelected, animated: true)
     }
+    
+    
     
     private func modifyViewController() {
         let status = model.profiles.isEmpty
@@ -136,7 +141,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
             resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
         resultCell.delegate = self
-        resultCell.configure(content: content)
+        resultCell.configure(content: content, isEditing: modifyButton.isSelected)
         
         return resultCell
     }
@@ -167,47 +172,67 @@ extension SavedContentsListViewController: UITableViewDelegate {
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        guard indexPath.section < model.profiles.count else { return UITableView.automaticDimension }
+//        return tableView.bounds.height / 9
+//    }
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section < model.profiles.count {
-            return tableView.bounds.height / 18
+            return tableView.bounds.height / 14
         } else {
             return 0
         }
     }
     
-    // swipe로 컨텐츠 삭제
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
-        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: {
-            [weak self] (action: UIContextualAction, view: UIView, completion: (Bool) -> Void) in
-            guard let self = self else { return }
-            
-            let savedContent = self.model.getContent(indexPath: indexPath)
-            savedContent.deleteContent()
-            completion(true)
-        })
-        deleteAction.image = UIImage(systemName: "xmark")
-        
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        configuration.performsFirstActionWithFullSwipe = false
-        
-        return configuration
-    }    
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        .none
-    }
-
-    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
-        false
-    }
+//    // swipe로 컨텐츠 삭제
+//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//
+//        guard !modifyButton.isSelected else { return nil}
+//
+//        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: {
+//
+//            [weak self] (action: UIContextualAction, view: UIView, completion: (Bool) -> Void) in
+//            guard let self = self else { return }
+//
+//            let savedContent = self.model.getContent(indexPath: indexPath)
+//            savedContent.deleteContent()
+//            completion(false)
+//        })
+//        deleteAction.image = UIImage(systemName: "xmark")
+//
+//        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+//        configuration.performsFirstActionWithFullSwipe = false
+//
+//        return configuration
+//    }
+    
+//    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
+//        print(#function)
+//
+//    }
+//
+//    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+//        print(#function)
+//        return true
+//    }
     
     
-    
+//    func tableView(_ tableView: UITableView, shouldSpringLoadRowAt indexPath: IndexPath, with context: UISpringLoadedInteractionContext) -> Bool {
+//        print(#function)
+//        return false
+//    }
 }
+
 
 
 // MARK: SavedContentCellDelegate
 extension SavedContentsListViewController: SavedContentCellDelegate {
+    func deleteSavedContent(contentID: Int) {
+        guard let savedContent = SavedContentsListModel.shared.getContent(contentID: contentID) else { return }
+        savedContent.deleteContent()
+    }
+    
     func presentVideonController(contentID: Int) {
         presentVideoController(contentID: contentID)
     }
@@ -233,10 +258,11 @@ extension SavedContentsListViewController {
 extension SavedContentsListViewController: SavedContentsListModelDelegate {
     
     func didchange() {
-        DispatchQueue.main.async {
-            [weak self] in
-            self?.modifyViewController()
-        }
+            DispatchQueue.main.async {
+                [weak self] in
+                self?.modifyViewController()
+            }
+        
     }
     
 }
