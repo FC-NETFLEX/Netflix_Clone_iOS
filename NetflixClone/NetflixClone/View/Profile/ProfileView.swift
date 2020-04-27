@@ -46,13 +46,13 @@ class ProfileView: UIView {
             self.addSubview($0)
         }
         
-        profileButton.setImage(UIImage(named: "프로필2"), for: .normal)
+        profileButton.setImage(UIImage(named: ""), for: .normal)
         profileButton.contentMode = .scaleAspectFill
         profileButton.imageView?.layer.masksToBounds = true
         profileButton.imageView?.layer.cornerRadius = cornerRadius
         profileButton.addTarget(self, action: #selector(profileButtonDidTap), for: .touchUpInside)
         
-        profileLabel.text = "양중창"
+        profileLabel.text = ""
         profileLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         profileLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .bold)
         

@@ -97,30 +97,15 @@ class ProfileImageViewController: UIViewController {
                 
                 self?.categoryList.append(CategoryList(name: name, icon: icon))
             }
-            
-//            dump(self?.icons)
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
             }
-            
         }
         task.resume()
 
     }
     private var categoryList = [CategoryList]()
 }
-
-//struct CategoryList {
-//    let name: String
-//    let icon: [Icon]
-//
-//}
-//
-//struct Icon {
-//    let id: Int
-//    let iconURL: String
-//
-//}
 
 extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource {
     
@@ -138,10 +123,6 @@ extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
-    //    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    //        category[section]
-    //
-    //    }
     func numberOfSections(in tableView: UITableView) -> Int {
         return categoryList.count
     }
@@ -166,13 +147,7 @@ extension ProfileImageViewController: UITableViewDelegate,UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let tempCell = cell as? ProfileTableVIewCell else { return }
-        //        tempCell.collectionView.contentOffset = collectionPoint[indexPath.section] ?? .zero
         tempCell.collectionView.contentOffset = .zero
-    }
-    
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        //        guard let tempCell = cell as? ProfileTableVIewCell else { return }
-        //        collectionPoint[indexPath.section] = tempCell.collectionView.contentOffset
     }
 }
 
@@ -221,8 +196,6 @@ extension ProfileImageViewController: UICollectionViewDataSource {
             }
             task.resume()
         }
-        
-//        cell.backgroundView = UIImageView(image: profileData[indexPath.item])
         return cell
     }
 }
@@ -233,7 +206,6 @@ class ImageCaching {
     
     var data = [String: UIImage]() {
         didSet {
-//            dump(data)
         }
     }
 }

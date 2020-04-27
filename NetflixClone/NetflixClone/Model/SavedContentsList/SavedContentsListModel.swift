@@ -136,7 +136,7 @@ class SavedContentsListModel {
             })
         })
     }
-    
+    // 넷플릭스 저장용랑
     func totalCapacity() -> Double {
         
         let savedContents = profiles.flatMap({
