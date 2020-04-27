@@ -395,6 +395,9 @@ extension HomeViewController: UITableViewDelegate {
         case 2:
             return videoAdvertiseHeight
         case 3:
+            if homeViewWatchContents.count == 0 {
+                return 0
+            }
             return watchCellHeight
             
         default:
@@ -506,7 +509,6 @@ extension HomeViewController: UITableViewDataSource {
             
         case 3:
             //MARK: WatchContentCell
-
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
             
