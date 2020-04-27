@@ -191,7 +191,6 @@ class MoreViewController: UIViewController {
                 self.userIconList.append(ProfileIcons(idNum: idNum, iconURL: iconURL))
                 
                 
-                
             }
             DispatchQueue.main.async {
                 self.profileStactViewSetting()

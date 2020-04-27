@@ -48,7 +48,7 @@ class AddProfileView: UIView {
         
         changeLabel.text = "변경"
         changeLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        changeLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .regular)
+        changeLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .regular)
         
         nickNameTextfield.addLeftPadding()
         nickNameTextfield.layer.borderWidth = 1
@@ -60,25 +60,25 @@ class AddProfileView: UIView {
     }
     
     private func setConstraints() {
-        let spacing: CGFloat = 10
         let margin: CGFloat = 15
         let padding: CGFloat = 40
         
         [newProfileButton,changeLabel,nickNameTextfield].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        newProfileButton.topAnchor.constraint(equalTo: self.topAnchor, constant: margin).isActive = true
+        newProfileButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         newProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        newProfileButton.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.5).isActive = true
-        newProfileButton.widthAnchor.constraint(equalTo: newProfileButton.heightAnchor).isActive = true
+        newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.254).isActive = true
+        newProfileButton.heightAnchor.constraint(equalTo: newProfileButton.widthAnchor).isActive = true
         
-        changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: spacing / 2).isActive = true
+        changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: margin).isActive = true
+        changeLabel.heightAnchor.constraint(equalToConstant: margin).isActive = true
         changeLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     
-        nickNameTextfield.topAnchor.constraint(equalTo: changeLabel.bottomAnchor, constant: spacing * 2 ).isActive = true
+//        nickNameTextfield.topAnchor.constraint(equalTo: changeLabel.bottomAnchor, constant: spacing * 2 ).isActive = true
         nickNameTextfield.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: padding * 2).isActive = true
         nickNameTextfield.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -padding * 2).isActive = true
-        nickNameTextfield.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        nickNameTextfield.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margin).isActive = true
         nickNameTextfield.heightAnchor.constraint(equalToConstant: padding * 1.1).isActive = true
         
     }

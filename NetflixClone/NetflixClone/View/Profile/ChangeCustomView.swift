@@ -33,14 +33,11 @@ class ChangeCustomView: UIView {
         watchLimitLabel.textAlignment = .center
         watchLimitLabel.numberOfLines = 0
         watchLimitLabel.textColor = #colorLiteral(red: 0.2531644241, green: 0.2556710025, blue: 0.2556710025, alpha: 1)
-        watchLimitLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
+        watchLimitLabel.font = UIFont.dynamicFont(fontSize: 11, weight: .regular)
         
         
     }
     private func setConstraints() {
-        
-        let margin: CGFloat = 10
-        let padding: CGFloat = 30
         
         [watchLimitLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false

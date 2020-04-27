@@ -52,7 +52,6 @@ class MoreAddProfileButtonView: UIView {
         addProfileLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
     }
     private func setConstrains() {
-        let margin: CGFloat = 15
         let padding: CGFloat = 10
         
         

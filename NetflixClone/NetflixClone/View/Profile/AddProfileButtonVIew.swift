@@ -13,6 +13,7 @@ protocol AddProfileButtonDelegate: class {
 }
 class AddProfileButtonView: UIView {
     
+    private let baseView = UIView()
     private let profilePlusButton = UIButton()
     private let addProfileLabel = UILabel()
     
@@ -34,13 +35,17 @@ class AddProfileButtonView: UIView {
         layer.cornerRadius = cornerRadius
         clipsToBounds = true
         
+        addSubview(baseView)
+        
         [profilePlusButton,addProfileLabel].forEach {
-            self.addSubview($0)
+            baseView.addSubview($0)
         }
+        baseView.backgroundColor = .setNetfilxColor(name: .black)
+        
         profilePlusButton.setImage(UIImage(named: "플러스"), for: .normal)
-        profilePlusButton.backgroundColor = #colorLiteral(red: 0.09802349657, green: 0.0980482474, blue: 0.09802193195, alpha: 1)
-        profilePlusButton.layer.borderWidth = 1.5
-        profilePlusButton.layer.borderColor = #colorLiteral(red: 0.1489986479, green: 0.1490316391, blue: 0.1489965916, alpha: 1)
+        profilePlusButton.backgroundColor = #colorLiteral(red: 0.1056868053, green: 0.1067332093, blue: 0.1067332093, alpha: 1)
+        profilePlusButton.layer.borderWidth = 1.6
+        profilePlusButton.layer.borderColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         profilePlusButton.contentMode = .scaleAspectFill
         profilePlusButton.layer.masksToBounds = true
         profilePlusButton.layer.cornerRadius = cornerRadius
@@ -53,21 +58,27 @@ class AddProfileButtonView: UIView {
     }
     private func setConstrains() {
         let margin: CGFloat = 20
-        let padding: CGFloat = 10
+        let padding: CGFloat = 5
+        let spacing: CGFloat = 15
         
-        [profilePlusButton, addProfileLabel].forEach {
+        [baseView,profilePlusButton, addProfileLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        profilePlusButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        profilePlusButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: margin).isActive = true
-        profilePlusButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -margin).isActive = true
-        profilePlusButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.70).isActive = true
+        baseView.topAnchor.constraint(equalTo:self.topAnchor).isActive = true
+        baseView.leadingAnchor.constraint(equalTo:self.leadingAnchor).isActive = true
+        baseView.trailingAnchor.constraint(equalTo:self.trailingAnchor).isActive = true
+        baseView.bottomAnchor.constraint(equalTo:self.bottomAnchor).isActive = true
+        
+        profilePlusButton.topAnchor.constraint(equalTo: baseView.topAnchor, constant:  padding).isActive = true
+        profilePlusButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: margin).isActive = true
+        profilePlusButton.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -margin).isActive = true
+        profilePlusButton.widthAnchor.constraint(equalTo: baseView.widthAnchor, multiplier: 0.7).isActive = true
         profilePlusButton.heightAnchor.constraint(equalTo: profilePlusButton.widthAnchor).isActive = true
         
-        addProfileLabel.topAnchor.constraint(equalTo: profilePlusButton.bottomAnchor, constant: margin).isActive = true
-        addProfileLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        addProfileLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        addProfileLabel.topAnchor.constraint(equalTo: profilePlusButton.bottomAnchor, constant: spacing).isActive = true
+        addProfileLabel.centerXAnchor.constraint(equalTo: baseView.centerXAnchor).isActive = true
+        addProfileLabel.bottomAnchor.constraint(equalTo: baseView.bottomAnchor).isActive = true
         
         
 //        profilePlusButton.topAnchor.constraint(equalTo: self.topAnchor, constant: padding).isActive = true
