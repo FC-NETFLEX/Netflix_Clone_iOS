@@ -12,7 +12,6 @@ class ContentViewController: CanSaveViewController {
     
     static func presentContentVC(viewController: UIViewController, contentID: Int) {
         let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentID))
-//        let contentVC = ContentViewController(id: contentID)
         contentVC.modalPresentationStyle = .fullScreen
         viewController.present(contentVC, animated: true)
     }
