@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 
 protocol CategorySelectViewDelegate: class {
-    func didTabdismisButton() -> ()
+    func didTapdismisButton() -> ()
     
 }
 
@@ -78,7 +78,7 @@ class CategorySelectView: UIView {
     }
     
     @objc private func didTabDismissButton(sender: UIButton) {
-        delegate?.didTabdismisButton()
+        delegate?.didTapdismisButton()
     }
     
 

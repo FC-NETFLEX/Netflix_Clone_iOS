@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PreviewTableViewCellDelegate: class {
-    func didTabPreviewCell(index: Int) -> ()
+    func didTapPreviewCell(index: Int) -> ()
 }
 
 class PreviewTableViewCell: UITableViewCell {
@@ -140,7 +140,7 @@ extension PreviewTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.didTabPreviewCell(index: indexPath.row)
+        delegate?.didTapPreviewCell(index: indexPath.row)
     }
 }
 

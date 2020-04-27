@@ -14,10 +14,10 @@ import UIKit
 
 
 protocol HomeMenuBarViewDelegate: class {
-    func didTabMenuBarIconButton() -> ()
-    func didTabMenuBarMovieButton() -> ()
-    func didTabCategoryButton() -> ()
-    func didTabDibsButton() -> ()
+    func didTapMenuBarIconButton() -> ()
+    func didTapMenuBarMovieButton() -> ()
+    func didTapCategoryButton() -> ()
+    func didTapDibsButton() -> ()
 }
 
 // view의 frame -> 1/9
@@ -62,20 +62,20 @@ class HomeMenuBarView: UIView {
         movieButton.backgroundColor = .clear
         movieButton.setTitleColor(fontColor, for: .normal)
         movieButton.titleLabel?.font = buttonFont
-        movieButton.addTarget(self, action: #selector(didTabmoviewButton(sender:)), for: .touchUpInside)
+        movieButton.addTarget(self, action: #selector(didTapmoviewButton(sender:)), for: .touchUpInside)
         
         categoryButton.setTitle("카테고리 ▼", for: .normal)
         categoryButton.backgroundColor = .clear
         categoryButton.setTitleColor(fontColor, for: .normal)
         categoryButton.titleLabel?.font = buttonFont
-        categoryButton.addTarget(self, action: #selector(didTabCategoryButton(sender:)), for: .touchUpInside)
+        categoryButton.addTarget(self, action: #selector(didTapCategoryButton(sender:)), for: .touchUpInside)
         categoryButton.isHidden = true
         
         dibsButton.setTitle("내가 찜한 콘텐츠", for: .normal)
         dibsButton.backgroundColor = .clear
         dibsButton.setTitleColor(fontColor, for: .normal)
         dibsButton.titleLabel?.font = buttonFont
-        dibsButton.addTarget(self, action: #selector(didTabDibsButton(sender:)), for: .touchUpInside)
+        dibsButton.addTarget(self, action: #selector(didTapDibsButton(sender:)), for: .touchUpInside)
         
         [iconButton, movieButton, categoryButton, dibsButton].forEach {
             addSubview($0)
@@ -128,24 +128,24 @@ class HomeMenuBarView: UIView {
         movieButton.setTitle("영화", for: .normal)
         dibsButton.setTitle("내가 찜한 콘텐츠", for: .normal)
 
-        delegate?.didTabMenuBarIconButton()
+        delegate?.didTapMenuBarIconButton()
     }
     
-    @objc private func didTabmoviewButton(sender: UIButton) {
+    @objc private func didTapmoviewButton(sender: UIButton) {
         backgroundColor = .clear
         
-        delegate?.didTabMenuBarMovieButton()
+        delegate?.didTapMenuBarMovieButton()
     }
-    @objc private func didTabCategoryButton(sender: UIButton) {
+    @objc private func didTapCategoryButton(sender: UIButton) {
         
-        delegate?.didTabCategoryButton()
+        delegate?.didTapCategoryButton()
     }
     
-    @objc private func didTabDibsButton(sender: UIButton) {
+    @objc private func didTapDibsButton(sender: UIButton) {
         print("HomeMenuBar")
         backgroundColor = .black
         dibsButton.setTitle("내가 찜한 콘텐츠 ▼", for: .normal)
-        delegate?.didTabDibsButton()
+        delegate?.didTapDibsButton()
     }
     
     //MARK: Animation
