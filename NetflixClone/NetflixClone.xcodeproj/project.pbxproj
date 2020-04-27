@@ -345,8 +345,8 @@
 		31601CBF242A33B700382B94 /* NetflixClone */ = {
 			isa = PBXGroup;
 			children = (
-				310B01D5242B1AC900C5858D /* SingleTon */,
 				31601D14242A345C00382B94 /* Extension */,
+				310B01D5242B1AC900C5858D /* SingleTon */,
 				31601D03242A345B00382B94 /* Model */,
 				31601CED242A345B00382B94 /* View */,
 				31601CD9242A345B00382B94 /* Controller */,
