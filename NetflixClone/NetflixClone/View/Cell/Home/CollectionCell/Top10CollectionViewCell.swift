@@ -12,7 +12,10 @@ import Kingfisher
 class Top10CollectionViewCell: UICollectionViewCell {
     static let identifier = "Top10CVC"
     
-    private let topNumLabel = UILabel()
+//    private let topNumLabel = UILabel()
+    private let topNumImage = UIImageView()
+
+
     private let posterImage = UIImageView()
     
     override init(frame: CGRect) {
@@ -30,20 +33,23 @@ class Top10CollectionViewCell: UICollectionViewCell {
         posterImage.contentMode = .scaleAspectFill
         posterImage.clipsToBounds = true
         
-        topNumLabel.font = .boldSystemFont(ofSize: 120)
-        topNumLabel.backgroundColor = .clear
-        topNumLabel.textColor = .white
+//        topNumLabel.font = .boldSystemFont(ofSize: 120)
+        topNumImage.backgroundColor = .clear
+        topNumImage.contentMode = .scaleAspectFill
+//        topNumLabel.textColor = .white
         
         contentView.addSubview(posterImage)
-        contentView.addSubview(topNumLabel)
+        contentView.addSubview(topNumImage)
     }
     private func setConstraints() {
         let posterImageXmargin: CGFloat = 40
         let numberHeight: CGFloat = contentView.frame.height / 2
+        let numberWitdh: CGFloat = numberHeight + 10
         
-        topNumLabel.snp.makeConstraints {
+        topNumImage.snp.makeConstraints {
             $0.bottom.leading.equalToSuperview()
             $0.height.equalTo(numberHeight)
+            $0.width.equalTo(numberHeight)
         }
         
         posterImage.snp.makeConstraints {
@@ -57,7 +63,8 @@ class Top10CollectionViewCell: UICollectionViewCell {
     //MARK: - configure
     func configure(poster: String, count: Int) {
         
-        topNumLabel.text = "\(count + 1)"
+//        topNumLabel.text = "\(count + 1)"
+        topNumImage.image = UIImage(named: "\(count + 1)")
         posterImage.kf.setImage(with: URL(string: poster))
         
     }
