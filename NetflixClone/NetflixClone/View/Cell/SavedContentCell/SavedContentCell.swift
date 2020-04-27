@@ -107,14 +107,14 @@ class SavedContentCell: UITableViewCell {
     
     private func setConstraint() {
         let xMargin = CGFloat.dynamicXMargin(margin: 16)
-        let yMargin = CGFloat.dynamicYMargin(margin: 8)
+        let yMargin = CGFloat.dynamicYMargin(margin: 4)
         
         let xPading = CGFloat.dynamicXMargin(margin: 8)
         
         
         thumbnailImageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.equalToSuperview().inset(yMargin)
+            $0.top.bottom.equalToSuperview().inset(yMargin)
             $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
             $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(0.6)
         })
