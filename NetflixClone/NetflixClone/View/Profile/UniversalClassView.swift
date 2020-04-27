@@ -36,13 +36,13 @@ class UniversalClassView: UIView {
         viewtingClassLabel.layer.cornerRadius = 4
         viewtingClassLabel.clipsToBounds = true
         viewtingClassLabel.textColor = .setNetfilxColor(name: .white)
-        viewtingClassLabel.font = UIFont.dynamicFont(fontSize: 11, weight: .bold)
+        viewtingClassLabel.font = UIFont.dynamicFont(fontSize: 10, weight: .bold)
         
         viewContentsLabel.text = "이 프로필에서는 모든 관람등급 등급의\n콘텐츠가 표시됩니다."
         viewContentsLabel.textAlignment = .center
         viewContentsLabel.numberOfLines = 0
         viewContentsLabel.textColor = .setNetfilxColor(name: .white)
-        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
+        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 12, weight: .regular)
         
     }
     private func setConstraints() {
@@ -56,7 +56,7 @@ class UniversalClassView: UIView {
         
         viewtingClassLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: margin).isActive = true
         viewtingClassLabel.heightAnchor.constraint(equalToConstant: padding).isActive = true
-        viewtingClassLabel.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.25).isActive = true
+        viewtingClassLabel.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.2).isActive = true
         viewtingClassLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         viewContentsLabel.topAnchor.constraint(equalTo: viewtingClassLabel.bottomAnchor, constant: margin * 2).isActive = true
