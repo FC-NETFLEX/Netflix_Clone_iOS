@@ -30,7 +30,7 @@ class SummaryTableViewCell: UITableViewCell {
         }
         self.backgroundColor = .clear
     
-        summaryTextView.numberOfLines = 0
+        summaryTextView.numberOfLines = 5
         summaryTextView.backgroundColor = .clear
         summaryTextView.textColor = UIColor.setNetfilxColor(name: .white)
         summaryTextView.font = UIFont.dynamicFont(fontSize: 13.8, weight: .regular)
