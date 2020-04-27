@@ -21,7 +21,6 @@ class PreviewView: UIView {
     lazy var blurEffectView = UIVisualEffectView(effect: blurEffect)
     
     init(url: URL) {
-        print(url)
         self.asset = AVAsset(url: url)
         let playerItem = AVPlayerItem(asset: asset)
         
