@@ -136,23 +136,18 @@ class ProfileViewController: UIViewController {
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-        //        let margin: CGFloat = 10
-        //        let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        //        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 10)
-        
+        let topMargin: CGFloat = 48
+        let padding: CGFloat = 40
+   
         stackViewArray.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-            //            $0.leadingAnchor.constraint(equalTo: guide.leadingAnchor, constant: padding).isActive = true
-            //            $0.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -(padding)).isActive = true
             $0.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
-        stackViewArray[0].bottomAnchor.constraint(equalTo: stackViewArray[1].topAnchor, constant: -48).isActive = true
-        stackViewArray[1].centerYAnchor.constraint(equalTo: guide.centerYAnchor, constant: -40).isActive = true
-        stackViewArray[2].topAnchor.constraint(equalTo: stackViewArray[1].bottomAnchor, constant: 48).isActive = true
-        
-        
-        
+        stackViewArray[0].bottomAnchor.constraint(equalTo: stackViewArray[1].topAnchor, constant: -topMargin).isActive = true
+        stackViewArray[1].centerYAnchor.constraint(equalTo: guide.centerYAnchor, constant: padding).isActive = true
+        stackViewArray[2].topAnchor.constraint(equalTo: stackViewArray[1].bottomAnchor, constant: topMargin).isActive = true
+
     }
     
     private func setImage(stringURL: String, button: UIButton) {
@@ -274,7 +269,7 @@ class ProfileViewController: UIViewController {
                     self.profileViewArray.forEach {
                         $0.setHidden(state: false)
                     }
-                    self.title = "프로필 관리."
+                    self.title = "프로필 관리"
                 }
             }
             
@@ -342,8 +337,9 @@ extension ProfileViewController: ProfilViewDelegate {
             let selectViewName = selectView.profileLabel.text,
             let selectViewImage = selectView.profileButton.imageView?.image
             else { return }
-        selectView.alpha = 0
+        selectView.alpha = 1
         print("셀렉",selectViewName, selectViewImage)
+        print("애니메이션 전 셀렉트 센터", selectView.center)
         
 //        let changeVC = ChangeProfileViewController()
 //         changeVC.userID = self.userProfileList[tag].id
@@ -354,24 +350,17 @@ extension ProfileViewController: ProfilViewDelegate {
 //         changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
 //
 //         self.navigationController?.pushViewController(changeVC, animated: true)
-//
         
-        UIView.animateKeyframes(
-            withDuration: 0.3,
-            delay: 0,
-            animations: {
-                UIView.addKeyframe(
-                withRelativeStartTime: 0.0, relativeDuration: 0.3) {
-                    selectView.alpha = 1
-                    selectView.center.x = self.view.center.x
-                    selectView.center.y = self.view.center.y
-
-                    print("애니메이션", selectView)
-                }
-
+        UIView.animate(withDuration: 0.3, animations: {
+            
+            selectView.center.x = self.view.center.x
+            selectView.center.y = self.view.center.y
+            print("뷰센터", self.view.center)
+            print("뷰프레임", self.view.frame)
+            print("셀렉트센터", selectView.center)
         })
         { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 let changeVC = ChangeProfileViewController()
                 changeVC.userID = self.userProfileList[tag].id
                 changeVC.profileName = self.userProfileList[tag].name
@@ -379,15 +368,10 @@ extension ProfileViewController: ProfilViewDelegate {
                 changeVC.isKids = self.userProfileList[tag].iskids
                 changeVC.profileIconNum = self.userIconList[tag].idNum
                 changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: selectViewName, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-
-                //                        changeVC.isKids = self.userProfileList[tag].iskids
-                //                        changeVC.profileIcon = selectViewImage
-                //                        changeVC.addProfileView.nickNameTextfield.attributedPlaceholder = NSAttributedString(string: self.userProfileList[tag].name, attributes: [NSAttributedString.Key.foregroundColor : UIColor.setNetfilxColor(name: .white)])
-
-                //                        let navi = UINavigationController(rootViewController: changeVC)
-                //                        self.present(navi, animated: true, completion: nil)
                 self.navigationController?.pushViewController(changeVC, animated: true)
+                print("애니메이션 후 셀렉트 센터", selectView.center)
             }
+            
 
         }
         
