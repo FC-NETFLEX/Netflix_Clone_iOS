@@ -49,23 +49,11 @@ struct TopConent: Codable {
     var selectedFlag: Bool
     
     
-    //    let titleEnglish: String
-    //    let likeFlag: Bool
-    //    let summary: String         // 줄거리
-    //    let timeLength: String
-    //    let pubYear: String         // 개봉일
-    //    let previewVideo: String
-    //    let actors: [String]
-    //    let directors: [String]
-    //    let videos: [String]
-    
-    
     private enum CodingKeys: String, CodingKey {
         case id
         case title = "contents_title"
         //        case titleEnglish = "contents_title_english"
         case imageURL = "contents_image"
-        
         case logoImageURL = "contents_logo"
         case rating = "contents_rating"
         case selectedFlag = "is_select"

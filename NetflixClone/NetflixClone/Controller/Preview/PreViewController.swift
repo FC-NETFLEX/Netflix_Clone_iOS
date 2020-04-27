@@ -261,7 +261,7 @@ class PreViewController: BaseViewController {
     }
     
     private func configure(dibsButtonClicked: Bool) {
-        self.categoryLabel.text = preview[displayingViewIndex].genre
+//        self.categoryLabel.text = preview[displayingViewIndex].genre
         self.dibsView.isClicked = dibsButtonClicked
         self.dibsView.imageView.image = dibsButtonClicked ? UIImage(systemName: "checkmark"): UIImage(systemName: "plus")
     }
