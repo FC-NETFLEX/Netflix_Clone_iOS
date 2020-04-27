@@ -9,18 +9,13 @@
 import UIKit
 
 class CategoryView: UIView {
-    let categoryNum: Int
+//    let categoryNum: Int
 
     let tableView = UITableView()
     
     //MARK: initializer
-    init(frame: CGRect, categoryNum: Int) {
-        self.categoryNum = categoryNum
+    override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
-        setUI()
-        
     }
     
     required init?(coder: NSCoder) {
