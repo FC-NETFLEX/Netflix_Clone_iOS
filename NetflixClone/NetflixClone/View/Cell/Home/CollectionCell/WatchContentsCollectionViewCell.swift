@@ -72,7 +72,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         
         posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
 //        posterButton.contentMode = .scaleAspectFill
-        posterButton.backgroundColor = .blue
+        posterButton.backgroundColor = .clear
         posterButton.layer.masksToBounds = true
         posterButton.imageView?.contentMode = .scaleToFill
         
