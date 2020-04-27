@@ -59,7 +59,6 @@ class SavedContentsListViewController: CanSaveViewController {
     }
     
     @objc private func didTapModifyButtotn(_ sender: UIButton) {
-        print(#function)
         sender.isSelected.toggle()
         rootView.tableView.setEditing(sender.isSelected, animated: true)
     }
@@ -175,6 +174,35 @@ extension SavedContentsListViewController: UITableViewDelegate {
             return 0
         }
     }
+    
+    // swipe로 컨텐츠 삭제
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: {
+            [weak self] (action: UIContextualAction, view: UIView, completion: (Bool) -> Void) in
+            guard let self = self else { return }
+            
+            let savedContent = self.model.getContent(indexPath: indexPath)
+            savedContent.deleteContent()
+            completion(true)
+        })
+        deleteAction.image = UIImage(systemName: "xmark")
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        
+        return configuration
+    }    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        .none
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        false
+    }
+    
+    
+    
 }
 
 

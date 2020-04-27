@@ -128,6 +128,28 @@ class SavedContentsListModel {
         return result
     }
     
+    // 모든 파일을 지우는 메서드
+    func deleteAllFiles() {
+        profiles.forEach({
+            $0.savedContents.forEach({
+                $0.deleteContent()
+            })
+        })
+    }
+    
+    func totalCapacity() -> Double {
+        
+        let savedContents = profiles.flatMap({
+            $0.savedContents
+        })
+        
+        let result = savedContents.reduce(into: 0.0, {
+            $0 += Double($1.capacity ?? 0)
+        })
+        
+        return result
+    }
+    
 }
 
 
