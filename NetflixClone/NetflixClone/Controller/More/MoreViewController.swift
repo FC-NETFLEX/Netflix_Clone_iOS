@@ -46,9 +46,6 @@ class MoreViewController: UIViewController {
         
         let count = userProfileList.count
         for (index, user) in userProfileList.enumerated() {
-            print(index)
-            print(count)
-            
             let tempProfileView = MorePofileView()
             tempProfileView.delegate = self
             if user.id == profile.id {

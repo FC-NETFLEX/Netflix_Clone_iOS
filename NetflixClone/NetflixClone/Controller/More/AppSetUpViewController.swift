@@ -108,7 +108,6 @@ extension AppSetUpViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath {
         case [1,2]:
-            
             let usingCell = tableView.dequeueReusableCell(withIdentifier: UsingDataGraphCellTableViewCell.identifier, for: indexPath) as! UsingDataGraphCellTableViewCell
             usingCell.selectionStyle = .none
             
@@ -138,15 +137,12 @@ extension AppSetUpViewController: UITableViewDataSource {
             case [0,0]:
                 let mobileVC = MobileDataViewController()
                 navigationController?.pushViewController(mobileVC, animated: true)
-                print("모바일 데이터 이용설정")
             case [1,0]:
                 print("스위치")
             case [1,1]:
                 alertAction()
-                print("저장컨텐츠 삭제")
             case [2,0]:
                 fastURLScheme()
-                print("인터넷 스킴")
             default:
                 break
             }
