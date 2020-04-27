@@ -423,7 +423,7 @@ extension HomeViewController: UITableViewDataSource {
         let header = HomeviewTitle()
         header.delegate = self
 
-        header.configure(id: homeViewTopContent.id, poster: homeViewTopContent.imageURL, category: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: homeViewTopContent.logoImageURL /*, url: URL(string: firstCellURL)*/)
+        header.configure(id: homeViewTopContent.id, poster: homeViewTopContent.imageURL, categories: homeViewTopContent.categories, dibs: homeViewTopContent.selectedFlag, titleImage: homeViewTopContent.logoImageURL /*, url: URL(string: firstCellURL)*/)
         return header
     }
     
