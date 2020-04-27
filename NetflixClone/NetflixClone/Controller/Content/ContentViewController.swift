@@ -10,12 +10,6 @@ import UIKit
 
 class ContentViewController: CanSaveViewController {
     
-    static func presentContentVC(viewController: UIViewController, contentID: Int) {
-        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentID))
-        contentVC.modalPresentationStyle = .fullScreen
-        viewController.present(contentVC, animated: true)
-    }
-    
     private let bluredBackgroundView = BluredBackgroundView()
     private let contentTableView = UITableView()
     
@@ -34,9 +28,41 @@ class ContentViewController: CanSaveViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigation()
         request(id: contentId)
         setUI()
         setConstraints()
+    }
+    
+    private func setNavigation() {
+        // NavigationBar 투명하게 설정
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        let dismiss = UIButton(frame: CGRect(x: 0, y: 0, width: CGFloat.dynamicXMargin(margin: 5), height: CGFloat.dynamicXMargin(margin: 5)))
+        dismiss.setImage(UIImage(named: "close"), for: .normal)
+        dismiss.tintColor = .black
+        dismiss.addTarget(self, action: #selector(didTapDismissButton(_:)), for: .touchUpInside)
+        let dismissButton = UIBarButtonItem(customView: dismiss)
+        
+        if navigationController?.viewControllers.first != self {
+            let backButton = UIBarButtonItem(image: UIImage(named: "백"), style: .plain, target: self, action: #selector(backButtonDidTap))
+            backButton.tintColor = .setNetfilxColor(name: .white)
+            navigationItem.leftBarButtonItem = backButton
+        }
+        
+        navigationItem.rightBarButtonItem = dismissButton
+        
+    }
+    
+    @objc private func didTapDismissButton(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
+    @objc func backButtonDidTap() {
+        navigationController?.popViewController(animated: true)
     }
     
     // MARK: 서버에 요청해서 데이터 받음
@@ -70,6 +96,7 @@ class ContentViewController: CanSaveViewController {
         contentTableView.contentInsetAdjustmentBehavior = .never
         contentTableView.backgroundView = bluredBackgroundView
         contentTableView.allowsSelection = false
+        contentTableView.showsVerticalScrollIndicator = false
         
         contentTableView.register(PosterTableViewCell.self, forCellReuseIdentifier: PosterTableViewCell.identifier)
         contentTableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: SummaryTableViewCell.identifier)
@@ -179,11 +206,11 @@ extension ContentViewController: RecommendedCellDalegate {
         
         let contentVC = ContentViewController(id: similarContents[indexPath.row].id)
         navigationController?.pushViewController(contentVC, animated: true)
-
+        
     }
 }
 
-extension ContentViewController: DismissDelegate {
+extension ContentViewController: PlayDelegate {
     func play() {
         presentVideoController(contentID: contentId)
     }
