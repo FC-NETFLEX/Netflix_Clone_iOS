@@ -205,13 +205,10 @@ class ChangeProfileViewController: UIViewController {
         case false:
             profileName = userName
         }
-        
-        
-        
-        
+ 
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
-                profileVC.root = .main
+                profileVC.root = .manager
                 profileUpdate()
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
