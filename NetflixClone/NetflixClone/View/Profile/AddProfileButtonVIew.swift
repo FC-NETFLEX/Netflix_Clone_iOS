@@ -48,7 +48,7 @@ class AddProfileButtonView: UIView {
         
         addProfileLabel.text = "프로필 추가"
         addProfileLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        addProfileLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        addProfileLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .bold)
         
     }
     private func setConstrains() {

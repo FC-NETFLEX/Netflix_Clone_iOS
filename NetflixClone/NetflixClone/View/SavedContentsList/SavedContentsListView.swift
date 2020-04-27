@@ -50,6 +50,7 @@ class SavedContentsListView: UIView {
         tableView.backgroundColor = .setNetfilxColor(name: .black)
         tableView.separatorStyle = .none
         
+        tableView.register(PresentFindStorableContentViewControllerButtonCell.self, forCellReuseIdentifier: PresentFindStorableContentViewControllerButtonCell.identifier)
     }
     
     private func setConstraint() {

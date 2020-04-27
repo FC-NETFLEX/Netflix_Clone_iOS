@@ -16,29 +16,32 @@ protocol SavedContentCellDelegate: class {
 
 class SavedContentCell: UITableViewCell {
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let hitView = super.hitTest(point, with: event)
-        switch hitView {
-        case playImageView, playImageBackgroundView:
-            return thumbnailView
-        default:
-            return hitView
-        }
-    }
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        let hitView = super.hitTest(point, with: event)
+//        switch hitView {
+//        case playImageView, playImageBackgroundView:
+//            return thumbnailImageView
+//        default:
+//            return hitView
+//        }
+//    }
     
     static let identifier = "SavedContentCell"
     
     weak var delegate: SavedContentCellDelegate?
     
-    private let thumbnailView = UIButton()
+    
+    private let thumbnailImageView = UIImageView()
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
     private let playImageBackgroundView = CircleView()
+    private let playButton = UIButton()
     
     private let summaryLabel = UILabel()
     
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let statusView: SaveContentStatusView
+    
     
     init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.statusView = SaveContentStatusView(id: id, status: .saved)
@@ -57,26 +60,30 @@ class SavedContentCell: UITableViewCell {
     //MARK: UI
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
-        [summaryLabel, thumbnailView, titleLabel, descriptionLabel, statusView].forEach({
+        [summaryLabel, thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
             contentView.addSubview($0)
         })
+        
         
 //        let sizeGuide = UIScreen.main.bounds.height / 7
         
         selectionStyle = .none
         
-        thumbnailView.addSubview(playImageBackgroundView)
+        [playImageBackgroundView].forEach({
+            thumbnailImageView.addSubview($0)
+        })
         
         playImageBackgroundView.addSubview(playImageView)
         
-        thumbnailView.contentMode = .scaleToFill
-        thumbnailView.addTarget(self, action: #selector(didTapThumbnailView(_:)), for: .touchUpInside)
+        thumbnailImageView.contentMode = .scaleAspectFill
+        thumbnailImageView.clipsToBounds = true
         
+        playButton.addTarget(self, action: #selector(didPlayButton), for: .touchUpInside)
         
         playImageView.contentMode = .scaleAspectFit
         playImageView.tintColor = .setNetfilxColor(name: .white)
         
-        thumbnailView.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
+        thumbnailImageView.backgroundColor = .setNetfilxColor(name: .netflixDarkGray)
         
         playImageBackgroundView.layer.borderColor = UIColor.setNetfilxColor(name: .white).cgColor
         playImageBackgroundView.layer.borderWidth = 1
@@ -105,16 +112,16 @@ class SavedContentCell: UITableViewCell {
         let xPading = CGFloat.dynamicXMargin(margin: 8)
         
         
-        thumbnailView.snp.makeConstraints({
+        thumbnailImageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
             $0.top.equalToSuperview().inset(yMargin)
             $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
-            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(0.6)
+            $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(0.6)
         })
         
         playImageBackgroundView.snp.makeConstraints({
             $0.center.equalToSuperview()
-            $0.width.height.equalTo(thumbnailView.snp.height).multipliedBy(0.5)
+            $0.width.height.equalTo(thumbnailImageView.snp.height).multipliedBy(0.5)
         })
         
         playImageView.snp.makeConstraints({
@@ -122,27 +129,31 @@ class SavedContentCell: UITableViewCell {
             $0.width.height.equalTo(playImageBackgroundView.snp.height).multipliedBy(0.5)
         })
         
+        playButton.snp.makeConstraints({
+            $0.leading.top.trailing.bottom.equalTo(thumbnailImageView)
+        })
+        
         titleLabel.snp.makeConstraints({
-            $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
+            $0.leading.equalTo(thumbnailImageView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.bottom.equalTo(thumbnailView.snp.centerY)
+            $0.bottom.equalTo(thumbnailImageView.snp.centerY)
         })
         
         descriptionLabel.snp.makeConstraints({
-            $0.leading.equalTo(thumbnailView.snp.trailing).offset(xPading)
+            $0.leading.equalTo(thumbnailImageView.snp.trailing).offset(xPading)
             $0.trailing.equalTo(statusView.snp.leading).offset(-xPading)
-            $0.top.equalTo(thumbnailView.snp.centerY)
+            $0.top.equalTo(thumbnailImageView.snp.centerY)
         })
         
         statusView.snp.makeConstraints({
             $0.trailing.equalToSuperview().offset(-xMargin)
-            $0.centerY.equalTo(thumbnailView)
-            $0.height.width.equalTo(thumbnailView.snp.height).multipliedBy(0.5)
+            $0.centerY.equalTo(thumbnailImageView)
+            $0.height.width.equalTo(thumbnailImageView.snp.height).multipliedBy(0.5)
         })
         
         summaryLabel.snp.makeConstraints({
             $0.leading.trailing.equalToSuperview().inset(xMargin)
-            $0.top.equalTo(thumbnailView.snp.bottom)
+            $0.top.equalTo(thumbnailImageView.snp.bottom)
             $0.bottom.equalToSuperview()
         })
         
@@ -150,44 +161,14 @@ class SavedContentCell: UITableViewCell {
     
     
     //MARK: Action
-    
-    private func setImage(imageURL: URL) {
-        KingfisherManager.shared.retrieveImage(with: imageURL, completionHandler: {
-            [weak self] result in
-            switch result {
-            case .failure(let error):
-                print(error.localizedDescription)
-            case .success(let data):
-                self?.thumbnailView.setImage(data.image, for: .normal)
-            }
-        })
-    }
-    
     func configure(content: SaveContent) {
         
-        var capacityDescription: String = ""
-        
-        if let capacity = content.capacity, let capacityString = switchMBForKB(capacity: capacity) {
-            capacityDescription = " | " + String(capacityString) + "MB"
-        }
-        
         titleLabel.text = content.title
-        descriptionLabel.text = content.rating + capacityDescription
-        setImage(imageURL: content.imageURL)
+        descriptionLabel.text = content.description
+        thumbnailImageView.kf.setImage(with: content.imageURL)
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
         statusView.id = content.contentID
-    }
-    
-    private func switchMBForKB(capacity: Int64) -> String? {
-        let multiflire: Double = 1000000
-        let result = Double(capacity) / multiflire
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 1
-        
-        let resultString = formatter.string(from: result as NSNumber)
-        return resultString
     }
     
     
@@ -195,9 +176,14 @@ class SavedContentCell: UITableViewCell {
         delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
     }
     
-    @objc private func didTapThumbnailView(_ sender: UIButton) {
+    @objc private func didPlayButton(_ sender: UIButton) {
+        print(#function)
         delegate?.presentVideonController(contentID: statusView.id)
     }
+    
+//    override var editingInteractionConfiguration: UIEditingInteractionConfiguration {
+//        UIEditingInteractionConfiguration
+//    }
         
 }
 

@@ -54,7 +54,7 @@ class ProfileView: UIView {
         
         profileLabel.text = "양중창"
         profileLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        profileLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        profileLabel.font = UIFont.dynamicFont(fontSize: 17, weight: .bold)
         
         blurView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         

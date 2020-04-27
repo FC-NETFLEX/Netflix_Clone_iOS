@@ -19,8 +19,6 @@ class NetflixView: UIView {
     let macImage = UIImageView()
     let phoneImage = UIImageView()
 
-
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setUI()
@@ -31,7 +29,7 @@ class NetflixView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     func setUI() {
-        backgroundColor = #colorLiteral(red: 0.1020383883, green: 0.1020383883, blue: 0.1020383883, alpha: 1)
+        backgroundColor = #colorLiteral(red: 0.1336453046, green: 0.1336453046, blue: 0.1336453046, alpha: 1)
 
         [deviceImage,netflixDeviceLabel,deviceLabel,tvImage,padImage,macImage,phoneImage].forEach {
             addSubview($0)
@@ -41,12 +39,14 @@ class NetflixView: UIView {
 
         netflixDeviceLabel.text = "다양한 디바이스에서 영화, TV프로그램을 무제한으로. "
         netflixDeviceLabel.textColor = .setNetfilxColor(name: .white)
-        netflixDeviceLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        netflixDeviceLabel.font = UIFont.dynamicFont(fontSize: 15.5, weight: .bold)
+        
 
         deviceLabel.text = "각종 영화와 TV프로그램을 스마트폰, 태블릿, 노트북, TV에서 무제한으로\n스트리밍하세요. 추가요금이 전혀 없습니다.\n마음에 드는 콘텐츠를 원하는 시간에 원하는 만큼 시청하세요."
         deviceLabel.numberOfLines = 0
         deviceLabel.textColor = .setNetfilxColor(name: .white)
-        deviceLabel.font = UIFont.systemFont(ofSize: 13)
+        deviceLabel.font = UIFont.dynamicFont(fontSize: 12, weight: .regular)
+        
 
         tvImage.image = UIImage(named: "티비")
         tvImage.contentMode = .scaleAspectFill
@@ -80,6 +80,7 @@ class NetflixView: UIView {
             $0.leading.equalToSuperview().inset(margin)
 
         }
+
         tvImage.snp.makeConstraints {
             $0.top.equalTo(deviceLabel.snp.bottom).offset(margin * 2)
             $0.leading.equalToSuperview().inset(margin * 4)
