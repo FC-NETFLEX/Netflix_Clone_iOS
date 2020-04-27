@@ -25,14 +25,7 @@ class PreViewController: BaseViewController {
     private let dismissButton = UIButton()
     private let playerScrollView = UIScrollView()
     private var displayingViewIndex: Int {
-        set {
-            
-        }
-        get {
-            let index = Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
-            print(index)
-            return index
-        }
+        Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
     }
     override var prefersStatusBarHidden: Bool {
         return true
@@ -46,7 +39,10 @@ class PreViewController: BaseViewController {
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
     
-    weak var delegate: IsClickedProtocol?
+//    weak var delegate: IsClickedProtocol?
+    
+    private var lastOffset: CGFloat = 0
+    
     
     init(index: Int = 0, previews: [PreviewContent]) {
         self.receivedPreviewIndex = index
@@ -60,10 +56,10 @@ class PreViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(receivedPreviewIndex)
         setUI()
         setConstraints()
         createPreviewSubviews()
+        
     }
     
     override func viewWillLayoutSubviews() {
@@ -75,6 +71,9 @@ class PreViewController: BaseViewController {
         super.viewDidAppear(animated)
         guard preview.count > 0 else { return }
         previewSubviews[receivedPreviewIndex].player.play()
+//        preview.forEach {
+//            print($0.categories)
+//        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -83,7 +82,7 @@ class PreViewController: BaseViewController {
     }
     
     private func setUI() {
-        [categoryLabel, playerScrollView, dibsView, infoView, playButton, dismissButton].forEach {
+        [playerScrollView, dibsView, infoView, playButton, dismissButton, categoryLabel].forEach {
             view.addSubview($0)
         }
         
@@ -94,7 +93,7 @@ class PreViewController: BaseViewController {
         categoryLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
         categoryLabel.textColor = UIColor.setNetfilxColor(name: .white)
         categoryLabel.textAlignment = .center
-//        self.applyContentsUniqueValue()
+//        categoryLabel.text = "바보"
         
         playButton.layer.borderWidth = 2
         playButton.layer.borderColor = UIColor.white.cgColor
@@ -134,7 +133,7 @@ class PreViewController: BaseViewController {
         
         for (index, view) in previewSubviews.enumerated() {
             playerScrollView.addSubview(view)
-            let leading = index == 0 ? playerScrollView.snp.leading : previewSubviews[index-1].snp.trailing
+            let leading = index == 0 ? playerScrollView.snp.leading : previewSubviews[index - 1].snp.trailing
             view.snp.makeConstraints {
                 $0.leading.equalTo(leading)
                 $0.top.bottom.width.height.equalTo(playerScrollView)
@@ -176,7 +175,14 @@ class PreViewController: BaseViewController {
                     self.dibsView.imageView.image = UIImage(systemName: "plus")
                 })
             }
-            delegate?.dibButtonIsCliked()
+//            delegate?.dibButtonIsCliked()
+            let contentId = self.preview[displayingViewIndex].id
+            
+            guard let profileID =  LoginStatus.shared.getProfileID(),let url = URL(string:
+            "https://netflexx.ga/profiles/\(profileID)/contents/\(contentId)/select/"),
+                let token = LoginStatus.shared.getToken()
+                else { return }
+            APIManager().request(url: url, method: .get, token: token) { _ in }
             dibsButtonClicked.toggle()
             
         // 정보버튼 눌렀을 때
@@ -197,19 +203,19 @@ class PreViewController: BaseViewController {
         }
     }
     
+    // MARK: Preview AutoLayout
     private func setConstraints() {
         playerScrollView.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalTo(view)
         }
         
-        let betweenLabelAndButton = CGFloat.dynamicYMargin(margin: 20)
+        let betweenLabelAndButton = CGFloat.dynamicYMargin(margin: -20)
         let buttonHeight = CGFloat.dynamicYMargin(margin: 40)
         let bottomOffset = CGFloat.dynamicYMargin(margin: -60)
         let dismissButtonSize = CGFloat.dynamicXMargin(margin: 25)
         
         categoryLabel.snp.makeConstraints {
             $0.centerX.equalTo(view.snp.centerX)
-            $0.width.equalTo(view.snp.width).multipliedBy(0.7)
             $0.bottom.equalTo(playButton.snp.top).offset(betweenLabelAndButton)
         }
         
@@ -238,14 +244,13 @@ class PreViewController: BaseViewController {
     }
     
     @objc func playerDidFinishPlaying(note: NSNotification) {
-        print("영상 끝나면 다음 영상으로 넘겨 줄 것")
         let cmTime = CMTime(value: 0, timescale: 1)
         previewSubviews[displayingViewIndex].player.seek(to: cmTime)
         
         if displayingViewIndex < previewSubviews.count - 1 {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                    
+//                    self.applyContentsUniqueValue()
                     self.categoryLabel.alpha = 0
                     self.playerScrollView.contentOffset.x = CGFloat(self.displayingViewIndex + 1) * self.view.frame.width
                 }, completion: { _ in
@@ -261,40 +266,82 @@ class PreViewController: BaseViewController {
     
     // 레이블 값 바꿔주고, 찜한 값 이미지 변경해주기
     private func applyContentsUniqueValue() {
-        let categoryArr = preview[displayingViewIndex].categories
-        let categoryString = categoryArr.joined(separator: "・")
-        self.categoryLabel.text = categoryString
+        let _preview = preview[displayingViewIndex]
+        let categoryString = _preview.categoryString
+        print(categoryString)
+    }
+    
+    private func configure(dibsButtonClicked: Bool) {
+        self.dibsView.isClicked = dibsButtonClicked
+        self.dibsView.imageView.image = dibsButtonClicked ? UIImage(systemName: "checkmark"): UIImage(systemName: "plus")
     }
 }
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-
-        print(#function)
         previewSubviews[displayingViewIndex].player.play()
+        categoryLabel.alpha = 1
+//        applyContentsUniqueValue()
+        configure(dibsButtonClicked: preview[displayingViewIndex].isSelect)
+        categoryLabel.sizeToFit()
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        print(#function)
         previewSubviews.forEach {
             $0.player.pause()
         }
     }
+    
+    
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let width = scrollView.frame.width
+        let offset = scrollView.contentOffset.x
+        
+        let scale = scrollView.contentOffset.x / scrollView.frame.width
+        var alpha: CGFloat = 0
+        
+        if lastOffset <= offset {
+            alpha = 1 - abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
+            categoryLabel.alpha = abs(alpha)
+        } else {
+            alpha = abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
+            categoryLabel.alpha = abs(alpha)
+        }
+//        let offsetOperator: CGFloat
+//
+//        if offset < lastOffset {
+//            offsetOperator = -1
+//        } else {
+//            offsetOperator = 1
+//        }
+        
+//        alpha = 1 - ((scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex)))
+//        print("offset: ", scrollView.contentOffset.x)
+//        print("width: ", scrollView.frame.width)
+//        print("index: ", displayingViewIndex)
+//        print("alpha: ", alpha)
+
+        lastOffset = offset
+    }
+    
+    
 }
 
-extension PreViewController: IsClickedProtocol {
-    func likeButtonIsCliked() {
-        print("필요없는 버튼")
-    }
-    
-    func dibButtonIsCliked() {
-        print("displayingIndex: ", displayingViewIndex )
-        let contentId = self.preview[displayingViewIndex].id
-        
-        guard let profileID =  LoginStatus.shared.getProfileID(),let url = URL(string: "https://www.netflexx.ga/\(profileID)/contents/\(contentId)/select/"),
-            let token = LoginStatus.shared.getToken()
-            else { return }
-        APIManager().request(url: url, method: .get, token: token) { _ in }
-    }
-    
-}
+//extension PreViewController: IsClickedProtocol {
+//    func likeButtonIsCliked() {
+//        print("필요없는 버튼")
+//    }
+//
+//    func dibButtonIsCliked() {
+//        print("displayingIndex: ", displayingViewIndex)
+//        let contentId = self.preview[displayingViewIndex].id
+//
+//        guard let profileID =  LoginStatus.shared.getProfileID(),let url = URL(string:
+//        "https://netflexx.ga/profiles/\(profileID)/contents/\(contentId)/select/"),
+//            let token = LoginStatus.shared.getToken()
+//            else { return }
+//        APIManager().request(url: url, method: .get, token: token) { _ in }
+//    }
+//
+//}
