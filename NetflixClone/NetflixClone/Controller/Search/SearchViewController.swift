@@ -145,9 +145,7 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let contentVC = ContentViewController(id: searchResultDatas[indexPath.row].id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+        ContentViewController.presentContentVC(viewController: self, contentID: searchResultDatas[indexPath.row].id)
     }
 }
 
