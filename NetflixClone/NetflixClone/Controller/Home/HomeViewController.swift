@@ -19,8 +19,10 @@ final class HomeViewController: UIViewController {
 
     private let dibsView = DibsView()
     
-    private var categoryView: CategoryView?
-    var categoryNum: Int?
+//    private var categoryView = CategoryView()
+//    var categoryNum: Int?
+    
+    
     
 //MARK: layout관련 CGFloat
     private let menuBarHeight: CGFloat = 90
@@ -58,7 +60,7 @@ final class HomeViewController: UIViewController {
 
     
     //MARK: WatchContents
-    private var homeViewWatchContents: [WatchVideo] = [WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
+    private var homeViewWatchContents: [WatchVideo] = [WatchVideo]() //[WatchVideo(id: 1, video: Video(id: 1, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 11), WatchVideo(id: 2, video: Video(id: 2, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 22), WatchVideo(id: 3, video: Video(id: 3, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 33), WatchVideo(id: 4, video: Video(id: 4, videoURL: ""), playTime: 0, videoLength: 0, poster: "darkGray", contentId: 44)]
     
     
     //MARK: ADContents
@@ -145,6 +147,7 @@ final class HomeViewController: UIViewController {
         dibsView.collectionView.delegate = self
         dibsView.collectionView.dataSource = self
         
+        
 //        homeView.addSubview(menuBar)
         view.addSubview(homeView)
 
@@ -174,6 +177,8 @@ extension HomeViewController: HomeMenuBarViewDelegate {
     func didTabMenuBarIconButton() {
         print("MenuBar DidTabIcon")
         
+        menuBar.swingBackAnimation()
+        
         if view.subviews[0] == dibsView {
             print("view dibsView")
             dibsView.removeFromSuperview()
@@ -188,6 +193,7 @@ extension HomeViewController: HomeMenuBarViewDelegate {
     
     func didTabMenuBarMovieButton() {
         print("MenuBar DidTabMovie")
+        menuBar.movieClickAnimation()
     }
     
     func didTabCategoryButton() {
@@ -211,6 +217,11 @@ extension HomeViewController: HomeMenuBarViewDelegate {
                 $0.bottom.leading.trailing.equalToSuperview()
                 $0.top.equalToSuperview().inset(menuBarHeight)
             }
+            
+            //MARK: DibsButton Animation
+            menuBar.dibsClickAnimation()
+//            menuBar.movieButton.isHidden = true
+            
             
 //MARK: - dibsView Request
             if dibsViewContents.count == 0 {
@@ -262,9 +273,47 @@ extension HomeViewController: HomeMenuBarViewDelegate {
 
 //MARK: - HomeViewTitleDelegate
 extension HomeViewController: HomeviewTitleDelegate {
-    func didTabHomeTitledibsButton() {
-       print("Hometitle dibsButton Click")
+    
+    //MARK: - Dibs Request (HomeHeader)
+    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
+        
+        print("Hometitle dibsButton Click")
+        buttonToogle(homeViewTopContent.selectedFlag)
+        disEnable()
+        
+        let url = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/\(id)/select/")
+        
+        guard let token = LoginStatus.shared.getToken() else { return }
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        
+        
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            //                let dataTask = URLSession.shared.dataTask(with: self.dibsURL!) { (data, response, error) in
+            print(" DibsSelect dataTask 입성")
+            
+            print("dibsSelect url -> \(urlRequest)")
+
+            guard error == nil else { return print("error:", error!) }
+            guard let response = response as? HTTPURLResponse else { return print("response 오류")}
+            guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
+            
+            DispatchQueue.main.sync {
+                if self.homeViewTopContent.selectedFlag {
+                    self.homeViewTopContent.selectedFlag = false
+                } else {
+                    self.homeViewTopContent.selectedFlag = true
+
+                }
+
+                isEnable()
+            }
+
+        }
+        dataTask.resume()
+
     }
+    
     
     func didTabHomeTitlePlayButton() {
         print("HomeTitle playButtonClick")
@@ -284,6 +333,31 @@ extension HomeViewController: HomeviewTitleDelegate {
 
 //MARK: - HomeView Delegate TableView
 extension HomeViewController: UITableViewDelegate {
+    
+    //MARK: ScrollView offset
+    // home화면에서 scroll 내릴때 점진적으로 alpha 0 -> 1
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yCoordinate = scrollView.contentOffset.y
+        
+        let alphaLimit = round( view.frame.height / 2.5 )
+
+        if view.subviews[0] == homeView {
+            if yCoordinate <= alphaLimit && yCoordinate > 0 {
+                //점차 불투명해지는 부분.
+                let alpha = (1 * yCoordinate) / 300
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: alpha)
+            } else if yCoordinate > alphaLimit {
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 1)
+            } else {
+                
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0)
+                
+            }
+
+        }
+
+
+    }
     
     //MARK: -UITableViewCell willDisplay
     // Video Cell 보이려고 할때 영상 재생되게 하려고
@@ -415,7 +489,7 @@ extension HomeViewController: UITableViewDataSource {
                 // 재사용 cell 있는가??
                 videoCell.delegate = self
                 
-                videoCell.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
+                videoCell.configure(contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 cell = videoCell
             } else { // 최초 호출
@@ -424,7 +498,7 @@ extension HomeViewController: UITableViewDataSource {
                 videoAdvertismentCell?.delegate = self
                 
                 
-                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
+                videoAdvertismentCell?.configure(contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 
                 cell = videoAdvertismentCell!
@@ -538,6 +612,49 @@ extension HomeViewController: WatchContentsTableViewDelegate {
 
 //MARK: - HomeView VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
+    func didTabVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
+        
+        
+         print("AD dibsButton Click")
+        print("homeViewADContent.selected \(homeViewADContent.selected)")
+        buttonToogle(homeViewADContent.selected)
+         disEnable()
+         
+         let url = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/\(id)/select/")
+         
+         guard let token = LoginStatus.shared.getToken() else { return }
+         var urlRequest = URLRequest(url: url!)
+         urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+         
+         
+         let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+             //                let dataTask = URLSession.shared.dataTask(with: self.dibsURL!) { (data, response, error) in
+             print(" DibsSelect dataTask 입성")
+             
+             print("dibsSelect url -> \(urlRequest)")
+
+             guard error == nil else { return print("error:", error!) }
+             guard let response = response as? HTTPURLResponse else { return print("response 오류")}
+             guard (200..<400).contains(response.statusCode) else { return print("response statusCode \(response.statusCode) \n파싱 종료") }
+             
+             DispatchQueue.main.sync {
+                if self.homeViewADContent.selected {
+                     self.homeViewADContent.selected = false
+                 } else {
+                     self.homeViewADContent.selected = true
+
+                 }
+
+                 isEnable()
+             }
+
+         }
+         dataTask.resume()
+         
+        
+    }
+
+    
     
     func didTabVideoView(contentId: Int) {
         let contentVC = ContentViewController(id: contentId)
@@ -548,11 +665,6 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     func didTabVideoCellPlayButton() {
         print("영상재생화면 이동")
     }
-    
-    func didTabVideoCellDibsButton() {
-        print("찜한 목록 추가하기")
-    }
-    
     
     
 }
@@ -613,5 +725,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width.rounded(.down), height: height.rounded(.down) - 1)
     }
 }
+
 
 

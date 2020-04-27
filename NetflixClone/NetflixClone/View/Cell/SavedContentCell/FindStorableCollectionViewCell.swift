@@ -45,8 +45,8 @@ class FindStorableCollectionViewCell: UICollectionViewCell {
         })
         
         titleLabel.textColor = .setNetfilxColor(name: .white)
-        posterImageView.contentMode = .scaleAspectFit
-        
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
         
     }
     

@@ -42,7 +42,7 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
     
     private func setConstraint() {
         
-//        let yMargin = CGFloat.dynamicYMargin(margin: 8)
+        let yMargin = CGFloat.dynamicYMargin(margin: 8)
         let xMargin = CGFloat.dynamicXMargin(margin: 16)
 //        let imageViewSize = CGFloat.dynamicYMargin(margin: 32)
         

@@ -65,7 +65,7 @@ class FindStorableContentTableViewCell: UITableViewCell {
         let yMargin = CGFloat.dynamicYMargin(margin: 8)
         
         categoryLabel.snp.makeConstraints({
-            $0.top.equalToSuperview().offset(yInset)
+            $0.top.equalToSuperview()
             $0.leading.equalToSuperview().offset(leftInset)
         })
         
@@ -131,8 +131,8 @@ extension FindStorableContentTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = collectionView.bounds.height - 16
-        let width = collectionView.bounds.height * 0.7
+        let height = collectionView.bounds.height
+        let width = collectionView.bounds.width * 0.28
         return CGSize(width: width, height: height)
     }
     
