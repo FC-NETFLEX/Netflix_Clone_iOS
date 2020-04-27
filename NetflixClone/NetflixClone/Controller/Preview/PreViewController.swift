@@ -51,11 +51,7 @@ class PreViewController: BaseViewController {
         setConstraints()
         createPreviewSubviews()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    
+        
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         guard preview.count > 0 else { return }
@@ -67,11 +63,13 @@ class PreViewController: BaseViewController {
         }
     }
     
+    // MARK: 뷰 사라질 때, 프리뷰 영상 정지
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.previewSubviews[self.displayingViewIndex].player.pause()
     }
     
+    // MARK: Set Preview UI
     private func setUI() {
         [playerScrollView, dibsView, infoView, playButton, dismissButton, categoryLabel].forEach {
             view.addSubview($0)
@@ -149,7 +147,7 @@ class PreViewController: BaseViewController {
         }
     }
     
-    
+    // MARK: Create ScrollView content Views
     private func createPreviewSubviews() {
         self.previewSubviews = preview.compactMap {
             guard let url = URL(string: $0.previewVideoURL) else {
@@ -179,10 +177,12 @@ class PreViewController: BaseViewController {
         }
     }
     
+    // MARK: 뒤로가기 버튼
     @objc private func didTapDismissButton(_ sender: UIButton) {
         dismiss(animated: true)
     }
     
+    // MARK: 
     @objc private func didTapButton(_ sender: UIButton) {
         var dibsButtonClicked = dibsView.isClicked
         
