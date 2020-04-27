@@ -46,9 +46,6 @@ class MoreViewController: UIViewController {
         
         let count = userProfileList.count
         for (index, user) in userProfileList.enumerated() {
-            print(index)
-            print(count)
-            
             let tempProfileView = MorePofileView()
             tempProfileView.delegate = self
             if user.id == profile.id {
@@ -127,7 +124,7 @@ class MoreViewController: UIViewController {
         profileButton.snp.makeConstraints {
             $0.top.equalTo(stackView.snp.bottom)
             $0.leading.trailing.equalTo(guide)
-            $0.height.equalToSuperview().multipliedBy(0.1)
+            $0.height.equalToSuperview().multipliedBy(0.08)
         }
         moreTableView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
@@ -136,6 +133,16 @@ class MoreViewController: UIViewController {
             
         }
     }
+    private func customerCenterScheme() {
+        guard
+            let url = URL(string: "https://help.netflix.com/ko"),
+            UIApplication.shared.canOpenURL(url)
+            else { return }
+        
+        UIApplication.shared.open(url)
+        
+    }
+    
     //    MARK: API
     func reqeustProfileList() {
         guard
@@ -269,7 +276,7 @@ extension MoreViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-      let logoutHeight = view.frame.height / 4
+      let logoutHeight = view.frame.height / 6
         return logoutHeight
     }
 
@@ -286,19 +293,17 @@ extension MoreViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MoreViewTableCell.identifier, for: indexPath) as? MoreViewTableCell else { fatalError() }
     
         cell.tag = indexPath.row
         cell.textLabel?.text = moreViewData[indexPath.row]
         cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
-        cell.textLabel?.textColor = .white
-        cell.textLabel?.font = .systemFont(ofSize: 16)
+        cell.textLabel?.textColor = .setNetfilxColor(name: .netflixLightGray)
+        cell.textLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
         cell.imageView?.image = UIImage(named: moreViewImage[indexPath.row])
         cell.delegate = self
         
-        
+       
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -316,10 +321,15 @@ extension MoreViewController: MoreViewTableCellDelegate {
         case 1:
             let appSettingVC = AppSetUpViewController()
             navigationController?.pushViewController(appSettingVC, animated: true)
-            //            let navi = UINavigationController(rootViewController: appSettingVC)
-            //            present(navi, animated: true)
-            //            navigationController?.pushViewController(appSettingVC, animated: true)
+           
+         case 2:
+             print("계정 연결하기")
+            let accountVC = AccountViewController()
+            navigationController?.pushViewController(accountVC, animated: true)
             
+        case 3:
+             print("고객센터 연결하기")
+             customerCenterScheme()
         default:
             break
         }
@@ -346,8 +356,7 @@ extension MoreViewController: LogOutVerViewDelegate {
     func didTapLogoutButton() {
         alertAction()
     }
-    
-    
+
 }
 
 

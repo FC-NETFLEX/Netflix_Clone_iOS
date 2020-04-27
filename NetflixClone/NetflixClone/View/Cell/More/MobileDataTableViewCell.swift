@@ -8,7 +8,7 @@
 
 import UIKit
 protocol MobileDataTableViewCellDelegate: class {
-    func autoSwitchIsOn(autoSwitch: UISwitch)
+    func autoSwitchIsOn(status: Bool)
 }
 
 class MobileDataTableViewCell: UITableViewCell {
@@ -16,7 +16,6 @@ class MobileDataTableViewCell: UITableViewCell {
     static let identifier = "MobileDataTableViewCell"
     var delegate: MobileDataTableViewCellDelegate?
     let autoSwitch = UISwitch()
-    let checkImage = UIImageView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -47,21 +46,7 @@ class MobileDataTableViewCell: UITableViewCell {
         }
         
     }
-    func mobileCellConfigure(indexPath: IndexPath) {
-        switch indexPath.row {
-        case 0:
-            accessoryType = .none
-            break
-        case 2:
-            accessoryType = .checkmark
-            autoSwitch.isHidden = true
-        default:
-            accessoryType = .none
-            autoSwitch.isHidden = true
-
-        }
-    }
     @objc private func autoSwitchIsOn() {
-        delegate?.autoSwitchIsOn(autoSwitch: autoSwitch)
+        delegate?.autoSwitchIsOn(status: autoSwitch.isOn)
     }
 }

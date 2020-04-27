@@ -33,7 +33,7 @@ class ChangeCustomView: UIView {
         watchLimitLabel.textAlignment = .center
         watchLimitLabel.numberOfLines = 0
         watchLimitLabel.textColor = #colorLiteral(red: 0.2531644241, green: 0.2556710025, blue: 0.2556710025, alpha: 1)
-        watchLimitLabel.font = UIFont.boldSystemFont(ofSize: 13)
+        watchLimitLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
         
         
     }

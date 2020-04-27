@@ -26,7 +26,7 @@ class AppSetUpViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .setNetfilxColor(name: .black)
         
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .medium)]
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 15, weight: .regular)]
         
         let backButton = UIBarButtonItem(image: UIImage(named: "백"), style: .plain, target: self, action: #selector(backButtonDidTap))
         backButton.tintColor = .setNetfilxColor(name: .white)
@@ -45,6 +45,7 @@ class AppSetUpViewController: UIViewController {
         appSetUpTableView.delegate = self
         appSetUpTableView.dataSource = self
         appSetUpTableView.register(AppSetUpTableViewCell.self, forCellReuseIdentifier: AppSetUpTableViewCell.identifier)
+        appSetUpTableView.register(UsingDataGraphCellTableViewCell.self, forCellReuseIdentifier: UsingDataGraphCellTableViewCell.identifier)
         
     }
     func setConstraints() {
@@ -97,7 +98,7 @@ extension AppSetUpViewController: UITableViewDataSource {
         let label = UILabel()
         label.backgroundColor = .setNetfilxColor(name:.black)
         label.text = ASData[section].dataHeader
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.dynamicFont(fontSize: 16, weight: .bold)
         label.textColor = .white
         return label
     }
@@ -105,51 +106,54 @@ extension AppSetUpViewController: UITableViewDataSource {
         ASData[section].settingData.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: AppSetUpTableViewCell.identifier) as! AppSetUpTableViewCell
-        
-        let date = ASData[indexPath.section].settingData[indexPath.row]
-        
-        cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
-        cell.textLabel?.textColor = .white
-        cell.textLabel?.font = .systemFont(ofSize: 14)
-        cell.imageView?.image = UIImage(named: date.appSetImage)
-        cell.textLabel?.text = date.text
-        cell.selectionStyle = .none
-        cell.delegate = self
-        cell.configure(indexPath: indexPath)
-        return cell
-        
-    }
-}
-
-extension AppSetUpViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
         switch indexPath {
-        case [0,0]:
-            let mobileVC = MobileDataViewController()
-            navigationController?.pushViewController(mobileVC, animated: true)
-            print("모바일 데이터 이용설정")
-        case [1,0]:
-            print("스위치")
-        case [1,1]:
-            alertAction()
-            print("저장컨텐츠 삭제")
-        case [2,0]:
-            fastURLScheme()
-            print("인터넷 스킴")
+        case [1,2]:
+            let usingCell = tableView.dequeueReusableCell(withIdentifier: UsingDataGraphCellTableViewCell.identifier, for: indexPath) as! UsingDataGraphCellTableViewCell
+            usingCell.selectionStyle = .none
+            
+            return usingCell
+        
         default:
-            break
+            let cell = tableView.dequeueReusableCell(withIdentifier: AppSetUpTableViewCell.identifier) as! AppSetUpTableViewCell
+            let date = ASData[indexPath.section].settingData[indexPath.row]
+            
+            cell.backgroundColor = .setNetfilxColor(name: .backgroundGray)
+            cell.textLabel?.textColor = .white
+            cell.textLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
+            cell.imageView?.image = UIImage(named: date.appSetImage)
+            cell.textLabel?.text = date.text
+            cell.selectionStyle = .none
+            cell.delegate = self
+            cell.configure(indexPath: indexPath)
+           
+            return cell
         }
     }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60
-    }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        70
-    }
+}
+    extension AppSetUpViewController: UITableViewDelegate {
+        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            
+            switch indexPath {
+            case [0,0]:
+                let mobileVC = MobileDataViewController()
+                navigationController?.pushViewController(mobileVC, animated: true)
+            case [1,0]:
+                print("스위치")
+            case [1,1]:
+                alertAction()
+            case [2,0]:
+                fastURLScheme()
+            default:
+                break
+            }
+        }
+        
+        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+            return 60
+        }
+        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            70
+        }
 }
 
 
