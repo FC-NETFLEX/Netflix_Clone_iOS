@@ -10,12 +10,6 @@ import UIKit
 
 class ContentViewController: CanSaveViewController {
     
-    static func presentContentVC(viewController: UIViewController, contentID: Int) {
-        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentID))
-        contentVC.modalPresentationStyle = .fullScreen
-        viewController.present(contentVC, animated: true)
-    }
-    
     private let bluredBackgroundView = BluredBackgroundView()
     private let contentTableView = UITableView()
     
