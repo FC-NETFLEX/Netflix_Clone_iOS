@@ -177,6 +177,8 @@ extension HomeViewController: HomeMenuBarViewDelegate {
     func didTabMenuBarIconButton() {
         print("MenuBar DidTabIcon")
         
+        menuBar.swingBackAnimation()
+        
         if view.subviews[0] == dibsView {
             print("view dibsView")
             dibsView.removeFromSuperview()
@@ -191,6 +193,7 @@ extension HomeViewController: HomeMenuBarViewDelegate {
     
     func didTabMenuBarMovieButton() {
         print("MenuBar DidTabMovie")
+        menuBar.movieClickAnimation()
     }
     
     func didTabCategoryButton() {
@@ -214,6 +217,11 @@ extension HomeViewController: HomeMenuBarViewDelegate {
                 $0.bottom.leading.trailing.equalToSuperview()
                 $0.top.equalToSuperview().inset(menuBarHeight)
             }
+            
+            //MARK: DibsButton Animation
+            menuBar.dibsClickAnimation()
+//            menuBar.movieButton.isHidden = true
+            
             
 //MARK: - dibsView Request
             if dibsViewContents.count == 0 {
@@ -325,6 +333,31 @@ extension HomeViewController: HomeviewTitleDelegate {
 
 //MARK: - HomeView Delegate TableView
 extension HomeViewController: UITableViewDelegate {
+    
+    //MARK: ScrollView offset
+    // home화면에서 scroll 내릴때 점진적으로 alpha 0 -> 1
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let yCoordinate = scrollView.contentOffset.y
+        
+        let alphaLimit = round( view.frame.height / 2.5 )
+
+        if view.subviews[0] == homeView {
+            if yCoordinate <= alphaLimit && yCoordinate > 0 {
+                //점차 불투명해지는 부분.
+                let alpha = (1 * yCoordinate) / 300
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: alpha)
+            } else if yCoordinate > alphaLimit {
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 1)
+            } else {
+                
+                menuBar.backgroundColor = .init(red: 0, green: 0, blue: 0, alpha: 0)
+                
+            }
+
+        }
+
+
+    }
     
     //MARK: -UITableViewCell willDisplay
     // Video Cell 보이려고 할때 영상 재생되게 하려고
@@ -456,7 +489,7 @@ extension HomeViewController: UITableViewDataSource {
                 // 재사용 cell 있는가??
                 videoCell.delegate = self
                 
-                videoCell.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
+                videoCell.configure(contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 cell = videoCell
             } else { // 최초 호출
@@ -465,7 +498,7 @@ extension HomeViewController: UITableViewDataSource {
                 videoAdvertismentCell?.delegate = self
                 
                 
-                videoAdvertismentCell?.configure(/*advertisement: url, */contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
+                videoAdvertismentCell?.configure(contentID: homeViewADContent.id, contentName: homeViewADContent.title, dibs: homeViewADContent.selected)
                 
                 
                 cell = videoAdvertismentCell!
