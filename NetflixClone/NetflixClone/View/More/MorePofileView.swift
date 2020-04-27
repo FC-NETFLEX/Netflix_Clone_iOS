@@ -33,7 +33,7 @@ class MorePofileView: UIView{
     }
     
     private func setUI() {
-        let borderColor = UIColor.setNetfilxColor(name: .netflixRed).cgColor
+        let borderColor = UIColor.setNetfilxColor(name: .white).cgColor
         let cornerRadius: CGFloat = 4
         let borderWidth: CGFloat = 2
         
@@ -46,13 +46,13 @@ class MorePofileView: UIView{
             self.addSubview($0)
         }
         
-        profileButton.setImage(UIImage(named: "프로필3"), for: .normal)
+        profileButton.setImage(UIImage(named: ""), for: .normal)
         profileButton.contentMode = .scaleAspectFill
         profileButton.imageView?.layer.masksToBounds = true
         profileButton.imageView?.layer.cornerRadius = cornerRadius
         profileButton.addTarget(self, action: #selector(profileButtonDidTap), for: .touchUpInside)
         
-        profileLabel.text = "양중창"
+        profileLabel.text = ""
         profileLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
         profileLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular)
         

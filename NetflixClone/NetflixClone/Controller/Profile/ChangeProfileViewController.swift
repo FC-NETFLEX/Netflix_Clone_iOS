@@ -42,6 +42,11 @@ class ChangeProfileViewController: UIViewController {
     }
     
     private func setNavigationBar() {
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = UIColor.clear
+ 
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 15, weight: .regular)]
         
         
@@ -75,21 +80,25 @@ class ChangeProfileViewController: UIViewController {
     }
     private func setConstraints() {
         
+        
+        
         let guide = view.safeAreaLayoutGuide
         let margin: CGFloat = 10
         let padding: CGFloat = 20
         let spacing: CGFloat = 80
+        
         let inset = view.safeAreaInsets.top + view.safeAreaInsets.bottom
-        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 6)
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height - inset) / 5.5)
+       
         [addProfileView,changeView,kidsCV,universalCV,deleteView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
         addProfileView.topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
         addProfileView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         addProfileView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
-        addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
+        addProfileView.bottomAnchor.constraint(equalTo: guide.centerYAnchor, constant: padding).isActive = true
         
-        universalCV.topAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: margin).isActive = true
+        universalCV.topAnchor.constraint(equalTo: addProfileView.bottomAnchor).isActive = true
         universalCV.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         universalCV.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         universalCV.bottomAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: spacing + padding).isActive = true
@@ -99,7 +108,7 @@ class ChangeProfileViewController: UIViewController {
         kidsCV.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         kidsCV.bottomAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: spacing + padding).isActive = true
         
-        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: margin).isActive = true
+        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor).isActive = true
         changeView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         changeView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         changeView.bottomAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: padding * 2 + margin).isActive = true
@@ -126,6 +135,7 @@ class ChangeProfileViewController: UIViewController {
     
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
+
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .manager
@@ -205,13 +215,10 @@ class ChangeProfileViewController: UIViewController {
         case false:
             profileName = userName
         }
-        
-        
-        
-        
+ 
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
-                profileVC.root = .main
+                profileVC.root = .manager
                 profileUpdate()
                 navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")

@@ -36,7 +36,7 @@ class KidsClassView: UIView {
         kidsClassLabel.layer.cornerRadius = 4
         kidsClassLabel.clipsToBounds = true
         kidsClassLabel.textColor = .setNetfilxColor(name: .white)
-        kidsClassLabel.font = UIFont.dynamicFont(fontSize: 11, weight: .bold)
+        kidsClassLabel.font = UIFont.dynamicFont(fontSize: 10, weight: .bold)
         
         twelveClassLabel.text = "12"
         twelveClassLabel.backgroundColor = #colorLiteral(red: 0.2531644241, green: 0.2556710025, blue: 0.2556710025, alpha: 1)
@@ -44,13 +44,13 @@ class KidsClassView: UIView {
         twelveClassLabel.layer.cornerRadius = 4
         twelveClassLabel.clipsToBounds = true
         twelveClassLabel.textColor = .setNetfilxColor(name: .white)
-        twelveClassLabel.font = UIFont.dynamicFont(fontSize: 11, weight: .bold)
+        twelveClassLabel.font = UIFont.dynamicFont(fontSize: 10, weight: .bold)
         
         viewContentsLabel.text = "이 프로필에서는 12등급 이하 등급의\n콘텐츠가 표시됩니다."
         viewContentsLabel.textAlignment = .center
         viewContentsLabel.numberOfLines = 0
         viewContentsLabel.textColor = .setNetfilxColor(name: .white)
-        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 14, weight: .regular )
+        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular )
     }
         
     

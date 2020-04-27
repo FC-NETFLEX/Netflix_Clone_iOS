@@ -10,17 +10,15 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-protocol DismissDelegate: class {
-    func dismiss() -> ()
+protocol PlayDelegate: class {
     func play()
 }
 
 class PosterTableViewCell: UITableViewCell {
     static let identifier = "PosterCell"
     
-    weak var delegate: DismissDelegate?
-    
-    private let dismissButton = UIButton()
+    weak var delegate: PlayDelegate?
+
     private let posterImage = UIImageView()
     private let releaseYear = UILabel()
     private let ageGroup = UIImageView()
@@ -38,13 +36,10 @@ class PosterTableViewCell: UITableViewCell {
     }
         
     private func setUI() {
-        [dismissButton, posterImage, releaseYear, ageGroup, runningTime, playButton].forEach {
+        [posterImage, releaseYear, ageGroup, runningTime, playButton].forEach {
             contentView.addSubview($0)
         }
         self.backgroundColor = .clear
-        
-        dismissButton.setImage(UIImage(named: "close"), for: .normal)
-        dismissButton.addTarget(self, action: #selector(didTapDismissButton(_:)), for: .touchUpInside)
         
         //MARK: 요청 받아서 이미지 뿌릴 것 => Fixed
         posterImage.contentMode = .scaleToFill
@@ -94,12 +89,6 @@ class PosterTableViewCell: UITableViewCell {
             $0.height.equalTo(CGFloat.dynamicYMargin(margin: 35))
             $0.bottom.equalTo(contentView.snp.bottom).inset(CGFloat.dynamicYMargin(margin: 5))
         }
-
-        dismissButton.snp.makeConstraints {
-            $0.bottom.equalTo(posterImage.snp.top)
-            $0.trailing.equalTo(contentView.snp.trailing).offset(CGFloat.dynamicXMargin(margin: -10))
-            $0.width.height.equalTo(CGFloat.dynamicXMargin(margin: 30))
-        }
     }
     
     func configure(posterImageName: String, releaseYear: String, ageGroup: String, runningTime: String) {
@@ -111,9 +100,5 @@ class PosterTableViewCell: UITableViewCell {
     
     @objc private func didTapPlayButton() {
         delegate?.play()
-    }
-    
-    @objc private func didTapDismissButton(_ sender: UIButton) {
-        delegate?.dismiss()
     }
 }

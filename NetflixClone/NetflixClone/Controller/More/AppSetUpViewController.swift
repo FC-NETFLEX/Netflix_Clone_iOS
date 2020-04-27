@@ -60,6 +60,7 @@ class AppSetUpViewController: UIViewController {
         let ok = UIAlertAction(title: "확인", style: .cancel) { _ in
         }
         let delete = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            SavedContentsListModel.shared.deleteAllFiles()
         }
         alert.addAction(ok)
         alert.addAction(delete)

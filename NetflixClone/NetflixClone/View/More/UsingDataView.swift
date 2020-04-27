@@ -14,6 +14,7 @@ class UsingDataView: UIView {
     
     let usageGraphView = UIView()
     let unUsedGraphView = UIView()
+    let netflixGraphView = UIView()
     
     let device = UIDevice.current
     
@@ -25,7 +26,7 @@ class UsingDataView: UIView {
         super.init(frame: frame)
         setUI()
         setConstraints()
-        deviceDataGraph()
+        print("넷플리스용량", netflixDataPercentage())
 
         
         
@@ -35,7 +36,7 @@ class UsingDataView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     private func setUI() {
-        [myDeviceLabel, usageGraphView, unUsedGraphView, usageView, unUsedView, netflixView].forEach {
+        [myDeviceLabel, usageGraphView, unUsedGraphView, netflixGraphView, usageView, unUsedView, netflixView].forEach {
             addSubview($0)
         }
         backgroundColor = .setNetfilxColor(name: .backgroundGray)
@@ -46,7 +47,9 @@ class UsingDataView: UIView {
         
         usageGraphView.backgroundColor = .darkGray
         
-        unUsedGraphView.backgroundColor = .white
+        unUsedGraphView.backgroundColor = .setNetfilxColor(name: .white)
+        
+        netflixGraphView.backgroundColor = #colorLiteral(red: 0.2057322158, green: 0.6013665585, blue: 0.8699436865, alpha: 1)
         
         usageView.usingLabel.text = "사용함"
         usageView.usingLabel.textAlignment = .left
@@ -77,12 +80,18 @@ class UsingDataView: UIView {
             $0.centerY.equalToSuperview()
             $0.height.equalToSuperview().multipliedBy(0.13)
         }
+        netflixGraphView.snp.makeConstraints {
+            $0.trailing.equalTo(unUsedGraphView.snp.leading)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(usageGraphView.snp.height)
+            $0.width.equalTo(usageGraphView.snp.width).multipliedBy(netflixDataPercentage())
+        }
         
         unUsedGraphView.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(padding)
             $0.centerY.equalToSuperview()
             $0.height.equalTo(usageGraphView.snp.height)
-            $0.width.equalTo(usageGraphView.snp.width).multipliedBy(deviceDataGraph())
+            $0.width.equalTo(usageGraphView.snp.width).multipliedBy(deviceDataPercentage())
         }
         
         usageView.snp.makeConstraints {
@@ -118,17 +127,24 @@ class UsingDataView: UIView {
         return systemAttributes[FileAttributeKey.systemSize] as! NSNumber
     }
     
-    func deviceDataGraph() -> Double {
+    
+    func deviceDataPercentage() -> Double {
         guard
             let totalData = deviceRemainingSpaceInBytes() as? Double,
             let unUsedData = deviceRemainingFreeSpaceInBytes() as? Double
             else { return 0 }
         
         return (floor((unUsedData / totalData) * 1000)) / 1000
+
+    }
+    func netflixDataPercentage() -> Double {
+        guard let totalData = deviceRemainingSpaceInBytes() as? Double else { return 0}
+        let netflixData = SavedContentsListModel.shared.totalCapacity()
         
-        
-        
+        return (floor((netflixData / totalData) * 1000)) / 1000
         
     }
+    
+    
     
 }

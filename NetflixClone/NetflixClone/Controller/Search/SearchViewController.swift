@@ -9,7 +9,6 @@
 import UIKit
 import SnapKit
 
-// 찾는 데이터 없으면 없다는 표시 나오는 기능 구현 => 체크해서 쓸데없는 부분 쳐낼것
 // indicator
 
 class SearchViewController: UIViewController {
@@ -18,7 +17,8 @@ class SearchViewController: UIViewController {
         return .lightContent
     }
     
-    // MARK: Search Result CollectionView Datas
+    // MARK: Properties
+    // MARK:  - Search Result CollectionView Datas
     private var searchResultDatas = [SearchContent]() {
         didSet {
             searchView.searchResultCollectionView.reloadData()
@@ -40,7 +40,6 @@ class SearchViewController: UIViewController {
     
     private let flowLayout = FlowLayout(itemsInLine: 3, linesOnScreen: 3.5)
     
-    // MARK: Properties
     private let searchView = SearchView()
     private lazy var contentsSearchBar = UISearchBar()
     
@@ -52,6 +51,7 @@ class SearchViewController: UIViewController {
         setSearchView()
     }
     
+    // MARK: 화면 내리면 키보드 내리기
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         searchBarTextDidEndEditing(contentsSearchBar)
     }
@@ -83,8 +83,9 @@ class SearchViewController: UIViewController {
         contentsSearchBar.setValue("취소", forKey: "cancelButtonText")
         contentsSearchBar.searchTextField.backgroundColor = UIColor.setNetfilxColor(name: .netflixDarkGray)
         contentsSearchBar.searchTextField.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        contentsSearchBar.searchTextField.clearButtonMode = .never
+        contentsSearchBar.searchTextField.clearButtonMode = .whileEditing
         contentsSearchBar.searchTextField.leftView?.tintColor = UIColor.setNetfilxColor(name: .netflixLightGray)
+        
     }
     
     // MARK: SearchView 세팅
@@ -97,11 +98,13 @@ class SearchViewController: UIViewController {
         //        definesPresentationContext = true // iOS 13 미만에서만 해줌, 13은 필요없음. 서치바에 커서 올라가면 주변 어두워지는 기능
     }
     
+    // MARK:  - Search request
     private func request(id: Int, keyword: String) {
         let urlString = "https://netflexx.ga/profiles/\(id)/contents/search/?keyword=\(keyword)"
         guard let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!),
             let token = LoginStatus.shared.getToken() else { return }
         self.dataTask =  APIManager().request(url: url, method: .get, token: token) { (result) in
+            
             switch result {
             case .success(let data):
                 if let results = try? JSONDecoder().decode([SearchContent].self, from: data) {
@@ -115,7 +118,6 @@ class SearchViewController: UIViewController {
             }
         }
         self.dataTask?.resume()
-        
     }
     
 }
@@ -142,10 +144,11 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
         return cell
     }
     
+    // MARK: present ContentVC
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let contentVC = ContentViewController(id: searchResultDatas[indexPath.row].id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: searchResultDatas[indexPath.row].id))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
     }
 }
 
@@ -168,6 +171,7 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: searchBar Delegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         contentsSearchBar.setShowsCancelButton(true, animated: true)
@@ -186,10 +190,10 @@ extension SearchViewController: UISearchBarDelegate {
     
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard let profileId = LoginStatus.shared.getProfileID() else { return }
+        guard let profileID = LoginStatus.shared.getProfileID() else { return }
         if searchText != "" {
             self.dataTask?.cancel()
-            request(id: profileId, keyword: searchText)
+            request(id: profileID, keyword: searchText)
         } else {
             contentsSearchBar.resignFirstResponder()
             searchResultDatas.removeAll()

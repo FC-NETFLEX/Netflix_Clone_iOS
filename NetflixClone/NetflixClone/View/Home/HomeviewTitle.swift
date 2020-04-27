@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 protocol HomeviewTitleDelegate: class {
-    func didTabHomeTitledibsButton() -> ()
+    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
     func didTabHomeTitlePlayButton() -> ()
     func didTabHomeTitleContentButton() -> ()
 }
@@ -34,6 +34,8 @@ class HomeviewTitle: UIView {
     
     private let titleImage = UIImageView()
     
+    private var id: Int?
+    private var dibs: Bool?
     
     //    private let gradientLayer: CAGradientLayer = {
     //        let gradientLayer = CAGradientLayer()
@@ -63,7 +65,7 @@ class HomeviewTitle: UIView {
         let categoryFont: UIFont = .boldSystemFont(ofSize: 12)
         let fixedFont: UIFont = .systemFont(ofSize: 12)
         
-//        titlePoster.contentMode = .scaleAspectFit
+        //        titlePoster.contentMode = .scaleAspectFit
         titlePoster.contentMode = .scaleAspectFill
         titlePoster.clipsToBounds = true
         
@@ -88,12 +90,12 @@ class HomeviewTitle: UIView {
         infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
-                titleImage.contentMode = .scaleAspectFit
-//        titleImage.contentMode = .scaleAspectFill
+        titleImage.contentMode = .scaleAspectFit
+        //        titleImage.contentMode = .scaleAspectFill
         titleImage.clipsToBounds = true
         
         
-        dibsLabel.text = "내가 찜한..."
+        dibsLabel.text = "내가 찜한콘텐츠"
         dibsLabel.font = fixedFont
         dibsLabel.textColor = textTintColor
         
@@ -104,7 +106,7 @@ class HomeviewTitle: UIView {
         
         
         addSubview(titlePoster)
-
+        
         addSubview(contentView)
         addSubview(titleImage)
         
@@ -124,7 +126,7 @@ class HomeviewTitle: UIView {
         
         let miniButtonWidth: CGFloat = xMargin * 2
         let miniButtonHeight: CGFloat = yMargin * 4
-
+        
         
         titlePoster.snp.makeConstraints {
             $0.top.leading.bottom.trailing.equalToSuperview()
@@ -217,7 +219,9 @@ class HomeviewTitle: UIView {
     
     
     // MARK: - configure
-    func configure(id: Int, poster: String, category: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
+    func configure(id: Int, poster: String, categories: [String], dibs: Bool, titleImage: String /*, url: URL?*/) {
+        self.id = id
+        self.dibs = dibs
         
         if dibs {
             dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
@@ -227,24 +231,26 @@ class HomeviewTitle: UIView {
         
         
         var categoryText: String = ""
-        
-        category.forEach {
-            categoryText += $0 + ","
-        }
-        /*
-         self.posterImage.kf.setImage(with: URL(string: url))
 
-         */
+        var forNum = 0
+        for category in categories {
+            forNum += 1
+            categoryText += category
+            if forNum == categories.count {
+                continue
+            }
+            categoryText += ", "
+        }
+        
         titlePoster.kf.setImage(with: URL(string: poster))
         categoryLabel.text = categoryText
         self.titleImage.kf.setImage(with: URL(string: titleImage))
-
         
     }
     
     //MARK: - action
     @objc private func didTabdibsButton(sender: UIButton) {
-        delegate?.didTabHomeTitledibsButton()
+        delegate?.didTabHomeTitledibsButton(id: id!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:) )
     }
     
     @objc private func didTabPlayButton(sender: UIButton) {
@@ -253,6 +259,28 @@ class HomeviewTitle: UIView {
     
     @objc private func didTabInfoButton(sender: UIButton) {
         delegate?.didTabHomeTitleContentButton()
+    }
+    
+    
+    //MARK: Button Touch 막기
+    func isEnabled() {
+        dibsButton.isEnabled = true
+        
+    }
+    
+    func disEnabled() {
+        dibsButton.isEnabled = false
+        
+    }
+    
+    func buttonUIToggle(dibsFlag: Bool) {
+        
+        if dibsFlag {
+            dibsButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        } else {
+            dibsButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            
+        }
     }
     
 }
