@@ -16,7 +16,7 @@ struct HomeContent: Codable {
     let recommendContents: [RecommendContent]
     let previewContents: [PreviewContent]
     let watchingVideo: [WatchVideo]
-        
+    
     private enum CodingKeys: String, CodingKey {
         case topContent = "top_contents"
         case adContent = "ad_contents"
@@ -49,8 +49,8 @@ struct TopConent: Codable {
     var selectedFlag: Bool
     
     
-//    let titleEnglish: String
-//    let likeFlag: Bool
+    //    let titleEnglish: String
+    //    let likeFlag: Bool
     //    let summary: String         // 줄거리
     //    let timeLength: String
     //    let pubYear: String         // 개봉일
@@ -63,7 +63,7 @@ struct TopConent: Codable {
     private enum CodingKeys: String, CodingKey {
         case id
         case title = "contents_title"
-//        case titleEnglish = "contents_title_english"
+        //        case titleEnglish = "contents_title_english"
         case imageURL = "contents_image"
         
         case logoImageURL = "contents_logo"
@@ -101,7 +101,7 @@ struct ADContent: Codable {
     //    let videos: [String]
     //    let likeFlag: Bool
     
-
+    
     private enum CodingKeys: String, CodingKey {
         case id
         case title = "contents_title"
@@ -134,7 +134,7 @@ struct RecommendContent: Codable {
         case id
         case title = "contents_title"
         case imageURL = "contents_image"
-
+        
     }
 }
 
@@ -149,6 +149,9 @@ struct PreviewContent: Codable {
     let videos: [Video]
     let categories: [String]
     let isSelect: Bool
+    var genre: String {
+        categories.joined(separator: " ・ ")
+    }
     
     private enum CodingKeys: String, CodingKey {
         case id
@@ -180,17 +183,17 @@ struct WatchVideo: Codable {
         case contentId = "contents_id"
     }
     
-  
+    
 }
 
 struct Video: Codable {
-      let id: Int
-      let videoURL: String
-      
-      private enum CodingKeys: String, CodingKey {
-          case id
-          case videoURL = "video_url"
-      }
-  }
+    let id: Int
+    let videoURL: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case videoURL = "video_url"
+    }
+}
 
 
