@@ -10,13 +10,18 @@ import UIKit
 
 class ContentViewController: CanSaveViewController {
     
+    static func presentContentVC(viewController: UIViewController, contentID: Int) {
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentID))
+        contentVC.modalPresentationStyle = .fullScreen
+        viewController.present(contentVC, animated: true)
+    }
+    
     private let bluredBackgroundView = BluredBackgroundView()
     private let contentTableView = UITableView()
     
     private var contentId: Int
     private var content: ContentDetail?
     private var similarContents: [SimilarContent] = []
-    
     
     init(id: Int = 3) {
         self.contentId = id
@@ -171,9 +176,10 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension ContentViewController: RecommendedCellDalegate {
     func didTapRecommendedContents(indexPath: IndexPath) {
+        
         let contentVC = ContentViewController(id: similarContents[indexPath.row].id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+        navigationController?.pushViewController(contentVC, animated: true)
+
     }
 }
 
