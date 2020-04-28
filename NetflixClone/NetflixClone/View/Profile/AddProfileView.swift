@@ -65,10 +65,10 @@ class AddProfileView: UIView {
         
         [newProfileButton,changeLabel,nickNameTextfield].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
-        }
+        }        
         newProfileButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         newProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.254).isActive = true
+        newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.265).isActive = true
         newProfileButton.heightAnchor.constraint(equalTo: newProfileButton.widthAnchor).isActive = true
         
         changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: margin).isActive = true
