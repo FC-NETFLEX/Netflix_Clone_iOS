@@ -57,7 +57,11 @@ class AppSetUpViewController: UIViewController {
     }
     
     private func alertAction() {
-        let alert = UIAlertController(title: "저장한 콘텐츠 모두 삭제", message: "저장하신 콘텐츠 1편을 모두 삭제하시겠어요?", preferredStyle: .alert)
+        
+        let savedContentsCount = SavedContentsListModel.shared.totalConetntCount
+       
+        if savedContentsCount != 0 {
+        let alert = UIAlertController(title: "저장한 콘텐츠 모두 삭제", message: "저장하신 콘텐츠 \(savedContentsCount)편을 모두 삭제하시겠어요?", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel) { _ in
         }
         let delete = UIAlertAction(title: "삭제", style: .destructive) { _ in
@@ -66,6 +70,7 @@ class AppSetUpViewController: UIViewController {
         alert.addAction(ok)
         alert.addAction(delete)
         present(alert, animated: true)
+        }
     }
     private func fastURLScheme() {
         guard

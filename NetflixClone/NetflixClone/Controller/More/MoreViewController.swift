@@ -37,8 +37,6 @@ class MoreViewController: UIViewController {
     }
     private func setNavigation() {
         navigationController?.isNavigationBarHidden = true
-        navigationController?.navigationBar.tintColor = .setNetfilxColor(name: .white)
-        title = ""
     }
   
     private func profileStactViewSetting() {
@@ -318,7 +316,7 @@ extension MoreViewController: MoreViewTableCellDelegate {
         switch cell.tag {
         case 0:
             let dibsVC = DibsViewController()
-            navigationController?.isNavigationBarHidden = false
+//            navigationController?.isNavigationBarHidden = false
            navigationController?.pushViewController(dibsVC, animated: true)
                       
         //네비로 바꾸기
