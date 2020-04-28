@@ -53,7 +53,6 @@ class LatestMovieTableViewCell: UITableViewCell {
     private func setUI() {
         let HeaderFont: UIFont = .boldSystemFont(ofSize: 16)
                 
-        headerLabel.text = "최신영화"
         headerLabel.font = HeaderFont
         headerLabel.backgroundColor = .clear
         headerLabel.textColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.white)
@@ -88,9 +87,10 @@ class LatestMovieTableViewCell: UITableViewCell {
     
     
     //MARK: -configure
-    func configure(id: [Int], poster: [String]) {
+    func configure(id: [Int], poster: [String], cellTitle: String) {
         self.idData = id
         self.posterData = poster
+        headerLabel.text = cellTitle//"최신영화"
         contentsCollectionView.reloadData()
     }
     
