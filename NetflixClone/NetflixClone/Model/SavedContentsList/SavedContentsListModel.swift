@@ -23,7 +23,18 @@ class SavedContentsListModel {
     private let userDefaults = UserDefaults.standard
 
     var profiles: [HaveSaveContentsProfile] = [] 
-
+    
+    var totalConetntCount: Int {
+        get {
+            var result = 0
+            profiles.forEach({
+                $0.savedContents.forEach({ _ in
+                    result += 1
+                })
+            })
+            return result
+        }
+    }
     
     init() {
         getSavedContentsList()

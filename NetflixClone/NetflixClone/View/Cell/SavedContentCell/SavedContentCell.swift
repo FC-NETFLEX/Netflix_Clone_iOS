@@ -12,6 +12,7 @@ import Kingfisher
 protocol SavedContentCellDelegate: class {
     func saveContentControl(status: SaveContentStatus, id: Int)
     func presentVideonController(contentID: Int)
+    func deleteSavedContent(contentID: Int)
 }
 
 class SavedContentCell: UITableViewCell {
@@ -30,6 +31,11 @@ class SavedContentCell: UITableViewCell {
     
     weak var delegate: SavedContentCellDelegate?
     
+    private var lastGestureX: CGFloat = 0
+    
+    private let mainContentView = UIView()
+    
+    private let deleteButton = UIButton()
     
     private let thumbnailImageView = UIImageView()
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
@@ -50,6 +56,7 @@ class SavedContentCell: UITableViewCell {
         
         setUI()
         setConstraint()
+        addGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -60,8 +67,13 @@ class SavedContentCell: UITableViewCell {
     //MARK: UI
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
-        [summaryLabel, thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
+        
+        [mainContentView, deleteButton].forEach({
             contentView.addSubview($0)
+        })
+        
+        [summaryLabel, thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
+            mainContentView.addSubview($0)
         })
         
         
@@ -72,6 +84,11 @@ class SavedContentCell: UITableViewCell {
         [playImageBackgroundView].forEach({
             thumbnailImageView.addSubview($0)
         })
+        
+        deleteButton.backgroundColor = .setNetfilxColor(name: .netflixRed)
+        deleteButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        deleteButton.tintColor = .setNetfilxColor(name: .white)
+        deleteButton.addTarget(self, action: #selector(didTapDeleteButton(_:)), for: .touchUpInside)
         
         playImageBackgroundView.addSubview(playImageView)
         
@@ -111,11 +128,23 @@ class SavedContentCell: UITableViewCell {
         
         let xPading = CGFloat.dynamicXMargin(margin: 8)
         
+        mainContentView.snp.makeConstraints({
+            $0.width.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(yMargin)
+        })
+        
+        deleteButton.snp.makeConstraints({
+            $0.leading.equalTo(mainContentView.snp.trailing)
+            $0.top.bottom.equalTo(mainContentView)
+            $0.trailing.equalToSuperview()
+            $0.width.equalTo(0)
+        })
+        
         
         thumbnailImageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.bottom.equalToSuperview().inset(yMargin)
-            $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
+            $0.top.equalToSuperview()
+            $0.width.equalToSuperview().multipliedBy(0.3)
             $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(0.6)
         })
         
@@ -157,18 +186,30 @@ class SavedContentCell: UITableViewCell {
             $0.bottom.equalToSuperview()
         })
         
+        
     }
     
     
     //MARK: Action
-    func configure(content: SaveContent) {
-        
+    func configure(content: SaveContent, isEditing: Bool) {
         titleLabel.text = content.title
         descriptionLabel.text = content.description
         thumbnailImageView.kf.setImage(with: content.imageURL)
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
         statusView.id = content.contentID
+        setEditingMode(isEditing: isEditing)
+    }
+    
+    func setEditingMode(isEditing: Bool) {
+        
+        let multiplier = isEditing ? 1: 0
+        deleteButton.snp.remakeConstraints({
+            $0.leading.equalTo(mainContentView.snp.trailing)
+            $0.top.bottom.equalTo(mainContentView)
+            $0.trailing.equalToSuperview()
+            $0.width.equalTo(deleteButton.snp.height).multipliedBy(multiplier)
+        })
     }
     
     
@@ -177,14 +218,108 @@ class SavedContentCell: UITableViewCell {
     }
     
     @objc private func didPlayButton(_ sender: UIButton) {
-        print(#function)
         delegate?.presentVideonController(contentID: statusView.id)
     }
     
-//    override var editingInteractionConfiguration: UIEditingInteractionConfiguration {
-//        UIEditingInteractionConfiguration
+    @objc private func didTapDeleteButton(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            guard let self = self else { return }
+            self.deleteButton.snp.remakeConstraints({
+                $0.leading.equalTo(self.mainContentView.snp.trailing)
+                $0.top.bottom.equalTo(self.mainContentView)
+                $0.trailing.equalToSuperview()
+                $0.width.equalTo(self.mainContentView.snp.width)
+            })
+            self.layoutIfNeeded()
+            }, completion: { [weak self] _ in
+                guard let self = self else { return }
+                self.delegate?.deleteSavedContent(contentID: self.statusView.id)
+        })
+    }
+    
+    // panGesture 등록
+    private func addGesture() {
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction))
+        mainContentView.addGestureRecognizer(panGesture)
+        panGesture.delegate = self
+    }
+    
+    // panGesture의 동작 메서드
+    @objc private func panGestureAction(_ sender: UIPanGestureRecognizer) {
+        
+        let point = sender.translation(in: self)
+        
+        switch sender.state {
+        case .began:
+            print("PanGesture Began")
+            break
+        case .ended:
+            endedGesture()
+        case .changed:
+            let x = point.x
+            remakeConstraintsForGesture(x: x)
+            lastGestureX = x
+        default:
+            break
+        }
+        
+    }
+    
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        print(#function, point)
+//        return super.hitTest(point, with: event)
 //    }
+    
+    
+    // gesture에 따른 constraint 업데이트
+    private func remakeConstraintsForGesture(x: CGFloat) {
+        let result = deleteButton.bounds.width + (lastGestureX - x)
+        guard result >= 0 else { return }
+        deleteButton.snp.remakeConstraints({
+            $0.leading.equalTo(self.mainContentView.snp.trailing)
+            $0.top.bottom.equalTo(self.mainContentView)
+            $0.trailing.equalToSuperview()
+            $0.width.equalTo(result)
+        })
+    }
+    
+    // gesture가 종료 되었을때 호출되는 함수
+    private func endedGesture() {
+        let isEditing = deleteButton.bounds.width >= deleteButton.bounds.height / 2
+        UIView.animate(withDuration: 0.2, animations: {
+            self.setEditingMode(isEditing: isEditing)
+            self.layoutIfNeeded()
+        })
+        lastGestureX = 0
+    }
+    
         
 }
 
 
+extension SavedContentCell {
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+
+        guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false }
+        
+        let translation = panGesture.translation(in: mainContentView)
+        print(translation)
+        if abs(translation.x) > abs(translation.y) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+//    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+//            let translation = panGestureRecognizer.translationInView(mainContentView)
+//            if fabs(translation.x) > fabs(translation.y) {
+//                return true
+//            }
+//            return false
+//        }
+//        return false
+//    }
+}

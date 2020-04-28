@@ -51,6 +51,8 @@ class SavedContentsListView: UIView {
         tableView.separatorStyle = .none
         
         tableView.register(PresentFindStorableContentViewControllerButtonCell.self, forCellReuseIdentifier: PresentFindStorableContentViewControllerButtonCell.identifier)
+        
+        
     }
     
     private func setConstraint() {
@@ -66,6 +68,20 @@ class SavedContentsListView: UIView {
         })
     }
     
-    
+    func setEditingMode(isEditing: Bool) {
+        
+        
+        
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+            guard let self = self else { return }
+
+            self.tableView.visibleCells.forEach({ cell in
+                if let cell = cell as? SavedContentCell {
+                    cell.setEditingMode(isEditing: isEditing)
+                }
+                self.layoutIfNeeded()
+            })
+        })
+    }
     
 }
