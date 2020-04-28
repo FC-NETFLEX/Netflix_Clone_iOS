@@ -129,7 +129,7 @@ extension AppSetUpViewController: UITableViewDataSource {
             cell.textLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
             cell.imageView?.image = UIImage(named: date.appSetImage)
             cell.textLabel?.text = date.text
-            cell.selectionStyle = .none
+//            cell.selectionStyle = .none
             cell.delegate = self
             cell.configure(indexPath: indexPath)
            
@@ -139,13 +139,13 @@ extension AppSetUpViewController: UITableViewDataSource {
 }
     extension AppSetUpViewController: UITableViewDelegate {
         func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            
+            print(indexPath)
             switch indexPath {
             case [0,0]:
                 let mobileVC = MobileDataViewController()
                 navigationController?.pushViewController(mobileVC, animated: true)
             case [1,0]:
-                print("스위치")
+                print("wifi에서만 저장")
             case [1,1]:
                 alertAction()
             case [2,0]:
@@ -153,15 +153,21 @@ extension AppSetUpViewController: UITableViewDataSource {
             default:
                 break
             }
+            tableView.cellForRow(at: indexPath)?.setSelected(false, animated: false)
+        }
+        
+        func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+            print(#function)
         }
         
         func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             return 60
         }
         func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            70
+            return 70
         }
 }
+
 
 
 
