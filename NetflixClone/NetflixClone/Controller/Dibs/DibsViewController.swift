@@ -22,8 +22,27 @@ class DibsViewController: UIViewController {
         super.viewDidLoad()
         
         request()
+        setNavigation()
         setUI()
         setConstraints()
+    }
+    private func setNavigation() {
+        
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = .setNetfilxColor(name: .black)
+        
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: UIFont.dynamicFont(fontSize: 15, weight: .regular)]
+        
+        let backButton = UIBarButtonItem(image: UIImage(named: "백"), style: .plain, target: self, action: #selector(backButtonDidTap))
+        backButton.tintColor = .setNetfilxColor(name: .white)
+        
+        navigationItem.leftBarButtonItem = backButton
+        
+        title = "내가 찜한 콘텐츠"
+        
     }
     
     private func request() {
@@ -65,14 +84,8 @@ class DibsViewController: UIViewController {
     
     //MARK: UI
     private func setUI() {
-        navigationController?.navigationBar.barTintColor = UIColor.setNetfilxColor(name: .black)
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.setNetfilxColor(name: .white)]
-        
-        view.backgroundColor = UIColor.setNetfilxColor(name: .black)
-        
-        
-        title = "내가 찜한 콘텐츠"
-        
+        view.backgroundColor = .setNetfilxColor(name: .black)
+  
         //DibsView 관련
         dibsView.collectionView.delegate = self
         dibsView.collectionView.dataSource = self
@@ -89,7 +102,9 @@ class DibsViewController: UIViewController {
             $0.leading.trailing.equalToSuperview()
         }
     }
-    
+    @objc func backButtonDidTap() {
+           navigationController?.popViewController(animated: true)
+       }
     
 }
 

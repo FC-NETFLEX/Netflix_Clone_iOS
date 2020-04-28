@@ -50,7 +50,7 @@ class SearchViewController: UIViewController {
         setSearchController()
         setSearchView()
     }
-    
+ 
     // MARK: 화면 내리면 키보드 내리기
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         searchBarTextDidEndEditing(contentsSearchBar)
