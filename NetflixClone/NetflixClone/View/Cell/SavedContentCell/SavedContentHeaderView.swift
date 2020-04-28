@@ -24,6 +24,8 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: UI
+    
     private func setUI() {
         [imageView, titleLabel].forEach({
             contentView.addSubview($0)
@@ -40,6 +42,9 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
         
     }
     
+    
+    //MARK: Action
+    
     private func setConstraint() {
         
         let yMargin = CGFloat.dynamicYMargin(margin: 8)
@@ -49,7 +54,7 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
         imageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
 //            $0.height.equalToSuperview()
-            $0.top.bottom.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(yMargin)
             $0.width.equalTo(imageView.snp.height)
 //            $0.centerY.equalToSuperview()
         })
@@ -66,5 +71,7 @@ class SavedContentHeaderView: UITableViewHeaderFooterView {
         imageView.kf.setImage(with: imageURL)
 //        print(imageURL)
     }
+    
+    
     
 }

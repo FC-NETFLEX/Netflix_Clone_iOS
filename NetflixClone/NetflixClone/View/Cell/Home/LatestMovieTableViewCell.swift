@@ -10,7 +10,7 @@ import UIKit
 
 
 protocol LatestMovieTableViewCellDelegate: class {
-    func didTabLatestMovieCell(id: Int) -> ()
+    func didTapLatestMovieCell(id: Int) -> ()
 }
 
 
@@ -140,6 +140,6 @@ extension LatestMovieTableViewCell: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        delegate?.didTabLatestMovieCell(id: idData[indexPath.row])
+        delegate?.didTapLatestMovieCell(id: idData[indexPath.row])
     }
 }

@@ -10,8 +10,8 @@ import UIKit
 import Kingfisher
 
 protocol WatchContentsCollectionViewCellDelegate: class {
-    func didTabWatchContentInfo(contentId: Int) -> ()
-    func didTabWatchPlay() -> ()
+    func didTapWatchContentInfo(contentId: Int) -> ()
+    func didTapWatchPlay(contentID: Int) -> ()
 }
 
 class WatchContentsCollectionViewCell: UICollectionViewCell {
@@ -60,7 +60,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
 //        infoButton.image = UIImage(systemName: "info.circle")
         infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
         infoButton.tintColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)
-        infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(didTapInfoButton(sender:)), for: .touchUpInside)
         
 //        playButton.image = UIImage(named: "playIcon")//UIImage(systemName: "play.fill")
         playButton.setImage(UIImage(named: "playIcon"), for: .normal)
@@ -68,9 +68,9 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         playButton.backgroundColor = .clear
         playButton.layer.cornerRadius = 40// playView.frame.width / 2
         playButton.clipsToBounds = true
-        playButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(didTapPlay(sender:)), for: .touchUpInside)
         
-        posterButton.addTarget(self, action: #selector(didTabPlay(sender:)), for: .touchUpInside)
+        posterButton.addTarget(self, action: #selector(didTapPlay(sender:)), for: .touchUpInside)
 //        posterButton.contentMode = .scaleAspectFill
         posterButton.backgroundColor = .clear
         posterButton.layer.masksToBounds = true
@@ -158,12 +158,12 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     }
     
     
-    @objc private func didTabInfoButton(sender: UIButton) {
-        delegate?.didTabWatchContentInfo(contentId: contentId!)
+    @objc private func didTapInfoButton(sender: UIButton) {
+        delegate?.didTapWatchContentInfo(contentId: contentId!)
     }
     
-    @objc private func didTabPlay(sender: UIButton) {
-        delegate?.didTabWatchPlay()
+    @objc private func didTapPlay(sender: UIButton) {
+        delegate?.didTapWatchPlay(contentID: contentId!)
         print("didTab WatchPlay")
     }
 }

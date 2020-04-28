@@ -10,10 +10,10 @@ import UIKit
 import AVKit
 
 protocol VideoAdvertisementTableViewCellDelegate: class {
-    func didTabVideoView(contentId: Int) -> ()
-    func didTabVideoCellPlayButton() -> ()
+    func didTapVideoView(contentId: Int) -> ()
+    func didTapVideoCellPlayButton(contentId: Int) -> ()
 //    func didTabVideoCellDibsButton() -> ()
-    func didTabVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
+    func didTapVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
 }
 
 class VideoAdvertisementTableViewCell: UITableViewCell {
@@ -72,6 +72,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         
         videoView.backgroundColor = .black
+        videoView.target(forAction: #selector(didTapVideoView(sender:)), withSender: self)
 //        videoView.backgroundColor = UIColor(patternImage: UIImage(named: "NETFLIX_Video")!)
         
         playButton.backgroundColor = .white
@@ -82,7 +83,7 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         playButton.tintColor = .black
         playButton.contentHorizontalAlignment = .center
         playButton.titleLabel?.font = buttonFont
-        playButton.addTarget(self, action: #selector(didTabPlayButton(sender:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(didTapPlayButton(sender:)), for: .touchUpInside)
         
         dibsButton.backgroundColor = .gray
         dibsButton.layer.cornerRadius = 5
@@ -91,11 +92,11 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         dibsButton.tintColor = .white
         dibsButton.contentHorizontalAlignment = .center
         dibsButton.titleLabel?.font = buttonFont
-        dibsButton.addTarget(self, action: #selector(didTabDibsButton(sender:)), for: .touchUpInside)
+        dibsButton.addTarget(self, action: #selector(didTapDibsButton(sender:)), for: .touchUpInside)
         
         muteButton.backgroundColor = .clear
         muteButton.setImage(UIImage(named: "Mute_icon"), for: .normal)
-        muteButton.addTarget(self, action: #selector(didTabMuteButton(sender:)), for: .touchUpInside)
+        muteButton.addTarget(self, action: #selector(didTapMuteButton(sender:)), for: .touchUpInside)
         
         paddingView.backgroundColor = .clear
         
@@ -204,16 +205,16 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     }
     
     //MAKR: -Action
-    @objc private func didTabVideoView(sender: UIView) {
-        delegate?.didTabVideoView(contentId: contentID!)
+    @objc private func didTapVideoView(sender: UIView) {
+        delegate?.didTapVideoView(contentId: contentID!)
     }
-    @objc private func didTabPlayButton(sender: UIButton) {
-        delegate?.didTabVideoCellPlayButton()
+    @objc private func didTapPlayButton(sender: UIButton) {
+        delegate?.didTapVideoCellPlayButton(contentId: contentID!)
     }
-    @objc private func didTabDibsButton(sender: UIButton) {
-        delegate?.didTabVideoCellDibsButton(id: contentID!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:))
+    @objc private func didTapDibsButton(sender: UIButton) {
+        delegate?.didTapVideoCellDibsButton(id: contentID!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:))
     }
-    @objc private func didTabMuteButton(sender: UIButton) {
+    @objc private func didTapMuteButton(sender: UIButton) {
         
         if muteFlag == true {
             muteButton.setImage(UIImage(named: "Speaker_icon"), for: .normal)
