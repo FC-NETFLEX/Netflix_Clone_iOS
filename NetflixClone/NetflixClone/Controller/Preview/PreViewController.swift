@@ -246,11 +246,7 @@ class PreViewController: BaseViewController {
                 }, completion: { _ in
                     self.categoryLabel.alpha = 1
                     self.previewSubviews[self.displayingViewIndex].player.play()
-                    
-//                    let category = self.preview[self.displayingViewIndex].categories
-//                    let categoryStr = category.joined(separator: ", ")
-//                    self.categoryLabel.text = categoryStr
-                    
+                                        
                     self.configure(dibsButtonClicked: self.preview[self.displayingViewIndex].isSelect)
                 })
             }
@@ -261,7 +257,7 @@ class PreViewController: BaseViewController {
     }
     
     private func configure(dibsButtonClicked: Bool) {
-//        self.categoryLabel.text = preview[displayingViewIndex].genre
+        self.categoryLabel.text = preview[displayingViewIndex].genre
         self.dibsView.isClicked = dibsButtonClicked
         self.dibsView.imageView.image = dibsButtonClicked ? UIImage(systemName: "checkmark"): UIImage(systemName: "plus")
     }
