@@ -148,6 +148,7 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let contentVC = UINavigationController(rootViewController: ContentViewController(id: searchResultDatas[indexPath.row].id))
         contentVC.modalPresentationStyle = .overCurrentContext
+        contentVC.modalTransitionStyle = .crossDissolve
         self.present(contentVC, animated: true)
     }
 }
