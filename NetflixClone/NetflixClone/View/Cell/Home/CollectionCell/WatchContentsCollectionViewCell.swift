@@ -30,7 +30,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     
     private let playButton = UIButton()//UIImageView()
     
-    private var id: Int?
+//    private var id: Int?
     private var contentId: Int?
     
     
@@ -137,8 +137,8 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: configure
-    func configure(id: Int, contentId: Int, poster: URL, watchTime: String, playMark: Double) {
-        self.id = id
+    func configure(/*id: Int*,*/contentId: Int, poster: URL, watchTime: String, playMark: Double) {
+//        self.id = id
         self.contentId = contentId
         watchTimeLabel.text = watchTime
 

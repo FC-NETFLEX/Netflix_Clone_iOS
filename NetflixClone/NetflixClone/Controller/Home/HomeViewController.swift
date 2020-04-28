@@ -35,8 +35,9 @@ final class HomeViewController: BaseViewController {
     private let dibsURL = URL(string: "https://netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 48)/contents/selects/")
     
 //MARK: HomeView 관련
-    
-    //    private let homeTableView = UITableView(frame: .zero, style: .grouped)
+    private let savedContents = SavedContentsListModel()
+    private let savedWatchVideoList = SavedContentsListModel().getWatchingContentOfSavedContent()
+
     private let homeViewCellCount = 5
     
     //MARK: header content
@@ -82,6 +83,8 @@ final class HomeViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 //        view = homeView
+        
+        print("저장 컨텐츠 \(type(of: savedWatchVideoList)) -> \(savedWatchVideoList)")
 
         //MARK: HomeViewRequest
 
@@ -102,7 +105,12 @@ final class HomeViewController: BaseViewController {
                     self.homeViewLatestContents = jsonData.recommendContents
                     self.homeViewTop10Contents = jsonData.top10Contents
                     self.homeViewWatchContents = jsonData.watchingVideo
+//                    self.homeViewWatchContents += self.savedContents.getWatchingContentOfSavedContent()
                     self.homeViewADContent = jsonData.adContent
+                    
+                    self.savedWatchVideoList.forEach {
+                        self.homeViewWatchContents.append($0)
+                    }
                     
                     DispatchQueue.main.sync {
                         self.homeView.homeTableView.reloadData()
@@ -512,23 +520,20 @@ extension HomeViewController: UITableViewDataSource {
             //MARK: WatchContentCell
             let watchContentCell = tableView.dequeueReusableCell(withIdentifier: WatchContentsTableViewCell.identifier, for: indexPath) as! WatchContentsTableViewCell
             watchContentCell.delegate = self
-            
-            var id = [Int]()
-            
+                        
             var posterWatch = [URL]()
             var watchTimekWatch = [Int]()
             var playMark = [Int]()
             var contentId = [Int]()
             
             homeViewWatchContents.forEach {
-                id.append($0.id!)
                 contentId.append($0.contentId)
                 playMark.append($0.playTime)
                 watchTimekWatch.append($0.videoLength)
                 posterWatch.append(URL(string: $0.poster)!)
             }
             
-            watchContentCell.configure(id: id, poster: posterWatch, watchTime: watchTimekWatch, playMark: playMark, contentID: contentId/*, url: <#T##URL#>*/)
+            watchContentCell.configure(poster: posterWatch, watchTime: watchTimekWatch, playMark: playMark, contentID: contentId)
             
             cell = watchContentCell
             
@@ -605,6 +610,7 @@ extension HomeViewController: WatchContentsTableViewDelegate {
     func didTapWatchContentInfo(contentId: Int) {
         let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentId))
         contentVC.modalPresentationStyle = .overCurrentContext
+        //        self.tabBarController?.present(contentVC, animated: true)
         self.present(contentVC, animated: true)
     }
 
@@ -664,10 +670,7 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
     
     
     func didTapVideoView(contentId: Int) {
-       
-//        let contentVC = ContentViewController(id: contentId)
-//        contentVC.modalPresentationStyle = .fullScreen
-//        present(contentVC, animated: true)
+
         let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentId))
         contentVC.modalPresentationStyle = .overCurrentContext
         self.present(contentVC, animated: true)

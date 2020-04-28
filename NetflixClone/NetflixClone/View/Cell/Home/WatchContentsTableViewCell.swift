@@ -23,7 +23,7 @@ class WatchContentsTableViewCell: UITableViewCell {
     
     private let headerLabel = UILabel()
     
-    private var idData = [Int]()
+//    private var idData = [Int]()
     private var contentIdData = [Int]()
     private var postersData = [URL]()
     private var watchTimesData = [Int]()
@@ -89,9 +89,9 @@ class WatchContentsTableViewCell: UITableViewCell {
     }
     
     //MARK: - configure
-    func configure(id: [Int], poster: [URL], watchTime: [Int], playMark: [Int], contentID: [Int]) {
+    func configure(/*id: [Int], */poster: [URL], watchTime: [Int], playMark: [Int], contentID: [Int]) {
 
-        self.idData = id
+//        self.idData = id
         self.contentIdData = contentID
         self.postersData = poster
         self.watchTimesData = watchTime
@@ -149,7 +149,7 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
         let playLength: Double = ( 100 / ( Double(watchTime) / playMarkData ) ) / 100
         
         print("WatchTableViewCell: watchString \(watchString), playMark \(playLength)")
-        cell.configure(id: idData[indexPath.row], contentId: contentIdData[indexPath.row],poster: postersData[indexPath.row], watchTime: watchString, playMark: playLength)
+        cell.configure(/*id: idData[indexPath.row], */contentId: contentIdData[indexPath.row],poster: postersData[indexPath.row], watchTime: watchString, playMark: playLength)
         
         return cell
     }
