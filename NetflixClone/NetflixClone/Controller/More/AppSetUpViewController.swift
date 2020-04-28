@@ -55,6 +55,7 @@ class AppSetUpViewController: UIViewController {
         }
         
     }
+    
     private func alertAction() {
         let alert = UIAlertController(title: "저장한 콘텐츠 모두 삭제", message: "저장하신 콘텐츠 1편을 모두 삭제하시겠어요?", preferredStyle: .alert)
         let ok = UIAlertAction(title: "확인", style: .cancel) { _ in
