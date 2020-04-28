@@ -31,10 +31,11 @@ class TabBarController: UITabBarController {
     }
     
     private func addViewControllers() {
-        let homeVC = HomeViewController()
+        let homeVC = UINavigationController(rootViewController: HomeViewController())//HomeViewController()
         
         homeVC.tabBarItem.title = "홈"
         homeVC.tabBarItem.image = UIImage(systemName: "house")
+        homeVC.navigationBar.isHidden = true
         
         let searchVC = UINavigationController(rootViewController: SearchViewController()) 
         searchVC.tabBarItem.title = "검색"

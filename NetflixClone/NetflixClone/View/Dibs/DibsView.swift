@@ -45,8 +45,5 @@ class DibsView: UIView {
     }
     
     
-    //MARK: Configure
-//    func configure() {
-//        
-//    }
+
 }
