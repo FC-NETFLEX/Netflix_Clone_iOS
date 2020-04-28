@@ -13,6 +13,8 @@ protocol SavedContentCellDelegate: class {
     func saveContentControl(status: SaveContentStatus, id: Int)
     func presentVideonController(contentID: Int)
     func deleteSavedContent(contentID: Int)
+    func beganSwipeCell()
+    func endedSwipeCell()
 }
 
 class SavedContentCell: UITableViewCell {
@@ -30,6 +32,8 @@ class SavedContentCell: UITableViewCell {
     static let identifier = "SavedContentCell"
     
     weak var delegate: SavedContentCellDelegate?
+    
+    private var indexPath = IndexPath(row: 0, section: 0)
     
     private var lastGestureX: CGFloat = 0
     
@@ -191,14 +195,15 @@ class SavedContentCell: UITableViewCell {
     
     
     //MARK: Action
-    func configure(content: SaveContent, isEditing: Bool) {
+    func configure(content: SaveContent, indexPath: IndexPath) {
         titleLabel.text = content.title
         descriptionLabel.text = content.description
         thumbnailImageView.kf.setImage(with: content.imageURL)
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
         statusView.id = content.contentID
-        setEditingMode(isEditing: isEditing)
+        setEditingMode(isEditing: content.isEditing)
+        self.indexPath = indexPath
     }
     
     func setEditingMode(isEditing: Bool) {

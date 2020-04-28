@@ -141,7 +141,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
             resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
         resultCell.delegate = self
-        resultCell.configure(content: content, isEditing: modifyButton.isSelected)
+        resultCell.configure(content: content)
         
         return resultCell
     }
