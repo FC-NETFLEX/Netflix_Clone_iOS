@@ -117,6 +117,9 @@ extension Top10TableViewCell: UICollectionViewDataSource {
 
 //MARK: - CollectionView Delegate
 extension Top10TableViewCell: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        collectionView.reloadInputViews()
+    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         let inset: CGFloat = 10
@@ -130,9 +133,9 @@ extension Top10TableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width: CGFloat = round(collectionView.frame.width / 2.5)
-        
-        return CGSize(width: width, height: collectionView.frame.height - 20)
+//        let width: CGFloat = round(collectionView.frame.width / 2.5)
+//        return CGSize(width: width, height: collectionView.frame.height - 20)
+        return CGSize(width: 150, height: 168)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

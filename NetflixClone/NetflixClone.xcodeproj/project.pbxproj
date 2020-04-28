@@ -115,12 +115,12 @@
 		963716942438A08700AC14C7 /* WatchContentsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963716932438A08700AC14C7 /* WatchContentsCollectionViewCell.swift */; };
 		963716962439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963716952439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift */; };
 		9638FFEE2456F06B0095EE44 /* DibsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9638FFED2456F06B0095EE44 /* DibsViewController.swift */; };
+		9638FFF424585C1F0095EE44 /* CategorySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9638FFF324585C1F0095EE44 /* CategorySelectViewController.swift */; };
 		964C733624517C98001B26A1 /* CategorySelectViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C733524517C98001B26A1 /* CategorySelectViewHeader.swift */; };
 		964C733A2451BA27001B26A1 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C73392451BA27001B26A1 /* CategoryView.swift */; };
 		965FBA4A242B262300A96257 /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965FBA49242B262300A96257 /* PreviewTableViewCell.swift */; };
 		96BBDC73244C2C3400DCD8B2 /* HomeMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC72244C2C3400DCD8B2 /* HomeMenuBarView.swift */; };
 		96BBDC76244C986100DCD8B2 /* DibsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC75244C986100DCD8B2 /* DibsView.swift */; };
-		96BBDC7C2450365500DCD8B2 /* CategorySelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC7B2450365500DCD8B2 /* CategorySelectViewController.swift */; };
 		96BBDC7E2450366F00DCD8B2 /* CategorySelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC7D2450366F00DCD8B2 /* CategorySelectView.swift */; };
 		96BBDC80245072A000DCD8B2 /* DibsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96BBDC7F245072A000DCD8B2 /* DibsModel.swift */; };
 		F4126B6D242E25AD0072B73D /* SearchResultCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4126B6C242E25AD0072B73D /* SearchResultCollectionViewHeader.swift */; };
@@ -249,12 +249,12 @@
 		963716932438A08700AC14C7 /* WatchContentsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentsCollectionViewCell.swift; sourceTree = "<group>"; };
 		963716952439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAdvertisementTableViewCell.swift; sourceTree = "<group>"; };
 		9638FFED2456F06B0095EE44 /* DibsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DibsViewController.swift; sourceTree = "<group>"; };
+		9638FFF324585C1F0095EE44 /* CategorySelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategorySelectViewController.swift; sourceTree = "<group>"; };
 		964C733524517C98001B26A1 /* CategorySelectViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectViewHeader.swift; sourceTree = "<group>"; };
 		964C73392451BA27001B26A1 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		965FBA49242B262300A96257 /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
 		96BBDC72244C2C3400DCD8B2 /* HomeMenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuBarView.swift; sourceTree = "<group>"; };
 		96BBDC75244C986100DCD8B2 /* DibsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DibsView.swift; sourceTree = "<group>"; };
-		96BBDC7B2450365500DCD8B2 /* CategorySelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectViewController.swift; sourceTree = "<group>"; };
 		96BBDC7D2450366F00DCD8B2 /* CategorySelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectView.swift; sourceTree = "<group>"; };
 		96BBDC7F245072A000DCD8B2 /* DibsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DibsModel.swift; sourceTree = "<group>"; };
 		A0EE3F0B2F2FB18A4A9706C0 /* Pods_NetflixClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetflixClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -399,8 +399,8 @@
 		31601CDA242A345B00382B94 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				9638FFF324585C1F0095EE44 /* CategorySelectViewController.swift */,
 				31601CDB242A345B00382B94 /* HomeViewController.swift */,
-				96BBDC7B2450365500DCD8B2 /* CategorySelectViewController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1008,6 +1008,7 @@
 				964C733A2451BA27001B26A1 /* CategoryView.swift in Sources */,
 				963716962439C4D600AC14C7 /* VideoAdvertisementTableViewCell.swift in Sources */,
 				31601D1E242A345C00382B94 /* ContentViewController.swift in Sources */,
+				9638FFF424585C1F0095EE44 /* CategorySelectViewController.swift in Sources */,
 				310B01DF242CB33D00C5858D /* DateExtension.swift in Sources */,
 				31601D38242A345C00382B94 /* LoginModel.swift in Sources */,
 				7030530E244A1D4800715AF1 /* MobileDataViewController.swift in Sources */,
@@ -1043,7 +1044,6 @@
 				70A770832435D77300211473 /* ContentsBasicItem.swift in Sources */,
 				31601D25242A345C00382B94 /* HomeView.swift in Sources */,
 				31601D30242A345C00382B94 /* LoginView.swift in Sources */,
-				96BBDC7C2450365500DCD8B2 /* CategorySelectViewController.swift in Sources */,
 				705319AE242DDAE9004D46A6 /* AddProfileViewController.swift in Sources */,
 				310B01DA242B223B00C5858D /* TabBarController.swift in Sources */,
 				F47BCF042431B67D001095A3 /* SetCollectionViewFlowLayout.swift in Sources */,
