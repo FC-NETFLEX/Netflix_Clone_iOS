@@ -12,7 +12,6 @@ import Kingfisher
 class Top10CollectionViewCell: UICollectionViewCell {
     static let identifier = "Top10CVC"
     
-//    private let topNumLabel = UILabel()
     private let topNumImage = UIImageView()
 
 
@@ -33,10 +32,8 @@ class Top10CollectionViewCell: UICollectionViewCell {
         posterImage.contentMode = .scaleAspectFill
         posterImage.clipsToBounds = true
         
-//        topNumLabel.font = .boldSystemFont(ofSize: 120)
         topNumImage.backgroundColor = .clear
         topNumImage.contentMode = .scaleAspectFill
-//        topNumLabel.textColor = .white
         
         contentView.addSubview(posterImage)
         contentView.addSubview(topNumImage)
@@ -63,7 +60,6 @@ class Top10CollectionViewCell: UICollectionViewCell {
     //MARK: - configure
     func configure(poster: String, count: Int) {
         
-//        topNumLabel.text = "\(count + 1)"
         topNumImage.image = UIImage(named: "\(count + 1)")
         posterImage.kf.setImage(with: URL(string: poster))
         
