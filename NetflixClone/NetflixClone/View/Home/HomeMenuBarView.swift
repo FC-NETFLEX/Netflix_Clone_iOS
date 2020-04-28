@@ -84,7 +84,6 @@ class HomeMenuBarView: UIView {
     
     private func setConstraints() {
 //        let margin: CGFloat = 16
-        print("setConatraints")
         let buttonHeight: CGFloat = 30
         let movieWidth: CGFloat = 50
         let categoryWidth: CGFloat = 80
@@ -142,7 +141,6 @@ class HomeMenuBarView: UIView {
     }
     
     @objc private func didTapDibsButton(sender: UIButton) {
-        print("HomeMenuBar")
         backgroundColor = .black
         dibsButton.setTitle("내가 찜한 콘텐츠 ▼", for: .normal)
         delegate?.didTapDibsButton()
@@ -186,7 +184,6 @@ class HomeMenuBarView: UIView {
         let iconX = iconButton.frame.maxX
         let dibsX = dibsButton.frame.midX
         let finalDibsX = dibsX - (margin * 4 + iconX)
-        print("iconX = \(iconX), dibsX = \(dibsX), finalDibsX = \(finalDibsX)")
         
         UIView.animateKeyframes(
             withDuration: 0.5,
@@ -197,13 +194,6 @@ class HomeMenuBarView: UIView {
                 
         })
         movieButton.isHidden = true
-//        UIView.animateKeyframes(
-//            withDuration: 1,
-//            delay: 0.5,
-//            animations: {
-//                self.movieButton.isHidden = true
-//
-//        })
 
     }
     
@@ -214,7 +204,6 @@ class HomeMenuBarView: UIView {
 //        print("iconX = \(iconX), dibsX = \(categoryX)")
         
         categoryButton.frame = .init(x: movieButton.frame.minX, y: movieButton.frame.minY, width: 1, height: 1)
-        print("categoryFrmae1 \(categoryFrame), 2 \(categoryButton.frame)")
         categoryButton.isHidden = false
         categoryButton.alpha = 0
         

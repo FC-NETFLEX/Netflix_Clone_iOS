@@ -26,6 +26,7 @@ class UsingDataGraphCellTableViewCell: UITableViewCell {
     }
     func setUI() {
         addSubview(graphView)
+        selectionStyle = .none
     }
     func setConstraints() {
         graphView.snp.makeConstraints {

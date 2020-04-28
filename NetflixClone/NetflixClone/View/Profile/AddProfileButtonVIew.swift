@@ -45,7 +45,7 @@ class AddProfileButtonView: UIView {
         profilePlusButton.setImage(UIImage(named: "플러스"), for: .normal)
         profilePlusButton.backgroundColor = #colorLiteral(red: 0.1056868053, green: 0.1067332093, blue: 0.1067332093, alpha: 1)
         profilePlusButton.layer.borderWidth = 1.6
-        profilePlusButton.layer.borderColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        profilePlusButton.layer.borderColor = #colorLiteral(red: 0.2941176471, green: 0.2941176471, blue: 0.2941176471, alpha: 1)
         profilePlusButton.contentMode = .scaleAspectFill
         profilePlusButton.layer.masksToBounds = true
         profilePlusButton.layer.cornerRadius = cornerRadius
@@ -70,10 +70,11 @@ class AddProfileButtonView: UIView {
         baseView.trailingAnchor.constraint(equalTo:self.trailingAnchor).isActive = true
         baseView.bottomAnchor.constraint(equalTo:self.bottomAnchor).isActive = true
         
+        profilePlusButton.centerXAnchor.constraint(equalTo: baseView.centerXAnchor).isActive = true
         profilePlusButton.topAnchor.constraint(equalTo: baseView.topAnchor, constant:  padding).isActive = true
-        profilePlusButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: margin).isActive = true
-        profilePlusButton.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -margin).isActive = true
-        profilePlusButton.widthAnchor.constraint(equalTo: baseView.widthAnchor, multiplier: 0.7).isActive = true
+//        profilePlusButton.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: margin).isActive = true
+//        profilePlusButton.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -margin).isActive = true
+        profilePlusButton.widthAnchor.constraint(equalTo: baseView.widthAnchor, multiplier: 0.65).isActive = true
         profilePlusButton.heightAnchor.constraint(equalTo: profilePlusButton.widthAnchor).isActive = true
         
         addProfileLabel.topAnchor.constraint(equalTo: profilePlusButton.bottomAnchor, constant: spacing).isActive = true

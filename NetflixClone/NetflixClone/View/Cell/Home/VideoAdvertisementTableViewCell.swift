@@ -23,6 +23,9 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     weak var delegate: VideoAdvertisementTableViewCellDelegate?
     
     private let headerHeight: CGFloat = 24
+    private let videoViewWidth: CGFloat = 375
+    private let videoViewHeight: CGFloat = 223
+
     
     private let headerLabel = UILabel()
     let playButton = UIButton()
@@ -115,14 +118,13 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         //MARK: -Video
-        //        let player = AVPlayer(url: url)
         let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = CGRect(x: 0, y: 0, width: videoView.frame.width, height: videoView.frame.height)
-        //        playerLayer.frame = videoView.frame
+//        playerLayer.frame = CGRect(x: 0, y: 0, width: videoView.frame.width, height: videoView.frame.height)
+        playerLayer.frame = CGRect(x: 0, y: 0, width: videoViewWidth, height: videoViewHeight)
+
         
         videoView.layer.addSublayer(playerLayer)
         
-        print("\n*********************\n\nVideoView",player?.status.rawValue)
 //MARK: - 음소거버튼 셋팅
         videoView.addSubview(muteButton)
         
@@ -140,6 +142,12 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         player?.isMuted = true
     }
     
+    func playVideoUrl(url: URL) {
+        // url setting
+        
+        player?.play()
+        player?.isMuted = true
+    }
     
     
     private func setConstrinats() {
@@ -152,7 +160,6 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
         
         let viewHeight: CGFloat = round(contentView.frame.height / 3 ) * 2
         
-    
         headerLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(margin)
             $0.leading.trailing.equalToSuperview()
@@ -241,7 +248,6 @@ class VideoAdvertisementTableViewCell: UITableViewCell {
     }
     
     func buttonUIToggle(dibsFlag: Bool) {
-        print("ADContent ButtonToggle")
         
         if dibsFlag {
             print("true")
