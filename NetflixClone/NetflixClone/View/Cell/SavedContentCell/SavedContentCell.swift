@@ -239,17 +239,19 @@ class SavedContentCell: UITableViewCell {
     
     // panGesture 등록
     private func addGesture() {
-        let gesture = UIPanGestureRecognizer(target: self, action: #selector(gestureAction(_:)))
-        self.addGestureRecognizer(gesture)
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGestureAction))
+        mainContentView.addGestureRecognizer(panGesture)
+        panGesture.delegate = self
     }
     
     // panGesture의 동작 메서드
-    @objc private func gestureAction(_ sender: UIPanGestureRecognizer) {
+    @objc private func panGestureAction(_ sender: UIPanGestureRecognizer) {
         
         let point = sender.translation(in: self)
         
         switch sender.state {
         case .began:
+            print("PanGesture Began")
             break
         case .ended:
             endedGesture()
@@ -261,8 +263,12 @@ class SavedContentCell: UITableViewCell {
             break
         }
         
-        
     }
+    
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//        print(#function, point)
+//        return super.hitTest(point, with: event)
+//    }
     
     
     // gesture에 따른 constraint 업데이트
@@ -291,3 +297,29 @@ class SavedContentCell: UITableViewCell {
 }
 
 
+extension SavedContentCell {
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+
+        guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false }
+        
+        let translation = panGesture.translation(in: mainContentView)
+        print(translation)
+        if abs(translation.x) > abs(translation.y) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+//    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+//            let translation = panGestureRecognizer.translationInView(mainContentView)
+//            if fabs(translation.x) > fabs(translation.y) {
+//                return true
+//            }
+//            return false
+//        }
+//        return false
+//    }
+}

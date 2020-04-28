@@ -22,6 +22,7 @@ class FindStorableContentViewController: BaseViewController {
         super.viewDidLoad()
         setNevigationController()
         setUI()
+        
     }
     
     //MARK: UI
@@ -89,10 +90,14 @@ extension FindStorableContentViewController: UITableViewDelegate {
 }
 
 extension FindStorableContentViewController: FindStorableContentTableViewCellDelegate {
+    
     func selectedContent(contentID: Int) {
-        let contentVC = ContentViewController(id: contentID)
-        contentVC.modalPresentationStyle = .fullScreen
+        
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentID))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        contentVC.modalTransitionStyle = .crossDissolve
         present(contentVC, animated: true)
+        
     }
 }
 
