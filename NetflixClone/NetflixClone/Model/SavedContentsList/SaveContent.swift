@@ -28,7 +28,7 @@ enum SaveContentStatus: String, Codable {
     }
 }
 
-class SaveContent: Codable {
+class SaveContent: Decodable {
     
     var superProfile: HaveSaveContentsProfile? {
         get {
@@ -60,13 +60,16 @@ class SaveContent: Codable {
     private var _imageURL: URL // 이미지
     private var _videoURL: URL // 영상
     let savedDate: Date // 저장 시점
+    var isSelected: Bool = false
+    var isEditing: Bool = false
+    
     
     var status: SaveContentStatus {
         didSet {
             self.postNotification()
         }
     }
-    var isSelected: Bool = false
+    
     
     var imageURL: URL {
         get {
@@ -87,6 +90,8 @@ class SaveContent: Codable {
             }
         }
     }
+    
+    
     
     init(contentID: Int, title: String, rating: String, summary: String, imageURL: URL, videoURL: URL, status: SaveContentStatus) {
         self.contentID = contentID
@@ -163,4 +168,66 @@ class SaveContent: Codable {
         let resultString = formatter.string(from: result as NSNumber)
         return resultString
     }
+    
+    
+    //MARK: Codable
+    
+    private enum CodingKeys: String, CodingKey {
+        case contentID
+        case savePoint
+        case contentRange
+        case capacity
+        case writtenByte
+        case title
+        case rating
+        case summary
+        case _imageURL
+        case _videoURL
+        case savedDate
+        case status
+        case isSelected
+        case isEditing
+    }
+    
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.contentID = try container.decode(Int.self, forKey: .contentID)
+        self.savePoint = try container.decode(Int64?.self, forKey: .savePoint)
+        self.contentRange = try container.decode(Int64?.self, forKey: .contentRange)
+        self.capacity = try container.decode(Int64?.self, forKey: .capacity)
+        self.writtenByte = try container.decode(Int64?.self, forKey: .writtenByte)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.rating = try container.decode(String.self, forKey: .rating)
+        self.summary = try container.decode(String.self, forKey: .summary)
+        self._imageURL = try container.decode(URL.self, forKey: ._imageURL)
+        self._videoURL = try container.decode(URL.self, forKey: ._videoURL)
+        self.savedDate = try container.decode(Date.self, forKey: .savedDate)
+        self.status = try container.decode(SaveContentStatus.self, forKey: .status)
+        self.isSelected = false
+        self.isEditing = false
+    }
+    
 }
+
+extension SaveContent: Encodable {
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(contentID, forKey: .contentID)
+        try container.encode(savePoint, forKey: .savePoint)
+        try container.encode(contentRange, forKey: .contentRange)
+        try container.encode(capacity, forKey: .capacity)
+        try container.encode(writtenByte, forKey: .writtenByte)
+        try container.encode(title, forKey: .title)
+        try container.encode(rating, forKey: .rating)
+        try container.encode(summary, forKey: .summary)
+        try container.encode(_imageURL, forKey: ._imageURL)
+        try container.encode(_videoURL, forKey: ._videoURL)
+        try container.encode(savedDate, forKey: .savedDate)
+        try container.encode(status, forKey: .status)
+        try container.encode(false, forKey: .isSelected)
+        try container.encode(false, forKey: .isEditing)
+    }
+}
+
+
