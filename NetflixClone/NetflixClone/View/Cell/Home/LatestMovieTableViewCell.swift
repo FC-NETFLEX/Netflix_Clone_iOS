@@ -31,12 +31,11 @@ class LatestMovieTableViewCell: UITableViewCell {
     
     private let headerLabel = UILabel()
 
-    private let contentsCollectionView: UICollectionView = {
+    let contentsCollectionView: UICollectionView = {
             let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .horizontal
             return UICollectionView(frame: .zero, collectionViewLayout: layout)
         }()
-    
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -88,7 +87,6 @@ class LatestMovieTableViewCell: UITableViewCell {
     }
     
     
-    
     //MARK: -configure
     func configure(id: [Int], poster: [String]) {
         self.idData = id
@@ -118,6 +116,11 @@ extension LatestMovieTableViewCell: UICollectionViewDataSource {
 //MARK: -CollectionView FlowLayout Delegate
 extension LatestMovieTableViewCell: UICollectionViewDelegateFlowLayout {
     
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        collectionView.reloadInputViews()
+////        collectionView.reloadData()   // error
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
 
         return collectionViewFlow.edgeInsets
@@ -129,12 +132,11 @@ extension LatestMovieTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        print(frame)
-        let cellWidth = round(collectionView.frame.width / 3.5)
-        let cellHeight = round(collectionView.frame.height - (collectionViewFlow.lineSpacing * 2))
-        
-        
-        return CGSize(width: cellWidth, height: cellHeight)
+//
+//        let cellWidth = round(collectionView.frame.width / 3.5)
+//        let cellHeight = round(collectionView.frame.height - (collectionViewFlow.lineSpacing * 2))
+//        return CGSize(width: cellWidth, height: cellHeight)
+        return CGSize(width: 107, height: 168)
     }
     
     
