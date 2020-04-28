@@ -47,6 +47,8 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(titleImage)
     }
     
+    
+    
     private func setConstraints() {
         let yMargin: CGFloat = .dynamicYMargin(margin: 4)
         let xMargin: CGFloat = .dynamicXMargin(margin: 4)
@@ -66,7 +68,6 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         
         titleImage.snp.makeConstraints {
             $0.centerY.equalTo(posterImage.snp.bottom)
-//            $0.centerX.equalToSuperview()
             $0.centerX.equalTo(posterImage.snp.centerX)
             $0.height.equalTo(titleImageHeight)
             $0.width.equalTo(titleImageWidth)
@@ -78,9 +79,7 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     //MARK: - Gradient (그라데이션)
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         gradient.startPoint = CGPoint(x: 1, y: 1)
-//        gradient.endPoint = CGPoint(x: 1, y: 0.6)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)
         
         gradient.colors = [
@@ -100,5 +99,7 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         self.titleImage.kf.setImage(with: URL(string: title))
         
     }
+    
+    
     
 }

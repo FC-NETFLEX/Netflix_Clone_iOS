@@ -30,7 +30,7 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     
     private let playButton = UIButton()//UIImageView()
     
-    private var id: Int?
+//    private var id: Int?
     private var contentId: Int?
     
     
@@ -57,12 +57,10 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         
         infoView.backgroundColor = .black
         
-//        infoButton.image = UIImage(systemName: "info.circle")
         infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
         infoButton.tintColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.netflixLightGray)
         infoButton.addTarget(self, action: #selector(didTapInfoButton(sender:)), for: .touchUpInside)
         
-//        playButton.image = UIImage(named: "playIcon")//UIImage(systemName: "play.fill")
         playButton.setImage(UIImage(named: "playIcon"), for: .normal)
         playButton.contentMode = .scaleAspectFill
         playButton.backgroundColor = .clear
@@ -71,7 +69,6 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
         playButton.addTarget(self, action: #selector(didTapPlay(sender:)), for: .touchUpInside)
         
         posterButton.addTarget(self, action: #selector(didTapPlay(sender:)), for: .touchUpInside)
-//        posterButton.contentMode = .scaleAspectFill
         posterButton.backgroundColor = .clear
         posterButton.layer.masksToBounds = true
         posterButton.imageView?.contentMode = .scaleToFill
@@ -137,8 +134,8 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: configure
-    func configure(id: Int, contentId: Int, poster: URL, watchTime: String, playMark: Double) {
-        self.id = id
+    func configure(/*id: Int*,*/contentId: Int, poster: URL, watchTime: String, playMark: Double) {
+//        self.id = id
         self.contentId = contentId
         watchTimeLabel.text = watchTime
 
@@ -164,6 +161,5 @@ class WatchContentsCollectionViewCell: UICollectionViewCell {
     
     @objc private func didTapPlay(sender: UIButton) {
         delegate?.didTapWatchPlay(contentID: contentId!)
-        print("didTab WatchPlay")
     }
 }

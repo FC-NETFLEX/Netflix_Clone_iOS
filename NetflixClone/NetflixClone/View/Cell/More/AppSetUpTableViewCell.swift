@@ -50,6 +50,7 @@ class AppSetUpTableViewCell: UITableViewCell {
         wifiSwitch.isHidden = true
         wifiSwitch.addTarget(self, action: #selector(wifiSwitchDidTap), for: .touchUpInside)
         
+        selectionStyle = .none
 //
 //        moreTapButton.backgroundColor = .clear
 //        moreTapButton.addTarget(self, action: #selector(didTapAppSetButton), for: .touchUpInside)

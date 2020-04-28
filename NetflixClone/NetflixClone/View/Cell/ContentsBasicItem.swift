@@ -24,6 +24,10 @@ final class ContentsBasicItem: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        print("traitCollection cell :", frame)
+    }
     
     //MARK: -UI
     private func setUI() {
