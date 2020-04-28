@@ -9,8 +9,8 @@
 import UIKit
 
 protocol WatchContentsTableViewDelegate: class {
-    func didTabWatchContentPlay() -> ()
-    func didTabWatchContentInfo(contentId: Int) -> ()
+    func didTapWatchContentPlay(contentID: Int) -> ()
+    func didTapWatchContentInfo(contentId: Int) -> ()
 }
 
 class WatchContentsTableViewCell: UITableViewCell {
@@ -158,12 +158,16 @@ extension WatchContentsTableViewCell: UICollectionViewDataSource {
 }
 
 extension WatchContentsTableViewCell: WatchContentsCollectionViewCellDelegate {
-    func didTabWatchContentInfo(contentId: Int) {
-        delegate?.didTabWatchContentInfo(contentId: contentId)
+    func didTapWatchPlay(contentID: Int) {
+                delegate?.didTapWatchContentPlay(contentID: contentID)
     }
     
-    func didTabWatchPlay() {
-        delegate?.didTabWatchContentPlay()
+    func didTapWatchContentInfo(contentId: Int) {
+        delegate?.didTapWatchContentInfo(contentId: contentId)
     }
+//    
+//    func didTabWatchPlay() {
+//        delegate?.didTabWatchContentPlay()
+//    }
     
 }

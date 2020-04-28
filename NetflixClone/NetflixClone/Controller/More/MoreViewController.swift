@@ -24,7 +24,6 @@ class MoreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigation()
         setUI()
         setConstraints()
 
@@ -33,10 +32,13 @@ class MoreViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         reqeustProfileList()
+        setNavigation()
         
     }
     private func setNavigation() {
         navigationController?.isNavigationBarHidden = true
+        navigationController?.navigationBar.tintColor = .setNetfilxColor(name: .white)
+        title = ""
     }
   
     private func profileStactViewSetting() {
@@ -315,7 +317,10 @@ extension MoreViewController: MoreViewTableCellDelegate {
     func didTapMoreTapButton(cell: MoreViewTableCell) {
         switch cell.tag {
         case 0:
-            print("내가찜한컨텐츠 컨트롤러 연결하기")
+            let dibsVC = DibsViewController()
+            navigationController?.isNavigationBarHidden = false
+           navigationController?.pushViewController(dibsVC, animated: true)
+                      
         //네비로 바꾸기
         case 1:
             let appSettingVC = AppSetUpViewController()

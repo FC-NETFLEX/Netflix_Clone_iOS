@@ -10,9 +10,9 @@ import UIKit
 import Kingfisher
 
 protocol HomeviewTitleDelegate: class {
-    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
-    func didTabHomeTitlePlayButton() -> ()
-    func didTabHomeTitleContentButton() -> ()
+    func didTapHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) -> ()
+    func didTapHomeTitlePlayButton() -> ()
+    func didTapHomeTitleContentButton() -> ()
 }
 
 class HomeviewTitle: UIView {
@@ -74,7 +74,7 @@ class HomeviewTitle: UIView {
         
         
         dibsButton.tintColor = textTintColor
-        dibsButton.addTarget(self, action: #selector(didTabdibsButton(sender:)), for: .touchUpInside)
+        dibsButton.addTarget(self, action: #selector(didTapdibsButton(sender:)), for: .touchUpInside)
         
         playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         playButton.contentHorizontalAlignment = .center
@@ -84,10 +84,10 @@ class HomeviewTitle: UIView {
         playButton.layer.cornerRadius = 2
         playButton.tintColor = .black
         playButton.backgroundColor = textTintColor
-        playButton.addTarget(self, action: #selector(didTabPlayButton(sender:)), for: .touchUpInside)
+        playButton.addTarget(self, action: #selector(didTapPlayButton(sender:)), for: .touchUpInside)
         
         infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        infoButton.addTarget(self, action: #selector(didTabInfoButton(sender:)), for: .touchUpInside)
+        infoButton.addTarget(self, action: #selector(didTapInfoButton(sender:)), for: .touchUpInside)
         infoButton.tintColor = textTintColor
         
         titleImage.contentMode = .scaleAspectFit
@@ -249,16 +249,16 @@ class HomeviewTitle: UIView {
     }
     
     //MARK: - action
-    @objc private func didTabdibsButton(sender: UIButton) {
-        delegate?.didTabHomeTitledibsButton(id: id!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:) )
+    @objc private func didTapdibsButton(sender: UIButton) {
+        delegate?.didTapHomeTitledibsButton(id: id!, isEnable: isEnabled, disEnable: disEnabled, buttonToogle: buttonUIToggle(dibsFlag:) )
     }
     
-    @objc private func didTabPlayButton(sender: UIButton) {
-        delegate?.didTabHomeTitlePlayButton()
+    @objc private func didTapPlayButton(sender: UIButton) {
+        delegate?.didTapHomeTitlePlayButton()
     }
     
-    @objc private func didTabInfoButton(sender: UIButton) {
-        delegate?.didTabHomeTitleContentButton()
+    @objc private func didTapInfoButton(sender: UIButton) {
+        delegate?.didTapHomeTitleContentButton()
     }
     
     

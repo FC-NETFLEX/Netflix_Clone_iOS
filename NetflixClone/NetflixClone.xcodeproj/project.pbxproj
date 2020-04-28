@@ -765,11 +765,11 @@
 			isa = PBXGroup;
 			children = (
 				70A770822435D77300211473 /* ContentsBasicItem.swift */,
+				9611E2E32434738200393E84 /* Home */,
 				70305315244CAB6600715AF1 /* Profile */,
 				70444E2B2447722300D506A5 /* More */,
 				F4A5F7A82439E7D200052FAE /* Content */,
 				3128D0DC243F3C55001E08D3 /* SavedContentCell */,
-				9611E2E32434738200393E84 /* Home */,
 				F41A84D82430BF75008DB8F4 /* Search */,
 			);
 			path = Cell;

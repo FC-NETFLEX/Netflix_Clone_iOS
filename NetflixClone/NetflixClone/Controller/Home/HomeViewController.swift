@@ -9,8 +9,8 @@
 import UIKit
 
 
-
-final class HomeViewController: UIViewController {
+//final class HomeViewController: UIViewController {
+final class HomeViewController: BaseViewController {
     
 //    weak var delegate: HomeViewControllerCategoryDelegate?
     
@@ -174,7 +174,7 @@ final class HomeViewController: UIViewController {
 
 //MARK: HomeMenuBarViewDelegate
 extension HomeViewController: HomeMenuBarViewDelegate {
-    func didTabMenuBarIconButton() {
+    func didTapMenuBarIconButton() {
         print("MenuBar DidTabIcon")
         
         menuBar.swingBackAnimation()
@@ -191,12 +191,12 @@ extension HomeViewController: HomeMenuBarViewDelegate {
         
     }
     
-    func didTabMenuBarMovieButton() {
+    func didTapMenuBarMovieButton() {
         print("MenuBar DidTabMovie")
         menuBar.movieClickAnimation()
     }
     
-    func didTabCategoryButton() {
+    func didTapCategoryButton() {
         print("MenuBar DidTabCategory")
         
         let categoryVC = CategorySelectViewController()
@@ -204,7 +204,7 @@ extension HomeViewController: HomeMenuBarViewDelegate {
         present(categoryVC, animated: true)
     }
     
-    func didTabDibsButton() {
+    func didTapDibsButton() {
         print("MenuBar DidTabDibs")
         
         // dibsView 화면전환
@@ -275,7 +275,7 @@ extension HomeViewController: HomeMenuBarViewDelegate {
 extension HomeViewController: HomeviewTitleDelegate {
     
     //MARK: - Dibs Request (HomeHeader)
-    func didTabHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
+    func didTapHomeTitledibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
         
         print("Hometitle dibsButton Click")
         buttonToogle(homeViewTopContent.selectedFlag)
@@ -315,15 +315,16 @@ extension HomeViewController: HomeviewTitleDelegate {
     }
     
     
-    func didTabHomeTitlePlayButton() {
+    func didTapHomeTitlePlayButton() {
         print("HomeTitle playButtonClick")
-
+        presentVideoController(contentID: homeViewTopContent.id)
     }
     
-    func didTabHomeTitleContentButton() {
-        let contentVC = ContentViewController(id: homeViewTopContent.id)
-        contentVC.modalPresentationStyle = .fullScreen//.overFullScreen
-        present(contentVC, animated: true)
+    func didTapHomeTitleContentButton() {
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: homeViewTopContent.id))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
+        
     }
     
 
@@ -567,7 +568,7 @@ extension HomeViewController: UITableViewDataSource {
 //MARK: - HomeView PreviewDelegate (미리보기 델리게이트)
 extension HomeViewController: PreviewTableViewCellDelegate {
     
-    func didTabPreviewCell(index: Int) {
+    func didTapPreviewCell(index: Int) {
         let previewVC = PreViewController(index: index, previews: homeViewPreviewContents)
         previewVC.modalPresentationStyle = .fullScreen
         present(previewVC, animated: true)
@@ -577,10 +578,12 @@ extension HomeViewController: PreviewTableViewCellDelegate {
 
 //MARK: - HomeView LatestMoview Delegate
 extension HomeViewController: LatestMovieTableViewCellDelegate {
-    func didTabLatestMovieCell(id: Int) {
-        let contentVC = ContentViewController(id: id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+    func didTapLatestMovieCell(id: Int) {
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: id))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
+
+        
     }
     
     
@@ -588,10 +591,10 @@ extension HomeViewController: LatestMovieTableViewCellDelegate {
 
 //MARK: - HomeView Top10 Delegate
 extension HomeViewController: Top10TableViewCellDelegate {
-    func didTabTop10Cell(id: Int) {
-        let contentVC = ContentViewController(id: id)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+    func didTapTop10Cell(id: Int) {
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: id))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
     }
     
     
@@ -599,14 +602,16 @@ extension HomeViewController: Top10TableViewCellDelegate {
 
 //MARK: - HomeView WatchContentCell Delegate
 extension HomeViewController: WatchContentsTableViewDelegate {
-    func didTabWatchContentInfo(contentId: Int) {
-        let contentVC = ContentViewController(id: contentId)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+    func didTapWatchContentInfo(contentId: Int) {
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentId))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
     }
 
-    func didTabWatchContentPlay() {
+    func didTapWatchContentPlay(contentID: Int) {
         print("WatchContentCell Click")
+        print("contentId \(contentID)")
+        presentVideoController(contentID: contentID)
     }
 
 
@@ -614,7 +619,7 @@ extension HomeViewController: WatchContentsTableViewDelegate {
 
 //MARK: - HomeView VideoAdvertisemntTableViewCellDelegate
 extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
-    func didTabVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
+    func didTapVideoCellDibsButton(id: Int, isEnable: @escaping () -> (), disEnable: () -> (), buttonToogle: (Bool) -> ()) {
         
         
          print("AD dibsButton Click")
@@ -658,14 +663,19 @@ extension HomeViewController: VideoAdvertisementTableViewCellDelegate {
 
     
     
-    func didTabVideoView(contentId: Int) {
-        let contentVC = ContentViewController(id: contentId)
-        contentVC.modalPresentationStyle = .fullScreen
-        present(contentVC, animated: true)
+    func didTapVideoView(contentId: Int) {
+       
+//        let contentVC = ContentViewController(id: contentId)
+//        contentVC.modalPresentationStyle = .fullScreen
+//        present(contentVC, animated: true)
+        let contentVC = UINavigationController(rootViewController: ContentViewController(id: contentId))
+        contentVC.modalPresentationStyle = .overCurrentContext
+        self.present(contentVC, animated: true)
     }
     
-    func didTabVideoCellPlayButton() {
+    func didTapVideoCellPlayButton(contentId: Int) {
         print("영상재생화면 이동")
+        presentVideoController(contentID: contentId)
     }
     
     
