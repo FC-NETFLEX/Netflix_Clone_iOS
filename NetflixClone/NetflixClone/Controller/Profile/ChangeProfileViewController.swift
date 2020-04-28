@@ -149,15 +149,14 @@ class ChangeProfileViewController: UIViewController {
     private func profileUpdate() {
         let stringID = String(userID)
         let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIconNum, "is_kids": isKids]
+        print(bodys)
         guard let jsonToDO = try? JSONSerialization.data(withJSONObject: bodys) else { return }
         dump(bodys)
         guard
             let token = LoginStatus.shared.getToken(),
             let url = APIURL.makeProfile.makeURL(pathItems: [PathItem(name: stringID, value: nil)])
             else { return }
-        
-        print(url)
-        
+    
         var urlRequest = URLRequest(url: url)
         urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -204,26 +203,22 @@ class ChangeProfileViewController: UIViewController {
     
     
     @objc private func didTapSaveButton() {
-        guard let selectProfile = LoginStatus.shared.getProfile() else { return }
-        
-        guard let userName = addProfileView.nickNameTextfield.text else { return }
-        
-        switch userName.isEmpty {
-        case true:
-            profileName = selectProfile.name
-            
-        case false:
-            profileName = userName
+
+        if let userName = addProfileView.nickNameTextfield.text {
+            profileName = userName.isEmpty ? profileName: userName
         }
- 
+
+        
         for vc in navigationController!.viewControllers.reversed() {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .manager
                 profileUpdate()
-                navigationController?.popViewController(animated: true)
                 print("프로필수정 오케이")
+                navigationController?.popViewController(animated: true)
             } else {
-                print("프로필관리프렌젠트?")
+//                profileUpdate()
+//                print("프로필관리프렌젠트?")
+//                navigationController?.popViewController(animated: true)
             }
             
         }
@@ -257,6 +252,7 @@ extension ChangeProfileViewController: ProfileImageViewControllerDelegate {
     func setImage(image: UIImage, imageID: Int) {
         addProfileView.newProfileButton.setImage(image, for: .normal)
         self.profileIconNum = imageID
+        
     }
 }
 extension ChangeProfileViewController: UITextFieldDelegate {
