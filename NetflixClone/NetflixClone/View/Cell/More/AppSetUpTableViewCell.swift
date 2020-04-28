@@ -57,7 +57,6 @@ class AppSetUpTableViewCell: UITableViewCell {
     }
     func setConstraints() {
         let margin: CGFloat = 10
-        let padding: CGFloat = 30
         
         selectImage.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(margin * 2)

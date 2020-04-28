@@ -38,7 +38,6 @@ class MobileDataTableViewCell: UITableViewCell {
     }
     private func setConstraints() {
         let margin: CGFloat = 10
-        let padding: CGFloat = 30
         
         autoSwitch.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(margin * 2)
