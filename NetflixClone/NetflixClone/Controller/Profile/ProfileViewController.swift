@@ -176,6 +176,9 @@ class ProfileViewController: UIViewController {
             tempStackView.addArrangedSubview(profileView)
             profileViewArray.append(profileView)
             profileViews.append(profileView)
+            profileView.translatesAutoresizingMaskIntoConstraints = false
+            profileView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
+            profileView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
         }
         
         if count < 5 {
@@ -185,6 +188,10 @@ class ProfileViewController: UIViewController {
             tempStackView.addArrangedSubview(addProfileView)
             profileViews.append(addProfileView)
             buttonView = addProfileView
+            
+            addProfileView.translatesAutoresizingMaskIntoConstraints = false
+            addProfileView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
+            addProfileView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
         }
     }
     
