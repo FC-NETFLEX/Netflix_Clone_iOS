@@ -38,7 +38,7 @@ final class HomeViewController: BaseViewController {
     private let savedContents = SavedContentsListModel()
     private let savedWatchVideoList = SavedContentsListModel().getWatchingContentOfSavedContent()
     
-    private let homeViewCellCount = 5
+    private let homeViewCellCount = 7 //5
     
     //MARK: header content
     private var homeViewTopContent = TopConent(id: 1, title: "TopContent", imageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", logoImageURL: "https://fc-netflex.s3.ap-northeast-2.amazonaws.com/contents/image/%EA%B0%80%EB%B2%84%EB%82%98%EC%9B%80.jp", categories: [String](), rating: "12세 관람가", selectedFlag: false)
@@ -73,8 +73,8 @@ final class HomeViewController: BaseViewController {
     private var videoAdvertismentCell: VideoAdvertisementTableViewCell?
     
     private var previewCell: PreviewTableViewCell?
-    private var latestCell: LatestMovieTableViewCell?
-    private var watchCell: WatchContentsTableViewCell?
+//    private var latestCell: LatestMovieTableViewCell?
+//    private var watchCell: WatchContentsTableViewCell?
     
     //MARK: DibsView관련
     //    private var dibsViewContents
@@ -92,9 +92,14 @@ final class HomeViewController: BaseViewController {
         
         //MARK: HomeViewRequest
         
-        let dataTask = URLSession.shared.dataTask(with: self.homeURL!) { (data, response, error) in
+        guard let token = LoginStatus.shared.getToken() else { return }
+        var urlRequest = URLRequest(url: homeURL!)
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
             guard error == nil else { return print("jsonPassing error: ", error!)}
-            guard let response = response as? HTTPURLResponse, (200..<400).contains(response.statusCode) else { return print("jsonPassing response 오류") }
+            guard let response = response as? HTTPURLResponse else { return print("jsonPassing response 오류") }
+            guard (200..<400).contains(response.statusCode) else { return print("json response code \(response.statusCode)")}
             guard let data = data else { return print("jsonPassing data 오류") }
             
             do {
@@ -141,8 +146,6 @@ final class HomeViewController: BaseViewController {
             
         }
         
-        // VideoCell의 영상 재생 멈춤
-        //        videoAdvertismentCell?.player?.pause()
     }
     
     
@@ -162,9 +165,6 @@ final class HomeViewController: BaseViewController {
         print("====================================")
         
 //        homeView.homeTableView.reloadData()
-        
-        
-        
         //x
         //        latestCell?.reloadInputViews()
         
@@ -452,7 +452,8 @@ extension HomeViewController: UITableViewDelegate {
                 return 0
             }
             return watchCellHeight
-            
+        case 5, 6:
+            return posterCellHeight
         default:
             return 100
         }
@@ -520,9 +521,10 @@ extension HomeViewController: UITableViewDataSource {
         case 1:
             //MARK: LatestCell
             
-            //            let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
-            latestCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
+            let latestMovieCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
+//            latestCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             
+            let title = "최신영화"
             var idLatestMovie = [Int]()
             var posterLatestMovie = [String]()
             
@@ -533,9 +535,9 @@ extension HomeViewController: UITableViewDataSource {
             }
             
             
-            latestCell?.configure(id: idLatestMovie, poster: posterLatestMovie)
-            latestCell?.delegate = self
-            cell = latestCell!
+            latestMovieCell.configure(id: idLatestMovie, poster: posterLatestMovie, cellTitle: title)
+            latestMovieCell.delegate = self
+            cell = latestMovieCell
             
         case 2:
             //MARK: VideoCell
@@ -591,7 +593,44 @@ extension HomeViewController: UITableViewDataSource {
             top10Cell.delegate = self
             top10Cell.configure(id: idTop10, poster: posterTop10)
             cell = top10Cell
+        
+    //MARK: 가데이터 셀
+        case 5:
+            let recommendCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
             
+            let title = "추천영화 1"
+            let recommend = homeViewLatestContents.shuffled()
+            var idLatestMovie = [Int]()
+            var posterLatestMovie = [String]()
+            
+            recommend.forEach {
+                
+                idLatestMovie.append($0.id)
+                posterLatestMovie.append($0.imageURL)
+            }
+            
+            
+            recommendCell.configure(id: idLatestMovie, poster: posterLatestMovie, cellTitle: title)
+            recommendCell.delegate = self
+            cell = recommendCell
+        case 6:
+            let recommendSecondCell = tableView.dequeueReusableCell(withIdentifier: LatestMovieTableViewCell.indentifier, for: indexPath) as! LatestMovieTableViewCell
+            
+            let title = "추천영화 2"
+            let recommend = homeViewLatestContents.shuffled()
+            var idLatestMovie = [Int]()
+            var posterLatestMovie = [String]()
+            
+            recommend.forEach {
+                
+                idLatestMovie.append($0.id)
+                posterLatestMovie.append($0.imageURL)
+            }
+            
+            
+            recommendSecondCell.configure(id: idLatestMovie, poster: posterLatestMovie, cellTitle: title)
+            recommendSecondCell.delegate = self
+            cell = recommendSecondCell
         default:
             
             cell = UITableViewCell()
