@@ -49,8 +49,8 @@ class CategorySelectViewController: UIViewController {
 
 //MARK: CategoryviewDelegate
 extension CategorySelectViewController: CategorySelectViewDelegate {
-    func didTabdismisButton() {
-        print("didTabDismiss")
+    func didTapdismisButton() {
+        print("didTapDismiss")
         dismiss(animated: true)
     }
 
