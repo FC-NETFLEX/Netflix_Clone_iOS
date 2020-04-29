@@ -14,7 +14,7 @@ protocol MoreProfileViewDelegate: class {
     func didTapSelectButton()
 }
 
-class MorePofileView: UIView{
+class MorePofileView: UIView {
     
     weak var delegate: MoreProfileViewDelegate?
     let profileButton = UIButton()
