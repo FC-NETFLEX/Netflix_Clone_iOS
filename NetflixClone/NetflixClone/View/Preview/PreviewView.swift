@@ -10,19 +10,29 @@ import UIKit
 import AVFoundation
 import AVKit
 
+protocol PreViewViewDelegate: class {
+    func updateProgress(index: Int, time: Int64, duration: Float64)
+}
+
 class PreviewView: UIView {
     
-    // MARK - 
+    // MARK -
+    
+    var delegate: PreViewViewDelegate?
+    
     private let asset: AVAsset
     var player: AVPlayer
     var playerLayer: AVPlayerLayer
     var durationTime: Float64
     
+    private let index: Int
+    
     private var backgroundImage = UIImageView()
     private let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
     lazy var blurEffectView = UIVisualEffectView(effect: blurEffect)
     
-    init(url: URL) {
+    init(url: URL, index: Int) {
+        self.index = index
         self.asset = AVAsset(url: url)
         let playerItem = AVPlayerItem(asset: asset)
         
@@ -37,6 +47,7 @@ class PreviewView: UIView {
         
         setBlurredBackground()
         
+        addTimeObserver()
         
         print("duration Time: ", self.durationTime)
     }
@@ -47,6 +58,7 @@ class PreviewView: UIView {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+        removeTimeObserver()
         print(#function)
     }
     
@@ -77,6 +89,39 @@ class PreviewView: UIView {
     func configure(image: String) {
         self.backgroundImage.kf.setImage(with: URL(string: image))
     }
+    
+    private var timeObserver: Any?
+    
+    private func addTimeObserver() {
+        print(#function)
+        let timeScale = CMTimeScale(NSEC_PER_SEC)
+        let time = CMTime(seconds: 0.5, preferredTimescale: timeScale)
+        let observer = player.addPeriodicTimeObserver(forInterval: time, queue: .main, using: {
+            [weak self] time in
+            guard let self = self else { return }
+            let currentTime = time.value / Int64(NSEC_PER_SEC)
+            guard currentTime > 0 else { return }
+            print(currentTime)
+            self.delegate?.updateProgress(index: self.index, time: currentTime, duration: self.durationTime)
+            
+        })
+        
+        timeObserver = observer
+    }
+    
+    private func removeTimeObserver() {
+        guard let observer = timeObserver else { return }
+        player.removeTimeObserver(observer)
+        timeObserver = nil
+    }
+    
+    
+    
 }
+
+
+
+
+
 
 

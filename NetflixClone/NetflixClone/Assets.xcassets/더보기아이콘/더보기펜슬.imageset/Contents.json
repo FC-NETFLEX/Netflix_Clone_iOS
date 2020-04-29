@@ -9,13 +9,13 @@
       "scale" : "2x"
     },
     {
-      "filename" : "더보기펜슬.png",
       "idiom" : "universal",
+      "filename" : "더보기펜슬.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "author" : "xcode",
-    "version" : 1
+    "version" : 1,
+    "author" : "xcode"
   }
 }
