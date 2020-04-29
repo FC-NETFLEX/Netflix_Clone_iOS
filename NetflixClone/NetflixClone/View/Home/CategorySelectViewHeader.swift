@@ -7,9 +7,13 @@
 //
 
 import UIKit
-
+protocol CategoryHeaderDelegate: class {
+    func didTabView() -> ()
+}
 class CategorySelectViewHeader: UIView {
-
+    
+    weak var delegate: CategoryHeaderDelegate?
+    
     private let title = UILabel()
     
     override init(frame: CGRect) {
@@ -33,6 +37,11 @@ class CategorySelectViewHeader: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+ 
     
-
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        delegate?.didTabView()
+        
+    }
 }

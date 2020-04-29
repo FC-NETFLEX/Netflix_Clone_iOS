@@ -131,8 +131,8 @@ extension FindStorableContentTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = collectionView.bounds.height
-        let width = collectionView.bounds.width * 0.28
+        let height = collectionView.bounds.height - 16
+        let width = collectionView.bounds.height * 0.6
         return CGSize(width: width, height: height)
     }
     

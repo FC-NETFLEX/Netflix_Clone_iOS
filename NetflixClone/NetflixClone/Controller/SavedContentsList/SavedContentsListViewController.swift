@@ -24,7 +24,7 @@ class SavedContentsListViewController: CanSaveViewController {
         setNavigationController()
         setUI()
         model.delegate = self
-        
+        model.againResumDownloadTasks()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,8 +145,10 @@ extension SavedContentsListViewController: UITableViewDataSource {
             resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
         resultCell.delegate = self
-        resultCell.configure(content: content, isEditing: modifyButton.isSelected)
-        
+        resultCell.configure(content: content, isEditingMode: modifyButton.isSelected, indexPath: indexPath)
+//        print(#function, "*****************************************************")
+//        dump(content)
+//        print(#function, "*****************************************************")
         return resultCell
     }
     
@@ -232,13 +234,38 @@ extension SavedContentsListViewController: UITableViewDelegate {
 
 // MARK: SavedContentCellDelegate
 extension SavedContentsListViewController: SavedContentCellDelegate {
-    func deleteSavedContent(contentID: Int) {
-        guard let savedContent = SavedContentsListModel.shared.getContent(contentID: contentID) else { return }
+    func shouldBeganSwipeCell(indexPath: IndexPath) {
+//        let savedContent = model.getContent(indexPath: indexPath)
+        
+        print(#function)
+        
+    }
+    
+    func beganSwipeCell(indexPath: IndexPath) {
+        model.profiles.forEach({
+            $0.savedContents.forEach({
+                $0.isEditing = false
+            })
+        })
+        rootView.setEditingMode(isEditing: false)
+        print(#function)
+        
+    }
+    
+    func endedSwipeCell(indexPath: IndexPath, isEditing: Bool) {
+        let savedContent = model.getContent(indexPath: indexPath)
+        savedContent.isEditing = isEditing
+    }
+    
+    func deleteSavedContent(indexPath: IndexPath) {
+        let savedContent = model.getContent(indexPath: indexPath)
         savedContent.deleteContent()
     }
     
-    func presentVideonController(contentID: Int) {
-        presentVideoController(contentID: contentID)
+    func presentVideonController(indexPath: IndexPath) {
+        let savedContent = model.getContent(indexPath: indexPath)
+        guard savedContent.status == .saved else { return }
+        presentVideoController(contentID: savedContent.contentID)
     }
     
     func saveContentControl(status: SaveContentStatus, id: Int) {

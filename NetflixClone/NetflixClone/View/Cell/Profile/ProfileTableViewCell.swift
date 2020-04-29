@@ -31,6 +31,7 @@ class ProfileTableVIewCell: UITableViewCell {
     private func setUI() {
         backgroundColor = .setNetfilxColor(name:.black)
         collectionView.backgroundColor = .setNetfilxColor(name:.netflixGray)
+        collectionView.showsHorizontalScrollIndicator = false
         self.addSubview(collectionView)
         
     }

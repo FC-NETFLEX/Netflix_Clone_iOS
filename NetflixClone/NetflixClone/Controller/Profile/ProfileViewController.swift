@@ -126,17 +126,16 @@ class ProfileViewController: UIViewController {
     
     private func setConstraints() {
         let guide = view.safeAreaLayoutGuide
-        let padding: CGFloat = 40
-        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height / 16))
-   
+        let topMargin: CGFloat = .dynamicYMargin(margin: (view.frame.height / 8))
+        
         stackViewArray.forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             $0.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
             $0.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
-        stackViewArray[0].bottomAnchor.constraint(equalTo: stackViewArray[1].topAnchor, constant: -topMargin).isActive = true
+        stackViewArray[0].topAnchor.constraint(equalTo: guide.topAnchor, constant: topMargin).isActive = true
         stackViewArray[1].centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
-        stackViewArray[2].topAnchor.constraint(equalTo: stackViewArray[1].bottomAnchor, constant: topMargin).isActive = true
+        stackViewArray[2].bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -topMargin).isActive = true
 
     }
     
@@ -155,6 +154,7 @@ class ProfileViewController: UIViewController {
     
     var profileViews = [UIView]()
     func stackViewSetting() {
+        let guide = view.safeAreaLayoutGuide
         let count = userProfileList.count
 
         
@@ -176,9 +176,12 @@ class ProfileViewController: UIViewController {
             tempStackView.addArrangedSubview(profileView)
             profileViewArray.append(profileView)
             profileViews.append(profileView)
+           
             profileView.translatesAutoresizingMaskIntoConstraints = false
-            profileView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
-            profileView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
+         
+//            profileView.centerXAnchor.constraint(equalTo: tempStackView.centerXAnchor).isActive = true
+            profileView.widthAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
+            profileView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
         
         if count < 5 {
@@ -190,8 +193,10 @@ class ProfileViewController: UIViewController {
             buttonView = addProfileView
             
             addProfileView.translatesAutoresizingMaskIntoConstraints = false
-            addProfileView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
-            addProfileView.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.18).isActive = true
+
+//            addProfileView.centerXAnchor.constraint(equalTo: tempStackView.centerXAnchor).isActive = true
+            addProfileView.widthAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
+            addProfileView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.17).isActive = true
         }
     }
     
@@ -217,7 +222,6 @@ class ProfileViewController: UIViewController {
     }
     //    MARK: API
     func reqeustProfileList() {
-        
         
         guard
             let token = LoginStatus.shared.getToken(),
@@ -293,21 +297,22 @@ class ProfileViewController: UIViewController {
             $0.setHidden(state: true)
             setNavigationBar()
         }
-        presentingViewController?.dismiss(animated: true)
+        self.dismiss(animated: true)
+//        presentingViewController?.dismiss(animated: true)
         
-        //        switch root {
-        //        case .main, .login:
-        //            profileViewArray.forEach {
-        //                $0.setHidden(state: true)
-        //                setNavigationBar()
-        //            }
-        //        case .manager, .add:
-        //            profileViewArray.forEach {
-        //                $0.setHidden(state: true)
-        //                setNavigationBar()
-        //            }
-        //            presentingViewController?.dismiss(animated: true)
-        //        }
+//                switch root {
+//                case .main, .login:
+//                    profileViewArray.forEach {
+//                        $0.setHidden(state: true)
+//                        setNavigationBar()
+//                    }
+//                case .manager, .add:
+//                    profileViewArray.forEach {
+//                        $0.setHidden(state: true)
+//                        setNavigationBar()
+//                    }
+//                    presentingViewController?.dismiss(animated: true)
+//                }
     }
 }
 

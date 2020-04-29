@@ -31,6 +31,7 @@ class MoreViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+     print(userArray)
         reqeustProfileList()
         setNavigation()
         
@@ -40,8 +41,7 @@ class MoreViewController: UIViewController {
     }
   
     private func profileStactViewSetting() {
-        
-
+   
         guard let profile = LoginStatus.shared.getProfile() else { return }
         
         let count = userProfileList.count
@@ -142,9 +142,9 @@ class MoreViewController: UIViewController {
         UIApplication.shared.open(url)
         
     }
-    
     //    MARK: API
     func reqeustProfileList() {
+    
         guard
             let token = LoginStatus.shared.getToken(),
             let url = APIURL.makeProfile.makeURL()
@@ -164,8 +164,9 @@ class MoreViewController: UIViewController {
             
             self.userIconList.removeAll()
             self.userProfileList.removeAll()
+
             DispatchQueue.main.async {
-               
+
                 for view in self.stackView.subviews {
                     view.removeFromSuperview()
 
@@ -194,6 +195,7 @@ class MoreViewController: UIViewController {
             }
             DispatchQueue.main.async {
                 self.profileStactViewSetting()
+            
             }
         }
         
@@ -341,6 +343,7 @@ extension MoreViewController: ProfileManageButtonDelegate {
     func didTapMoreProfileButton() {
         let profileVC = ProfileViewController(root: .manager)
         let navi = UINavigationController(rootViewController: profileVC)
+        navi.modalPresentationStyle = .fullScreen
         present(navi, animated: true)
         //present
     }

@@ -37,8 +37,8 @@ class DownLoading {
 extension DownLoading: DownLoadManagerDelegate {
     func finishedTask() {
         downLoadingList.remove(at: 0)
-        guard !downLoadingList.isEmpty else { return }
-        downLoadingList[0].task?.resume()
+//        guard !downLoadingList.isEmpty else { return }
+//        downLoadingList[0].task?.resume()
     }
     
 }

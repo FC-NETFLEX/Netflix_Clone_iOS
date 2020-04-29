@@ -11,8 +11,11 @@ import Kingfisher
 
 protocol SavedContentCellDelegate: class {
     func saveContentControl(status: SaveContentStatus, id: Int)
-    func presentVideonController(contentID: Int)
-    func deleteSavedContent(contentID: Int)
+    func presentVideonController(indexPath: IndexPath)
+    func deleteSavedContent(indexPath: IndexPath)
+    func beganSwipeCell(indexPath: IndexPath)
+    func endedSwipeCell(indexPath: IndexPath, isEditing: Bool)
+    func shouldBeganSwipeCell(indexPath: IndexPath)
 }
 
 class SavedContentCell: UITableViewCell {
@@ -30,6 +33,10 @@ class SavedContentCell: UITableViewCell {
     static let identifier = "SavedContentCell"
     
     weak var delegate: SavedContentCellDelegate?
+    
+    private var isEditingMode = false
+    
+    private var indexPath = IndexPath(row: 0, section: 0)
     
     private var lastGestureX: CGFloat = 0
     
@@ -116,7 +123,7 @@ class SavedContentCell: UITableViewCell {
         
         summaryLabel.textColor = .setNetfilxColor(name: .netflixLightGray)
         summaryLabel.font = .dynamicFont(fontSize: titleFontSize * 0.8, weight: .regular)
-        summaryLabel.numberOfLines = 0
+        summaryLabel.numberOfLines = 4
         
         statusView.addTarget(self, action: #selector(didTapStatusView(_:)), for: .touchUpInside)
         
@@ -191,14 +198,16 @@ class SavedContentCell: UITableViewCell {
     
     
     //MARK: Action
-    func configure(content: SaveContent, isEditing: Bool) {
+    func configure(content: SaveContent, isEditingMode: Bool, indexPath: IndexPath) {
         titleLabel.text = content.title
         descriptionLabel.text = content.description
         thumbnailImageView.kf.setImage(with: content.imageURL)
         summaryLabel.text = content.isSelected ? content.summary: ""
         statusView.downLoadStatus = content.status
         statusView.id = content.contentID
-        setEditingMode(isEditing: isEditing)
+        setEditingMode(isEditing: content.isEditing)
+        self.isEditingMode = isEditingMode
+        self.indexPath = indexPath
     }
     
     func setEditingMode(isEditing: Bool) {
@@ -210,6 +219,7 @@ class SavedContentCell: UITableViewCell {
             $0.trailing.equalToSuperview()
             $0.width.equalTo(deleteButton.snp.height).multipliedBy(multiplier)
         })
+        isEditingMode = isEditing
     }
     
     
@@ -218,7 +228,7 @@ class SavedContentCell: UITableViewCell {
     }
     
     @objc private func didPlayButton(_ sender: UIButton) {
-        delegate?.presentVideonController(contentID: statusView.id)
+        delegate?.presentVideonController(indexPath: indexPath)
     }
     
     @objc private func didTapDeleteButton(_ sender: UIButton) {
@@ -233,7 +243,7 @@ class SavedContentCell: UITableViewCell {
             self.layoutIfNeeded()
             }, completion: { [weak self] _ in
                 guard let self = self else { return }
-                self.delegate?.deleteSavedContent(contentID: self.statusView.id)
+                self.delegate?.deleteSavedContent(indexPath: self.indexPath)
         })
     }
     
@@ -251,7 +261,7 @@ class SavedContentCell: UITableViewCell {
         
         switch sender.state {
         case .began:
-            print("PanGesture Began")
+            delegate?.beganSwipeCell(indexPath: indexPath)
             break
         case .ended:
             endedGesture()
@@ -291,6 +301,7 @@ class SavedContentCell: UITableViewCell {
             self.layoutIfNeeded()
         })
         lastGestureX = 0
+        delegate?.endedSwipeCell(indexPath: indexPath, isEditing: deleteButton.bounds.width > 0)
     }
     
         
@@ -300,11 +311,13 @@ class SavedContentCell: UITableViewCell {
 extension SavedContentCell {
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-
+        
+        guard !isEditingMode else { return false }
+        
+        delegate?.shouldBeganSwipeCell(indexPath: indexPath)
         guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false }
         
         let translation = panGesture.translation(in: mainContentView)
-        print(translation)
         if abs(translation.x) > abs(translation.y) {
             return true
         } else {
