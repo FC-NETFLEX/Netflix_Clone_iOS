@@ -42,7 +42,8 @@ class PresentFindStorableContentViewControllerButtonCell: UITableViewCell {
         button.tintColor = .setNetfilxColor(name: .white)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.setNetfilxColor(name: .netflixLightGray).cgColor
-        button.setTitle("저장 가능한 콘텐츠 더 찾아보기", for: .normal)
+        button.setTitle(" 저장 가능한 콘텐츠 더 찾아보기 ", for: .normal)
+        button.titleLabel?.font = .dynamicFont(fontSize: 14, weight: .regular)
         
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         
