@@ -85,7 +85,7 @@ extension FindStorableContentViewController: UITableViewDataSource {
 //MARK: UITableViewDelegate
 extension FindStorableContentViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.frame.height * 0.3
+        tableView.frame.height * 0.33
     }
 }
 

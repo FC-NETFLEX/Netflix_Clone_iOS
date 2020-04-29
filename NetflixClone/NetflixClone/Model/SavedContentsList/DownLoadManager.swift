@@ -59,6 +59,7 @@ extension DownLoadManager: URLSessionDownloadDelegate {
         
         content.saveVideo(location: location)
         delegate?.finishedTask()
+        print("===============================\(#function)====================================")
     }
     
     // 다운로드가 진행됨에 따라 노티피케이션 보냄
@@ -70,6 +71,7 @@ extension DownLoadManager: URLSessionDownloadDelegate {
         content.capacity = totalBytesExpectedToWrite
         content.writtenByte = totalBytesWritten
         content.status = .downLoading
+        print(content.status)
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
