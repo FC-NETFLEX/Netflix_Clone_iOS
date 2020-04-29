@@ -18,8 +18,8 @@
 
 ###  libraries
 
-- kingfisher
-- snapkit
+- KingFisher
+- Snapkit
 
 
 
