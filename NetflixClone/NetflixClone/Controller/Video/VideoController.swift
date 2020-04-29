@@ -6,31 +6,35 @@
 //  Copyright © 2020 Netflex. All rights reserved.
 //
 
-import AVKit
+import AVFoundation
 import CoreMedia
 import SnapKit
 
+
+//func step(byCount: Int)
+//플레이어 항목의 현재 시간을 지정된 단계 수만큼 앞뒤로 이동합니다.
+
+
 class VideoController: UIViewController {
     
-    private var isAddPlayerItemObserver = false
     private var playerItem: AVPlayerItem?
     private var player: AVPlayer?
-    private var playerItemContext = 0
-    private var timeObserverToken: Any?
-    private var videoModel: VideoModel
     
-    private let videoView: VideoView
+    private var playerItemContext = UnsafeMutableRawPointer(bitPattern: 0)
+    private var timeObserverToken: Any?
+    
+    private var videoModel: VideoModel!
+    private let videoView = VideoView()
     
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
         return [.landscapeRight]
     }
     
-    init(url: URL, title: String, savePoint: Int64) {
-        self.videoModel = VideoModel(title: title, currentTime: savePoint)
-        self.videoView = VideoView(title: title)
+    init(id: Int) {
         super.init(nibName: nil, bundle: nil)
-        setAsset(url: url)
+        setVideoModel(id: id)
     }
     
     required init?(coder: NSCoder) {
@@ -41,6 +45,15 @@ class VideoController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setUI()
+        setConstraint()
+        test()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard let playerLayer = self.playerLayer else { return }
+        playerLayer.frame = getVideoLayerFrame()
         
     }
     
@@ -48,80 +61,202 @@ class VideoController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
-    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-        super.dismiss(animated: flag, completion: completion)
+    deinit {
         removePlayerItemObserver()
         removePeriodicTimeObserver()
-        
+        setSavePoint()
     }
+    
+   
     
     //MARK: UI
     
-    private func setUI(player: AVPlayer) {
+    private func setUI() {
         
         videoView.delegate = self
-        
-        let playerLayer = AVPlayerLayer(player: player)
-        playerLayer.frame = view.frame
-        view.layer.addSublayer(playerLayer)
-        
+        view.backgroundColor = .setNetfilxColor(name: .netflixGray)
         view.addSubview(videoView)
         
-        setConstraint()
+        
     }
     
     private func setConstraint() {
+        let guide = view.safeAreaLayoutGuide
         videoView.snp.makeConstraints({
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
-            $0.trailing.equalToSuperview()
+            $0.leading.equalTo(guide)
+            $0.trailing.equalTo(guide)
             $0.bottom.equalToSuperview()
         })
     }
     
     //MARK: Action
     
+    private func setSavePoint() {
+        guard videoModel != nil else { return }
+        
+        if let savedContent = SavedContentsListModel.shared.getContent(contentID: videoModel.contentID) {
+            savedContent.savePoint = videoModel.currentTime == 0 ? nil: videoModel.currentTime
+            savedContent.contentRange = videoModel.currentTime == 0 ? nil: videoModel.range
+            SavedContentsListModel.shared.putSavedContentsList()
+        } else {
+            savePointRequest()
+        }
+    }
+    
+    private func getVideoLayerFrame() -> CGRect {
+           let x = view.bounds.minX + view.safeAreaInsets.left
+           let y = view.bounds.minY + view.safeAreaInsets.top
+           let width = view.bounds.width - (view.safeAreaInsets.left + view.safeAreaInsets.right)
+           let heigth = view.bounds.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)
+           let result = CGRect(x: x, y: y, width: width, height: heigth)
+           return result
+       }
+    
+    // 마지막 시청 구간 서버에 저장
+    private func savePointRequest() {
+        
+        guard let videoID = videoModel.videoID else { return }
+        guard let token = LoginStatus.shared.getToken(), let profileID =  LoginStatus.shared.getProfileID() else { return }
+        let bodyData: Data?
+        let requestURL: URL
+        let method: APIMethod
+        
+        if let watching = videoModel.watching { // update, delete
+            
+            let body = ["playtime": videoModel.currentTime]
+            guard let url = APIURL.defaultURL.getURL(path: [
+            (name: APIPathKey.profiles, value: String(profileID)),
+            (name: APIPathKey.watch, value: String(watching.id))
+            ]) else { return }
+            requestURL = url
+            
+            if videoModel.currentTime == 0 {
+                method = .delete
+                bodyData = nil
+                
+                print("Delete")
+            } else {
+                guard let data = try? JSONSerialization.data(withJSONObject: body, options: []) else { return }
+                method = .patch
+                bodyData = data
+                
+                print("Update")
+            }
+            
+        } else { // create
+            let body: [String: Any] = ["video": videoID, "playtime": videoModel.currentTime, "video_length": videoModel.range]
+            
+            guard
+                let data = try? JSONSerialization.data(withJSONObject: body, options: []),
+                let url = APIURL.defaultURL.getURL(path: [
+                (APIPathKey.profiles, String(profileID)),
+                (APIPathKey.watch, nil)
+            ]) else { return }
+            method = .post
+            bodyData = data
+            requestURL = url
+            
+            print("Create")
+        }
+        
+        APIManager().request(url: requestURL, method: method, token: token, body: bodyData, completionHandler: {
+            result in
+            switch result {
+            case .success(let data):
+                print("WatchingResponse:", String(data: data, encoding: .utf8) ?? "디코딩 실패")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        })
+    }
+    
+    // Model 세팅 -> model세팅이 정상적으로 이루어지지 않으면 해당 컨트롤러를 종료
+    private func setVideoModel(id: Int) {
+        VideoModel.default(contentID: id, completionHandler: {
+            [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                print(error)
+                self.unNaturalDismiss()
+            case .success(let model):
+                self.videoModel = model
+                let asset = AVAsset(url: model.videoURL)
+                self.setAsset(asset: asset)
+                self.videoView.title = model.title
+                print(model.videoURL)
+            }
+        })
+    }
+    
     // 매개변수로 받은 Double(재생 시간) 부터 재생 시켜주는 함수
-    private func seekPlayPont(seekTime: Double) {
-        let timeScale = CMTimeScale(NSEC_PER_SEC)
-        let seekTime = CMTime(seconds: seekTime, preferredTimescale: timeScale)
+    private func seekPlayPoint(seekTime: Int64) {
+//        let seekTime = CMTime(value: seekTime, timescale: 1)
+//        player?.seek(to: seekTime)
+        
+        let seekTime = CMTime(seconds: Double(seekTime), preferredTimescale: Int32(NSEC_PER_SEC))
         player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
+//        print("SeekTime:", seekTime)
+        if player?.timeControlStatus.rawValue != 2 { // playing 상태가 아닐때만 play()
+            player?.play()
+        }
     }
     
     
     // 비정상적 종료 할때 알림창 띄운 후 dismiss
     private func unNaturalDismiss() {
         UIAlertController(
-            title: "영상", message: "다시 시도해 주세요", preferredStyle: .alert)
+            title: "영상", message: "재생 실패", preferredStyle: .alert)
             .noticePresent(viewController: self, completion: {
                 [weak self]  in
-                self?.isAddPlayerItemObserver = false
                 self?.exitThisViewController()
             })
     }
     
     private func exitThisViewController() {
+        
         UIView.animate(withDuration: 0.3, animations: { [weak self]  in
             
             self?.view.transform = .init(rotationAngle: -(CGFloat.pi / 2))
             
             self?.view.alpha = 0.1
             
-            }, completion: { [weak self] _ in
-                
+            }, completion: { [weak self] isSuccess in
+                print("Completion Status :", isSuccess)
                 self?.dismiss(animated: false)
         })
     }
+    
+    private func getAssetImage(time: Int64) -> UIImage? {
+           let key = time / 10
+        return videoModel.images[key]
+       }
+       
+    
+       private func setAssetImages(imageGenerator: AVAssetImageGenerator, range: Int64) {
+           
+           
+           for i in 0...(range / 10) {
+               
+               let time = CMTime(value: i, timescale: 1)
+               let value = NSValue(time: time)
+               imageGenerator.generateCGImagesAsynchronously(forTimes: [value], completionHandler: {
+                  [weak self] (_, image, _, _, _) in
+                   guard let image = image else { return }
+                self?.videoModel.images[i] = UIImage(cgImage: image)
+               })
+           }
+           
+       }
     
     
     //MARK: Asset
     
     
-    private func setAsset(url: URL) {
+    private func setAsset(asset: AVAsset) {
         
         let playableKey = "playable"
-        let asset = AVURLAsset(url: url)
-        
         asset.loadValuesAsynchronously(forKeys: [playableKey], completionHandler: {
             
             [weak self] in
@@ -130,29 +265,30 @@ class VideoController: UIViewController {
             
             let status = asset.statusOfValue(forKey: playableKey, error: &error)
             
+            
             switch status {
             case .loaded:
-                
-                //                    print("loaded")
                 DispatchQueue.main.async {
                     self?.setPlayerItem(asset: asset)
                 }
-                
+                print("loaded")
             case .loading:
-                print("loding")
+                print("loading")
             case .failed:
+                DispatchQueue.main.async {
+                    self?.unNaturalDismiss()
+                }
                 print("failed")
-                fallthrough
+                print(#function)
             case .cancelled:
                 print("cancelled")
-                fallthrough
+                print(#function)
             case .unknown:
                 print("unknow")
-                fallthrough
+                print(#function)
             @unknown default:
                 print("default")
                 print(#function)
-                self?.unNaturalDismiss()
             }
         })
     }
@@ -161,6 +297,7 @@ class VideoController: UIViewController {
     
     
     //MARK: Player
+    private var playerLayer: AVPlayerLayer?
     
     //player 객체 세팅
     private func setPlayer() {
@@ -168,21 +305,26 @@ class VideoController: UIViewController {
         guard let playerItem = self.playerItem else { return }
         let player = AVPlayer(playerItem: playerItem)
         
-        setUI(player: player)
+        let playerLayer = AVPlayerLayer(player: player)
+        view.layer.addSublayer(playerLayer)
+        playerLayer.frame = getVideoLayerFrame()
+        view.bringSubviewToFront(videoView)
+        self.playerLayer = playerLayer
         
         self.player = player
         addPeriodicTimeObserver()
+        
     }
     
     private func setPlayerItem(asset: AVAsset) {
-        //         print(#function)
-        //         playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["playable", "hasProtectedContent"] )
-        guard let video = asset.tracks.first(where: { $0.mediaType == .video }) else {
-            unNaturalDismiss()
-            return
-        }
         
-        videoModel.range = video.timeRange.duration.value / Int64(video.timeRange.duration.timescale)
+        let range = asset.duration.value / Int64(asset.duration.timescale)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        
+        setAssetImages(imageGenerator: imageGenerator, range: range)
+        
+        videoModel.range = range
+        videoView.setDefaultSlider(timeRange: range, currentTime: videoModel.currentTime)
         playerItem = AVPlayerItem(asset: asset)
         addPlayerItemObserver()
         setPlayer()
@@ -199,19 +341,19 @@ extension VideoController {
     // playerItem의 옵저버 등록
     private func addPlayerItemObserver() {
         //        print(#function)
-        
         playerItem?.addObserver(self,
                                 forKeyPath: #keyPath(AVPlayerItem.status),
-                                options: [.new, .old],
-                                context: &playerItemContext)
-        
+                                options: [.initial, .new, .old,],
+                                context: playerItemContext)
     }
+    
     
     // 등록해 두었던 playerItem의 옵저버 삭제
     private func removePlayerItemObserver() {
-        if isAddPlayerItemObserver {
-            playerItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
-        }
+            playerItem?.removeObserver(
+                self,
+                forKeyPath: #keyPath(AVPlayerItem.status),
+                context: playerItemContext)
     }
     
     
@@ -220,13 +362,12 @@ extension VideoController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         
         //        print(#function)
-        guard context == &playerItemContext else {
+        guard context == playerItemContext else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
         }
         
         if keyPath == #keyPath(AVPlayerItem.status) {
-            
             let status: AVPlayerItem.Status
             if let statusNumber = change?[.newKey] as? NSNumber {
                 status = AVPlayerItem.Status(rawValue: statusNumber.intValue)!
@@ -236,26 +377,19 @@ extension VideoController {
             
             switch status {
             case .readyToPlay:
-                //                print("readyToPlay")
-                
-//                let seekTime = CMTime(seconds: Double(videoModel.currentTime), preferredTimescale: Int32(NSEC_PER_SEC))
-//                player?.seek(to: seekTime, toleranceBefore: .zero, toleranceAfter: .zero)
-                let seekTime = CMTime(value: videoModel.currentTime, timescale: 1)
-                player?.seek(to: seekTime)
-                player?.play()
-                
+                seekPlayPoint(seekTime: videoModel.currentTime)
+                videoView.isLoading = false
             case .failed:
-                print("failed")
-                fallthrough
-            case .unknown:
-                print("unknown")
-                fallthrough
-            @unknown default:
-                print("default")
                 print(#function)
+                print("failed")
                 unNaturalDismiss()
+            case .unknown:
+                print(#function)
+                print("unknown")
+            @unknown default:
+                print(#function)
+                print("default")
             }
-            isAddPlayerItemObserver = true
         }
         
     }
@@ -269,9 +403,12 @@ extension VideoController {
         
         timeObserverToken = player?.addPeriodicTimeObserver(forInterval: time, queue: .main, using: {
             [weak self] time in
-            self?.videoModel.currentTime = time.value / Int64(NSEC_PER_SEC)
-//            print(self?.videoModel.getRestRangeWithString())
-//            print(self?.videoModel.range)
+            guard let self = self else { return }
+            
+            let currentTime = time.value / Int64(NSEC_PER_SEC)
+            self.videoModel.currentTime = currentTime
+            let restTime = self.videoModel.getRestTime(currentTime: currentTime)
+            self.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
         })
         
     }
@@ -290,7 +427,36 @@ extension VideoController {
 
 //MARK: VideoViewDelegate
 
+private var lastImageRequestTime = Date()
+
 extension VideoController: VideoViewDelegate {
+    
+    func play() {
+        player?.play()
+    }
+    
+    func pause() {
+        player?.pause()
+    }
+    
+    func step(time: Int64) {
+        seekPlayPoint(seekTime: time)
+    }
+    
+    func biganTracking(time: Int64) {
+        player?.pause()
+        
+    }
+    
+    func changeTracking(time: Int64) -> UIImage? {
+        return getAssetImage(time: time)
+    }
+    
+    
+    func endTracking(time: Int64) {
+        seekPlayPoint(seekTime: time)
+    }
+    
     func exitAction() {
         exitThisViewController()
     }
@@ -301,8 +467,9 @@ extension VideoController: VideoViewDelegate {
 
 //MARK: Test
 extension VideoController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        exitThisViewController()
+    private func test() {
+       
     }
+
 }
+
