@@ -50,7 +50,7 @@ class SearchViewController: UIViewController {
         setSearchController()
         setSearchView()
     }
- 
+
     // MARK: 화면 내리면 키보드 내리기
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         searchBarTextDidEndEditing(contentsSearchBar)
@@ -173,7 +173,8 @@ extension SearchViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: searchBar Delegate
-extension SearchViewController: UISearchBarDelegate {
+extension SearchViewController: UISearchBarDelegate, UISearchTextFieldDelegate {
+    
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         contentsSearchBar.setShowsCancelButton(true, animated: true)
     }
@@ -181,6 +182,7 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         contentsSearchBar.text = ""
         searchResultDatas.removeAll()
+        searchBar.endEditing(true)
         searchBarTextDidEndEditing(contentsSearchBar)
         
     }
@@ -192,6 +194,7 @@ extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let profileID = LoginStatus.shared.getProfileID() else { return }
+        
         if searchText != "" {
             self.dataTask?.cancel()
             request(id: profileID, keyword: searchText)

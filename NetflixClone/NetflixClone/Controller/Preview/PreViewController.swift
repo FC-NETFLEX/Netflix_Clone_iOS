@@ -11,6 +11,7 @@ import AVFoundation
 import Kingfisher
 
 class PreViewController: BaseViewController {
+    
     let categoryLabel = UILabel()
     let playButton = UIButton()
     private let dibsView = CustomButtonView(imageName: "plus", labelText: "내가 찜한 콘텐츠")
@@ -20,11 +21,23 @@ class PreViewController: BaseViewController {
     private var displayingViewIndex: Int {
         Int(self.playerScrollView.contentOffset.x / self.playerScrollView.bounds.width)
     }
+    private lazy var top: CGFloat = UIDevice().safeTop
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
     private var previewSubviews = [PreviewView]()
+    private var logoViews = [LogoView]()
+    
+    // MARK: Logo Sizes
+    private var bigLogoWidth: CGFloat {
+        (view.frame.width * 0.5)
+    }
+    
+    private var smallLogoWidth: CGFloat {
+        (view.frame.width * 0.2)
+    }
     
     private var preview: [PreviewContent]
     private var receivedPreviewIndex: Int
@@ -33,7 +46,6 @@ class PreViewController: BaseViewController {
     var playerLayer: AVPlayerLayer!
     
     private var lastOffset: CGFloat = 0
-    
     
     init(index: Int = 0, previews: [PreviewContent]) {
         self.receivedPreviewIndex = index
@@ -50,8 +62,9 @@ class PreViewController: BaseViewController {
         setUI()
         setConstraints()
         createPreviewSubviews()
+        setLogoConstraints(receivedIndex: receivedPreviewIndex)
     }
-        
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         guard preview.count > 0 else { return }
@@ -103,6 +116,20 @@ class PreViewController: BaseViewController {
         dismissButton.addTarget(self, action: #selector(didTapDismissButton(_:)), for: .touchUpInside)
         view.bringSubviewToFront(dismissButton)
         
+        logoViews = preview.compactMap {
+            let logoView = LogoView()
+            logoView.configure(logoNamed: $0.logoURL)
+            return logoView
+        }
+        
+        logoViews.forEach {
+            view.addSubview($0)
+        }
+        
+        for i in (receivedPreviewIndex + 3)...(logoViews.count - 1) {
+            logoViews[i].alpha = 0
+        }
+        
         playerScrollView.isPagingEnabled = true
         playerScrollView.delegate = self
     }
@@ -145,20 +172,103 @@ class PreViewController: BaseViewController {
             $0.trailing.equalTo(view).offset(-10)
             $0.width.height.equalTo(dismissButtonSize)
         }
+        
+//        for (index, view) in logoViews.enumerated() {
+//            let leading = index == 0 ? playerScrollView.snp.leading : logoViews[index - 1 ].snp.trailing
+//
+//            if index == 0 {
+//                view.snp.makeConstraints {
+//                    $0.top.equalTo(top)
+//                    $0.leading.equalTo(leading)
+//                    $0.width.equalTo(bigLogoWidth)
+//                    $0.height.equalTo(view.snp.width).multipliedBy(0.6)
+//                }
+//            } else {
+//                view.snp.makeConstraints {
+//                    $0.top.equalTo(top)
+//                    $0.leading.equalTo(leading)
+//                    $0.width.equalTo(smallLogoWidth)
+//                    $0.height.equalTo(view.snp.width).multipliedBy(0.5)
+//                }
+//            }
+//        }
+    }
+    
+    private func setLogoConstraints(receivedIndex: Int) {
+        if receivedIndex == 0 {
+            for (index, view) in logoViews.enumerated() {
+                
+                let leading = index == 0 ? playerScrollView.snp.leading : logoViews[index - 1 ].snp.trailing
+                
+                if index == 0 {
+                    view.snp.makeConstraints {
+                        $0.top.equalTo(top)
+                        $0.leading.equalTo(leading)
+                        $0.width.equalTo(bigLogoWidth)
+                        $0.height.equalTo(view.snp.width).multipliedBy(0.6)
+                    }
+                } else {
+                    view.snp.makeConstraints {
+                        $0.top.equalTo(top)
+                        $0.leading.equalTo(leading)
+                        $0.width.equalTo(smallLogoWidth)
+                        $0.height.equalTo(view.snp.width).multipliedBy(0.5)
+                    }
+                }
+                
+            }
+        } else {
+            for (index, view) in logoViews.enumerated() {
+                
+                let leading = index == 0 ? playerScrollView.snp.leading : logoViews[index - 1 ].snp.trailing
+                
+                if index < receivedPreviewIndex {
+                    view.snp.makeConstraints {
+                        $0.top.equalTo(top)
+                        $0.leading.equalTo(leading)
+                        $0.width.equalTo(0)
+                        $0.height.equalTo(view.snp.width).multipliedBy(0.6)
+                    }
+                } else if index == receivedPreviewIndex {
+                    view.snp.makeConstraints {
+                        $0.top.equalTo(top)
+                        $0.leading.equalTo(leading)
+                        $0.width.equalTo(bigLogoWidth)
+                        $0.height.equalTo(view.snp.width).multipliedBy(0.6)
+                    }
+                } else {
+                    view.snp.makeConstraints {
+                        $0.top.equalTo(top)
+                        $0.leading.equalTo(leading)
+                        $0.width.equalTo(smallLogoWidth)
+                        $0.height.equalTo(view.snp.width).multipliedBy(0.5)
+                    }
+                }
+                
+            }
+        }
+        
     }
     
     // MARK: Create ScrollView content Views
     private func createPreviewSubviews() {
-        self.previewSubviews = preview.compactMap {
-            guard let url = URL(string: $0.previewVideoURL) else {
+        
+        var previews: [PreviewView] = []
+        
+        for (index, preview) in preview.enumerated() {
+            guard let url = URL(string: preview.previewVideoURL) else {
                 print("makeURL Fail")
-                return nil
+                continue
             }
-            let view = PreviewView(url: url)
-            view.configure(image: $0.poster)
+            
+            let view = PreviewView(url: url, index: index)
+            view.delegate = self
+            view.configure(image: preview.poster)
             NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: view.player.currentItem)
-            return view
+            previews.append(view)
         }
+        
+        self.previewSubviews = previews
         
         for (index, view) in previewSubviews.enumerated() {
             playerScrollView.addSubview(view)
@@ -182,7 +292,7 @@ class PreViewController: BaseViewController {
         dismiss(animated: true)
     }
     
-    // MARK: 
+    // MARK: 찜하기 버튼, 평가 버튼
     @objc private func didTapButton(_ sender: UIButton) {
         var dibsButtonClicked = dibsView.isClicked
         
@@ -233,8 +343,11 @@ class PreViewController: BaseViewController {
         }
     }
     
-    
+    // preview영상 재생끝나면 실행되는 동작
     @objc func playerDidFinishPlaying(note: NSNotification) {
+        guard displayingViewIndex < preview.count - 1 else { return }
+            
+
         let cmTime = CMTime(value: 0, timescale: 1)
         previewSubviews[displayingViewIndex].player.seek(to: cmTime)
         
@@ -242,11 +355,11 @@ class PreViewController: BaseViewController {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
                     self.categoryLabel.alpha = 0
-                    self.playerScrollView.contentOffset.x = CGFloat(self.displayingViewIndex + 1) * self.view.frame.width
+                    self.playerScrollView.setContentOffset(CGPoint(x: CGFloat(self.displayingViewIndex + 1) * self.view.frame.width, y: 0), animated: true)
                 }, completion: { _ in
                     self.categoryLabel.alpha = 1
                     self.previewSubviews[self.displayingViewIndex].player.play()
-                                        
+                    
                     self.configure(dibsButtonClicked: self.preview[self.displayingViewIndex].isSelect)
                 })
             }
@@ -261,7 +374,53 @@ class PreViewController: BaseViewController {
         self.dibsView.isClicked = dibsButtonClicked
         self.dibsView.imageView.image = dibsButtonClicked ? UIImage(systemName: "checkmark"): UIImage(systemName: "plus")
     }
+    
+    private func logoMovementManager(index: Int) {
+        let width = self.playerScrollView.frame.width
+        let contentOffsetX = self.playerScrollView.contentOffset.x
+        
+        let firstLogo = logoViews[index]
+        let smallLogoDelta = contentOffsetX / width - CGFloat(index)
+        let bigLogoDelta = 1 - smallLogoDelta
+        
+        let bigWidth = bigLogoWidth * bigLogoDelta
+        let smallWidth = smallLogoWidth + ((bigLogoWidth - smallLogoWidth) * smallLogoDelta)
+        
+        // 첫번째 큰 로고 사이즈 변경
+        guard contentOffsetX >= 0, contentOffsetX <= self.playerScrollView.contentSize.width - width else { return }
+        firstLogo.snp.updateConstraints({
+            $0.width.equalTo(bigWidth)
+        })
+        
+        // 두 번째 로고 사이즈 변경
+        guard displayingViewIndex <= (logoViews.count - 1) - 1 else { return }
+        let secondLogo = logoViews[index + 1]
+        secondLogo.snp.updateConstraints({
+            $0.width.equalTo(smallWidth)
+        })
+        
+        // 로고 알파 값 변경
+        guard index <= (logoViews.count - 1) - 3 else { return }
+        let alpha = logoViews[displayingViewIndex].frame.size.width / bigLogoWidth
+        logoViews[index].alpha = alpha
+        logoViews[index + 3].alpha = 1 - alpha
+        
+        // 장르 레이블 알파 값 변경
+        var labelAlpha: CGFloat = 0
+        
+        guard contentOffsetX >= 0 && contentOffsetX < (self.playerScrollView.contentSize.width - width) else { return }
+        if lastOffset <= contentOffsetX {
+            labelAlpha = 1 - abs(self.playerScrollView.contentOffset.x / self.playerScrollView.frame.width - CGFloat(index))
+            guard labelAlpha < 1 else { return }
+            categoryLabel.alpha = abs(labelAlpha)
+        } else {
+            labelAlpha = abs(self.playerScrollView.contentOffset.x / self.playerScrollView.frame.width - CGFloat(index))
+            categoryLabel.alpha = abs(labelAlpha)
+        }
+        lastOffset = contentOffsetX
+    }
 }
+
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -277,22 +436,57 @@ extension PreViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let width = scrollView.frame.width
-        let offset = scrollView.contentOffset.x
-        
-        let scale = scrollView.contentOffset.x / scrollView.frame.width
-        var alpha: CGFloat = 0
-        
-        guard offset >= 0 && offset < (scrollView.contentSize.width - width) else { return }
-        if lastOffset <= offset {
-            alpha = 1 - abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
-            guard alpha < 1 else { return }
-            categoryLabel.alpha = abs(alpha)
-        } else {
-            alpha = abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
-            categoryLabel.alpha = abs(alpha)
-        }
-        lastOffset = offset
+        logoMovementManager(index: displayingViewIndex)
+        //
+        //        let width = scrollView.frame.width
+        //        let contentOffsetX = scrollView.contentOffset.x
+        //
+        //        let smallLogoDelta = contentOffsetX / width - CGFloat(displayingViewIndex)
+        //        let bigLogoDelta = 1 - smallLogoDelta
+        //
+        //        let bigWidth = bigLogoWidth * bigLogoDelta
+        //        let smallWidth = smallLogoWidth + ((bigLogoWidth - smallLogoWidth) * smallLogoDelta)
+        //        let firstLogo = logoViews[displayingViewIndex]
+        //
+        //        var labelAlpha: CGFloat = 0
+        //
+        //        guard contentOffsetX >= 0, contentOffsetX <= scrollView.contentSize.width - width else { return }
+        //        firstLogo.snp.updateConstraints({
+        //            $0.width.equalTo(bigWidth)
+        //        })
+        //
+        //        guard displayingViewIndex <= (logoViews.count - 1) - 1 else { return }
+        //        let secondLogo = logoViews[displayingViewIndex + 1]
+        //        secondLogo.snp.updateConstraints({
+        //            $0.width.equalTo(smallWidth)
+        //        })
+        //
+        //        // 알파 값 변경
+        //        guard displayingViewIndex <= (logoViews.count - 1) - 3 else { return }
+        //        let alpha = logoViews[displayingViewIndex].frame.size.width / bigLogoWidth
+        //        logoViews[displayingViewIndex].alpha = alpha
+        //        logoViews[displayingViewIndex + 3].alpha = 1 - alpha
+        //
+        //        guard contentOffsetX >= 0 && contentOffsetX < (scrollView.contentSize.width - width) else { return }
+        //        if lastOffset <= contentOffsetX {
+        //            labelAlpha = 1 - abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
+        //            guard labelAlpha < 1 else { return }
+        //            categoryLabel.alpha = abs(labelAlpha)
+        //        } else {
+        //            labelAlpha = abs(scrollView.contentOffset.x / scrollView.frame.width - CGFloat(displayingViewIndex))
+        //            categoryLabel.alpha = abs(labelAlpha)
+        //        }
+        //        lastOffset = contentOffsetX
     }
+    
+    
 }
 
+
+//MARK: PreviewViewDelegate
+extension PreViewController: PreViewViewDelegate {
+    func updateProgress(index: Int, time: Int64, duration: Float64) {
+        logoViews[index].progressConfigure(currentTime: time, duration: duration)
+    }
+    
+}

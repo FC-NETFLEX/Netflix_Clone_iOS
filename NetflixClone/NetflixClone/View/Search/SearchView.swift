@@ -40,6 +40,11 @@ class SearchView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        
+    }
+    
     // MARK: UI 세팅
     private func setUI() {
         [backGroundOfCollectionView, searchResultCollectionView, noSearchResultsLabel].forEach {

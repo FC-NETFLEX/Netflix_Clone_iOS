@@ -101,7 +101,7 @@ class ContentViewController: CanSaveViewController {
         contentTableView.register(PosterTableViewCell.self, forCellReuseIdentifier: PosterTableViewCell.identifier)
         contentTableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: SummaryTableViewCell.identifier)
         contentTableView.register(StaffTableViewCell.self, forCellReuseIdentifier: StaffTableViewCell.identifier)
-        //        contentTableView.register(ButtonsTableViewCell.self, forCellReuseIdentifier: ButtonsTableViewCell.identifier)
+//                contentTableView.register(ButtonsTableViewCell.self, forCellReuseIdentifier: ButtonsTableViewCell.identifier)
         contentTableView.register(RecommendedTableViewCell.self, forCellReuseIdentifier: RecommendedTableViewCell.identifier)
     }
     
@@ -153,6 +153,7 @@ extension ContentViewController: UITableViewDelegate, UITableViewDataSource {
             if let content = self.content {
                 returnCell.configure(dibsButtonClicked: content.isSelected, likeButtonClicked: content.isLike)
                 
+                print("ContentController:", content.isSelected)
                 print("ContentController:", contentId)
             }
             returnCell.saveControl = self
@@ -226,7 +227,14 @@ extension ContentViewController: IsClickedProtocol {
         guard let profileID = LoginStatus.shared.getProfileID(), let url = URL(string: "https://netflexx.ga/profiles/\(profileID)/contents/\(contentId)/select/"),
             let token = LoginStatus.shared.getToken()
             else { return }
-        APIManager().request(url: url, method: .get, token: token) { _ in }
+        APIManager().request(url: url, method: .get, token: token) { result in
+            switch result {
+            case .success(let data):
+                print(String(data: data, encoding: .utf8))
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func likeButtonIsCliked() {

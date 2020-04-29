@@ -17,6 +17,9 @@ extension UIDevice {
         return UIDevice.current.userInterfaceIdiom == .phone
     }
     
+    var safeTop: CGFloat { self.isIPhoneX ? 44 : 20 }
+    var safeBottom: CGFloat { self.isIPhoneX ? 34 : 0 }
+    
     var identifier: String {
         var sysinfo = utsname()
         uname(&sysinfo)
