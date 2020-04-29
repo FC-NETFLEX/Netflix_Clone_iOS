@@ -95,7 +95,7 @@ class HomeviewTitle: UIView {
         titleImage.clipsToBounds = true
         
         
-        dibsLabel.text = "내가 찜한콘텐츠"
+        dibsLabel.text = "내가 찜한 콘텐츠"
         dibsLabel.font = fixedFont
         dibsLabel.textColor = textTintColor
         
@@ -239,7 +239,7 @@ class HomeviewTitle: UIView {
             if forNum == categories.count {
                 continue
             }
-            categoryText += ", "
+            categoryText += " ・ "
         }
         
         titlePoster.kf.setImage(with: URL(string: poster))

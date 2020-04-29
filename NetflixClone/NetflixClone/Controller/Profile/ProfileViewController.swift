@@ -223,7 +223,6 @@ class ProfileViewController: UIViewController {
     //    MARK: API
     func reqeustProfileList() {
         
-        
         guard
             let token = LoginStatus.shared.getToken(),
             let url = APIURL.makeProfile.makeURL()
@@ -298,21 +297,22 @@ class ProfileViewController: UIViewController {
             $0.setHidden(state: true)
             setNavigationBar()
         }
-        presentingViewController?.dismiss(animated: true)
+        self.dismiss(animated: true)
+//        presentingViewController?.dismiss(animated: true)
         
-        //        switch root {
-        //        case .main, .login:
-        //            profileViewArray.forEach {
-        //                $0.setHidden(state: true)
-        //                setNavigationBar()
-        //            }
-        //        case .manager, .add:
-        //            profileViewArray.forEach {
-        //                $0.setHidden(state: true)
-        //                setNavigationBar()
-        //            }
-        //            presentingViewController?.dismiss(animated: true)
-        //        }
+//                switch root {
+//                case .main, .login:
+//                    profileViewArray.forEach {
+//                        $0.setHidden(state: true)
+//                        setNavigationBar()
+//                    }
+//                case .manager, .add:
+//                    profileViewArray.forEach {
+//                        $0.setHidden(state: true)
+//                        setNavigationBar()
+//                    }
+//                    presentingViewController?.dismiss(animated: true)
+//                }
     }
 }
 

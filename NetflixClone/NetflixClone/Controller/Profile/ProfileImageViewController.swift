@@ -173,7 +173,6 @@ extension ProfileImageViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
         
         cell.backgroundView = nil
-        
         let key = categoryList[collectionView.tag].icon[indexPath.row].iconURL
   
         if let image = ImageCaching.shared.data[key] {

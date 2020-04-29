@@ -32,8 +32,8 @@ class HomeView: UIView {
     
     private func setUI() {
         homeTableView.backgroundColor = UIColor.setNetfilxColor(name: UIColor.ColorAsset.backgroundGray)
-//        homeTableView.dataSource = self
-//        homeTableView.delegate = self
+        homeTableView.separatorStyle = .none
+
         
         homeTableView.contentInsetAdjustmentBehavior = .never
         
@@ -49,9 +49,9 @@ class HomeView: UIView {
     
     private func setConstraints() {
         homeTableView.snp.makeConstraints {
-                   $0.top.leading.trailing.equalToSuperview()
-                   $0.bottom.equalTo(safeAreaLayoutGuide)
-               }
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide)
+        }
     }
     
     

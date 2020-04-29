@@ -28,7 +28,7 @@ class HomeMenuBarView: UIView {
     private let iconButton = UIButton()
     
     private let movieButton = UIButton()
-    private let categoryButton = UIButton()
+    let categoryButton = UIButton()
     private let dibsButton = UIButton()
     
     private let margin: CGFloat = 16

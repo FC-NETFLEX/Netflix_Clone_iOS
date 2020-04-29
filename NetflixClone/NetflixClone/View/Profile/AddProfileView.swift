@@ -68,7 +68,7 @@ class AddProfileView: UIView {
         }        
         newProfileButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         newProfileButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.265).isActive = true
+        newProfileButton.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.255).isActive = true
         newProfileButton.heightAnchor.constraint(equalTo: newProfileButton.widthAnchor).isActive = true
         
         changeLabel.topAnchor.constraint(equalTo: newProfileButton.bottomAnchor, constant: margin).isActive = true
