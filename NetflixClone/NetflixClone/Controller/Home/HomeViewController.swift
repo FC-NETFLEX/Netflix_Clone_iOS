@@ -14,6 +14,7 @@ final class HomeViewController: BaseViewController {
     
     //    weak var delegate: HomeViewControllerCategoryDelegate?
     
+    
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     private let homeView = HomeView()
     
@@ -91,52 +92,14 @@ final class HomeViewController: BaseViewController {
         print("저장 컨텐츠 \(type(of: savedWatchVideoList)) -> \(savedWatchVideoList)")
         
         //MARK: HomeViewRequest
-        
-        guard let token = LoginStatus.shared.getToken() else { return }
-        var urlRequest = URLRequest(url: homeURL!)
-        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
-        
-        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            guard error == nil else { return print("jsonPassing error: ", error!)}
-            guard let response = response as? HTTPURLResponse else { return print("jsonPassing response 오류") }
-            guard (200..<400).contains(response.statusCode) else { return print("json response code \(response.statusCode)")}
-            guard let data = data else { return print("jsonPassing data 오류") }
-            
-            do {
-                let jsonData = try self.decoder.decode(HomeContent.self, from: data)
-                print("----------------[ HomeView jsonData 파싱시작 ]--------------------")
-                
-                
-                self.homeViewLatestContents.removeAll()
-                
-                self.homeViewTopContent = jsonData.topContent
-                self.homeViewPreviewContents = jsonData.previewContents
-                self.homeViewLatestContents = jsonData.recommendContents
-                self.homeViewTop10Contents = jsonData.top10Contents
-                self.homeViewWatchContents = jsonData.watchingVideo
-                //                    self.homeViewWatchContents += self.savedContents.getWatchingContentOfSavedContent()
-                self.homeViewADContent = jsonData.adContent
-                
-                self.savedWatchVideoList.forEach {
-                    self.homeViewWatchContents.append($0)
-                }
-                
-                DispatchQueue.main.sync {
-                    self.homeView.homeTableView.reloadData()
-                }
-                
-                
-                print("-----------------[ HomeView jsonData 파싱 종료 ]-------------------")
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        dataTask.resume()
+        homeRequest()
         
         
         setUI()
         setConstraints()
     }
+    
+
     
     //MARK: ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
@@ -214,6 +177,96 @@ final class HomeViewController: BaseViewController {
         
     }
     
+    //MARK: Home request
+    private func homeRequest() {
+        guard let token = LoginStatus.shared.getToken() else { return }
+        var urlRequest = URLRequest(url: homeURL!)
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+        
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            guard error == nil else { return print("jsonPassing error: ", error!)}
+            guard let response = response as? HTTPURLResponse else { return print("jsonPassing response 오류") }
+            guard (200..<400).contains(response.statusCode) else { return print("json response code \(response.statusCode)")}
+            guard let data = data else { return print("jsonPassing data 오류") }
+            
+            do {
+                let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+                print("----------------[ HomeView jsonData 파싱시작 ]--------------------")
+                
+                
+                self.homeViewLatestContents.removeAll()
+                
+                self.homeViewTopContent = jsonData.topContent
+                self.homeViewPreviewContents = jsonData.previewContents
+                self.homeViewLatestContents = jsonData.recommendContents
+                self.homeViewTop10Contents = jsonData.top10Contents
+                self.homeViewWatchContents = jsonData.watchingVideo
+                //                    self.homeViewWatchContents += self.savedContents.getWatchingContentOfSavedContent()
+                self.homeViewADContent = jsonData.adContent
+                
+                self.savedWatchVideoList.forEach {
+                    self.homeViewWatchContents.append($0)
+                }
+                
+                DispatchQueue.main.sync {
+                    self.homeView.homeTableView.reloadData()
+                    
+                }
+                
+                
+                print("-----------------[ HomeView jsonData 파싱 종료 ]-------------------")
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        dataTask.resume()
+    }
+    
+    //MARK: categoryRequest
+    private func categoryRequet(categoryNum: Int) {
+        let url = URL(string: "https://www.netflexx.ga/profiles/\(LoginStatus.shared.getProfileID() ?? 2)/contents/?category=\(categoryNum)")
+        
+        guard let token = LoginStatus.shared.getToken() else { return }
+        var urlRequest = URLRequest(url: url!)
+        urlRequest.addValue("TOKEN " + token, forHTTPHeaderField: "Authorization")
+       
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+            guard error == nil else { return print("jsonPassing error: ", error!)}
+            guard let response = response as? HTTPURLResponse else { return print("jsonPassing response 오류") }
+            guard (200..<400).contains(response.statusCode) else { return print("json response code \(response.statusCode)")}
+            guard let data = data else { return print("jsonPassing data 오류") }
+            
+            do {
+                let jsonData = try self.decoder.decode(HomeContent.self, from: data)
+                print("----------------[ HomeView jsonData 파싱시작 ]--------------------")
+                
+                
+                self.homeViewLatestContents.removeAll()
+                
+                self.homeViewTopContent = jsonData.topContent
+                self.homeViewPreviewContents = jsonData.previewContents
+                self.homeViewLatestContents = jsonData.recommendContents
+                self.homeViewTop10Contents = jsonData.top10Contents
+                self.homeViewWatchContents = jsonData.watchingVideo
+                //                    self.homeViewWatchContents += self.savedContents.getWatchingContentOfSavedContent()
+                self.homeViewADContent = jsonData.adContent
+                
+                self.savedWatchVideoList.forEach {
+                    self.homeViewWatchContents.append($0)
+                }
+                
+                DispatchQueue.main.sync {
+                    self.homeView.homeTableView.reloadData()
+                }
+                
+                
+                print("-----------------[ HomeView jsonData 파싱 종료 ]-------------------")
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        dataTask.resume()
+    }
     
 }
 
@@ -222,6 +275,8 @@ final class HomeViewController: BaseViewController {
 extension HomeViewController: HomeMenuBarViewDelegate {
     func didTapMenuBarIconButton() {
         print("MenuBar DidTabIcon")
+        
+        homeRequest()
         
         menuBar.swingBackAnimation()
         
@@ -242,10 +297,13 @@ extension HomeViewController: HomeMenuBarViewDelegate {
         menuBar.movieClickAnimation()
     }
     
+    //MARK: CategoryButton
     func didTapCategoryButton() {
+        
         print("MenuBar DidTabCategory")
         
         let categoryVC = CategorySelectViewController()
+        categoryVC.delegate = self
         categoryVC.modalPresentationStyle = .overFullScreen
         present(categoryVC, animated: true)
     }
@@ -821,4 +879,22 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-
+//MARK: CcategoryViewController delegate
+extension HomeViewController: CategorySelectVCDelegate {
+    func selectAllCategory() {
+        homeRequest()
+        menuBar.categoryButton.setTitle("전체 장르 ▼", for: .normal)
+    }
+    
+    func selectCategory(categorySelectNum: Int, categoryName: String) {
+        print("categorynum \(categorySelectNum)")
+        
+        categoryRequet(categoryNum: categorySelectNum)
+        menuBar.categoryButton.setTitle("\(categoryName) ▼", for: .normal)
+        
+    }
+    
+    
+    
+    
+}
