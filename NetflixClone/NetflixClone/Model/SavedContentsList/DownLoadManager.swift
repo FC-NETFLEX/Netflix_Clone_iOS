@@ -71,7 +71,7 @@ extension DownLoadManager: URLSessionDownloadDelegate {
         content.capacity = totalBytesExpectedToWrite
         content.writtenByte = totalBytesWritten
         content.status = .downLoading
-        print(content.status)
+//        print(content.status)
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {

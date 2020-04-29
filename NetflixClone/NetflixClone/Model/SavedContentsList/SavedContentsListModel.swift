@@ -80,6 +80,29 @@ class SavedContentsListModel {
         
     }
     
+    func againResumDownloadTasks() {
+        
+        let needResumContent = profiles
+            .flatMap({ $0.savedContents })
+            .filter({ $0.status == .downLoading || $0.status == .waiting })
+            .reversed()
+        
+//        dump(needResumContent)
+        
+        needResumContent.forEach({ saveContent in
+            if !DownLoading.shared.downLoadingList.contains(where: { $0.content.contentID == saveContent.contentID }) {
+                saveContent.status = .waiting
+                let downLoadManager = DownLoadManager(content: saveContent)
+                downLoadManager.downLoadMovieTask(url: saveContent.videoURL)
+                DownLoading.shared.appendDownLoadManager(downLoadManager: downLoadManager)
+                print(#function, "*****************************************************")
+                dump(saveContent)
+                print([saveContent])
+                print(#function, "*****************************************************")
+            }
+        })
+    }
+    
     // UserDefaults 에 저장
     func putSavedContentsList() {
 //        profiles.forEach({

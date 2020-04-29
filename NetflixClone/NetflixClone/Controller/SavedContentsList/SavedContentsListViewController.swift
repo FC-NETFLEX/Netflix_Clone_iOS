@@ -24,7 +24,7 @@ class SavedContentsListViewController: CanSaveViewController {
         setNavigationController()
         setUI()
         model.delegate = self
-        
+        model.againResumDownloadTasks()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -146,9 +146,9 @@ extension SavedContentsListViewController: UITableViewDataSource {
         }
         resultCell.delegate = self
         resultCell.configure(content: content, isEditingMode: modifyButton.isSelected, indexPath: indexPath)
-        print(#function, "*****************************************************")
-        dump(content)
-        print(#function, "*****************************************************")
+//        print(#function, "*****************************************************")
+//        dump(content)
+//        print(#function, "*****************************************************")
         return resultCell
     }
     
@@ -263,7 +263,9 @@ extension SavedContentsListViewController: SavedContentCellDelegate {
     }
     
     func presentVideonController(indexPath: IndexPath) {
-        presentVideoController(contentID: model.getContent(indexPath: indexPath).contentID)
+        let savedContent = model.getContent(indexPath: indexPath)
+        guard savedContent.status == .saved else { return }
+        presentVideoController(contentID: savedContent.contentID)
     }
     
     func saveContentControl(status: SaveContentStatus, id: Int) {
