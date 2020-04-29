@@ -213,12 +213,14 @@ class ChangeProfileViewController: UIViewController {
             if let profileVC = vc as? ProfileViewController {
                 profileVC.root = .manager
                 profileUpdate()
-                print("프로필수정 오케이")
+                print("프로필수정 오케이요요요요요?")
                 navigationController?.popViewController(animated: true)
             } else {
 //                profileUpdate()
-//                print("프로필관리프렌젠트?")
+//                print("더보기???")
+//                presentingViewController?.dismiss(animated: true)
 //                navigationController?.popViewController(animated: true)
+//                break
             }
             
         }
