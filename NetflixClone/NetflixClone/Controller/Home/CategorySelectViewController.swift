@@ -9,7 +9,14 @@
 import UIKit
 import SnapKit
 
+protocol CategorySelectVCDelegate: class {
+    func selectAllCategory() -> ()
+    func selectCategory(categorySelectNum: Int, categoryName: String) -> ()
+}
+
 class CategorySelectViewController: UIViewController {
+    
+    weak var delegate: CategorySelectVCDelegate?
     
     private let rootView = CategorySelectView()
     private let cellID = "CategorySelctTBCell"
@@ -21,9 +28,11 @@ class CategorySelectViewController: UIViewController {
     //MARK: ViewLifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+//        navigationController?.navigationBar.isHidden = true
         view.backgroundColor = .clear
-        
-        
+//        print("----------viewControllers : \(navigationController?.viewControllers)")
+//        navigationController?.viewControllers[0]
+//
         setUI()
     }
     
@@ -82,27 +91,47 @@ extension CategorySelectViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         tableView.cellForRow(at: indexPath)?.textLabel?.textColor = .white
-//        tableView.cellForRow(at: indexPath)?.textLabel?.font = .systemFont(ofSize: 18)
+        tableView.cellForRow(at: indexPath)?.textLabel?.font = .systemFont(ofSize: 18)
+        
         return indexPath
     }
     
     // HomeView에서 바탕화면 categoryView로 교체.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: indexPath)?.textLabel?.textColor = .white
-
+//        tableView.cellForRow(at: indexPath)?.textLabel?.textColor = .white
         let categoryNum = categoryKey[indexPath.row]
+        let categoryName = categorys[categoryKey[indexPath.row]]
+        
+        
+        delegate?.selectCategory(categorySelectNum: categoryNum, categoryName: categoryName!)
+
         dismiss(animated: true)
     }
     
+   
 }
 
 //MARK: tableView Delegate
 extension CategorySelectViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        CategorySelectViewHeader()
+        let categoryHeader = CategorySelectViewHeader()
+        categoryHeader.delegate = self
+        
+        return categoryHeader
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         120
     }
+}
+
+//MARK: CategoryHeader Delegate
+extension CategorySelectViewController: CategoryHeaderDelegate {
+    func didTabView() {
+        delegate?.selectAllCategory()
+        dismiss(animated: true)
+    }
+    
+    
 }
