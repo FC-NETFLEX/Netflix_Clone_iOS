@@ -40,17 +40,21 @@ class SavedContentsListViewController: CanSaveViewController {
         rootView.tableView.dataSource = self
         rootView.tableView.delegate = self
         
+        
     }
     
     private func setNavigationController() {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         
+        modifyButton.snp.makeConstraints {
+            $0.width.equalTo(modifyButton.snp.height)
+        }
         
-        modifyButton.setImage(UIImage(named: "펜슬"), for: .normal)
+        modifyButton.setImage(UIImage(named: "저장펜슬"), for: .normal)
         modifyButton.setImage(UIImage(), for: .selected)
         
-        modifyButton.setTitle("완료", for: .selected)
+        modifyButton.setTitle("완료  ", for: .selected)
         
         modifyButton.tintColor = .setNetfilxColor(name: .white)
         modifyButton.addTarget(self, action: #selector(didTapModifyButtotn(_:)), for: .touchUpInside)

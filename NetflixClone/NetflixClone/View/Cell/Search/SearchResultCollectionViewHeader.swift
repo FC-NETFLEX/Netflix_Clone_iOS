@@ -29,7 +29,7 @@ final class SearchResultCollectionViewHeader: UICollectionReusableView {
     private func setViews() {
         self.addSubview(titleLabel)
         titleLabel.textColor = UIColor.setNetfilxColor(name: .netflixLightGray)
-        titleLabel.font = UIFont.dynamicFont(fontSize: 15, weight: .bold)
+        titleLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .bold)
         titleLabel.text = "영화 및 TV 프로그램"
     }
     
