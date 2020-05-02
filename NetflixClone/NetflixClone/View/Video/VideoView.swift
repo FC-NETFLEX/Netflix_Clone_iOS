@@ -798,13 +798,14 @@ class VideoView: UIView {
             imageView.transform = .init(rotationAngle: rotate)
             insideView.alpha = 1
             insideLabel.alpha = 0
-            actionLabel.transform = .init(translationX: moveRange, y: 0)
-            actionLabel.alpha = 1
+            
             self.layoutIfNeeded()
         }, completion: { _ in
             UIView.animate(withDuration: 0.3, animations: {
                 imageView.transform = .identity
                 insideView.alpha = 0
+                actionLabel.transform = .init(translationX: moveRange, y: 0)
+                actionLabel.alpha = 1
             }, completion: { [weak self]  _ in
                 guard let self = self else { return }
                 let duration = 0.5
