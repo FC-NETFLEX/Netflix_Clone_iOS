@@ -105,12 +105,13 @@ class VideoController: UIViewController {
     }
     
     private func getVideoLayerFrame() -> CGRect {
-           let x = view.bounds.minX + view.safeAreaInsets.left
-           let y = view.bounds.minY + view.safeAreaInsets.top
-           let width = view.bounds.width - (view.safeAreaInsets.left + view.safeAreaInsets.right)
-           let heigth = view.bounds.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)
-           let result = CGRect(x: x, y: y, width: width, height: heigth)
-           return result
+        playerLayer?.videoGravity = .resizeAspectFill
+        let x = view.bounds.minX + view.safeAreaInsets.left
+        let y = view.bounds.minY //+ view.safeAreaInsets.top
+        let width = view.bounds.width - (view.safeAreaInsets.left + view.safeAreaInsets.right)
+        let heigth = view.bounds.height //- (view.safeAreaInsets.top + view.safeAreaInsets.bottom)
+        let result = CGRect(x: x, y: y, width: width, height: heigth)
+        return result
        }
     
     // 마지막 시청 구간 서버에 저장
