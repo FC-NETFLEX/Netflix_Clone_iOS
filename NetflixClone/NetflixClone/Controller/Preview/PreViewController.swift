@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import Kingfisher
 
+
 class PreViewController: BaseViewController {
     
     let categoryLabel = UILabel()
@@ -42,10 +43,10 @@ class PreViewController: BaseViewController {
     private var preview: [PreviewContent]
     private var receivedPreviewIndex: Int
     
-    var player: AVPlayer!
-    var playerLayer: AVPlayerLayer!
+//    var player: AVPlayer!
+//    var playerLayer: AVPlayerLayer!
     
-    private var lastOffset: CGFloat = 0
+    private lazy var lastOffset: CGFloat = self.playerScrollView.contentOffset.x
     
     init(index: Int = 0, previews: [PreviewContent]) {
         self.receivedPreviewIndex = index
@@ -59,17 +60,23 @@ class PreViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("privew:", #function)
         setUI()
+        print("preview: Finished setUI")
         setConstraints()
+        print("preview: Finished setConstraint")
         createPreviewSubviews()
+        print("preview: Finished createPreviewSubviews")
         setLogoConstraints(receivedIndex: receivedPreviewIndex)
+        print("preview: Finished setLogoConstraints")
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        print("privew:", #function)
         guard preview.count > 0 else { return }
         playerScrollView.setContentOffset(CGPoint(x: CGFloat(receivedPreviewIndex) * playerScrollView.bounds.width, y: 0), animated: false)
-        self.previewSubviews[self.receivedPreviewIndex].player.play()
+        self.previewSubviews[self.receivedPreviewIndex].playPreview()
         configure(dibsButtonClicked: self.preview[receivedPreviewIndex].isSelect)
         preview.forEach {
             print("title: ", $0.title, "||", " category: ", $0.categories)
@@ -79,7 +86,7 @@ class PreViewController: BaseViewController {
     // MARK: 뷰 사라질 때, 프리뷰 영상 정지
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.previewSubviews[self.displayingViewIndex].player.pause()
+        self.previewSubviews[self.displayingViewIndex].pausePreview()
     }
     
     // MARK: Set Preview UI
@@ -250,6 +257,7 @@ class PreViewController: BaseViewController {
         
     }
     
+    
     // MARK: Create ScrollView content Views
     private func createPreviewSubviews() {
         
@@ -264,7 +272,7 @@ class PreViewController: BaseViewController {
             let view = PreviewView(url: url, index: index)
             view.delegate = self
             view.configure(image: preview.poster)
-            NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: view.player.currentItem)
+//            NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(note:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: view.player.currentItem)
             previews.append(view)
         }
         
@@ -329,11 +337,12 @@ class PreViewController: BaseViewController {
         case 1:
             print("정보 버튼 눌렀을 때 인덱스: ", displayingViewIndex)
             self.receivedPreviewIndex = displayingViewIndex
-            let contentsVC = ContentViewController(id: preview[displayingViewIndex].id)
+            let contentVC = UINavigationController(rootViewController: ContentViewController(id: preview[displayingViewIndex].id))
+            contentVC.modalPresentationStyle = .overCurrentContext
+            contentVC.modalTransitionStyle = .crossDissolve
+            present(contentVC, animated: true)
             print(preview[displayingViewIndex].title)
             print(preview[displayingViewIndex].poster)
-            contentsVC.modalPresentationStyle = .fullScreen
-            present(contentsVC, animated: true)
         case 2:
             print("재생 버튼 눌렀을 때 인덱스: ", displayingViewIndex)
             self.receivedPreviewIndex = displayingViewIndex
@@ -343,31 +352,15 @@ class PreViewController: BaseViewController {
         }
     }
     
-    // preview영상 재생끝나면 실행되는 동작
-    @objc func playerDidFinishPlaying(note: NSNotification) {
-        guard displayingViewIndex < preview.count - 1 else { return }
-            
-
-        let cmTime = CMTime(value: 0, timescale: 1)
-        previewSubviews[displayingViewIndex].player.seek(to: cmTime)
+    private func startWaitingAnimation(offset: CGFloat) {
+        let width = playerScrollView.bounds.width
+        let calculationForDisplayIndex = offset / width - CGFloat(displayingViewIndex)
         
-        if displayingViewIndex < previewSubviews.count - 1 {
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                    self.categoryLabel.alpha = 0
-                    self.playerScrollView.setContentOffset(CGPoint(x: CGFloat(self.displayingViewIndex + 1) * self.view.frame.width, y: 0), animated: true)
-                }, completion: { _ in
-                    self.categoryLabel.alpha = 1
-                    self.previewSubviews[self.displayingViewIndex].player.play()
-                    
-                    self.configure(dibsButtonClicked: self.preview[self.displayingViewIndex].isSelect)
-                })
-            }
-        } else {
-            dismiss(animated: true)
-        }
-        
+        let index = offset > lastOffset ? displayingViewIndex + 1: displayingViewIndex - 1
+        guard index > 0 && index < previewSubviews.count && calculationForDisplayIndex > 0 else { return }
+        previewSubviews[index].isWaiting = true
     }
+    
     
     private func configure(dibsButtonClicked: Bool) {
         self.categoryLabel.text = preview[displayingViewIndex].genre
@@ -419,23 +412,30 @@ class PreViewController: BaseViewController {
         }
         lastOffset = contentOffsetX
     }
+    
 }
 
 
 extension PreViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        previewSubviews[displayingViewIndex].player.play()
+        previewSubviews[displayingViewIndex].playPreview()
         self.configure(dibsButtonClicked: self.preview[self.displayingViewIndex].isSelect)
         categoryLabel.alpha = 1
+//        print(scrollView.contentOffset.x)
+//        print(displayingViewIndex)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         previewSubviews.forEach {
-            $0.player.pause()
+            $0.pausePreview()
         }
+//        print(displayingViewIndex)
+//        print(scrollView.contentOffset.x)
+//        previewSubviews[displayingViewIndex].pausePreview()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        startWaitingAnimation(offset: scrollView.contentOffset.x)
         logoMovementManager(index: displayingViewIndex)
         //
         //        let width = scrollView.frame.width
@@ -485,8 +485,35 @@ extension PreViewController: UIScrollViewDelegate {
 
 //MARK: PreviewViewDelegate
 extension PreViewController: PreViewViewDelegate {
+    
     func updateProgress(index: Int, time: Int64, duration: Float64) {
         logoViews[index].progressConfigure(currentTime: time, duration: duration)
+    }
+    
+    // preview영상 재생끝나면 실행되는 동작
+    func playerDidFinishPlaying(note: NSNotification) {
+        guard displayingViewIndex < preview.count - 1 else { return }
+            print("start", displayingViewIndex)
+
+        let cmTime = CMTime(value: 0, timescale: 1)
+        previewSubviews[displayingViewIndex].seekPreview(to: cmTime)
+        
+        if displayingViewIndex < previewSubviews.count - 1 {
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
+                    self.categoryLabel.alpha = 0
+                    self.playerScrollView.setContentOffset(CGPoint(x: CGFloat(self.displayingViewIndex + 1) * self.view.frame.width, y: 0), animated: true)
+                }, completion: { _ in
+                    self.categoryLabel.alpha = 1
+                    self.previewSubviews[self.displayingViewIndex + 1].playPreview()
+                    print("Completion", self.displayingViewIndex)
+                    self.configure(dibsButtonClicked: self.preview[self.displayingViewIndex].isSelect)
+                })
+            }
+        } else {
+            dismiss(animated: true)
+        }
+        
     }
     
 }
