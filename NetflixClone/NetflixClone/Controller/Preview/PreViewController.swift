@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import Kingfisher
 
+
 class PreViewController: BaseViewController {
     
     let categoryLabel = UILabel()
