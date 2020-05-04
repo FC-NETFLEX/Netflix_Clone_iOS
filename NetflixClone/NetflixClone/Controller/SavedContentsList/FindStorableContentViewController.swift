@@ -14,20 +14,26 @@ class FindStorableContentViewController: BaseViewController {
     private lazy var model = FindStorableContentModel(delegate: self)
     
     
-    override func loadView() {
-        self.view = rootView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setNevigationController()
         setUI()
+        setConstraints()
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         
     }
     
     //MARK: UI
     
     private func setUI() {
+        view.addSubview(rootView)
+        view.backgroundColor = .setNetfilxColor(name: .black)
         rootView.tableView.dataSource = self
         rootView.tableView.delegate = self
     }
@@ -35,7 +41,7 @@ class FindStorableContentViewController: BaseViewController {
     private func setNevigationController() {
         
         navigationController?.navigationBar.tintColor = .setNetfilxColor(name: .white)
-        let backButton = UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .done, target: self, action: #selector(popViewController))
+        let backButton = UIBarButtonItem(image: UIImage(named: "백"), style: .done, target: self, action: #selector(popViewController))
         
         navigationItem.leftBarButtonItem = backButton
         
@@ -44,7 +50,17 @@ class FindStorableContentViewController: BaseViewController {
         titleLabel.text = "저장 가능"
         titleLabel.textColor = .setNetfilxColor(name: .white)
         navigationItem.titleView = titleLabel
+        navigationController?.navigationBar.isHidden = false
+        
     }
+    
+    private func setConstraints() {
+        
+        rootView.snp.makeConstraints({
+            $0.top.leading.bottom.trailing.equalTo(view.safeAreaLayoutGuide)
+        })
+    }
+    
     
     @objc private func popViewController() {
         navigationController?.popViewController(animated: true)
