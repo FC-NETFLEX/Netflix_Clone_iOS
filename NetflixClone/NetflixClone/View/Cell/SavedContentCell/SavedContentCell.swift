@@ -75,11 +75,11 @@ class SavedContentCell: UITableViewCell {
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
         
-        [mainContentView, deleteButton].forEach({
+        [mainContentView, deleteButton, summaryLabel].forEach({
             contentView.addSubview($0)
         })
         
-        [summaryLabel, thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
+        [ thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
             mainContentView.addSubview($0)
         })
         
@@ -137,12 +137,13 @@ class SavedContentCell: UITableViewCell {
         
         mainContentView.snp.makeConstraints({
             $0.width.equalToSuperview()
-            $0.top.bottom.equalToSuperview().inset(yMargin)
+//            $0.top.bottom.equalToSuperview().inset(yMargin)
+            $0.top.equalToSuperview().inset(yMargin)
         })
         
         deleteButton.snp.makeConstraints({
             $0.leading.equalTo(mainContentView.snp.trailing)
-            $0.top.bottom.equalTo(mainContentView)
+            $0.top.bottom.equalTo(thumbnailImageView)
             $0.trailing.equalToSuperview()
             $0.width.equalTo(0)
         })
@@ -150,10 +151,11 @@ class SavedContentCell: UITableViewCell {
         
         thumbnailImageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.3)
             $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(0.6)
         })
+        thumbnailImageView.backgroundColor = .blue
         
         playImageBackgroundView.snp.makeConstraints({
             $0.center.equalToSuperview()
@@ -189,8 +191,8 @@ class SavedContentCell: UITableViewCell {
         
         summaryLabel.snp.makeConstraints({
             $0.leading.trailing.equalToSuperview().inset(xMargin)
-            $0.top.equalTo(thumbnailImageView.snp.bottom)
-            $0.bottom.equalToSuperview()
+            $0.top.equalTo(mainContentView.snp.bottom).offset(yMargin)
+            $0.bottom.equalToSuperview().inset(yMargin)
         })
         
         
@@ -212,7 +214,7 @@ class SavedContentCell: UITableViewCell {
     
     func setEditingMode(isEditing: Bool) {
         
-        let multiplier = isEditing ? 1: 0
+        let multiplier = isEditing && statusView.downLoadStatus == .saved ? 1: 0
         deleteButton.snp.remakeConstraints({
             $0.leading.equalTo(mainContentView.snp.trailing)
             $0.top.bottom.equalTo(mainContentView)
@@ -256,6 +258,8 @@ class SavedContentCell: UITableViewCell {
     
     // panGesture의 동작 메서드
     @objc private func panGestureAction(_ sender: UIPanGestureRecognizer) {
+        
+        guard statusView.downLoadStatus == .saved else { return }
         
         let point = sender.translation(in: self)
         
