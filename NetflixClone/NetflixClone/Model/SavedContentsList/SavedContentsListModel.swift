@@ -29,9 +29,7 @@ class SavedContentsListModel {
         get {
             var result = 0
             profiles.forEach({
-                $0.savedContents.forEach({ _ in
-                    result += 1
-                })
+                $0.savedContents.filter({ $0.status == .saved }).forEach({ _ in result += 1 })
             })
             return result
         }
@@ -177,11 +175,11 @@ class SavedContentsListModel {
     
     // 모든 파일을 지우는 메서드
     func deleteAllFiles() {
-        for (section, profile) in profiles.enumerated() {
-            for (row, savedContent) in profile.savedContents.enumerated() {
-                savedContent.deleteContent()
-            }
-        }
+        profiles.forEach({
+            $0.savedContents.filter({ $0.status == .saved }).forEach({
+                $0.deleteContent()
+            })
+        })
     }
     // 넷플릭스 저장용랑
     func totalCapacity() -> Double {
@@ -190,7 +188,7 @@ class SavedContentsListModel {
             $0.savedContents
         })
         
-        let result = savedContents.reduce(into: 0.0, {
+        let result = savedContents.filter({ $0.status == .saved }).reduce(into: 0.0, {
             $0 += Double($1.capacity ?? 0)
         })
         
