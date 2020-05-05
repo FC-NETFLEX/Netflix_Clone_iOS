@@ -68,22 +68,14 @@ class SavedContentsListView: UIView {
         })
     }
     
-    func setEditingMode(isEditing: Bool) {
-        
-        
+    func setEditingMode() {
         
         UIView.animate(withDuration: 0.1, animations: { [weak self] in
             guard let self = self else { return }
             
-            SavedContentsListModel.shared.profiles.forEach({
-                $0.savedContents.forEach({
-                    $0.isEditing = isEditing
-                })
-            })
-            
             self.tableView.visibleCells.forEach({ cell in
                 if let cell = cell as? SavedContentCell {
-                    cell.setEditingMode(isEditing: isEditing)
+                    cell.visibleCellEditingMode()
                 }
                 self.layoutIfNeeded()
             })

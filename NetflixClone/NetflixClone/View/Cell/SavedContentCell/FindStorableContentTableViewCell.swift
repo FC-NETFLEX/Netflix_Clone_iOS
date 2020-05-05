@@ -81,7 +81,6 @@ class FindStorableContentTableViewCell: UITableViewCell {
     func configure(categoryName: String?, contents: [StorableContent]) {
         categoryLabel.text = categoryName
         self.contents = contents
-        
         collectionView.reloadData()
     }
     

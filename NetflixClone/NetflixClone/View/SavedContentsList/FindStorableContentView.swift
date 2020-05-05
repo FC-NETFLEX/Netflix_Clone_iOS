@@ -30,6 +30,7 @@ class FindStorableContentView: UIView {
         
         self.addSubview(tableView)
         tableView.backgroundColor = .setNetfilxColor(name: .black)
+        tableView.separatorStyle = .none
         tableView.register(FindStorableContentTableViewCell.self, forCellReuseIdentifier: FindStorableContentTableViewCell.identifier)
         
         tableView.allowsSelection = false

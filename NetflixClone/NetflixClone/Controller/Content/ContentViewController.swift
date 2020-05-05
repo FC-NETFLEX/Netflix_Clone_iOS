@@ -107,7 +107,8 @@ class ContentViewController: CanSaveViewController {
     
     private func setConstraints() {
         contentTableView.snp.makeConstraints {
-            $0.leading.trailing.top.bottom.equalTo(view)
+            $0.leading.trailing.top.equalTo(view)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -259,7 +260,8 @@ extension ContentViewController: SaveStatusContentControl {
             // 비디오 영상 용량이 커서 프리뷰로 테스트 대체함
 //            guard let preview = content.previewVideo, let previewURL = URL.safetyURL(string: preview) else { return }
             // 테스트 끝나면 비디오 URL로 변경 예정
-            
+            // 터미네이터 896
+            // 가버나움 889
             let saveContent = SaveContent(
                 contentID: content.id,
                 title: content.contentsTitle,

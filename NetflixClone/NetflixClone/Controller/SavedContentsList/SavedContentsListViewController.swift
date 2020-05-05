@@ -30,7 +30,6 @@ class SavedContentsListViewController: CanSaveViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         modifyViewController()
-        
     }
     
     //MARK: UI
@@ -64,7 +63,13 @@ class SavedContentsListViewController: CanSaveViewController {
     
     @objc private func didTapModifyButtotn(_ sender: UIButton) {
         sender.isSelected.toggle()
-        rootView.setEditingMode(isEditing: sender.isSelected)
+        
+        SavedContentsListModel.shared.profiles.forEach({
+            $0.savedContents.forEach({
+                $0.isEditing = sender.isSelected
+            })
+        })
+        rootView.setEditingMode()
 //        rootView.tableView.allowsSelectionDuringEditing = sender.isSelected
 //        print(rootView.tableView.isEditing)
 //        rootView.tableView.setEditing(sender.isSelected, animated: true)
@@ -73,10 +78,11 @@ class SavedContentsListViewController: CanSaveViewController {
     
     
     private func modifyViewController() {
-        let status = model.profiles.isEmpty
-        navigationController?.navigationBar.isHidden = status
-        rootView.isNoContents = status
-        rootView.tableView.reloadData()
+            let status = model.profiles.isEmpty
+            navigationController?.navigationBar.isHidden = status
+            rootView.isNoContents = status
+            rootView.tableView.reloadData()
+        
     }
 
 }
@@ -129,6 +135,7 @@ extension SavedContentsListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        // 마지막 찾아보기 버튼 셀
         guard indexPath.section < model.profiles.count
             else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: PresentFindStorableContentViewControllerButtonCell.identifier, for: indexPath) as! PresentFindStorableContentViewControllerButtonCell
@@ -136,16 +143,17 @@ extension SavedContentsListViewController: UITableViewDataSource {
                 return cell
         }
         
+        // ContentCell
         let resultCell: SavedContentCell
         let content = model.getContent(indexPath: indexPath)
         
         if let cell = tableView.dequeueReusableCell(withIdentifier: SavedContentCell.identifier) as? SavedContentCell {
             resultCell = cell
         } else {
-            resultCell = SavedContentCell(id: content.contentID, style: .default, reuseIdentifier: SavedContentCell.identifier)
+            resultCell = SavedContentCell(id: content.contentID, saveContent: content, style: .default, reuseIdentifier: SavedContentCell.identifier)
         }
         resultCell.delegate = self
-        resultCell.configure(content: content, isEditingMode: modifyButton.isSelected, indexPath: indexPath)
+        resultCell.configure(content: content, isEditingMode: modifyButton.isSelected)
 //        print(#function, "*****************************************************")
 //        dump(content)
 //        print(#function, "*****************************************************")
@@ -241,36 +249,40 @@ extension SavedContentsListViewController: SavedContentCellDelegate {
         
     }
     
-    func beganSwipeCell(indexPath: IndexPath) {
+    func beganSwipeCell(content: SaveContent) {
         model.profiles.forEach({
             $0.savedContents.forEach({
-                $0.isEditing = false
+                if $0.contentID != content.contentID {
+                    $0.isEditing = false
+                }
             })
         })
-        rootView.setEditingMode(isEditing: false)
+        rootView.setEditingMode()
         print(#function)
         
     }
     
-    func endedSwipeCell(indexPath: IndexPath, isEditing: Bool) {
-        let savedContent = model.getContent(indexPath: indexPath)
-        savedContent.isEditing = isEditing
+    func endedSwipeCell(content: SaveContent, isEditing: Bool) {
+//        let savedContent = model.getContent(indexPath: indexPath)
+        content.isEditing = isEditing
     }
     
-    func deleteSavedContent(indexPath: IndexPath) {
-        let savedContent = model.getContent(indexPath: indexPath)
-        savedContent.deleteContent()
+    func deleteSavedContent(content: SaveContent) {
+//        let savedContent = model.getContent(indexPath: indexPath)
+        content.deleteContent()
     }
     
-    func presentVideonController(indexPath: IndexPath) {
-        let savedContent = model.getContent(indexPath: indexPath)
-        guard savedContent.status == .saved else { return }
-        presentVideoController(contentID: savedContent.contentID)
+    func presentVideonController(content: SaveContent) {
+//        let savedContent = model.getContent(indexPath: indexPath)
+        guard content.status == .saved else { return }
+        presentVideoController(contentID: content.contentID)
     }
     
-    func saveContentControl(status: SaveContentStatus, id: Int) {
-        guard let saveContent = SavedContentsListModel.shared.getContent(contentID: id) else { return }
-        saveContentControl(status: status, saveContetnt: saveContent)
+    func saveContentControl(content: SaveContent) {
+//        print(#function, indexPath)
+//        let saveContent = SavedContentsListModel.shared.getContent(indexPath: indexPath)
+        
+        saveContentControl(status: content.status, saveContetnt: content, indexPath: content.indexPath)
     }
     
 }
@@ -288,13 +300,37 @@ extension SavedContentsListViewController {
 
 extension SavedContentsListViewController: SavedContentsListModelDelegate {
     
-    func didchange() {
+    private func deleteCell(indexPath: IndexPath?) {
+        if let indexPath = indexPath {
+            DispatchQueue.main.async {
+                [weak self] in
+                guard let self = self else { return }
+//                print(#function, indexPath, "count:", self.model.profiles.count)
+                self.rootView.tableView.deleteRows(at: [indexPath], with: .automatic)
+                let profile = self.model.profiles[indexPath.section]
+                if profile.savedContents.isEmpty {
+                    profile.removeProfile()
+                }
+            }
+        }
+    }
+    
+    func didchange(indexPath: IndexPath?) {
+        if let indexPath = indexPath {
+//            print("DeleteCell==========================================")
+            deleteCell(indexPath: indexPath)
+        } else {
+//            print("modify VC ================================================")
             DispatchQueue.main.async {
                 [weak self] in
                 self?.modifyViewController()
             }
-        
+        }
     }
+    
+    func deleteProfile(section: Int) {
+           print(section)
+       }
     
 }
 

@@ -11,7 +11,8 @@ import Kingfisher
 
 
 protocol SavedContentsListModelDelegate: class {
-    func didchange()
+    func didchange(indexPath: IndexPath?)
+    func deleteProfile(section: Int) 
 }
 
 class SavedContentsListModel {
@@ -104,7 +105,7 @@ class SavedContentsListModel {
     }
     
     // UserDefaults 에 저장
-    func putSavedContentsList() {
+    func putSavedContentsList(indexPath: IndexPath? = nil) {
 //        profiles.forEach({
 //            $0.savedContents.forEach({
 //                $0.superProfile = nil
@@ -115,7 +116,7 @@ class SavedContentsListModel {
             let data = try? JSONEncoder().encode(self.profiles)
             else { return }
         userDefaults.set(data, forKey: email)
-        delegate?.didchange()
+        delegate?.didchange(indexPath: indexPath)
         
     }
     
@@ -176,11 +177,11 @@ class SavedContentsListModel {
     
     // 모든 파일을 지우는 메서드
     func deleteAllFiles() {
-        profiles.forEach({
-            $0.savedContents.forEach({
-                $0.deleteContent()
-            })
-        })
+        for (section, profile) in profiles.enumerated() {
+            for (row, savedContent) in profile.savedContents.enumerated() {
+                savedContent.deleteContent()
+            }
+        }
     }
     // 넷플릭스 저장용랑
     func totalCapacity() -> Double {

@@ -10,12 +10,12 @@ import UIKit
 import Kingfisher
 
 protocol SavedContentCellDelegate: class {
-    func saveContentControl(status: SaveContentStatus, id: Int)
-    func presentVideonController(indexPath: IndexPath)
-    func deleteSavedContent(indexPath: IndexPath)
-    func beganSwipeCell(indexPath: IndexPath)
-    func endedSwipeCell(indexPath: IndexPath, isEditing: Bool)
-    func shouldBeganSwipeCell(indexPath: IndexPath)
+    func saveContentControl(content: SaveContent)
+    func presentVideonController(content: SaveContent)
+    func deleteSavedContent(content: SaveContent)
+    func beganSwipeCell(content: SaveContent)
+    func endedSwipeCell(content: SaveContent, isEditing: Bool)
+//    func shouldBeganSwipeCell(indexPath: IndexPath)
 }
 
 class SavedContentCell: UITableViewCell {
@@ -34,9 +34,11 @@ class SavedContentCell: UITableViewCell {
     
     weak var delegate: SavedContentCellDelegate?
     
+    private var saveContent: SaveContent
+    
     private var isEditingMode = false
     
-    private var indexPath = IndexPath(row: 0, section: 0)
+//    private var indexPath = IndexPath(row: 0, section: 0)
     
     private var lastGestureX: CGFloat = 0
     
@@ -48,6 +50,7 @@ class SavedContentCell: UITableViewCell {
     private let playImageView = UIImageView(image: UIImage(systemName: "play.fill"))
     private let playImageBackgroundView = CircleView()
     private let playButton = UIButton()
+    private let progressView = UIProgressView()
     
     private let summaryLabel = UILabel()
     
@@ -56,9 +59,9 @@ class SavedContentCell: UITableViewCell {
     private let statusView: SaveContentStatusView
     
     
-    init(id: Int, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    init(id: Int, saveContent: SaveContent, style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.statusView = SaveContentStatusView(id: id, status: .saved)
-        
+        self.saveContent = saveContent
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setUI()
@@ -75,11 +78,11 @@ class SavedContentCell: UITableViewCell {
     private func setUI() {
         backgroundColor = .setNetfilxColor(name: .black)
         
-        [mainContentView, deleteButton].forEach({
+        [mainContentView, deleteButton, summaryLabel].forEach({
             contentView.addSubview($0)
         })
         
-        [summaryLabel, thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
+        [ thumbnailImageView, playButton, titleLabel, descriptionLabel, statusView].forEach({
             mainContentView.addSubview($0)
         })
         
@@ -88,7 +91,7 @@ class SavedContentCell: UITableViewCell {
         
         selectionStyle = .none
         
-        [playImageBackgroundView].forEach({
+        [playImageBackgroundView, progressView].forEach({
             thumbnailImageView.addSubview($0)
         })
         
@@ -127,6 +130,8 @@ class SavedContentCell: UITableViewCell {
         
         statusView.addTarget(self, action: #selector(didTapStatusView(_:)), for: .touchUpInside)
         
+        progressView.progressTintColor = .setNetfilxColor(name: .netflixRed)
+        progressView.tintColor = .setNetfilxColor(name: .netflixLightGray)
     }
     
     private func setConstraint() {
@@ -137,12 +142,13 @@ class SavedContentCell: UITableViewCell {
         
         mainContentView.snp.makeConstraints({
             $0.width.equalToSuperview()
-            $0.top.bottom.equalToSuperview().inset(yMargin)
+//            $0.top.bottom.equalToSuperview().inset(yMargin)
+            $0.top.equalToSuperview().inset(yMargin)
         })
         
         deleteButton.snp.makeConstraints({
             $0.leading.equalTo(mainContentView.snp.trailing)
-            $0.top.bottom.equalTo(mainContentView)
+            $0.top.bottom.equalTo(thumbnailImageView)
             $0.trailing.equalToSuperview()
             $0.width.equalTo(0)
         })
@@ -150,9 +156,14 @@ class SavedContentCell: UITableViewCell {
         
         thumbnailImageView.snp.makeConstraints({
             $0.leading.equalToSuperview().offset(xMargin)
-            $0.top.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.3)
             $0.height.equalTo(thumbnailImageView.snp.width).multipliedBy(0.6)
+        })
+//        thumbnailImageView.backgroundColor = .blue
+        
+        progressView.snp.makeConstraints({
+            $0.leading.trailing.bottom.equalToSuperview()
         })
         
         playImageBackgroundView.snp.makeConstraints({
@@ -189,8 +200,8 @@ class SavedContentCell: UITableViewCell {
         
         summaryLabel.snp.makeConstraints({
             $0.leading.trailing.equalToSuperview().inset(xMargin)
-            $0.top.equalTo(thumbnailImageView.snp.bottom)
-            $0.bottom.equalToSuperview()
+            $0.top.equalTo(mainContentView.snp.bottom).offset(yMargin)
+            $0.bottom.equalToSuperview().inset(yMargin)
         })
         
         
@@ -198,7 +209,8 @@ class SavedContentCell: UITableViewCell {
     
     
     //MARK: Action
-    func configure(content: SaveContent, isEditingMode: Bool, indexPath: IndexPath) {
+    
+    func configure(content: SaveContent, isEditingMode: Bool) {
         titleLabel.text = content.title
         descriptionLabel.text = content.description
         thumbnailImageView.kf.setImage(with: content.imageURL)
@@ -207,12 +219,23 @@ class SavedContentCell: UITableViewCell {
         statusView.id = content.contentID
         setEditingMode(isEditing: content.isEditing)
         self.isEditingMode = isEditingMode
-        self.indexPath = indexPath
+        self.saveContent = content
+        configureProgress(content: content)
+    }
+    
+    private func configureProgress(content: SaveContent) {
+        if let range = content.contentRange, let savePoint = content.savePoint {
+            progressView.isHidden = false
+            let value = Float(savePoint) / Float(range)
+            progressView.setProgress(value, animated: true)
+        } else {
+            progressView.isHidden = true
+        }
     }
     
     func setEditingMode(isEditing: Bool) {
         
-        let multiplier = isEditing ? 1: 0
+        let multiplier = isEditing && statusView.downLoadStatus == .saved ? 1: 0
         deleteButton.snp.remakeConstraints({
             $0.leading.equalTo(mainContentView.snp.trailing)
             $0.top.bottom.equalTo(mainContentView)
@@ -220,19 +243,24 @@ class SavedContentCell: UITableViewCell {
             $0.width.equalTo(deleteButton.snp.height).multipliedBy(multiplier)
         })
         isEditingMode = isEditing
+        print(#function, isEditing)
+//        print(#function, deleteButton.frame)
     }
     
+    func visibleCellEditingMode() {
+        setEditingMode(isEditing: saveContent.isEditing)
+    }
     
     @objc private func didTapStatusView(_ sender: SaveContentStatusView) {
-        delegate?.saveContentControl(status: sender.downLoadStatus, id: sender.id)
+        delegate?.saveContentControl(content: saveContent)
     }
     
     @objc private func didPlayButton(_ sender: UIButton) {
-        delegate?.presentVideonController(indexPath: indexPath)
+        delegate?.presentVideonController(content: saveContent)
     }
     
     @objc private func didTapDeleteButton(_ sender: UIButton) {
-        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+        UIView.animate(withDuration: 0.1, animations: { [weak self] in
             guard let self = self else { return }
             self.deleteButton.snp.remakeConstraints({
                 $0.leading.equalTo(self.mainContentView.snp.trailing)
@@ -243,7 +271,7 @@ class SavedContentCell: UITableViewCell {
             self.layoutIfNeeded()
             }, completion: { [weak self] _ in
                 guard let self = self else { return }
-                self.delegate?.deleteSavedContent(indexPath: self.indexPath)
+                self.delegate?.deleteSavedContent(content: self.saveContent)
         })
     }
     
@@ -257,18 +285,20 @@ class SavedContentCell: UITableViewCell {
     // panGesture의 동작 메서드
     @objc private func panGestureAction(_ sender: UIPanGestureRecognizer) {
         
+        guard statusView.downLoadStatus == .saved else { return }
+        
         let point = sender.translation(in: self)
         
         switch sender.state {
         case .began:
-            delegate?.beganSwipeCell(indexPath: indexPath)
+            delegate?.beganSwipeCell(content: saveContent)
+            print(#function, deleteButton.frame)
             break
         case .ended:
             endedGesture()
         case .changed:
             let x = point.x
             remakeConstraintsForGesture(x: x)
-            lastGestureX = x
         default:
             break
         }
@@ -283,14 +313,21 @@ class SavedContentCell: UITableViewCell {
     
     // gesture에 따른 constraint 업데이트
     private func remakeConstraintsForGesture(x: CGFloat) {
+        print("before update constraints", deleteButton.frame)
         let result = deleteButton.bounds.width + (lastGestureX - x)
+        print("x:", x)
+        print("result", result)
+        
+        
         guard result >= 0 else { return }
         deleteButton.snp.remakeConstraints({
             $0.leading.equalTo(self.mainContentView.snp.trailing)
             $0.top.bottom.equalTo(self.mainContentView)
             $0.trailing.equalToSuperview()
             $0.width.equalTo(result)
+//            self.layoutIfNeeded()
         })
+        lastGestureX = x
     }
     
     // gesture가 종료 되었을때 호출되는 함수
@@ -299,11 +336,19 @@ class SavedContentCell: UITableViewCell {
         UIView.animate(withDuration: 0.2, animations: {
             self.setEditingMode(isEditing: isEditing)
             self.layoutIfNeeded()
+        }, completion: {
+            _ in
+            print(#function, self.deleteButton.frame)
         })
         lastGestureX = 0
-        delegate?.endedSwipeCell(indexPath: indexPath, isEditing: deleteButton.bounds.width > 0)
+        print(deleteButton.frame)
+        delegate?.endedSwipeCell(content: saveContent, isEditing: isEditing)
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        print(#function, deleteButton.frame)
+    }
         
 }
 
@@ -312,15 +357,16 @@ extension SavedContentCell {
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         
-        guard !isEditingMode else { return false }
+//        guard !isEditingMode else { print("ㅁㄴㄹㅁㄴㄹㅁㄴㄹㅁㄴㄹ"); return false }
         
-        delegate?.shouldBeganSwipeCell(indexPath: indexPath)
+//        delegate?.shouldBeganSwipeCell(indexPath: indexPath)
         guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else { return false }
         
         let translation = panGesture.translation(in: mainContentView)
         if abs(translation.x) > abs(translation.y) {
             return true
         } else {
+            print(#function, "==================================\(translation)")
             return false
         }
     }
