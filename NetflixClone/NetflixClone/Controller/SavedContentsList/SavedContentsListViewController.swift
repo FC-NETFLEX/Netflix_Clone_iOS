@@ -305,11 +305,12 @@ extension SavedContentsListViewController: SavedContentsListModelDelegate {
             DispatchQueue.main.async {
                 [weak self] in
                 guard let self = self else { return }
-//                print(#function, indexPath, "count:", self.model.profiles.count)
+                print(#function, indexPath, "count:", self.model.profiles.count)
                 self.rootView.tableView.deleteRows(at: [indexPath], with: .automatic)
                 let profile = self.model.profiles[indexPath.section]
                 if profile.savedContents.isEmpty {
                     profile.removeProfile()
+//                    self.rootView.tableView.deleteSections([indexPath.section], with: .automatic)
                 }
             }
         }
@@ -317,10 +318,15 @@ extension SavedContentsListViewController: SavedContentsListModelDelegate {
     
     func didchange(indexPath: IndexPath?) {
         if let indexPath = indexPath {
-//            print("DeleteCell==========================================")
+//            model.profiles.forEach({
+//                $0.savedContents.forEach({
+//                    print("contentID", $0.contentID)
+//                })
+//            })
+            print("DeleteCell==========================================", indexPath)
             deleteCell(indexPath: indexPath)
         } else {
-//            print("modify VC ================================================")
+            print("modify VC ================================================")
             DispatchQueue.main.async {
                 [weak self] in
                 self?.modifyViewController()
