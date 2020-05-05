@@ -175,9 +175,9 @@ class SavedContentsListModel {
     
     // 모든 파일을 지우는 메서드
     func deleteAllFiles() {
-        profiles.forEach({
-            $0.savedContents.filter({ $0.status == .saved }).forEach({
-                $0.deleteContent()
+        profiles.reversed().forEach({
+            $0.savedContents.reversed().filter({ $0.status == .saved }).forEach({
+                $0.deleteContentData()
             })
         })
     }

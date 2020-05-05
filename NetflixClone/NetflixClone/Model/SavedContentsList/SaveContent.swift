@@ -161,6 +161,7 @@ class SaveContent: Decodable {
         DownLoading.shared.cancleDownLoad(id: contentID, completion: deleteContent)
     }
     
+    // 컨텐츠 데이터 지우고 SavedContentsListViewController 에게 알림
     func deleteContent() {
 //        guard let indexPath = indexPath else { return }
         guard let index = superProfile?.savedContents.firstIndex(where: { $0.contentID == contentID }) else { return }
@@ -169,6 +170,16 @@ class SaveContent: Decodable {
         superProfile?.deleteContent(indexPath: indexPath, index: index)
         status = .doseNotSave
     }
+    
+    // 컨텐츠 데이터만 지움
+    func deleteContentData() {
+        guard let index = superProfile?.savedContents.firstIndex(where: { $0.contentID == contentID }) else { return }
+        SaveFileManager(saveType: .movie).deleteFile(url: self.videoURL)
+        SaveFileManager(saveType: .movieImage).deleteFile(url: self.imageURL)
+        superProfile?.deleteContent(indexPath: nil, index: index)
+        status = .doseNotSave
+    }
+    
     
     private func postNotification() {
         var percent: CGFloat = 0
