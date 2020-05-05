@@ -72,6 +72,7 @@ class AddProfileViewController: UIViewController {
         navigationItem.rightBarButtonItem = saveButton
         
     }
+     //MARK: SETUI
     private func setUI() {
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         [addProfileView,kidsView].forEach {
@@ -145,19 +146,7 @@ class AddProfileViewController: UIViewController {
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
         presentingViewController?.dismiss(animated: true)
-        
-//        switch root {
-//        case .main:
-//            for vc in navigationController!.viewControllers.reversed() {
-//                if let profileVC = vc as? ProfileViewController {
-//                    profileVC.root = .main
-//                    navigationController?.popViewController(animated: true)
-//                }
-//            }
-//        case .add,.manager:
-//            presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-//        }
-    }
+
     
     @objc private func didTapSaveButton(_ sender: Any) {
 //        print("프로필 만들기 저장")
@@ -178,7 +167,7 @@ class AddProfileViewController: UIViewController {
             }
         }
     }
-    //MARK: API
+    //MARK: API - 추가
     private func profileCreate() {
         guard let profileName = addProfileView.nickNameTextfield.text else { return }
         guard let profileIcon = imageID else { return }
