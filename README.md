@@ -33,3 +33,10 @@
 
 
 
+### Sample Clips
+
+|                            search                            |                           Preview                            |                       contents detail                        |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![search](https://user-images.githubusercontent.com/15086391/81035372-a5428600-8ed5-11ea-85b9-2920e8d61a77.gif) | ![preview](https://user-images.githubusercontent.com/15086391/81035803-7e854f00-8ed7-11ea-9611-754cdded1ef1.gif) | ![contents detail](https://user-images.githubusercontent.com/15086391/81036205-2d765a80-8ed9-11ea-8540-bcd3ec32e665.gif) |
+
+

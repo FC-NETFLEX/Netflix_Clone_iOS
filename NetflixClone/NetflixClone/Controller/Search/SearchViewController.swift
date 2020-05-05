@@ -184,13 +184,11 @@ extension SearchViewController: UISearchBarDelegate, UISearchTextFieldDelegate {
         searchResultDatas.removeAll()
         searchBar.endEditing(true)
         searchBarTextDidEndEditing(contentsSearchBar)
-        
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         contentsSearchBar.setShowsCancelButton(false, animated: true)
     }
-    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let profileID = LoginStatus.shared.getProfileID() else { return }
