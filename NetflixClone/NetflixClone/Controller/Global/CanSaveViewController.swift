@@ -25,7 +25,7 @@ class CanSaveViewController: BaseViewController {
     }
     
     // 다운로드 취소
-    private func cancelDownLoad(saveContent: SaveContent) {
+    private func cancelDownLoad(saveContent: SaveContent, indexPath: IndexPath?) {
         
         let actions = [
             UIAlertAction(title: "저장 취소", style: .destructive, handler: { _ in
@@ -41,7 +41,7 @@ class CanSaveViewController: BaseViewController {
     }
     
     // 저장 콘텐츠 삭제
-    private func deleteContent(saveContent: SaveContent) {
+    private func deleteContent(saveContent: SaveContent, indexPath: IndexPath?) {
         let actions = [
             UIAlertAction(title: "재생", style: .default, handler: { _ in
                 self.presentVideoController(contentID: saveContent.contentID)
@@ -59,14 +59,14 @@ class CanSaveViewController: BaseViewController {
             .customPresent(viewController: self, actions: actions)
     }
     
-    func saveContentControl(status: SaveContentStatus, saveContetnt: SaveContent) {
+    func saveContentControl(status: SaveContentStatus, saveContetnt: SaveContent, indexPath: IndexPath? = nil) {
         switch status {
         case .doseNotSave:
             startDownLoad(saveContent: saveContetnt)
         case .downLoading, .waiting:
-            cancelDownLoad(saveContent: saveContetnt)
+            cancelDownLoad(saveContent: saveContetnt, indexPath: indexPath)
         case .saved:
-            deleteContent(saveContent: saveContetnt)
+            deleteContent(saveContent: saveContetnt, indexPath: indexPath)
         }
     }
     

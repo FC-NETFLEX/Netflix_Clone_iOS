@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol SaveContentDelegaet: class {
+    
+}
+
 enum SaveContentStatus: String, Codable {
     case waiting
     case downLoading
@@ -46,6 +50,17 @@ class SaveContent: Decodable {
         }
     }
     
+    var indexPath: IndexPath? {
+        for (section, profile) in SavedContentsListModel.shared.profiles.enumerated() {
+            for (row, content) in profile.savedContents.enumerated() {
+                if content.contentID == self.contentID {
+                    return IndexPath(row: row, section: section)
+                }
+            }
+        }
+        return nil
+    }
+    
     let contentID: Int
     
     var savePoint: Int64? // 영상 재생 포인트
@@ -66,7 +81,14 @@ class SaveContent: Decodable {
     
     var status: SaveContentStatus {
         didSet {
-            self.postNotification()
+            if self.status == .doseNotSave {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    [weak self] in
+                    self?.postNotification()
+                })
+            } else {
+                self.postNotification()
+            }
         }
     }
     
@@ -140,10 +162,11 @@ class SaveContent: Decodable {
     }
     
     func deleteContent() {
+//        guard let indexPath = indexPath else { return }
         guard let index = superProfile?.savedContents.firstIndex(where: { $0.contentID == contentID }) else { return }
         SaveFileManager(saveType: .movie).deleteFile(url: self.videoURL)
         SaveFileManager(saveType: .movieImage).deleteFile(url: self.imageURL)
-        superProfile?.savedContents.remove(at: index)
+        superProfile?.deleteContent(indexPath: indexPath, index: index)
         status = .doseNotSave
     }
     
