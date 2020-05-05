@@ -51,7 +51,7 @@ class ProfileViewController: UIViewController {
         reqeustProfileList()
         
     }
-    
+    //MARK: SETUI
     private func setUI() {
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         
@@ -220,7 +220,7 @@ class ProfileViewController: UIViewController {
         navigationItem.rightBarButtonItem = changeButton
         
     }
-    //    MARK: API
+    //MARK: API - 요청
     func reqeustProfileList() {
         
         guard
@@ -298,21 +298,7 @@ class ProfileViewController: UIViewController {
             setNavigationBar()
         }
         self.dismiss(animated: true)
-//        presentingViewController?.dismiss(animated: true)
-        
-//                switch root {
-//                case .main, .login:
-//                    profileViewArray.forEach {
-//                        $0.setHidden(state: true)
-//                        setNavigationBar()
-//                    }
-//                case .manager, .add:
-//                    profileViewArray.forEach {
-//                        $0.setHidden(state: true)
-//                        setNavigationBar()
-//                    }
-//                    presentingViewController?.dismiss(animated: true)
-//                }
+
     }
 }
 
@@ -394,7 +380,7 @@ extension ProfileViewController: ProfilViewDelegate {
 
 extension ProfileViewController: AddProfileButtonDelegate {
     func addProfileButtonDidTap() {
-        imageSetting() //present
+        imageSetting()
     }
 }
 
