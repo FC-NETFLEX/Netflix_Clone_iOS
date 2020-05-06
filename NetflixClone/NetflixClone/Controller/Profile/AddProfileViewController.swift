@@ -146,7 +146,7 @@ class AddProfileViewController: UIViewController {
     @objc private func didTapCancelButton(_ sender: Any) {
         print("프로필만들기취소")
         presentingViewController?.dismiss(animated: true)
-
+    }
     
     @objc private func didTapSaveButton(_ sender: Any) {
 //        print("프로필 만들기 저장")

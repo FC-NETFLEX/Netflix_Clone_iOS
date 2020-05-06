@@ -109,7 +109,7 @@ class ChangeProfileViewController: UIViewController {
         kidsCV.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         kidsCV.bottomAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: spacing + padding).isActive = true
         
-        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor).isActive = true
+        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: margin / 2).isActive = true
         changeView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         changeView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         changeView.bottomAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: padding * 2 + margin).isActive = true

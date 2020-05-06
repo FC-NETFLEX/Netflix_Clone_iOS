@@ -50,7 +50,7 @@ class KidsClassView: UIView {
         viewContentsLabel.textAlignment = .center
         viewContentsLabel.numberOfLines = 0
         viewContentsLabel.textColor = .setNetfilxColor(name: .white)
-        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 13, weight: .regular )
+        viewContentsLabel.font = UIFont.dynamicFont(fontSize: 12, weight: .regular )
     }
         
     
