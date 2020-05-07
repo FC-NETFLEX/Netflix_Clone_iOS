@@ -34,6 +34,9 @@ class UsingDataGraphCellTableViewCell: UITableViewCell {
             
         }
     }
+    func setConfigure() {
+        graphView.updateNetflixDataConstraints()
+    }
 }
 
 

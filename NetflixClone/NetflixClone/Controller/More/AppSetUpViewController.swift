@@ -59,17 +59,20 @@ class AppSetUpViewController: UIViewController {
     private func alertAction() {
         
         let savedContentsCount = SavedContentsListModel.shared.totalConetntCount
-       
+        
         if savedContentsCount != 0 {
-        let alert = UIAlertController(title: "저장한 콘텐츠 모두 삭제", message: "저장하신 콘텐츠 \(savedContentsCount)편을 모두 삭제하시겠어요?", preferredStyle: .alert)
-        let ok = UIAlertAction(title: "확인", style: .cancel) { _ in
-        }
-        let delete = UIAlertAction(title: "삭제", style: .destructive) { _ in
-            SavedContentsListModel.shared.deleteAllFiles()
-        }
-        alert.addAction(ok)
-        alert.addAction(delete)
-        present(alert, animated: true)
+            let alert = UIAlertController(title: "저장한 콘텐츠 모두 삭제", message: "저장하신 콘텐츠 \(savedContentsCount)편을 모두 삭제하시겠어요?", preferredStyle: .alert)
+            let ok = UIAlertAction(title: "확인", style: .cancel) { _ in
+            }
+            let delete = UIAlertAction(title: "삭제", style: .destructive) { _ in
+                SavedContentsListModel.shared.deleteAllFiles()
+                guard let dataCell = self.appSetUpTableView.cellForRow(at: IndexPath(row: 2, section: 1)) as? UsingDataGraphCellTableViewCell else { return }
+                //                self.appSetUpTableView.reloadData()
+                dataCell.setConfigure()
+            }
+            alert.addAction(ok)
+            alert.addAction(delete)
+            present(alert, animated: true)
         }
     }
     private func fastURLScheme() {
@@ -116,10 +119,11 @@ extension AppSetUpViewController: UITableViewDataSource {
         switch indexPath {
         case [1,2]:
             let usingCell = tableView.dequeueReusableCell(withIdentifier: UsingDataGraphCellTableViewCell.identifier, for: indexPath) as! UsingDataGraphCellTableViewCell
+            //            usingCell.setConfigure()
             usingCell.selectionStyle = .none
             
             return usingCell
-        
+            
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: AppSetUpTableViewCell.identifier) as! AppSetUpTableViewCell
             let date = ASData[indexPath.section].settingData[indexPath.row]
@@ -129,43 +133,43 @@ extension AppSetUpViewController: UITableViewDataSource {
             cell.textLabel?.font = UIFont.dynamicFont(fontSize: 14, weight: .regular)
             cell.imageView?.image = UIImage(named: date.appSetImage)
             cell.textLabel?.text = date.text
-//            cell.selectionStyle = .none
+            //            cell.selectionStyle = .none
             cell.delegate = self
             cell.configure(indexPath: indexPath)
-           
+            
             return cell
         }
     }
 }
-    extension AppSetUpViewController: UITableViewDelegate {
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            print(indexPath)
-            switch indexPath {
-            case [0,0]:
-                let mobileVC = MobileDataViewController()
-                navigationController?.pushViewController(mobileVC, animated: true)
-            case [1,0]:
-                print("wifi에서만 저장")
-            case [1,1]:
-                alertAction()
-            case [2,0]:
-                fastURLScheme()
-            default:
-                break
-            }
-            tableView.cellForRow(at: indexPath)?.setSelected(false, animated: false)
+extension AppSetUpViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
+        switch indexPath {
+        case [0,0]:
+            let mobileVC = MobileDataViewController()
+            navigationController?.pushViewController(mobileVC, animated: true)
+        case [1,0]:
+            print("wifi에서만 저장")
+        case [1,1]:
+            alertAction()
+        case [2,0]:
+            fastURLScheme()
+        default:
+            break
         }
-        
-        func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-            print(#function)
-        }
-        
-        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 60
-        }
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 70
-        }
+        tableView.cellForRow(at: indexPath)?.setSelected(false, animated: false)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        print(#function)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 60
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
 }
 
 
