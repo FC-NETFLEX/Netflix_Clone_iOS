@@ -11,7 +11,8 @@ import Kingfisher
 
 
 protocol SavedContentsListModelDelegate: class {
-    func didchange()
+    func didchange(indexPath: IndexPath?)
+    func deleteProfile(section: Int) 
 }
 
 class SavedContentsListModel {
@@ -28,9 +29,7 @@ class SavedContentsListModel {
         get {
             var result = 0
             profiles.forEach({
-                $0.savedContents.forEach({ _ in
-                    result += 1
-                })
+                $0.savedContents.filter({ $0.status == .saved }).forEach({ _ in result += 1 })
             })
             return result
         }
@@ -104,7 +103,7 @@ class SavedContentsListModel {
     }
     
     // UserDefaults 에 저장
-    func putSavedContentsList() {
+    func putSavedContentsList(indexPath: IndexPath? = nil) {
 //        profiles.forEach({
 //            $0.savedContents.forEach({
 //                $0.superProfile = nil
@@ -115,7 +114,7 @@ class SavedContentsListModel {
             let data = try? JSONEncoder().encode(self.profiles)
             else { return }
         userDefaults.set(data, forKey: email)
-        delegate?.didchange()
+        delegate?.didchange(indexPath: indexPath)
         
     }
     
@@ -176,9 +175,9 @@ class SavedContentsListModel {
     
     // 모든 파일을 지우는 메서드
     func deleteAllFiles() {
-        profiles.forEach({
-            $0.savedContents.forEach({
-                $0.deleteContent()
+        profiles.reversed().forEach({
+            $0.savedContents.reversed().filter({ $0.status == .saved }).forEach({
+                $0.deleteContentData()
             })
         })
     }
@@ -189,7 +188,7 @@ class SavedContentsListModel {
             $0.savedContents
         })
         
-        let result = savedContents.reduce(into: 0.0, {
+        let result = savedContents.filter({ $0.status == .saved }).reduce(into: 0.0, {
             $0 += Double($1.capacity ?? 0)
         })
         

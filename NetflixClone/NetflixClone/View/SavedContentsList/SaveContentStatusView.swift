@@ -207,6 +207,9 @@ class SaveContentStatusView: UIButton {
             self.status = downLoadStatus.status
             self.foregroundLayer.strokeEnd = downLoadStatus.percent
         }
+        if downLoadStatus.status != .downLoading {
+            print(#function, downLoadStatus.status)
+        }
         
     }
     

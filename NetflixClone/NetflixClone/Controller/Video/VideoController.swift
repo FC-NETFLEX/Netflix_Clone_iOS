@@ -407,7 +407,8 @@ extension VideoController {
             guard let self = self else { return }
             
             let currentTime = time.value / Int64(NSEC_PER_SEC)
-            self.videoModel.currentTime = currentTime
+            guard currentTime > 0 else { return }
+            self.videoModel.currentTime = currentTime == self.videoModel.range ? 0: currentTime
             let restTime = self.videoModel.getRestTime(currentTime: currentTime)
             self.videoView.updateTimeSet(currentTime: currentTime, restTime: restTime)
         })

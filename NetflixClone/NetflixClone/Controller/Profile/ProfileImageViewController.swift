@@ -27,6 +27,7 @@ class ProfileImageViewController: UIViewController {
         requestProfileImage()
         
     }
+     //MARK: SETUI
     private func setUI() {
         view.backgroundColor = .setNetfilxColor(name: .black)
         topView.delegate = self
@@ -60,6 +61,7 @@ class ProfileImageViewController: UIViewController {
         
     }
     
+     //MARK: API - 요청
     private func requestProfileImage() {
         guard
             let token = LoginStatus.shared.getToken(),

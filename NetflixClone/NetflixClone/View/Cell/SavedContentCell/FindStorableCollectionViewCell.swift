@@ -63,10 +63,23 @@ class FindStorableCollectionViewCell: UICollectionViewCell {
     
     //MARK: Action
     
+//    func configure(title: String, imageURL: String) {
+//        self.title = title
+//        setPosterImage(imageURLString: imageURL)
+//    }
+    
     func setPosterImage(imageURLString: String) {
-        let url = URL.safetyURL(string: imageURLString)
-        posterImageView.kf.setImage(with: url)
-        titleLabel.text = nil
+        guard let url = URL.safetyURL(string: imageURLString) else { return }
+        KingfisherManager.shared.retrieveImage(with: url, completionHandler: {
+            [weak self] result in
+            switch result {
+            case .failure(let error):
+                print(error.localizedDescription)
+            case .success(let imageResult):
+                self?.posterImageView.image = imageResult.image
+                self?.title = nil
+            }
+        })
     }
     
 }

@@ -61,6 +61,7 @@ class ChangeProfileViewController: UIViewController {
         navigationItem.rightBarButtonItem = saveButton
         
     }
+     //MARK: SETUI
     private func setUI(){
         
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
@@ -108,7 +109,7 @@ class ChangeProfileViewController: UIViewController {
         kidsCV.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         kidsCV.bottomAnchor.constraint(equalTo: addProfileView.bottomAnchor, constant: spacing + padding).isActive = true
         
-        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor).isActive = true
+        changeView.topAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: margin / 2).isActive = true
         changeView.leadingAnchor.constraint(equalTo: guide.leadingAnchor).isActive = true
         changeView.trailingAnchor.constraint(equalTo: guide.trailingAnchor).isActive = true
         changeView.bottomAnchor.constraint(equalTo: kidsCV.bottomAnchor, constant: padding * 2 + margin).isActive = true
@@ -143,9 +144,7 @@ class ChangeProfileViewController: UIViewController {
             }
         }
     }
-    //MARK: API
-    
-    
+    //MARK: API - 수정
     private func profileUpdate() {
         let stringID = String(userID)
         let bodys: [String: Any] = ["profile_name": profileName, "profile_icon": profileIconNum, "is_kids": isKids]

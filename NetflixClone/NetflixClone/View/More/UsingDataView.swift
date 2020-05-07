@@ -27,9 +27,6 @@ class UsingDataView: UIView {
         setUI()
         setConstraints()
         print("넷플리스용량", netflixDataPercentage())
-
-        
-        
     }
     
     required init?(coder: NSCoder) {
@@ -145,6 +142,15 @@ class UsingDataView: UIView {
         
     }
     
+    func updateNetflixDataConstraints() {
+        netflixGraphView.snp.remakeConstraints {
+            $0.trailing.equalTo(unUsedGraphView.snp.leading)
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(usageGraphView.snp.height)
+            $0.width.equalTo(usageGraphView.snp.width).multipliedBy(netflixDataPercentage())
+        }
+        
+    }
     
     
 }
