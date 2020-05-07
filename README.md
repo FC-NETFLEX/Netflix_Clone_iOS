@@ -1,6 +1,30 @@
 ## Netflix Clone
 
-넷플릭스 클론 프로젝트
+
+
+### Description
+
+- 개요: 기존 Netflix 앱 서비스를 기반으로 같은 형태의 서비스를 만들어보는 클론 프로젝트
+- 개발 기간: 2020.03.30 ~ 2020.04.29
+
+
+
+### Contributors
+
+- iOS
+
+  - [JeonSangMin](https://github.com/JeonSangMin)
+  - [wydryd125](https://github.com/wydryd125)
+  - [eujin811](https://github.com/eujin811)
+  - [JoongChangYang](https://github.com/JoongChangYang)
+
+- Backend
+
+  - [hbyyy](https://github.com/hbyyy)
+
+  - [parkhongbeen](https://github.com/parkhongbeen)
+
+    
 
 
 
