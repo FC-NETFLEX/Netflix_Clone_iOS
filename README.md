@@ -36,11 +36,13 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 ## Design
 
-- Flow chart - AdobeXD
+- 플로우 차트 (AdobeXD) : UI 구성과 앱의 흐름을 파악함
 
   <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/FlowChart.png"></img>
 
+- 명세서 작성 (Keynote): 앱의 상세 기능과 구조를 파악함
 
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/blueprint.gif"></img>
 
 
 
