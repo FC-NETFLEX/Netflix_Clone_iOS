@@ -6,6 +6,8 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 
 
+
+
 ## Description
 
 - 개발 기간: 2020.03.20 ~ 2020.04.29 (약 6주)
@@ -26,7 +28,9 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 
 
-## Semple Clips
+## Sample clips
+
+
 
 |                          영상 재생                           |                         콘텐츠 저장                          |                       로그인, 회원가입                       |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
@@ -61,12 +65,6 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 - Slack: GitHub과의 연동을 통해 issue, pull request등의 실시간 알림
 
   <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/slack.png"></img> 
-
-
-
-## 
-
-
 
 
 
