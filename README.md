@@ -30,13 +30,15 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 |                          영상 재생                           |                         콘텐츠 저장                          |                       로그인, 회원가입                       |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![PlayVideo](https://user-images.githubusercontent.com/56557507/81054969-ba81d980-8f02-11ea-9b10-982a15fe448e.gif) | ![SaveContent](https://user-images.githubusercontent.com/56557507/81060496-86f87c80-8f0d-11ea-85f0-56f437ed3812.gif) | ![Login](https://user-images.githubusercontent.com/56557507/81052547-96bc9480-8efe-11ea-9db2-e3bc7e58350d.gif) |
+| <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/VideoContrtoller.gif"></img> | <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/SaveContent.gif"></img> | <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/Login.gif"></img> |
 
 
 
 ## Design
 
+- Flow chart - AdobeXD
 
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/FlowChart.png"></img>
 
 
 
