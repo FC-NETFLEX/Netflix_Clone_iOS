@@ -26,21 +26,70 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 
 
-## Semple Clips
+## Implementation
 
-|                          영상 재생                           |                         콘텐츠 저장                          |                       로그인, 회원가입                       |
-| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![PlayVideo](https://user-images.githubusercontent.com/56557507/81054969-ba81d980-8f02-11ea-9b10-982a15fe448e.gif) | ![SaveContent](https://user-images.githubusercontent.com/56557507/81060496-86f87c80-8f0d-11ea-85f0-56f437ed3812.gif) | ![Login](https://user-images.githubusercontent.com/56557507/81052547-96bc9480-8efe-11ea-9db2-e3bc7e58350d.gif) |
+### 영상 재생 
+
+<img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/VideoController.gif"></img>
+
+- 구현 내용
+
+  - 서버, 혹은 저장 되어 있는 영상의 재생
+  - 일시정지, 빨리감기, 되감기 등의 영상 컨트롤
+  - 영상 썸네일 추출
+  - 시청 종료시 시청중인 부분의 정보를 서버, 혹은 로컬에 저장
+
+- 트러블 슈팅
+
+  - ```UISlider ``` 의 value의 변화에 따라  ``` AVAssetImageGenerator``` 클래스의 ```generateCGImagesAsynchronously``` 함수를 이용해 영상 썸네일을 추출하여 사용자에게 보여주려 했으나 이미지 요청 횟수가 너무 많고 느려서 정확한 이미지를 보여주지 못하는 문제
+
+    - 예를 들어 영상이 1시간이면 1초 단위로만 계산해도 60 * 60 = 3600 추출할 이미지가 너무 많음
+
+    - AVAsset의 load가 완료됨과 동시에 썸네일 이미지를 10초 단위로 추출하고 그 이미지들을 캐싱해 두고 사용하는 방식으로 해결 
+
+
+
+### 콘텐츠 저장
+
+<img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/SaveContent.gif"></img>
+
+
+
+
+
+| 영상 재생 | 콘텐츠 저장 |                       로그인, 회원가입                       |
+| :-------: | :---------: | :----------------------------------------------------------: |
+|           |             | <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/Login.gif"></img> |
 
 
 
 ## Design
 
+- 플로우 차트 (AdobeXD) : UI 구성과 앱의 흐름을 파악함
+
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/FlowChart.png"></img>
+
+- 명세서 작성 (Keynote): 앱의 상세 기능과 구조를 파악함
+
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/blueprint.gif"></img>
 
 
 
+## Collaboration
 
+- GitHub
 
+  - Organization에 repository를 만들고 팀원들은 각자 Fork한 repository에 작업 후 pull request를 보내는 방식으로 작업
+
+    <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/organization.png"></img>
+
+  - project board 를 통한 일정 관리
+
+    <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/projectboard.png"></img>
+
+- Slack: GitHub과의 연동을 통해 issue, pull request등의 실시간 알림
+
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/slack.png"></img> 
 
 
 
