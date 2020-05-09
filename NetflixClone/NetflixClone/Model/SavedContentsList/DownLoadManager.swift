@@ -12,7 +12,7 @@ protocol DownLoadManagerDelegate: class {
     func finishedTask()
 }
 
-class DownLoadManager: UIResponder {
+class DownLoadManager: NSObject {
     
     weak var delegate: DownLoadManagerDelegate?
     
