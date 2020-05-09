@@ -42,7 +42,7 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 - 명세서 작성 (Keynote): 앱의 상세 기능과 구조를 파악함
 
-  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/blueprint.gif"></img>
+  <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/Blueprint.gif"></img>
 
 
 
