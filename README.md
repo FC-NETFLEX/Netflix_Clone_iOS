@@ -30,7 +30,7 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 ### 영상 재생 
 
-<img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/VideoController.gif"></img>
+<img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/VideoContrtoller.gif"></img>
 
 - 구현 내용
 
