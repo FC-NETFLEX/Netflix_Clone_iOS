@@ -46,6 +46,18 @@ Backend팀과의 협업으로 기존 Netflix 앱 서비스를 기반으로 같�
 
 
 
+## Collaboration
+
+- GitHub
+
+  - Organization에 Repository를 만들고 팀원들은 각자 Fork한 Repository에 작업 후 pull request를 보내는 방식으로 작업
+
+    <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/organization.png"></img>
+
+  - project board 를 통한 일정 관리
+
+    <img src = "https://github.com/JoongChangYang/Netflix_Clone_iOS/blob/master/assets/projectboard.png"></img>
+
 
 
 
