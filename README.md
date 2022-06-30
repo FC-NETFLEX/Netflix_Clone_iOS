@@ -19,7 +19,7 @@
   - [JeonSangMin](https://github.com/JeonSangMin)
   - [wydryd125](https://github.com/wydryd125)
   - [eujin811](https://github.com/eujin811)
-  - [JoongChangYang](https://github.com/JoongChangYang)
+  - [didwndckd](https://github.com/didwndckd)
 
 - Backend
 
